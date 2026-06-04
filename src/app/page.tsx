@@ -13,28 +13,43 @@ import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [recommended, setRecommended] = useState<Product[]>([]);
-  const [category, setCategory] = useState("전체");
+  const [category, setCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [cartOpen, setCartOpen] = useState(false);
+  const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
   
   const { items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount } =
     useCart();
 
-  const showRecommended = category === "전체" && !debouncedSearch;
+  const showRecommended = category === null && !debouncedSearch;
+  const showAllProducts = category === "전체";
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
     return () => clearTimeout(timer);
   }, [search]);
 
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => setToast({ show: false, message: "" }), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (category !== "전체") params.set("category", category);
+    
+    // When category is null, only fetch recommended products
+    // When category is "전체", fetch all products
+    // When category is specific, fetch products in that category
+    if (category && category !== "전체") {
+      params.set("category", category);
+    }
     if (debouncedSearch) params.set("q", debouncedSearch);
-    if (showRecommended) params.set("excludeRecommended", "true");
+    
     const qs = params.toString();
 
     const recommendedParams = showRecommended ? "?recommended=true" : null;
@@ -74,7 +89,7 @@ export default function ShopPage() {
       imageUrl: product.imageUrl,
       maxOrderQuantity: product.maxOrderQuantity,
     });
-    setCartOpen(true);
+    setToast({ show: true, message: "장바구니에 추가됨" });
   }
 
   return (
@@ -120,26 +135,38 @@ export default function ShopPage() {
             aria-label="상품 검색"
           />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg">×
+            <button onClick={() => setSearch("")} className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg min-w-[32px] min-h-[32px] flex items-center justify-center">×
             </button>
           )}
         </div>
 
         {/* 카테고리 */}
-        <div className="flex gap-2 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide mb-2">
-          {CATEGORIES.map((cat) => (
+        <div className="sticky top-[56px] sm:top-[64px] bg-white z-10 py-2 sm:py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 mb-2">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className={`shrink-0 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold transition ${
-                category === cat
+              onClick={() => setCategory("전체")}
+              className={`shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition min-h-[44px] ${
+                category === "전체"
                   ? "bg-black text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              {cat}
+              전체
             </button>
-          ))}
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={`shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition min-h-[44px] ${
+                  category === cat
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {loading ? (
@@ -160,26 +187,28 @@ export default function ShopPage() {
               </div>
             )}
 
-            <OnlineExclusiveProducts products={products} onAdd={handleAdd} />
+            {showRecommended && (
+              <OnlineExclusiveProducts products={products} onAdd={handleAdd} />
+            )}
 
-            {products.length === 0 && (!showRecommended || recommended.length === 0) ? (
-              <div className="py-20 text-center text-gray-400">
-                등록된 상품이 없습니다.
-              </div>
-            ) : products.length > 0 ? (
+            {showAllProducts && products.length > 0 && (
               <>
-                {showRecommended && recommended.length > 0 && (
-                  <div className="flex items-center gap-2 mt-8 mb-4">
-                    <span className="w-8 h-1 bg-gray-200 rounded-full"></span>
-                    <h2 className="text-lg font-bold text-gray-900">전체 상품</h2>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 mt-8 mb-4">
+                  <span className="w-8 h-1 bg-gray-200 rounded-full"></span>
+                  <h2 className="text-lg font-bold text-gray-900">전체 상품</h2>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} onAdd={() => handleAdd(product)} />
                   ))}
                 </div>
               </>
+            )}
+
+            {category && category !== "전체" && products.length === 0 ? (
+              <div className="py-20 text-center text-gray-400">
+                등록된 상품이 없습니다.
+              </div>
             ) : null}
           </>
         )}
@@ -197,6 +226,15 @@ export default function ShopPage() {
             fetchProducts();
           }}
         />
+      )}
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
+          <div className="bg-gray-900 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium">
+            {toast.message}
+          </div>
+        </div>
       )}
     </div>
   );

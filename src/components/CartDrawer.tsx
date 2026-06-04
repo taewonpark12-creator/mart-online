@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { CartItem } from "@/lib/types";
 import {
   formatPrice,
@@ -17,6 +17,12 @@ import {
 import { parseJsonResponse } from "@/lib/fetch-json";
 import { STORE } from "@/lib/store";
 import { ProductImage } from "@/components/ProductImage";
+
+interface SavedAddress {
+  id: string;
+  address: string;
+  entrance?: string;
+}
 
 type Props = {
   items: CartItem[];
@@ -48,10 +54,50 @@ export function CartDrawer({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+  const [showSaveAddress, setShowSaveAddress] = useState(false);
 
   const isDelivery = fulfillmentType === "DELIVERY";
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
   const amountShort = MIN_ORDER_AMOUNT - totalAmount;
+
+  // Load saved addresses from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("savedAddresses");
+    if (saved) {
+      try {
+        setSavedAddresses(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to load saved addresses:", e);
+      }
+    }
+  }, []);
+
+  const handleSaveAddress = () => {
+    if (!address) return;
+    
+    const newAddress: SavedAddress = {
+      id: Date.now().toString(),
+      address,
+      entrance: deliveryEntrance || undefined,
+    };
+    
+    const updated = [...savedAddresses, newAddress];
+    setSavedAddresses(updated);
+    localStorage.setItem("savedAddresses", JSON.stringify(updated));
+    setShowSaveAddress(false);
+  };
+
+  const handleSelectAddress = (saved: SavedAddress) => {
+    setAddress(saved.address);
+    setDeliveryEntrance(saved.entrance || "");
+  };
+
+  const handleDeleteAddress = (id: string) => {
+    const updated = savedAddresses.filter(a => a.id !== id);
+    setSavedAddresses(updated);
+    localStorage.setItem("savedAddresses", JSON.stringify(updated));
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -99,15 +145,18 @@ export function CartDrawer({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-md sm:max-w-lg bg-white h-full flex flex-col shadow-2xl">
+      <div className="relative w-full max-w-md sm:max-w-lg bg-white h-[70vh] sm:h-[80vh] rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl animate-slide-up">
         <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b">
-          <h2 className="font-bold text-base sm:text-lg">
-            {step === "cart" && "장바구니"}
-            {step === "checkout" && "주문 정보"}
-            {step === "done" && "주문 완료"}
-          </h2>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-1 bg-gray-300 rounded-full sm:hidden" />
+            <h2 className="font-bold text-base sm:text-lg">
+              {step === "cart" && "장바구니"}
+              {step === "checkout" && "주문 정보"}
+              {step === "done" && "주문 완료"}
+            </h2>
+          </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">
             ×
           </button>
@@ -138,22 +187,22 @@ export function CartDrawer({
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white border text-sm font-bold"
+                        className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg bg-white border text-sm sm:text-base font-bold min-h-[44px]"
                       >
                         −
                       </button>
-                      <span className="w-5 sm:w-6 text-center text-xs sm:text-sm font-medium">{item.quantity}</span>
+                      <span className="w-8 sm:w-6 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
                       <button
                         onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
                         disabled={!!(item.maxOrderQuantity && item.maxOrderQuantity > 0 && item.quantity >= item.maxOrderQuantity)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white border text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
                       >
                         +
                       </button>
                     </div>
                     <button
                       onClick={() => onRemove(item.productId)}
-                      className="text-gray-300 hover:text-red-400 text-base sm:text-lg"
+                      className="text-gray-300 hover:text-red-400 text-lg sm:text-lg min-w-[32px] min-h-[32px] flex items-center justify-center"
                     >
                       ×
                     </button>
@@ -176,7 +225,7 @@ export function CartDrawer({
                 <button
                   onClick={() => meetsMinimum && setStep("checkout")}
                   disabled={!meetsMinimum}
-                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-2.5 sm:py-3 rounded-xl transition text-sm sm:text-base"
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-3 sm:py-3 rounded-xl transition text-sm sm:text-base min-h-[44px]"
                 >
                   주문하기
                 </button>
@@ -194,7 +243,7 @@ export function CartDrawer({
                   {FULFILLMENT_OPTIONS.map((opt) => (
                     <label
                       key={opt.value}
-                      className={`flex flex-col border rounded-xl px-3 py-3 cursor-pointer transition ${
+                      className={`flex flex-col border rounded-xl px-3 py-4 cursor-pointer transition min-h-[44px] ${
                         fulfillmentType === opt.value
                           ? "border-green-500 bg-green-50"
                           : "border-gray-200 hover:border-green-300"
@@ -239,6 +288,32 @@ export function CartDrawer({
 
               {isDelivery ? (
                 <>
+                  {savedAddresses.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">저장된 배송지</label>
+                      <div className="space-y-2">
+                        {savedAddresses.map((saved) => (
+                          <div key={saved.id} className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2">
+                            <button
+                              type="button"
+                              onClick={() => handleSelectAddress(saved)}
+                              className="flex-1 text-left text-sm text-gray-700 hover:text-green-700"
+                            >
+                              {saved.address}
+                              {saved.entrance && ` (${saved.entrance})`}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteAddress(saved.id)}
+                              className="text-gray-400 hover:text-red-500 text-sm min-h-[32px]"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">배달 주소 *</label>
                     <input
@@ -246,7 +321,7 @@ export function CartDrawer({
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                      placeholder="인천 미추홀구 ○○동 123-4, 101호"
+                      placeholder="숭의동 123-4, 101호"
                     />
                   </div>
                   <div>
@@ -260,6 +335,15 @@ export function CartDrawer({
                       placeholder="예: 자율 출입, 비밀번호 #1234"
                     />
                   </div>
+                  {address && (
+                    <button
+                      type="button"
+                      onClick={handleSaveAddress}
+                      className="text-sm text-green-600 hover:text-green-700 font-medium min-h-[32px]"
+                    >
+                      + 이 배송지 저장
+                    </button>
+                  )}
                 </>
               ) : (
                 <>
@@ -297,7 +381,7 @@ export function CartDrawer({
                     {PAYMENT_METHOD_OPTIONS.map((opt) => (
                       <label
                         key={opt.value}
-                        className={`flex items-center gap-2.5 border rounded-xl px-3 py-2.5 cursor-pointer transition ${
+                        className={`flex items-center gap-2.5 border rounded-xl px-3 py-3 cursor-pointer transition min-h-[44px] ${
                           paymentMethod === opt.value
                             ? "border-green-500 bg-green-50"
                             : "border-gray-200 hover:border-green-300"
@@ -334,7 +418,7 @@ export function CartDrawer({
                   {OUT_OF_STOCK_POLICY_OPTIONS.map((opt) => (
                     <label
                       key={opt.value}
-                      className={`flex items-center gap-2.5 border rounded-xl px-3 py-2.5 cursor-pointer transition ${
+                      className={`flex items-center gap-2.5 border rounded-xl px-3 py-3 cursor-pointer transition min-h-[44px] ${
                         outOfStockPolicy === opt.value
                           ? "border-green-500 bg-green-50"
                           : "border-gray-200 hover:border-green-300"
@@ -391,14 +475,14 @@ export function CartDrawer({
               <button
                 type="button"
                 onClick={() => setStep("cart")}
-                className="flex-1 border text-gray-600 py-3 rounded-xl text-sm font-medium"
+                className="flex-1 border text-gray-600 py-3 rounded-xl text-sm font-medium min-h-[44px]"
               >
                 이전
               </button>
               <button
                 type="submit"
                 disabled={loading || !meetsMinimum}
-                className="flex-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white py-3 rounded-xl font-semibold transition"
+                className="flex-2 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white py-3 rounded-xl font-semibold transition min-h-[44px]"
               >
                 {loading ? "처리 중..." : "주문 확정"}
               </button>
@@ -440,7 +524,7 @@ export function CartDrawer({
             )}
             <button
               onClick={onClose}
-              className="mt-4 bg-green-600 text-white px-8 py-3 rounded-xl font-semibold"
+              className="mt-4 bg-green-600 text-white px-8 py-3 rounded-xl font-semibold min-h-[44px]"
             >
               확인
             </button>

@@ -36,7 +36,7 @@ export function ProductCard({ product, onAdd }: Props) {
           <p className="font-bold text-green-700 text-base sm:text-lg">{formatPrice(product.price)}</p>
           <button
             onClick={onAdd}
-            className="bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition shrink-0"
+            className="bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-medium px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl transition shrink-0 min-h-[44px]"
           >
             + 담기
           </button>

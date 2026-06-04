@@ -28,7 +28,7 @@ export function Header({ cartCount = 0, onCartClick }: Props) {
           {onCartClick && (
             <button
               onClick={onCartClick}
-              className="relative flex items-center gap-1 sm:gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium px-2 sm:px-4 py-1.5 sm:py-2 rounded-full transition"
+              className="relative flex items-center gap-1 sm:gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-3 sm:py-2 rounded-full transition min-h-[44px]"
             >
               <span className="hidden sm:inline">🛒 장바구니</span>
               <span className="sm:hidden">🛒</span>
