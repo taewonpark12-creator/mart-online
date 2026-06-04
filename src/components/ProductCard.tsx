@@ -17,7 +17,6 @@ export function ProductCard({ product, onAdd }: Props) {
           src={product.imageUrl}
           alt={product.name}
           fill
-          className="rounded-none"
           sizes="(max-width: 640px) 50vw, 240px"
         />
       </div>

@@ -127,7 +127,6 @@ export function CartDrawer({
                         alt={item.name}
                         fill
                         sizes="56px"
-                        className="rounded-lg"
                       />
                     </div>
                     <div className="flex-1 min-w-0">

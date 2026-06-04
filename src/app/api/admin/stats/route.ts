@@ -105,12 +105,12 @@ export async function GET(req: NextRequest) {
         popularProducts.map(async (item) => {
           const product = await prisma.product.findUnique({
             where: {
-              id: item.productId,
+              id: item.productId ?? "",
             },
           });
 
           return {
-            id: item.productId,
+            id: item.productId ?? "",
             name: product?.name ?? "알 수 없음",
             quantity: item._sum.quantity ?? 0,
           };

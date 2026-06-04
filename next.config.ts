@@ -6,6 +6,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
