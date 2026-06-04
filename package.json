@@ -15,8 +15,11 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.14.4",
+    "@cloudinary/url-gen": "^1.22.0",
     "@prisma/client": "^6.8.2",
     "better-sqlite3": "^12.10.0",
+    "cloudinary": "^2.10.0",
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

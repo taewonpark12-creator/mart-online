@@ -7,7 +7,6 @@ const NAV = [
   { href: "/admin/dashboard", label: "대시보드", icon: "📊" },
   { href: "/admin/orders", label: "주문 관리", icon: "📋" },
   { href: "/admin/products", label: "상품 관리", icon: "📦" },
-  { href: "/admin/backup", label: "백업 관리", icon: "💾" },
 ];
 
 export function AdminNav() {
