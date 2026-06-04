@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
         prisma.order.count({
           where: {
             createdAt: { gte: today },
+            status: { not: "CANCELLED" },
           },
         }),
 
@@ -99,6 +100,13 @@ export async function GET(req: NextRequest) {
           },
         },
         take: 10,
+        where: {
+          order: {
+            status: {
+              not: "CANCELLED",
+            },
+          },
+        },
       });
 
       popularProductDetails = await Promise.all(
