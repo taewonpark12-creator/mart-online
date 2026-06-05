@@ -18,6 +18,7 @@ export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [recommended, setRecommended] = useState<Product[]>([]);
   const [popular, setPopular] = useState<Product[]>([]);
+  const [exclusive, setExclusive] = useState<Product[]>([]);
   const [category, setCategory] = useState("추천상품");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -29,8 +30,23 @@ export default function ShopPage() {
   const { items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount } =
     useCart();
 
-  const showRecommended = category === "추천상품" && !debouncedSearch;
+  const showRecommended = category === "추천상품";
   const showAllProducts = category === "전체";
+  const isSearchMode = !!debouncedSearch;
+
+  // 프론트엔드 카테고리 필터링 (UI 표시용)
+  const filteredProducts = products.filter((product) => {
+    // 검색어가 있으면 카테고리 필터링 적용하지 않음 (전체 상품 기준 검색)
+    if (debouncedSearch) return true;
+
+    // 검색어가 없을 때만 카테고리 필터링 적용
+    if (showAllProducts) return true;
+    if (showRecommended) return true;
+    if (category && category !== "추천상품" && category !== "전체") {
+      return product.category === category;
+    }
+    return true;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -48,35 +64,52 @@ export default function ShopPage() {
     setLoading(true);
     const params = new URLSearchParams();
 
-    // When category is "추천상품", only fetch recommended products
-    // When category is "전체", fetch all products
-    // When category is specific, fetch products in that category
-    // But when searching, ignore category and search across all products
-    if (category && category !== "추천상품" && category !== "전체" && !debouncedSearch) {
-      params.set("category", category);
+    console.log("[fetchProducts] category:", category);
+    console.log("[fetchProducts] debouncedSearch:", debouncedSearch);
+    console.log("[fetchProducts] showRecommended:", showRecommended);
+
+    // 검색은 항상 전체 상품 기준으로 수행
+    if (debouncedSearch) {
+      params.set("q", debouncedSearch);
+      console.log("[fetchProducts] Setting search param:", debouncedSearch);
+    } else {
+      // 검색어가 없을 때만 카테고리 필터 적용
+      if (category && category !== "추천상품" && category !== "전체") {
+        params.set("category", category);
+        console.log("[fetchProducts] Setting category param:", category);
+      }
+      if (showRecommended) {
+        params.set("recommended", "true");
+        console.log("[fetchProducts] Setting recommended param: true");
+      }
     }
-    if (debouncedSearch) params.set("q", debouncedSearch);
 
     const qs = params.toString();
+    console.log("[fetchProducts] Query string:", qs);
 
     const recommendedParams = showRecommended ? "?recommended=true" : null;
     const popularParams = showRecommended ? "?popular=true" : null;
+    const exclusiveParams = showRecommended ? "?onlineExclusive=true" : null;
 
-    const [listRes, recommendedRes, popularRes] = await Promise.all([
+    const [listRes, recommendedRes, popularRes, exclusiveRes] = await Promise.all([
       fetch(`/api/products${qs ? `?${qs}` : ""}`),
       recommendedParams ? fetch(`/api/products${recommendedParams}`) : Promise.resolve(null),
       popularParams ? fetch(`/api/products${popularParams}`) : Promise.resolve(null),
+      exclusiveParams ? fetch(`/api/products${exclusiveParams}`) : Promise.resolve(null),
     ]);
 
     const listData = await listRes.json();
     const listArray = Array.isArray(listData) ? listData : [];
+    console.log("[fetchProducts] listArray length:", listArray.length);
     let recData: Product[] = [];
     let popData: Product[] = [];
+    let excData: Product[] = [];
 
     if (recommendedRes) {
       const raw = await recommendedRes.json();
       recData = Array.isArray(raw) ? raw : [];
       setRecommended(recData);
+      console.log("[fetchProducts] recData length:", recData.length);
     } else {
       setRecommended([]);
     }
@@ -85,12 +118,22 @@ export default function ShopPage() {
       const raw = await popularRes.json();
       popData = Array.isArray(raw) ? raw : [];
       setPopular(popData);
+      console.log("[fetchProducts] popData length:", popData.length);
     } else {
       setPopular([]);
     }
 
+    if (exclusiveRes) {
+      const raw = await exclusiveRes.json();
+      excData = Array.isArray(raw) ? raw : [];
+      setExclusive(excData);
+      console.log("[fetchProducts] excData length:", excData.length);
+    } else {
+      setExclusive([]);
+    }
+
     setProducts(listArray);
-    syncWithProducts(showRecommended ? [...recData, ...popData, ...listArray] : listArray);
+    syncWithProducts(showRecommended ? [...recData, ...popData, ...excData, ...listArray] : listArray);
 
     setLoading(false);
   }, [category, debouncedSearch, showRecommended, syncWithProducts]);
@@ -150,11 +193,11 @@ export default function ShopPage() {
         <div className="relative mb-4 sm:mb-6">
           <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">🔍</span>
           <input
-            type="search"
+            type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="상품명 검색"
-            className="w-full h-10 sm:h-12 pl-10 sm:pl-12 bg-gray-50 border-none rounded-xl sm:rounded-2xl text-gray-800 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 transition-all"
+            className="w-full h-10 sm:h-12 pl-10 sm:pl-12 pr-10 sm:pr-12 bg-gray-50 border-none rounded-xl sm:rounded-2xl text-gray-800 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 transition-all"
             aria-label="상품 검색"
           />
           {search && (
@@ -204,42 +247,45 @@ export default function ShopPage() {
           </div>
         ) : (
           <>
-            {showRecommended && (
+            {showRecommended && !isSearchMode && (
               <div className="mb-8">
                 <RecommendedProducts products={recommended} onAdd={handleAdd} />
               </div>
             )}
 
-            {showRecommended && (
-              <OnlineExclusiveProducts products={products} onAdd={handleAdd} />
+            {showRecommended && !isSearchMode && (
+              <OnlineExclusiveProducts products={exclusive} onAdd={handleAdd} />
             )}
 
-            {showRecommended && popular.length > 0 && (
+            {showRecommended && !isSearchMode && popular.length > 0 && (
               <div className="mb-8">
                 <PopularProducts products={popular} onAdd={handleAdd} />
               </div>
             )}
 
-            {category && category !== "추천상품" && products.length > 0 && (
+            {(isSearchMode || !showRecommended) && filteredProducts.length > 0 && (
               <>
                 <div className="flex items-center gap-2 mt-8 mb-4">
                   <span className="w-8 h-1 bg-gray-200 rounded-full"></span>
-                  <h2 className="text-lg font-bold text-gray-900">{category === "전체" ? "전체 상품" : category}</h2>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    {isSearchMode ? "검색 결과" : category === "전체" ? "전체 상품" : category}
+                  </h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {products.map((product) => (
+                  {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} onAdd={() => handleAdd(product)} />
                   ))}
                 </div>
               </>
             )}
 
-            {category && category !== "추천상품" && category !== "전체" && products.length === 0 ? (
+            {(isSearchMode || !showRecommended) && filteredProducts.length === 0 && !loading && (
               <div className="py-20 text-center text-gray-400">
-                등록된 상품이 없습니다.
+                {isSearchMode ? "검색 결과가 없습니다." : "등록된 상품이 없습니다."}
               </div>
-            ) : null}
-          </>
+            )}
+
+                      </>
         )}
       </div>
 

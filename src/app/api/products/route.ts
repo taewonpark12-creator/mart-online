@@ -25,6 +25,8 @@ export async function GET(req: NextRequest) {
 
     const popularOnly = searchParams.get("popular") === "true";
 
+    const onlineExclusiveOnly = searchParams.get("onlineExclusive") === "true";
+
     const outOfStockOnly = searchParams.get("outOfStock") === "true";
 
     const includeOutOfStock = searchParams.get("includeOutOfStock") === "true";
@@ -43,6 +45,8 @@ export async function GET(req: NextRequest) {
 
         // @ts-ignore - Prisma client not regenerated yet
         ...(popularOnly ? { isPopular: true } : {}),
+
+        ...(onlineExclusiveOnly ? { isOnlineExclusive: true } : {}),
 
         ...(category && category !== "전체" ? { category } : {}),
 
