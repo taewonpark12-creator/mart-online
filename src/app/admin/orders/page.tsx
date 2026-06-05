@@ -58,6 +58,7 @@ export default function OrdersPage() {
   const router = useRouter();
   const isMounted = useRef(true);
   const isFetching = useRef(false);
+  const previousPendingCount = useRef(0);
   const {
     isPlaying,
     pendingCount,
@@ -94,18 +95,6 @@ export default function OrdersPage() {
       const data = await res.json();
       if (isMounted.current) {
         setOrders(data);
-
-        // 대기 중인 주문 수 확인 및 알림 처리
-        const pendingOrders = data.filter((order: Order) => order.status === "PENDING");
-        const pendingCount = pendingOrders.length;
-        updatePendingCount(pendingCount);
-
-        // 페이지 타이틀 업데이트 (대기 주문이 있으면 표시)
-        if (pendingCount > 0) {
-          document.title = `(${pendingCount}) 주문 관리 - 한사랑마트`;
-        } else {
-          document.title = "주문 관리 - 한사랑마트";
-        }
       }
     } catch (error) {
       console.error("로딩 에러:", error);
@@ -115,28 +104,11 @@ export default function OrdersPage() {
       }
       isFetching.current = false;
     }
-  }, [filter, router, updatePendingCount]);
+  }, [filter, router]);
 
   useEffect(() => {
     isMounted.current = true;
     fetchOrders();
-    const interval = setInterval(fetchOrders, 30000); // 30초마다 자동 새로고침
-
-    // 브라우저 가시성 변경 감지
-    const handleVisibilityChange = () => {
-      if (document.hidden && pendingCount > 0) {
-        // 백그라운드 상태에서 알림 표시
-        if (Notification.permission === "granted") {
-          new Notification("새 주문 접수", {
-            body: `${pendingCount}개의 대기 중인 주문이 있습니다.`,
-            icon: "/icon.png",
-            tag: "order-notification",
-          });
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // 알림 권한 요청
     if (Notification.permission === "default") {
@@ -145,10 +117,82 @@ export default function OrdersPage() {
 
     return () => {
       isMounted.current = false;
-      clearInterval(interval);
+    };
+  }, [fetchOrders]);
+
+  // pending-count API polling (10-15초 간격)
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    const fetchPendingCount = async () => {
+      try {
+        const res = await fetch("/api/admin/orders/pending-count");
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const currentPendingCount = data.pendingCount || 0;
+
+        // 이전 pendingCount와 비교하여 증가했을 때만 알림 발생
+        if (currentPendingCount > previousPendingCount.current && currentPendingCount > 0) {
+          updatePendingCount(currentPendingCount);
+
+          // 브라우저 알림
+          if (Notification.permission === "granted" && !document.hidden) {
+            new Notification("새 주문 접수", {
+              body: `${currentPendingCount}개의 대기 중인 주문이 있습니다.`,
+              icon: "/icon.png",
+              tag: "order-notification",
+            });
+          }
+        } else if (currentPendingCount === 0) {
+          updatePendingCount(0);
+        }
+
+        // 페이지 타이틀 업데이트
+        if (currentPendingCount > 0) {
+          document.title = `(${currentPendingCount}) 주문 관리 - 한사랑마트`;
+        } else {
+          document.title = "주문 관리 - 한사랑마트";
+        }
+
+        previousPendingCount.current = currentPendingCount;
+      } catch (error) {
+        console.error("pending-count API 호출 에러:", error);
+      }
+    };
+
+    const startPolling = () => {
+      if (interval) clearInterval(interval);
+      fetchPendingCount();
+      interval = setInterval(fetchPendingCount, 12000);
+    };
+
+    const stopPolling = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    // 초기 호출 및 polling 시작
+    startPolling();
+
+    // 브라우저 탭 비활성 시 polling 중단
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        startPolling();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      stopPolling();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [fetchOrders, pendingCount]);
+  }, [updatePendingCount]);
 
   async function updateStatus(id: string, status: OrderStatus) {
     try {

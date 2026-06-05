@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { Header } from "@/components/Header";
 import { ProductCard } from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
@@ -10,7 +10,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { OrderBar } from "@/components/OrderBar";
 import { FlyerBanner } from "@/components/FlyerBanner";
 import { FlyerModal } from "@/components/FlyerModal";
-import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/contexts/CartContext";
 import type { Product } from "@/lib/types";
 import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 
@@ -29,6 +29,8 @@ export default function ShopPage() {
   
   const { items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount } =
     useCart();
+
+  const fetchCount = useRef(0);
 
   const showRecommended = category === "추천상품";
   const showAllProducts = category === "전체";
@@ -61,6 +63,8 @@ export default function ShopPage() {
   }, [toast.show]);
 
   const fetchProducts = useCallback(async () => {
+    fetchCount.current += 1;
+    console.log(`[fetchProducts] 호출 횟수: ${fetchCount.current}`);
     setLoading(true);
     const params = new URLSearchParams();
 

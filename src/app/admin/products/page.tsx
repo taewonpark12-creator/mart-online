@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { PRODUCT_CATEGORIES } from "@/lib/types";
+import { PRODUCT_CATEGORIES, formatPrice } from "@/lib/types";
 import * as XLSX from "xlsx";
 
 type Product = {
@@ -1156,7 +1156,7 @@ export default function ProductsPage() {
                     {product.name}
                   </h3>
                   <p className="text-sm font-bold text-green-700 whitespace-nowrap">
-                    {Number(product.price).toLocaleString()}원
+                    {formatPrice(Number(product.price))}
                   </p>
                   <p className="text-xs text-gray-500 whitespace-nowrap">
                     {product.category}

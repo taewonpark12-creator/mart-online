@@ -37,7 +37,7 @@ export function ProductCard({ product, onAdd }: Props) {
           )}
         </div>
         <div className="mt-auto">
-          <p className="font-bold text-green-700 text-base sm:text-lg">{formatPrice(product.price)}</p>
+          <p className="font-bold text-green-700 text-base sm:text-lg">{formatPrice(Number(product.price))}</p>
         </div>
       </div>
     </div>
