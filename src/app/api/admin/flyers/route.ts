@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { isAdminAuthenticated } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
 // GET - 관리자용 전단지 목록 조회
 export async function GET() {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
+
   try {
     const flyers = await prisma.flyer.findMany({
       orderBy: { order: "asc" },
@@ -19,6 +24,10 @@ export async function GET() {
 
 // POST - 전단지 이미지 업로드
 export async function POST(req: NextRequest) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { imageUrl } = body;
