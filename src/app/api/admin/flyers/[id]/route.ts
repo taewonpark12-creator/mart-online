@@ -6,14 +6,15 @@ const prisma = new PrismaClient();
 // PATCH - 전단지 순서 변경 또는 활성화/비활성화
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const { order, isActive } = body;
 
     const flyer = await prisma.flyer.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(order !== undefined && { order }),
         ...(isActive !== undefined && { isActive }),
@@ -30,11 +31,12 @@ export async function PATCH(
 // DELETE - 전단지 삭제
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.flyer.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });
