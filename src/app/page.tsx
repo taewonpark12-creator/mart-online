@@ -5,7 +5,11 @@ import { Header } from "@/components/Header";
 import { ProductCard } from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
 import { RecommendedProducts } from "@/components/RecommendedProducts";
+import { PopularProducts } from "@/components/PopularProducts";
 import { CartDrawer } from "@/components/CartDrawer";
+import { OrderBar } from "@/components/OrderBar";
+import { FlyerBanner } from "@/components/FlyerBanner";
+import { FlyerModal } from "@/components/FlyerModal";
 import { useCart } from "@/hooks/useCart";
 import type { Product } from "@/lib/types";
 import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
@@ -13,17 +17,19 @@ import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [recommended, setRecommended] = useState<Product[]>([]);
-  const [category, setCategory] = useState<string | null>(null);
+  const [popular, setPopular] = useState<Product[]>([]);
+  const [category, setCategory] = useState("추천상품");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
+  const [flyerModalOpen, setFlyerModalOpen] = useState(false);
   
   const { items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount } =
     useCart();
 
-  const showRecommended = category === null && !debouncedSearch;
+  const showRecommended = category === "추천상품" && !debouncedSearch;
   const showAllProducts = category === "전체";
 
   useEffect(() => {
@@ -41,27 +47,31 @@ export default function ShopPage() {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams();
-    
-    // When category is null, only fetch recommended products
+
+    // When category is "추천상품", only fetch recommended products
     // When category is "전체", fetch all products
     // When category is specific, fetch products in that category
-    if (category && category !== "전체") {
+    // But when searching, ignore category and search across all products
+    if (category && category !== "추천상품" && category !== "전체" && !debouncedSearch) {
       params.set("category", category);
     }
     if (debouncedSearch) params.set("q", debouncedSearch);
-    
+
     const qs = params.toString();
 
     const recommendedParams = showRecommended ? "?recommended=true" : null;
+    const popularParams = showRecommended ? "?popular=true" : null;
 
-    const [listRes, recommendedRes] = await Promise.all([
+    const [listRes, recommendedRes, popularRes] = await Promise.all([
       fetch(`/api/products${qs ? `?${qs}` : ""}`),
       recommendedParams ? fetch(`/api/products${recommendedParams}`) : Promise.resolve(null),
+      popularParams ? fetch(`/api/products${popularParams}`) : Promise.resolve(null),
     ]);
 
     const listData = await listRes.json();
     const listArray = Array.isArray(listData) ? listData : [];
     let recData: Product[] = [];
+    let popData: Product[] = [];
 
     if (recommendedRes) {
       const raw = await recommendedRes.json();
@@ -71,8 +81,16 @@ export default function ShopPage() {
       setRecommended([]);
     }
 
+    if (popularRes) {
+      const raw = await popularRes.json();
+      popData = Array.isArray(raw) ? raw : [];
+      setPopular(popData);
+    } else {
+      setPopular([]);
+    }
+
     setProducts(listArray);
-    syncWithProducts(showRecommended ? [...recData, ...listArray] : listArray);
+    syncWithProducts(showRecommended ? [...recData, ...popData, ...listArray] : listArray);
 
     setLoading(false);
   }, [category, debouncedSearch, showRecommended, syncWithProducts]);
@@ -97,7 +115,7 @@ export default function ShopPage() {
       <Header cartCount={totalCount} onCartClick={() => setCartOpen(true)} />
 
       {/* [옵션 1] 전체 배경을 흰색으로 변경, 너비를 좁혀서 깔끔하게 */}
-      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-24 sm:pb-28">
 
         {/* 헤더 정보를 카드로 분리 */}
         <div className="bg-emerald-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-6 sm:mb-8 border border-emerald-100 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
@@ -123,6 +141,11 @@ export default function ShopPage() {
           </div>
         </div>
 
+        {/* 세일 전단 배너 */}
+        <div className="mb-4 sm:mb-6">
+          <FlyerBanner onOpen={() => setFlyerModalOpen(true)} />
+        </div>
+
         {/* 검색창 */}
         <div className="relative mb-4 sm:mb-6">
           <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">🔍</span>
@@ -144,14 +167,14 @@ export default function ShopPage() {
         <div className="sticky top-[56px] sm:top-[64px] bg-white z-10 py-2 sm:py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 mb-2">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             <button
-              onClick={() => setCategory("전체")}
+              onClick={() => setCategory("추천상품")}
               className={`shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition min-h-[44px] ${
-                category === "전체"
+                category === "추천상품"
                   ? "bg-black text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              전체
+              추천상품
             </button>
             {CATEGORIES.map((cat) => (
               <button
@@ -191,11 +214,17 @@ export default function ShopPage() {
               <OnlineExclusiveProducts products={products} onAdd={handleAdd} />
             )}
 
-            {showAllProducts && products.length > 0 && (
+            {showRecommended && popular.length > 0 && (
+              <div className="mb-8">
+                <PopularProducts products={popular} onAdd={handleAdd} />
+              </div>
+            )}
+
+            {category && category !== "추천상품" && products.length > 0 && (
               <>
                 <div className="flex items-center gap-2 mt-8 mb-4">
                   <span className="w-8 h-1 bg-gray-200 rounded-full"></span>
-                  <h2 className="text-lg font-bold text-gray-900">전체 상품</h2>
+                  <h2 className="text-lg font-bold text-gray-900">{category === "전체" ? "전체 상품" : category}</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {products.map((product) => (
@@ -205,7 +234,7 @@ export default function ShopPage() {
               </>
             )}
 
-            {category && category !== "전체" && products.length === 0 ? (
+            {category && category !== "추천상품" && category !== "전체" && products.length === 0 ? (
               <div className="py-20 text-center text-gray-400">
                 등록된 상품이 없습니다.
               </div>
@@ -236,6 +265,16 @@ export default function ShopPage() {
           </div>
         </div>
       )}
+
+      {/* 하단 고정 주문바 */}
+      <OrderBar
+        itemCount={totalCount}
+        totalAmount={totalAmount}
+        onOrderClick={() => setCartOpen(true)}
+      />
+
+      {/* 세일 전단 모달 */}
+      <FlyerModal isOpen={flyerModalOpen} onClose={() => setFlyerModalOpen(false)} />
     </div>
   );
 }

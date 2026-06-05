@@ -19,8 +19,10 @@ model Product {
   isActive          Boolean  @default(true)
   isRecommended     Boolean  @default(false)
   isOnlineExclusive Boolean  @default(false) // <--- 여기에 추가했습니다
+  isPopular         Boolean  @default(false) // 인기상품
   isOutOfStock      Boolean  @default(false)
   recommendedOrder  Int      @default(0)
+  popularOrder      Int      @default(0) // 인기상품 정렬 순서
   maxOrderQuantity  Int?     // 최대 주문 수량 (null 또는 0이면 제한 없음)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -29,6 +31,8 @@ model Product {
   @@index([category])
   @@index([isActive])
   @@index([isRecommended])
+  @@index([isOnlineExclusive])
+  @@index([isPopular])
   @@index([isOutOfStock])
   @@index([barcode])
   @@index([createdAt])
@@ -112,4 +116,16 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
   @@index([entity, entityId])
+}
+
+model Flyer {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
 }

@@ -23,6 +23,8 @@ export async function GET(req: NextRequest) {
 
     const excludeRecommended = searchParams.get("excludeRecommended") === "true";
 
+    const popularOnly = searchParams.get("popular") === "true";
+
     const outOfStockOnly = searchParams.get("outOfStock") === "true";
 
     const includeOutOfStock = searchParams.get("includeOutOfStock") === "true";
@@ -38,6 +40,9 @@ export async function GET(req: NextRequest) {
         ...(recommendedOnly ? { isRecommended: true } : {}),
 
         ...(excludeRecommended ? { isRecommended: false } : {}),
+
+        // @ts-ignore - Prisma client not regenerated yet
+        ...(popularOnly ? { isPopular: true } : {}),
 
         ...(category && category !== "전체" ? { category } : {}),
 
@@ -67,9 +72,7 @@ export async function GET(req: NextRequest) {
       },
 
       orderBy: recommendedOnly
-
         ? [{ recommendedOrder: "desc" }, { name: "asc" }]
-
         : [{ category: "asc" }, { name: "asc" }],
 
     });
@@ -115,7 +118,7 @@ export async function POST(req: NextRequest) {
 
     // [수정됨] 여기에 isRecommended와 isOnlineExclusive를 추가했습니다
 
-    const { name, description, barcode, price, category, imageUrl, stock, isRecommended, isOnlineExclusive, isOutOfStock, maxOrderQuantity } = body;
+    const { name, description, barcode, price, category, imageUrl, stock, isRecommended, isOnlineExclusive, isPopular, isOutOfStock, maxOrderQuantity } = body;
 
 
 
@@ -150,6 +153,9 @@ export async function POST(req: NextRequest) {
         isRecommended: Boolean(isRecommended),
 
         isOnlineExclusive: Boolean(isOnlineExclusive),
+
+        // @ts-ignore - Prisma client not regenerated yet
+        isPopular: Boolean(isPopular),
 
         isOutOfStock: Boolean(isOutOfStock),
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { PRODUCT_CATEGORIES } from "@/lib/types";
@@ -18,6 +18,7 @@ type Product = {
   isActive: boolean;
   isRecommended: boolean;
   isOnlineExclusive: boolean;
+  isPopular: boolean;
   isOutOfStock: boolean;
   maxOrderQuantity?: number | null;
 };
@@ -39,6 +40,7 @@ export default function ProductsPage() {
     stock: "",
     isRecommended: false,
     isOnlineExclusive: false,
+    isPopular: false,
     isOutOfStock: false,
     maxOrderQuantity: "",
   });
@@ -47,6 +49,7 @@ export default function ProductsPage() {
   const [showBulkActions, setShowBulkActions] = useState(false);
   const [bulkCategory, setBulkCategory] = useState("");
   const [showExcelUpload, setShowExcelUpload] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageSearchQuery, setImageSearchQuery] = useState("");
@@ -55,17 +58,19 @@ export default function ProductsPage() {
   const [autoUploadingImages, setAutoUploadingImages] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [outOfStockOnly, setOutOfStockOnly] = useState(false);
+  const requestIdRef = useRef(0);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async (query: string, category: string, outOfStock: boolean) => {
+    const requestId = ++requestIdRef.current;
     try {
       const fetchWithRetry = async (retries = 3): Promise<void> => {
         for (let i = 0; i < retries; i++) {
           try {
             const params = new URLSearchParams({
               activeOnly: "false",
-              ...(searchQuery ? { q: searchQuery } : {}),
-              ...(categoryFilter ? { category: categoryFilter } : {}),
-              ...(outOfStockOnly ? { outOfStock: "true" } : {}),
+              ...(query ? { q: query } : {}),
+              ...(category ? { category: category } : {}),
+              ...(outOfStock ? { outOfStock: "true" } : {}),
             });
             const res = await fetch(`/api/products?${params}`);
             if (!res.ok) {
@@ -78,7 +83,9 @@ export default function ProductsPage() {
               throw new Error(errorData.error || "데이터를 불러오지 못했습니다.");
             }
             const data = await res.json();
-            setProducts(data);
+            if (requestId === requestIdRef.current) {
+              setProducts(data);
+            }
             return;
           } catch (error) {
             if (i < retries - 1) {
@@ -96,11 +103,18 @@ export default function ProductsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
   }, [searchQuery, categoryFilter, outOfStockOnly]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,7 +136,7 @@ export default function ProductsPage() {
       });
 
       if (res.ok) {
-        fetchProducts();
+        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
         setShowForm(false);
         setEditingProduct(null);
         setFormData({
@@ -135,6 +149,7 @@ export default function ProductsPage() {
           stock: "",
           isRecommended: false,
           isOnlineExclusive: false,
+          isPopular: false,
           isOutOfStock: false,
           maxOrderQuantity: "",
         });
@@ -160,6 +175,7 @@ export default function ProductsPage() {
       stock: String(product.stock),
       isRecommended: product.isRecommended,
       isOnlineExclusive: product.isOnlineExclusive,
+      isPopular: product.isPopular || false,
       isOutOfStock: product.isOutOfStock || false,
       maxOrderQuantity: product.maxOrderQuantity ? String(product.maxOrderQuantity) : "",
     });
@@ -177,7 +193,7 @@ export default function ProductsPage() {
       });
 
       if (res.ok) {
-        fetchProducts();
+        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
       } else {
         alert("삭제에 실패했습니다.");
       }
@@ -199,7 +215,7 @@ export default function ProductsPage() {
       });
 
       if (res.ok) {
-        fetchProducts();
+        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
         setSelectedIds(new Set());
         setShowBulkActions(false);
         alert("선택한 상품이 삭제되었습니다.");
@@ -221,7 +237,7 @@ export default function ProductsPage() {
       });
 
       if (res.ok) {
-        fetchProducts();
+        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
       }
     } catch (error) {
       console.error(error);
@@ -280,7 +296,7 @@ export default function ProductsPage() {
       });
 
       await Promise.all(promises);
-      fetchProducts();
+      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
       setSelectedIds(new Set());
       setBulkCategory("");
       setShowBulkActions(false);
@@ -304,7 +320,7 @@ export default function ProductsPage() {
       );
 
       await Promise.all(promises);
-      fetchProducts();
+      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
       setSelectedIds(new Set());
       setShowBulkActions(false);
       alert("온라인 전용이 일괄 변경되었습니다.");
@@ -327,7 +343,7 @@ export default function ProductsPage() {
       );
 
       await Promise.all(promises);
-      fetchProducts();
+      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
       setSelectedIds(new Set());
       setShowBulkActions(false);
       alert("추천 상품이 일괄 변경되었습니다.");
@@ -372,6 +388,7 @@ export default function ProductsPage() {
             stock: 0,
             isRecommended: false,
             isOnlineExclusive: false,
+            isPopular: false,
           };
         })
         .filter((p) => p.name);
@@ -384,7 +401,7 @@ export default function ProductsPage() {
 
       if (res.ok) {
         const data = await res.json();
-        fetchProducts();
+        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
         setShowExcelUpload(false);
         alert(`상품 일괄 처리 완료:\n- 생성: ${data.created}개\n- 업데이트: ${data.updated}개\n- 스킵: ${data.skipped}개\n- 총: ${data.total}개`);
       } else {
@@ -652,7 +669,7 @@ export default function ProductsPage() {
     }
 
     setAutoUploadingImages(false);
-    fetchProducts();
+    fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
 
     if (errors.length > 0) {
       console.error("이미지 업로드 오류들:", errors);
@@ -672,8 +689,8 @@ export default function ProductsPage() {
             <input
               type="text"
               placeholder="상품명, 바코드, 설명 검색..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 w-64"
             />
             <button
@@ -702,6 +719,7 @@ export default function ProductsPage() {
                   stock: "",
                   isRecommended: false,
                   isOnlineExclusive: false,
+                  isPopular: false,
                   isOutOfStock: false,
                   maxOrderQuantity: "",
                 });
@@ -961,14 +979,17 @@ export default function ProductsPage() {
                         {imageSearchResults.map((imageUrl, index) => (
                           <div
                             key={index}
-                            className="relative cursor-pointer group"
+                            className="relative cursor-pointer group bg-gray-100 rounded-lg overflow-hidden h-20"
                             onClick={() => handleSelectSearchImage(imageUrl)}
                           >
-                            <img
-                              src={imageUrl}
-                              alt={`검색 결과 ${index + 1}`}
-                              className="w-full h-20 object-cover rounded-lg border hover:border-blue-500 transition"
-                            />
+                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                              <img
+                                src={imageUrl}
+                                alt={`검색 결과 ${index + 1}`}
+                                className="max-w-full max-h-full object-contain"
+                                referrerPolicy="no-referrer"
+                              />
+                            </div>
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition rounded-lg flex items-center justify-center">
                               <span className="text-white text-xs opacity-0 group-hover:opacity-100 transition">선택</span>
                             </div>
@@ -1026,6 +1047,15 @@ export default function ProductsPage() {
                     className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
                   />
                   <span className="text-sm text-gray-700">온라인 전용</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.isPopular}
+                    onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
+                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                  />
+                  <span className="text-sm text-gray-700">인기상품</span>
                 </label>
                 <label className="flex items-center gap-2">
                   <input

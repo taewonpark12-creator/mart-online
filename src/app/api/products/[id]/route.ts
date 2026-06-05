@@ -36,12 +36,18 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       ...(body.isActive !== undefined && { isActive: Boolean(body.isActive) }),
       ...(body.isRecommended !== undefined && { isRecommended: Boolean(body.isRecommended) }),
       ...(body.isOnlineExclusive !== undefined && { isOnlineExclusive: Boolean(body.isOnlineExclusive) }),
+      // @ts-ignore - Prisma client not regenerated yet
+      ...(body.isPopular !== undefined && { isPopular: Boolean(body.isPopular) }),
       ...(body.isOutOfStock !== undefined && { isOutOfStock: Boolean(body.isOutOfStock) }),
       ...(body.maxOrderQuantity !== undefined && {
         maxOrderQuantity: body.maxOrderQuantity && body.maxOrderQuantity > 0 ? Number(body.maxOrderQuantity) : null,
       }),
       ...(body.recommendedOrder !== undefined && {
         recommendedOrder: Number(body.recommendedOrder) || 0,
+      }),
+      // @ts-ignore - Prisma client not regenerated yet
+      ...(body.popularOrder !== undefined && {
+        popularOrder: Number(body.popularOrder) || 0,
       }),
     };
 
