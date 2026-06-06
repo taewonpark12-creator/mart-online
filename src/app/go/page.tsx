@@ -1,31 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const TARGET_URL = "https://lovemart.vercel.app/";
 
 export default function GoPage() {
-  const router = useRouter();
-  const [countdown, setCountdown] = useState(2);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          router.replace(TARGET_URL);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [router]);
-
-  const handleManualRedirect = () => {
-    router.replace(TARGET_URL);
+  const handleRedirect = () => {
+    setIsRedirecting(true);
+    window.location.href = TARGET_URL;
   };
 
   return (
@@ -40,19 +24,17 @@ export default function GoPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-3">
           잠시만 기다려 주세요
         </h1>
-        <p className="text-lg text-gray-600 mb-2">
-          이동 중입니다
-        </p>
-        <p className="text-sm text-gray-500 mb-8">
-          {countdown > 0 ? `${countdown}초 후 자동 이동` : "이동 중..."}
+        <p className="text-lg text-gray-600 mb-8">
+          브라우저로 이동합니다
         </p>
 
-        {/* 수동 이동 버튼 */}
+        {/* 브라우저로 열기 버튼 */}
         <button
-          onClick={handleManualRedirect}
-          className="w-full bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-4 px-6 rounded-xl transition-colors shadow-md active:scale-95"
+          onClick={handleRedirect}
+          disabled={isRedirecting}
+          className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white text-xl font-bold py-5 px-6 rounded-xl transition-colors shadow-md active:scale-95 disabled:cursor-not-allowed"
         >
-          지금 바로 이동
+          {isRedirecting ? "이동 중..." : "브라우저로 열기"}
         </button>
 
         {/* 추가 안내 */}
