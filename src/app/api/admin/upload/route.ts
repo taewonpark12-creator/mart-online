@@ -7,7 +7,7 @@ import {
 } from "@/lib/upload";
 
 cloudinary.config({
-  cloudinary_url: process.env.CLOUDINARY_URL,
+  url: process.env.CLOUDINARY_URL,
 });
 
 export async function POST(req: NextRequest) {
