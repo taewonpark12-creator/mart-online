@@ -37,21 +37,14 @@ export async function POST(req: NextRequest) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          folder: "mart-online",
-          resource_type: "image",
-          format: ext.replace(".", ""),
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(buffer);
-    });
+    const result = await cloudinary.uploader.upload(
+      `data:${file.type};base64,${buffer.toString("base64")}`,
+      {
+        folder: "mart-online",
+      }
+    );
 
-    return NextResponse.json({ url: (result as any).secure_url });
+    return NextResponse.json({ url: result.secure_url });
   } catch (error) {
     console.error("[POST /api/admin/upload]", error);
     return NextResponse.json({ error: "이미지 업로드에 실패했습니다." }, { status: 500 });
