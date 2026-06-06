@@ -28,7 +28,7 @@ type Props = {
   items: CartItem[];
   totalAmount: number;
   onClose: () => void;
-  onUpdateQuantity: (productId: string, qty: number) => void;
+  onUpdateQuantity: (productId: string, qty: number) => { success: boolean; message?: string };
   onRemove: (productId: string) => void;
   onOrderComplete: () => void;
 };
@@ -186,14 +186,28 @@ export function CartDrawer({
                     </div>
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
+                        onClick={() => {
+                          const result = onUpdateQuantity(item.productId, item.quantity - 1);
+                          if (!result.success) {
+                            setError(result.message || "수량 변경 실패");
+                          } else {
+                            setError("");
+                          }
+                        }}
                         className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg bg-white border text-sm sm:text-base font-bold min-h-[44px]"
                       >
                         −
                       </button>
                       <span className="w-8 sm:w-6 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
                       <button
-                        onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
+                        onClick={() => {
+                          const result = onUpdateQuantity(item.productId, item.quantity + 1);
+                          if (!result.success) {
+                            setError(result.message || "수량 변경 실패");
+                          } else {
+                            setError("");
+                          }
+                        }}
                         disabled={!!(item.maxOrderQuantity && item.maxOrderQuantity > 0 && item.quantity >= item.maxOrderQuantity)}
                         className="w-10 h-10 sm:w-7 sm:h-7 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
                       >

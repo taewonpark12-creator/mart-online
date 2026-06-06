@@ -7,8 +7,8 @@ const CART_KEY = "mart_cart";
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, "quantity">) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (item: Omit<CartItem, "quantity">) => { success: boolean; message?: string };
+  updateQuantity: (productId: string, quantity: number) => { success: boolean; message?: string };
   removeItem: (productId: string) => void;
   clearCart: () => void;
   syncWithProducts: (products: { id: string; name: string; price: number; imageUrl: string | null; maxOrderQuantity?: number | null }[]) => void;
@@ -39,20 +39,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, loaded]);
 
   const addItem = useCallback((item: Omit<CartItem, "quantity">) => {
+    let result: { success: boolean; message?: string } = { success: true };
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === item.productId);
       if (existing) {
         const maxLimit = item.maxOrderQuantity && item.maxOrderQuantity > 0 ? item.maxOrderQuantity : Infinity;
-        const newQuantity = Math.min(existing.quantity + 1, maxLimit);
+        if (existing.quantity >= maxLimit) {
+          result = { success: false, message: `이 상품은 최대 ${maxLimit}개까지 구매 가능합니다.` };
+          return prev;
+        }
+        const newQuantity = existing.quantity + 1;
         return prev.map((i) =>
           i.productId === item.productId ? { ...i, quantity: newQuantity } : i
         );
       }
       return [...prev, { ...item, quantity: 1 }];
     });
+    return result;
   }, []);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
+    let result: { success: boolean; message?: string } = { success: true };
     setItems((prev) => {
       const item = prev.find((i) => i.productId === productId);
       if (!item) return prev;
@@ -60,10 +67,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (quantity <= 0) return prev.filter((i) => i.productId !== productId);
       
       const maxLimit = item.maxOrderQuantity && item.maxOrderQuantity > 0 ? item.maxOrderQuantity : Infinity;
-      const newQuantity = Math.min(quantity, maxLimit);
+      if (quantity > maxLimit) {
+        result = { success: false, message: `이 상품은 최대 ${maxLimit}개까지 구매 가능합니다.` };
+        return prev;
+      }
       
-      return prev.map((i) => (i.productId === productId ? { ...i, quantity: newQuantity } : i));
+      return prev.map((i) => (i.productId === productId ? { ...i, quantity } : i));
     });
+    return result;
   }, []);
 
   const removeItem = useCallback((productId: string) => {

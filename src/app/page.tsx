@@ -147,14 +147,18 @@ export default function ShopPage() {
   }, [fetchProducts]);
 
   function handleAdd(product: Product) {
-    addItem({
+    const result = addItem({
       productId: product.id,
       name: product.name,
       price: product.price,
       imageUrl: product.imageUrl,
       maxOrderQuantity: product.maxOrderQuantity,
     });
-    setToast({ show: true, message: "장바구니에 추가됨" });
+    if (result.success) {
+      setToast({ show: true, message: "장바구니에 추가됨" });
+    } else {
+      setToast({ show: true, message: result.message || "추가 실패" });
+    }
   }
 
   return (

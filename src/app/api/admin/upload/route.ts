@@ -1,14 +1,16 @@
-import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
 import {
   ALLOWED_PRODUCT_IMAGE_TYPES,
   MAX_PRODUCT_IMAGE_BYTES,
-  PRODUCT_UPLOAD_DIR,
-  PRODUCT_UPLOAD_URL_PREFIX,
 } from "@/lib/upload";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticated())) {
@@ -35,13 +37,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await mkdir(PRODUCT_UPLOAD_DIR, { recursive: true });
-
-    const filename = `${randomUUID()}${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(PRODUCT_UPLOAD_DIR, filename), buffer);
 
-    return NextResponse.json({ url: `${PRODUCT_UPLOAD_URL_PREFIX}/${filename}` });
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          folder: "mart-online",
+          resource_type: "image",
+          format: ext.replace(".", ""),
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(buffer);
+    });
+
+    return NextResponse.json({ url: (result as any).secure_url });
   } catch (error) {
     console.error("[POST /api/admin/upload]", error);
     return NextResponse.json({ error: "이미지 업로드에 실패했습니다." }, { status: 500 });
