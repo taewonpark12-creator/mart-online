@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -39,7 +40,7 @@ type Order = {
   items: OrderItem[];
 };
 
-export default function OrderCheckPage() {
+function OrderCheckPageContent() {
   const searchParams = useSearchParams();
   const orderNumberParam = searchParams.get("orderNumber");
   
@@ -240,5 +241,18 @@ export default function OrderCheckPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function OrderCheckPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f8faf8] flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-600">로딩 중입니다...</p>
+      </div>
+    </div>}>
+      <OrderCheckPageContent />
+    </Suspense>
   );
 }
