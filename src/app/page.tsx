@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, useRef } from "react";
 import { Header } from "@/components/Header";
-import { ProductCard } from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
 import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { PopularProducts } from "@/components/PopularProducts";
@@ -87,6 +87,9 @@ export default function ShopPage() {
         console.log("[fetchProducts] Setting recommended param: true");
       }
     }
+
+    params.set("limit", "20");
+    params.set("page", "1");
 
     const qs = params.toString();
     console.log("[fetchProducts] Query string:", qs);

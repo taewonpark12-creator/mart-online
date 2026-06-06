@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
@@ -9,7 +10,7 @@ type Props = {
   onAdd: () => void;
 };
 
-export function ProductCard({ product, onAdd }: Props) {
+function ProductCard({ product, onAdd }: Props) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full">
       <div className="relative bg-gray-50 h-32 sm:h-36 w-full">
@@ -43,3 +44,5 @@ export function ProductCard({ product, onAdd }: Props) {
     </div>
   );
 }
+
+export default React.memo(ProductCard);

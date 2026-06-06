@@ -45,6 +45,8 @@ export function ProductImage({
         alt={alt}
         fill
         sizes={sizes ?? "100vw"}
+        loading="lazy"
+        decoding="async"
         style={{
           objectFit: "cover",
         }}
@@ -59,6 +61,8 @@ export function ProductImage({
       alt={alt}
       width={500}
       height={500}
+      loading="lazy"
+      decoding="async"
     />
   )
 }

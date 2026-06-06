@@ -1,7 +1,7 @@
 "use client";
 
 import type { Product } from "@/lib/types";
-import { ProductCard } from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 
 type Props = {
   // 부모 페이지에서 상품 전체 리스트를 받아옵니다.
