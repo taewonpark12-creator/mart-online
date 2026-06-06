@@ -12,17 +12,21 @@ export function Header({ cartCount = 0, onCartClick }: Props) {
         <Link href="/" className="flex items-center gap-1.5 sm:gap-2">
           <span className="text-xl sm:text-2xl">🏪</span>
           <div>
-            <p className="font-bold text-green-800 text-sm sm:text-base leading-tight">한사랑마트</p>
-            <p className="text-[10px] sm:text-xs text-green-600 hidden sm:block">온라인 배달 주문</p>
+            <p className="font-bold text-green-800 text-sm sm:text-base leading-tight">
+              한사랑마트
+            </p>
+            <p className="text-[10px] sm:text-xs text-green-600 hidden sm:block">
+              온라인 배달 주문
+            </p>
           </div>
         </Link>
 
         <div className="flex items-center gap-1.5 sm:gap-4">
           <Link
             href="/order-check"
-            className="text-[10px] sm:text-xs text-gray-500 hover:text-green-700 transition"
+            className="bg-green-100 hover:bg-green-200 text-green-800 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition min-h-[44px] flex items-center"
           >
-            주문 확인
+            📦 주문 확인
           </Link>
 
           {onCartClick && (
