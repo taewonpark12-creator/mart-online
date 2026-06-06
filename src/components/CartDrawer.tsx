@@ -24,6 +24,12 @@ interface SavedAddress {
   entrance?: string;
 }
 
+interface SavedCustomer {
+  id: string;
+  name: string;
+  phone: string;
+}
+
 type Props = {
   items: CartItem[];
   totalAmount: number;
@@ -56,6 +62,8 @@ export function CartDrawer({
   const [orderNumber, setOrderNumber] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
   const [showSaveAddress, setShowSaveAddress] = useState(false);
+  const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
+  const [showSaveCustomer, setShowSaveCustomer] = useState(false);
 
   const isDelivery = fulfillmentType === "DELIVERY";
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
@@ -69,6 +77,18 @@ export function CartDrawer({
         setSavedAddresses(JSON.parse(saved));
       } catch (e) {
         console.error("Failed to load saved addresses:", e);
+      }
+    }
+  }, []);
+
+  // Load saved customers from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("savedCustomers");
+    if (saved) {
+      try {
+        setSavedCustomers(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to load saved customers:", e);
       }
     }
   }, []);
@@ -97,6 +117,32 @@ export function CartDrawer({
     const updated = savedAddresses.filter(a => a.id !== id);
     setSavedAddresses(updated);
     localStorage.setItem("savedAddresses", JSON.stringify(updated));
+  };
+
+  const handleSaveCustomer = () => {
+    if (!name || !phone) return;
+    
+    const newCustomer: SavedCustomer = {
+      id: Date.now().toString(),
+      name,
+      phone,
+    };
+    
+    const updated = [...savedCustomers, newCustomer];
+    setSavedCustomers(updated);
+    localStorage.setItem("savedCustomers", JSON.stringify(updated));
+    setShowSaveCustomer(false);
+  };
+
+  const handleSelectCustomer = (saved: SavedCustomer) => {
+    setName(saved.name);
+    setPhone(saved.phone);
+  };
+
+  const handleDeleteCustomer = (id: string) => {
+    const updated = savedCustomers.filter(c => c.id !== id);
+    setSavedCustomers(updated);
+    localStorage.setItem("savedCustomers", JSON.stringify(updated));
   };
 
   async function handleSubmit(e: React.FormEvent) {
@@ -278,6 +324,32 @@ export function CartDrawer({
                 </div>
               </fieldset>
 
+              {savedCustomers.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">저장된 고객 정보</label>
+                  <div className="space-y-2">
+                    {savedCustomers.map((saved) => (
+                      <div key={saved.id} className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2">
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCustomer(saved)}
+                          className="flex-1 text-left text-sm text-gray-700 hover:text-green-700"
+                        >
+                          {saved.name} ({saved.phone})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCustomer(saved.id)}
+                          className="text-gray-400 hover:text-red-500 text-sm min-h-[32px]"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">이름 *</label>
                 <input
@@ -299,6 +371,40 @@ export function CartDrawer({
                   placeholder="010-0000-0000"
                 />
               </div>
+
+              {name && phone && (
+                <button
+                  type="button"
+                  onClick={() => setShowSaveCustomer(!showSaveCustomer)}
+                  className="text-sm text-green-600 hover:text-green-700 font-medium"
+                >
+                  {showSaveCustomer ? "저장 취소" : "고객 정보 저장"}
+                </button>
+              )}
+
+              {showSaveCustomer && (
+                <div className="bg-green-50 rounded-xl p-4">
+                  <p className="text-sm text-green-800 mb-3">
+                    현재 입력하신 이름과 연락처를 저장하시겠습니까?
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveCustomer}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
+                    >
+                      저장
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowSaveCustomer(false)}
+                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 text-sm font-medium"
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {isDelivery ? (
                 <>
@@ -335,7 +441,7 @@ export function CartDrawer({
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                      placeholder="숭의동 123-4, 101호"
+                      placeholder="예: 숭의동 123-4, 101호"
                     />
                   </div>
                   <div>
