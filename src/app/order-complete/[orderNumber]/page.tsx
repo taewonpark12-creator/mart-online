@@ -1,12 +1,14 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BANK_ACCOUNT } from "@/lib/types";
 
-export default function OrderCompletePage() {
-  const searchParams = useSearchParams();
-  const orderNumber = searchParams.get("orderNumber") || "";
+type Props = {
+  params: {
+    orderNumber: string;
+  };
+};
+
+export default function OrderCompletePage({ params }: Props) {
+  const orderNumber = params.orderNumber;
 
   return (
     <div className="min-h-screen bg-[#f8faf8]">
@@ -33,7 +35,7 @@ export default function OrderCompletePage() {
 
           <div className="space-y-3">
             <button
-              onClick={() => window.location.href = "/order-check"}
+              onClick={() => window.location.href = `/order-check/${orderNumber}`}
               className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-xl font-semibold text-sm sm:text-base min-h-[48px]"
             >
               주문 조회

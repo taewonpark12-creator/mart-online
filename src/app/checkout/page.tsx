@@ -176,7 +176,7 @@ export default function CheckoutPage() {
       clearCart();
       
       // 주문 완료 페이지로 이동 (주문번호 전달)
-      router.push(`/order-complete?orderNumber=${data.orderNumber}`);
+      router.push(`/order-complete/${data.orderNumber}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "주문에 실패했습니다.");
     } finally {
