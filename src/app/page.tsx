@@ -88,9 +88,6 @@ export default function ShopPage() {
       }
     }
 
-    params.set("limit", "20");
-    params.set("page", "1");
-
     const qs = params.toString();
     console.log("[fetchProducts] Query string:", qs);
 

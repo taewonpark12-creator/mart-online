@@ -31,10 +31,6 @@ export async function GET(req: NextRequest) {
 
     const includeOutOfStock = searchParams.get("includeOutOfStock") === "true";
 
-    const page = Number(searchParams.get("page") ?? 1);
-    const limit = Number(searchParams.get("limit") ?? 20);
-
-
     const products = await prisma.product.findMany({
 
       where: {
@@ -80,9 +76,6 @@ export async function GET(req: NextRequest) {
       orderBy: recommendedOnly
         ? [{ recommendedOrder: "desc" }, { name: "asc" }]
         : [{ category: "asc" }, { name: "asc" }],
-
-      skip: (page - 1) * limit,
-      take: limit,
 
     });
 
