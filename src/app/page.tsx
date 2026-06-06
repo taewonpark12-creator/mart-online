@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import { Header } from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
@@ -49,6 +49,22 @@ export default function ShopPage() {
     }
     return true;
   });
+
+  // 상품 정렬 (추천상품 탭 제외)
+  const sortedProducts = useMemo(() => {
+    // 추천상품 탭은 정렬하지 않음 (현재 동작 유지)
+    if (showRecommended) return filteredProducts;
+
+    // 일반 카테고리 탭: 인기상품 우선, 상품명 가나다순
+    return [...filteredProducts].sort((a, b) => {
+      // 1순위: 인기상품 (isPopular === true)
+      if (a.isPopular !== b.isPopular) {
+        return a.isPopular ? -1 : 1;
+      }
+      // 2순위: 상품명 가나다순
+      return a.name.localeCompare(b.name, "ko");
+    });
+  }, [filteredProducts, showRecommended]);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -280,7 +296,7 @@ export default function ShopPage() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {filteredProducts.map((product) => (
+                  {sortedProducts.map((product) => (
                     <ProductCard key={product.id} product={product} onAdd={() => handleAdd(product)} />
                   ))}
                 </div>

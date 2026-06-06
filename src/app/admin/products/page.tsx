@@ -353,6 +353,29 @@ export default function ProductsPage() {
     }
   };
 
+  const handleBulkPopularChange = async (value: boolean) => {
+    if (selectedIds.size === 0) return;
+
+    try {
+      const promises = Array.from(selectedIds).map((id) =>
+        fetch(`/api/products/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isPopular: value }),
+        })
+      );
+
+      await Promise.all(promises);
+      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
+      setSelectedIds(new Set());
+      setShowBulkActions(false);
+      alert("인기 상품이 일괄 변경되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("일괄 변경 중 오류가 발생했습니다.");
+    }
+  };
+
   const handleExcelUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -834,6 +857,18 @@ export default function ProductsPage() {
                   className="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 text-sm"
                 >
                   추천 해제
+                </button>
+                <button
+                  onClick={() => handleBulkPopularChange(true)}
+                  className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-sm"
+                >
+                  인기상품 설정
+                </button>
+                <button
+                  onClick={() => handleBulkPopularChange(false)}
+                  className="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 text-sm"
+                >
+                  인기상품 해제
                 </button>
                 <button
                   onClick={handleBulkDelete}

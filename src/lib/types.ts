@@ -10,8 +10,10 @@
     isActive: boolean;
     isRecommended: boolean;
     isOnlineExclusive: boolean; // <--- 이 줄을 추가했습니다
+    isPopular: boolean; // 인기상품
     isOutOfStock: boolean;
     recommendedOrder?: number;
+    popularOrder?: number; // 인기상품 정렬 순서
     maxOrderQuantity?: number | null; // 최대 주문 수량 (null 또는 0이면 제한 없음)
   };
 
