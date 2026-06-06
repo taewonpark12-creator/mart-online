@@ -22,6 +22,13 @@ export function Header({ cartCount = 0 }: Props) {
 
         <div className="flex items-center gap-1.5 sm:gap-4">
           <Link
+            href="/order-check"
+            className="bg-green-100 hover:bg-green-200 text-green-800 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition min-h-[44px] flex items-center"
+          >
+            📦 주문 확인
+          </Link>
+
+          <Link
             href="/cart"
             className="relative flex items-center gap-1 sm:gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-3 sm:py-2 rounded-full transition min-h-[44px]"
           >
