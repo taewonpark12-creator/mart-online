@@ -6,7 +6,6 @@ import ProductCard from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
 import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { PopularProducts } from "@/components/PopularProducts";
-import { CartDrawer } from "@/components/CartDrawer";
 import { OrderBar } from "@/components/OrderBar";
 import { FlyerBanner } from "@/components/FlyerBanner";
 import { FlyerModal } from "@/components/FlyerModal";
@@ -23,7 +22,6 @@ export default function ShopPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
   const [flyerModalOpen, setFlyerModalOpen] = useState(false);
   
@@ -179,7 +177,7 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header cartCount={totalCount} onCartClick={() => setCartOpen(true)} />
+      <Header cartCount={totalCount} />
 
       {/* [옵션 1] 전체 배경을 흰색으로 변경, 너비를 좁혀서 깔끔하게 */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-24 sm:pb-28">
@@ -313,20 +311,6 @@ export default function ShopPage() {
         )}
       </div>
 
-      {cartOpen && (
-        <CartDrawer
-          items={items}
-          totalAmount={totalAmount}
-          onClose={() => setCartOpen(false)}
-          onUpdateQuantity={updateQuantity}
-          onRemove={removeItem}
-          onOrderComplete={() => {
-            clearCart();
-            fetchProducts();
-          }}
-        />
-      )}
-
       {/* Toast Notification */}
       {toast.show && (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
@@ -340,7 +324,7 @@ export default function ShopPage() {
       <OrderBar
         itemCount={totalCount}
         totalAmount={totalAmount}
-        onOrderClick={() => setCartOpen(true)}
+        onOrderClick={() => window.location.href = "/cart"}
       />
 
       {/* 세일 전단 모달 */}
