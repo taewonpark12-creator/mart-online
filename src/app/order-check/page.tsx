@@ -3,7 +3,6 @@
 import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { Header } from "@/components/Header";
 import { parseJsonResponse } from "@/lib/fetch-json";
 import {
@@ -18,6 +17,7 @@ import {
   type FulfillmentType,
 } from "@/lib/types";
 import { orderItemName } from "@/lib/order-item";
+import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
 
 type OrderItem = {
   id: string;
@@ -236,9 +236,9 @@ function OrderCheckPageContent() {
           </>
         )}
 
-        <Link href="/" className="block text-center text-xs sm:text-sm text-green-600 mt-6 sm:mt-8 hover:underline">
-          ← 쇼핑으로 돌아가기
-        </Link>
+        <div className="flex justify-center mt-6 sm:mt-8">
+          <GoBackToShoppingButton />
+        </div>
       </div>
     </div>
   );

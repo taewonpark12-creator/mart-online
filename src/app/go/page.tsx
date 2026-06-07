@@ -43,17 +43,17 @@ export default function GoPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
-        {/* 아이콘 */}
-        <div className="text-5xl mb-4">📱</div>
+        
 
         {/* 제목 */}
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
-          크롬, 네이버 등 브라우저에서 더 안정적으로 이용할 수 있습니다
+  크롬, 네이버 등 브라우저에서<br />
+  더 안정적으로 이용할 수 있습니다
         </h1>
 
         {/* 설명 */}
         <p className="text-lg text-gray-600 mb-8">
-          카카오톡 하단 (…) → "다른 브라우저로 열기"를 눌러주세요
+          우측 하단 (⋮) → "다른 브라우저로 열기"를 눌러주세요
         </p>
 
         {/* 브라우저로 열기 버튼 */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useRef, useMemo } from "react";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
@@ -8,7 +9,6 @@ import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { PopularProducts } from "@/components/PopularProducts";
 import { OrderBar } from "@/components/OrderBar";
 import { FlyerBanner } from "@/components/FlyerBanner";
-import { FlyerModal } from "@/components/FlyerModal";
 import { useCart } from "@/contexts/CartContext";
 import type { Product } from "@/lib/types";
 import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
@@ -23,7 +23,6 @@ export default function ShopPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
-  const [flyerModalOpen, setFlyerModalOpen] = useState(false);
   
   const { items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount } =
     useCart();
@@ -208,7 +207,9 @@ export default function ShopPage() {
 
         {/* 세일 전단 배너 */}
         <div className="mb-4 sm:mb-6">
-          <FlyerBanner onOpen={() => setFlyerModalOpen(true)} />
+          <Link href="/flyers">
+            <FlyerBanner onOpen={() => {}} />
+          </Link>
         </div>
 
         {/* 검색창 */}
@@ -327,8 +328,6 @@ export default function ShopPage() {
         onOrderClick={() => window.location.href = "/cart"}
       />
 
-      {/* 세일 전단 모달 */}
-      <FlyerModal isOpen={flyerModalOpen} onClose={() => setFlyerModalOpen(false)} />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice, MIN_ORDER_AMOUNT } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
+import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
 
 export default function CartPage() {
   const router = useRouter();
@@ -49,12 +50,7 @@ export default function CartPage() {
           <div className="bg-white border rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center shadow-sm">
             <span className="text-4xl sm:text-5xl mb-4 block">🛒</span>
             <p className="text-gray-500 text-sm sm:text-base mb-6">장바구니가 비어 있습니다.</p>
-            <button
-              onClick={() => router.push("/")}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold text-sm sm:text-base min-h-[44px]"
-            >
-              쇼핑 계속하기
-            </button>
+            <GoBackToShoppingButton />
           </div>
         ) : (
           <>
@@ -127,6 +123,9 @@ export default function CartPage() {
               >
                 주문하기
               </button>
+              <div className="flex justify-center mt-4">
+                <GoBackToShoppingButton />
+              </div>
             </div>
           </>
         )}
