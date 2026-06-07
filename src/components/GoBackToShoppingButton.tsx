@@ -8,7 +8,7 @@ export function GoBackToShoppingButton() {
   return (
     <button
       onClick={() => router.push("/")}
-      className="bg-green-600 hover:bg-green-700 text-white font-bold rounded-2xl shadow-lg active:scale-95 transition min-h-[44px] px-6 py-3"
+      className="bg-green-600 hover:bg-green-700 text-white font-semibold text-sm rounded-xl shadow-md active:scale-95 transition min-h-[40px] px-5 py-2.5"
     >
       🛒 쇼핑으로 돌아가기
     </button>
