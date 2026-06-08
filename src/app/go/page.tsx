@@ -47,7 +47,7 @@ export default function GoPage() {
 
         {/* 제목 */}
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
-  크롬, 네이버 등 브라우저에서<br />
+  크롬, 네이버 등<br />다른 브라우저에서<br />
   더 안정적으로 이용할 수 있습니다
         </h1>
 

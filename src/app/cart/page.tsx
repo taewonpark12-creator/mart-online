@@ -12,6 +12,7 @@ export default function CartPage() {
   const router = useRouter();
   const { items, updateQuantity, removeItem, totalAmount } = useCart();
   const [error, setError] = useState("");
+  const [confirmingDeleteProductId, setConfirmingDeleteProductId] = useState<string | null>(null);
 
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
   const amountShort = MIN_ORDER_AMOUNT - totalAmount;
@@ -27,6 +28,15 @@ export default function CartPage() {
 
   const handleRemove = (productId: string) => {
     removeItem(productId);
+    setConfirmingDeleteProductId(null);
+  };
+
+  const handleDeleteClick = (productId: string) => {
+    setConfirmingDeleteProductId(productId);
+  };
+
+  const handleDeleteCancel = () => {
+    setConfirmingDeleteProductId(null);
   };
 
   const handleCheckout = () => {
@@ -71,13 +81,19 @@ export default function CartPage() {
                       <p className="text-green-700 font-semibold text-sm sm:text-base">
                         {formatPrice(item.price * item.quantity)}
                       </p>
+                      {item.maxOrderQuantity && item.maxOrderQuantity > 0 && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          최대 {item.maxOrderQuantity}개 구매 가능
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center justify-between mt-3 sm:mt-4">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <button
                         onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
-                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold min-h-[44px]"
+                        disabled={item.quantity <= 1}
+                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
                       >
                         −
                       </button>
@@ -85,17 +101,40 @@ export default function CartPage() {
                       <button
                         onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
                         disabled={!!(item.maxOrderQuantity && item.maxOrderQuantity > 0 && item.quantity >= item.maxOrderQuantity)}
-                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed min-h-[44px]"
+                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
                       >
                         +
                       </button>
                     </div>
-                    <button
-                      onClick={() => handleRemove(item.productId)}
-                      className="text-gray-400 hover:text-red-500 text-sm sm:text-base min-h-[32px]"
-                    >
-                      삭제
-                    </button>
+                    {confirmingDeleteProductId === item.productId ? (
+                      <div className="flex flex-col items-end gap-1">
+                        <p className="text-xs text-gray-600 mb-1">상품을 삭제할까요?</p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleDeleteCancel}
+                            className="text-gray-500 hover:text-gray-700 text-sm sm:text-base min-h-[44px] px-3 py-2"
+                          >
+                            취소
+                          </button>
+                          <button
+                            onClick={() => handleRemove(item.productId)}
+                            className="text-red-500 hover:text-red-700 text-sm sm:text-base min-h-[44px] px-3 py-2 font-medium"
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleDeleteClick(item.productId)}
+                        className="text-gray-400 hover:text-red-500 text-sm sm:text-base min-h-[44px] flex items-center gap-1"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        삭제
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

@@ -64,7 +64,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const item = prev.find((i) => i.productId === productId);
       if (!item) return prev;
       
-      if (quantity <= 0) return prev.filter((i) => i.productId !== productId);
+      // 최소 수량 1로 제한 (삭제 방지)
+      if (quantity <= 0) {
+        quantity = 1;
+        result = { success: false, message: "최소 수량은 1개입니다." };
+        return prev;
+      }
       
       const maxLimit = item.maxOrderQuantity && item.maxOrderQuantity > 0 ? item.maxOrderQuantity : Infinity;
       if (quantity > maxLimit) {
