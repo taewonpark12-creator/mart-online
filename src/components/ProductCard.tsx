@@ -11,7 +11,15 @@ type Props = {
 };
 
 function ProductCard({ product, onAdd }: Props) {
-  const [realTimeData, setRealTimeData] = useState<{ normalPrice: number | null; eventPrice: number | null; discountRate: number | null } | null>(null);
+  const [realTimeData, setRealTimeData] = useState<{
+    normalPrice: number | null;
+    eventPrice: number | null;
+    discountRate: number | null;
+  }>({
+    normalPrice: null,
+    eventPrice: null,
+    discountRate: null,
+  });
   const [loadingPrice, setLoadingPrice] = useState(false);
 
   // 실시간 가격 조회
@@ -24,23 +32,15 @@ function ProductCard({ product, onAdd }: Props) {
     const fetchRealTimePrice = async () => {
       setLoadingPrice(true);
       try {
-        const response = await fetch(`http://localhost:3001/api/product?barcode=${trimmedBarcode}`);
+        const response = await fetch(`http://localhost:3001/api/price?barcode=${trimmedBarcode}`);
         if (response.ok && isMounted) {
           const data = await response.json();
           console.log('실시간 가격 조회 결과:', data);
-          console.log("EVENT TRACE", {
-            rawBarcode: product.barcode,
-            trimmedBarcode: trimmedBarcode,
-            eventPrice: data.eventPrice,
-            source: "API"
-          });
-          // eventPrice, normalPrice, discountRate를 모두 저장
-          // null overwrite 방지: eventPrice가 null이면 기존 값 유지
           setRealTimeData(prev => ({
             ...prev,
-            normalPrice: data.normalPrice ? Number(data.normalPrice) : null,
+            normalPrice: data.normalPrice ? Number(data.normalPrice) : prev?.normalPrice || null,
             eventPrice: data.eventPrice !== null && data.eventPrice !== undefined ? Number(data.eventPrice) : (prev?.eventPrice || null),
-            discountRate: data.discountRate !== null && data.discountRate !== undefined ? Number(data.discountRate) : (prev?.discountRate || null)
+            discountRate: data.discountRate !== null && data.discountRate !== undefined ? Number(data.discountRate) : (prev?.discountRate || null),
           }));
         } else if (!isMounted) {
           console.log('컴포넌트 언마운트로 인한 요청 취소');
@@ -64,7 +64,7 @@ function ProductCard({ product, onAdd }: Props) {
   }, [product.barcode]);
 
   // 표시할 가격 결정
-  const normalPrice = realTimeData?.normalPrice || Number(product.price);
+  const normalPrice = realTimeData?.normalPrice ?? Number(product.price);
   const eventPrice = realTimeData?.eventPrice;
   const discountRate = realTimeData?.discountRate ?? null;
   const hasEvent = !loadingPrice && eventPrice !== null && eventPrice !== undefined && eventPrice > 0 && discountRate !== null && discountRate > 0;
