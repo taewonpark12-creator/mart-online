@@ -32,7 +32,7 @@ function ProductCard({ product, onAdd }: Props) {
     const fetchRealTimePrice = async () => {
       setLoadingPrice(true);
       try {
-        const response = await fetch(`http://localhost:3001/api/price?barcode=${trimmedBarcode}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/price?barcode=${trimmedBarcode}`);
         if (response.ok && isMounted) {
           const data = await response.json();
           console.log('실시간 가격 조회 결과:', data);
