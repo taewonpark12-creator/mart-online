@@ -20,8 +20,10 @@ type PriceItem = {
 
 let cachedPrices: PriceItem[] | null = null;
 
-async function loadPrices() {
-  if (cachedPrices) return cachedPrices;
+async function loadPrices(): Promise<PriceItem[]> {
+  if (cachedPrices) {
+    return cachedPrices;
+  }
 
   const response = await fetch("/prices.json", {
     cache: "no-store",
@@ -31,8 +33,11 @@ async function loadPrices() {
     throw new Error("prices.json 불러오기 실패");
   }
 
-  cachedPrices = await response.json();
-  return cachedPrices;
+  const data = (await response.json()) as PriceItem[];
+
+  cachedPrices = data;
+
+  return data;
 }
 
 function ProductCard({ product, onAdd }: Props) {
