@@ -204,29 +204,24 @@ export default function ShopPage() {
       {/* [옵션 1] 전체 배경을 흰색으로 변경, 너비를 좁혀서 깔끔하게 */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-24 sm:pb-28">
 
-        {/* 헤더 정보를 카드로 분리 */}
-        <div className="bg-emerald-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-6 sm:mb-8 border border-emerald-100 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">한사랑마트</h1>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1">신선한 식재료를 빠르게 배달해 드립니다.</p>
-          </div>
-          <div className="flex gap-2 sm:gap-3">
-            <a
-              href="https://open.kakao.com/o/sdPlnVxi"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-yellow-400 hover:bg-yellow-500 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-yellow-900 shadow-sm border border-yellow-500 transition"
-            >
-              💬 카카오톡 1:1 문의
-            </a>
-            <div className="bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-emerald-700 shadow-sm border border-emerald-100">
-              🚚 숭의동, 용현동 배달
-            </div>
-            <div className="bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-emerald-700 shadow-sm border border-emerald-100">
-              💰 {formatPrice(MIN_ORDER_AMOUNT)} 이상
-            </div>
-          </div>
-        </div>
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+  <a
+    href="https://open.kakao.com/o/sdPlnVxi"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-yellow-400 hover:bg-yellow-500 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-yellow-900 border border-yellow-500"
+  >
+    💬 카카오톡 1:1 문의
+  </a>
+
+  <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
+    🚚 숭의동, 용현동 배달
+  </div>
+
+  <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
+    💰 {formatPrice(MIN_ORDER_AMOUNT)} 이상
+  </div>
+</div>
 
         {/* 세일 전단 배너 */}
         <div className="mb-4 sm:mb-6">

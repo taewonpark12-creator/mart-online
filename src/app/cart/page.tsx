@@ -7,6 +7,29 @@ import { useCart } from "@/contexts/CartContext";
 import { formatPrice, MIN_ORDER_AMOUNT } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
 import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
+import type { CartItem } from "@/lib/types";
+
+type CartDiscount =
+  | { hasDiscount: true; normalPrice: number; eventPrice: number; discountRate: number }
+  | { hasDiscount: false };
+
+function getCartDiscount(item: CartItem): CartDiscount {
+  const normalPrice = Number(item.normalPrice);
+  const eventPrice = Number(item.eventPrice);
+  const discountRate = Number(item.discountRate);
+  const hasDiscount =
+    Number.isFinite(normalPrice) &&
+    Number.isFinite(eventPrice) &&
+    Number.isFinite(discountRate) &&
+    normalPrice > 0 &&
+    eventPrice > 0 &&
+    eventPrice < normalPrice &&
+    discountRate > 0;
+
+  return hasDiscount
+    ? { hasDiscount, normalPrice, eventPrice, discountRate }
+    : { hasDiscount: false };
+}
 
 export default function CartPage() {
   const router = useRouter();
@@ -70,7 +93,10 @@ export default function CartPage() {
         ) : (
           <>
             <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-              {items.map((item) => (
+              {items.map((item) => {
+                const discount = getCartDiscount(item);
+
+                return (
                 <div key={item.productId} className="bg-white border rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm">
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-gray-100">
@@ -83,9 +109,30 @@ export default function CartPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm sm:text-base truncate mb-1">{item.name}</p>
-                      <p className="text-green-700 font-semibold text-sm sm:text-base">
-                        {formatPrice(item.price * item.quantity)}
-                      </p>
+                      {discount.hasDiscount ? (
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-400 line-through">
+                              {formatPrice(discount.normalPrice)}
+                            </span>
+                            <span className="text-xs font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">
+                              {discount.discountRate}% Off
+                            </span>
+                          </div>
+                          <p className="text-green-700 font-semibold text-sm sm:text-base">
+                            {formatPrice(discount.eventPrice)}
+                          </p>
+                          {item.quantity > 1 && (
+                            <p className="text-xs text-gray-500">
+                              합계 {formatPrice(item.price * item.quantity)}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-green-700 font-semibold text-sm sm:text-base">
+                          {formatPrice(item.price * item.quantity)}
+                        </p>
+                      )}
                       {item.maxOrderQuantity && item.maxOrderQuantity > 0 && (
                         <p className="text-xs text-gray-500 mt-1">
                           최대 {item.maxOrderQuantity}개 구매 가능
@@ -145,7 +192,8 @@ export default function CartPage() {
                     )}
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
 
             <div className="bg-white border rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
