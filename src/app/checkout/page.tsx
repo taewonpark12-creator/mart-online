@@ -328,25 +328,18 @@ export default function CheckoutPage() {
               </section>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setCompletedOrder(null);
-                  router.push("/");
-                }}
-                className="w-full border text-gray-600 px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
-              >
-                계속 쇼핑하기
-              </button>
-              <button
-                type="button"
-                onClick={() => router.push(`/order-check?orderNumber=${completedOrder.orderNumber}`)}
-                className="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
-              >
-                주문 조회
-              </button>
-            </div>
+            <div className="mt-6">
+  <button
+    type="button"
+    onClick={() => {
+      setCompletedOrder(null);
+      router.push("/");
+    }}
+    className="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
+  >
+    계속 쇼핑하기
+  </button>
+</div>
           </div>
         </div>
       </div>
