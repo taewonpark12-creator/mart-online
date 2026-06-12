@@ -15,6 +15,7 @@ import {
   type PaymentMethod,
   type OutOfStockPolicy,
   type FulfillmentType,
+  type CartItem,
 } from "@/lib/types";
 import { parseJsonResponse } from "@/lib/fetch-json";
 import { STORE } from "@/lib/store";
@@ -31,6 +32,27 @@ interface SavedCustomer {
   phone: string;
 }
 
+type CompletedOrder = {
+  orderNumber: string;
+  customerName: string;
+  customerPhone: string;
+  fulfillmentType: FulfillmentType;
+  deliveryAddress?: string;
+  deliveryEntrance?: string;
+  pickupTime?: string;
+  paymentMethod?: PaymentMethod;
+  items: CartItem[];
+  totalAmount: number;
+};
+
+function getPaymentMethodLabel(paymentMethod?: PaymentMethod) {
+  return PAYMENT_METHOD_OPTIONS.find((option) => option.value === paymentMethod)?.label ?? "매장 결제";
+}
+
+function getFulfillmentLabel(fulfillmentType: FulfillmentType) {
+  return FULFILLMENT_OPTIONS.find((option) => option.value === fulfillmentType)?.label ?? fulfillmentType;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalAmount, clearCart } = useCart();
@@ -45,7 +67,7 @@ export default function CheckoutPage() {
   const [outOfStockPolicy, setOutOfStockPolicy] = useState<OutOfStockPolicy>("CONTACT");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [orderNumber, setOrderNumber] = useState("");
+  const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
   const [showSaveAddress, setShowSaveAddress] = useState(false);
   const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
@@ -57,10 +79,10 @@ export default function CheckoutPage() {
 
   // 장바구니가 비어있으면 장바구니 페이지로 이동
   useEffect(() => {
-    if (items.length === 0) {
+    if (items.length === 0 && !completedOrder) {
       router.push("/cart");
     }
-  }, [items, router]);
+  }, [items, completedOrder, router]);
 
   // Load saved addresses from localStorage
   useEffect(() => {
@@ -191,15 +213,144 @@ export default function CheckoutPage() {
       if (!data.orderNumber) throw new Error("주문번호를 받지 못했습니다.");
 
       // 주문 완료 후 장바구니 비우기
+      setCompletedOrder({
+        orderNumber: data.orderNumber,
+        customerName: name,
+        customerPhone: phone,
+        fulfillmentType,
+        deliveryAddress: isDelivery ? address : undefined,
+        deliveryEntrance: isDelivery ? deliveryEntrance.trim() || undefined : undefined,
+        pickupTime: isDelivery ? undefined : pickupTime,
+        paymentMethod: isDelivery ? paymentMethod : undefined,
+        items: items.map((item) => ({ ...item })),
+        totalAmount,
+      });
       clearCart();
-      
-      // 주문 완료 페이지로 이동 (주문번호 전달)
-      router.push(`/order-complete?orderNumber=${data.orderNumber}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "주문에 실패했습니다.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (completedOrder) {
+    const isCompletedDelivery = completedOrder.fulfillmentType === "DELIVERY";
+
+    return (
+      <div className="min-h-screen bg-[#f8faf8]">
+        <Header />
+        <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
+          <div className="bg-white border rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-sm">
+            <div className="text-center mb-6">
+              <span className="text-4xl sm:text-5xl block mb-3">✓</span>
+              <h1 className="text-xl sm:text-2xl font-bold text-green-800 mb-2">
+                주문이 접수되었습니다
+              </h1>
+              <p className="text-sm text-gray-500">
+                주문번호{" "}
+                <span className="font-mono font-bold text-gray-900">
+                  {completedOrder.orderNumber}
+                </span>
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <section>
+                <h2 className="text-sm font-bold text-gray-900 mb-2">주문 상품</h2>
+                <div className="divide-y border rounded-xl overflow-hidden">
+                  {completedOrder.items.map((item) => (
+                    <div key={item.productId} className="p-3 text-sm">
+                      <div className="flex justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="font-medium text-gray-900 truncate">{item.name}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            {formatPrice(item.price)} × {item.quantity}
+                          </p>
+                        </div>
+                        <p className="font-semibold text-green-700 shrink-0">
+                          {formatPrice(item.price * item.quantity)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <div className="flex justify-between text-base font-bold border-t pt-4">
+                <span>총 주문 금액</span>
+                <span className="text-green-700">{formatPrice(completedOrder.totalAmount)}</span>
+              </div>
+
+              <section className="bg-gray-50 rounded-xl p-4 text-sm space-y-2">
+                <div className="flex justify-between gap-3">
+                  <span className="text-gray-500">수령 방식</span>
+                  <span className="font-medium text-gray-900">
+                    {getFulfillmentLabel(completedOrder.fulfillmentType)}
+                  </span>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <span className="text-gray-500">이름</span>
+                  <span className="font-medium text-gray-900">{completedOrder.customerName}</span>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <span className="text-gray-500">연락처</span>
+                  <span className="font-medium text-gray-900">{completedOrder.customerPhone}</span>
+                </div>
+                {isCompletedDelivery ? (
+                  <>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-gray-500">주소</span>
+                      <span className="font-medium text-gray-900 text-right">
+                        {completedOrder.deliveryAddress}
+                      </span>
+                    </div>
+                    {completedOrder.deliveryEntrance && (
+                      <div className="flex justify-between gap-3">
+                        <span className="text-gray-500">출입 정보</span>
+                        <span className="font-medium text-gray-900 text-right">
+                          {completedOrder.deliveryEntrance}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between gap-3">
+                      <span className="text-gray-500">결제 방법</span>
+                      <span className="font-medium text-gray-900">
+                        {getPaymentMethodLabel(completedOrder.paymentMethod)}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex justify-between gap-3">
+                    <span className="text-gray-500">픽업 시간</span>
+                    <span className="font-medium text-gray-900">{completedOrder.pickupTime}</span>
+                  </div>
+                )}
+              </section>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setCompletedOrder(null);
+                  router.push("/");
+                }}
+                className="w-full border text-gray-600 px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
+              >
+                계속 쇼핑하기
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push(`/order-check?orderNumber=${completedOrder.orderNumber}`)}
+                className="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
+              >
+                주문 조회
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
