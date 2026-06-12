@@ -32,20 +32,14 @@ function OrderCompletePageContent() {
             </div>
           )}
 
-          <div className="space-y-3">
-            <button
-              onClick={() => window.location.href = `/order-check?orderNumber=${orderNumber}`}
-              className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-xl font-semibold text-sm sm:text-base min-h-[48px]"
-            >
-              주문 조회
-            </button>
-            <button
-              onClick={() => window.location.href = "/"}
-              className="w-full border text-gray-600 px-6 py-4 rounded-xl font-semibold text-sm sm:text-base min-h-[48px]"
-            >
-              계속 쇼핑하기
-            </button>
-          </div>
+          <div>
+  <button
+    onClick={() => window.location.href = "/"}
+    className="w-full border text-gray-600 px-6 py-4 rounded-xl font-semibold text-sm sm:text-base min-h-[48px]"
+  >
+    계속 쇼핑하기
+  </button>
+</div>
         </div>
       </div>
     </div>

@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\Administrator\\mart-online\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\app\\order-complete\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\order-complete\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
@@ -23,19 +19,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "page.tsx",
-              "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\order-complete\\page.tsx",
-              "RelativeDocumentMoniker": "src\\app\\order-complete\\page.tsx",
-              "ToolTip": "C:\\Users\\Administrator\\mart-online\\src\\app\\order-complete\\page.tsx",
-              "RelativeToolTip": "src\\app\\order-complete\\page.tsx",
-              "ViewState": "AgIAACIAAAAAAAAAAAAAACkAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-06-12T10:13:36.77Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "page.tsx",
               "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx",
               "RelativeDocumentMoniker": "src\\app\\page.tsx",
