@@ -1,13 +1,13 @@
 "use client";
 
-import type { Product } from "@/lib/types";
+import type { CartItem, Product } from "@/lib/types";
 import ProductCard from "@/components/ProductCard";
 
 type Props = {
   // 부모 페이지에서 상품 전체 리스트를 받아옵니다.
   products: Product[];
   // 장바구니 담기 기능을 실행하는 함수입니다.
-  onAdd: (product: Product) => void;
+  onAdd: (product: Omit<CartItem, "quantity">) => void;
 };
 
 export function OnlineExclusiveProducts({ products, onAdd }: Props) {

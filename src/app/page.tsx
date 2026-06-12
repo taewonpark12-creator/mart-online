@@ -10,7 +10,8 @@ import { PopularProducts } from "@/components/PopularProducts";
 import { OrderBar } from "@/components/OrderBar";
 import { FlyerBanner } from "@/components/FlyerBanner";
 import { useCart } from "@/contexts/CartContext";
-import type { Product } from "@/lib/types";
+import { PriceProvider } from "@/contexts/PriceContext";
+import type { CartItem, Product } from "@/lib/types";
 import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 
 export default function ShopPage() {
@@ -21,6 +22,7 @@ export default function ShopPage() {
   const [category, setCategory] = useState("추천상품");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [visibleProductCount, setVisibleProductCount] = useState(60);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
   
@@ -34,7 +36,7 @@ export default function ShopPage() {
   const isSearchMode = !!debouncedSearch;
 
   // 프론트엔드 카테고리 필터링 (UI 표시용)
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = useMemo(() => products.filter((product) => {
     // 검색어가 있으면 카테고리 필터링 적용하지 않음 (전체 상품 기준 검색)
     if (debouncedSearch) return true;
 
@@ -45,7 +47,7 @@ export default function ShopPage() {
       return product.category === category;
     }
     return true;
-  });
+  }), [products, debouncedSearch, showAllProducts, showRecommended, category]);
 
   // 상품 정렬 (추천상품 탭 제외)
   const sortedProducts = useMemo(() => {
@@ -62,11 +64,20 @@ export default function ShopPage() {
       return a.name.localeCompare(b.name, "ko");
     });
   }, [filteredProducts, showRecommended]);
+  const visibleProducts = useMemo(
+    () => sortedProducts.slice(0, visibleProductCount),
+    [sortedProducts, visibleProductCount],
+  );
+  const hasMoreProducts = visibleProductCount < sortedProducts.length;
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
     return () => clearTimeout(timer);
   }, [search]);
+
+  useEffect(() => {
+    setVisibleProductCount(60);
+  }, [category, debouncedSearch]);
 
   useEffect(() => {
     if (toast.show) {
@@ -159,18 +170,23 @@ export default function ShopPage() {
     fetchProducts();
   }, [fetchProducts]);
 
-  function handleCategoryChange(nextCategory: string) {
+  const handleCategoryChange = useCallback((nextCategory: string) => {
     setCategory(nextCategory);
     setSearch("");
     setDebouncedSearch("");
-  }
+  }, []);
 
-  function handleAdd(product: Product) {
+  const handleAdd = useCallback((product: Omit<CartItem, "quantity">) => {
     const result = addItem({
-      productId: product.id,
+      productId: product.productId,
       name: product.name,
       price: product.price,
+      barcode: product.barcode,
       imageUrl: product.imageUrl,
+      normalPrice: product.normalPrice,
+      eventPrice: product.eventPrice,
+      discountRate: product.discountRate,
+      isOutOfStock: product.isOutOfStock,
       maxOrderQuantity: product.maxOrderQuantity,
     });
     if (result.success) {
@@ -178,9 +194,10 @@ export default function ShopPage() {
     } else {
       setToast({ show: true, message: result.message || "추가 실패" });
     }
-  }
+  }, [addItem]);
 
   return (
+    <PriceProvider>
     <div className="min-h-screen bg-white">
       <Header cartCount={totalCount} />
 
@@ -301,10 +318,21 @@ export default function ShopPage() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {sortedProducts.map((product) => (
+                  {visibleProducts.map((product) => (
                     <ProductCard key={product.id} product={product} onAdd={handleAdd} />
                   ))}
                 </div>
+                {hasMoreProducts && (
+                  <div className="flex justify-center mt-6">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleProductCount((count) => count + 60)}
+                      className="px-5 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold min-h-[44px]"
+                    >
+                      더 보기
+                    </button>
+                  </div>
+                )}
               </>
             )}
 
@@ -335,5 +363,6 @@ export default function ShopPage() {
       />
 
     </div>
+    </PriceProvider>
   );
 }

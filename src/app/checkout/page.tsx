@@ -53,6 +53,7 @@ export default function CheckoutPage() {
 
   const isDelivery = fulfillmentType === "DELIVERY";
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
+  const hasOutOfStockItem = items.some((item) => item.isOutOfStock);
 
   // 장바구니가 비어있으면 장바구니 페이지로 이동
   useEffect(() => {
@@ -143,6 +144,14 @@ export default function CheckoutPage() {
       setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
       return;
     }
+    if (hasOutOfStockItem) {
+      setError("품절된 상품이 장바구니에 있습니다. 해당 상품을 삭제 후 주문해주세요.");
+      return;
+    }
+    if (items.some((item) => !Number.isInteger(item.quantity) || item.quantity <= 0)) {
+      setError("장바구니 수량을 다시 확인해주세요.");
+      return;
+    }
     if (!isDelivery && !pickupTime) {
       setError("픽업 예정 시각을 선택해 주세요.");
       return;
@@ -164,7 +173,16 @@ export default function CheckoutPage() {
           memo,
           paymentMethod: isDelivery ? paymentMethod : undefined,
           outOfStockPolicy,
-          items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+          items: items.map((i) => ({
+            productId: i.productId,
+            barcode: i.barcode,
+            name: i.name,
+            price: i.price,
+            quantity: i.quantity,
+            normalPrice: i.normalPrice,
+            eventPrice: i.eventPrice,
+            discountRate: i.discountRate,
+          })),
         }),
       });
 
@@ -483,6 +501,11 @@ export default function CheckoutPage() {
               </p>
             ))}
             <p className="font-bold text-green-700 mt-2">{formatPrice(totalAmount)}</p>
+            {hasOutOfStockItem && (
+              <p className="text-red-700 text-xs mt-2">
+                품절된 상품은 주문할 수 없습니다. 장바구니에서 삭제해주세요.
+              </p>
+            )}
             {!meetsMinimum && (
               <p className="text-amber-700 text-xs mt-2">
                 최소 {formatPrice(MIN_ORDER_AMOUNT)} 이상 주문해 주세요.
@@ -502,7 +525,7 @@ export default function CheckoutPage() {
             </button>
             <button
               type="submit"
-              disabled={loading || !meetsMinimum}
+              disabled={loading || !meetsMinimum || hasOutOfStockItem}
               className="flex-[2] bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white py-3 rounded-xl font-semibold transition min-h-[48px]"
             >
               {loading ? "처리 중..." : "주문 확정"}

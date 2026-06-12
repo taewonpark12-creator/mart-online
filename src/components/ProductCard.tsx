@@ -1,118 +1,32 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import type { Product } from "@/lib/types";
+import React from "react";
+import type { CartItem, Product } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
+import { usePriceData } from "@/contexts/PriceContext";
 
 type Props = {
   product: Product;
-  onAdd: (product: Product) => void;
+  onAdd: (product: Omit<CartItem, "quantity">) => void;
 };
-
-type PriceItem = {
-  barcode: string;
-  name?: string;
-  normalPrice: number;
-  eventPrice: number | null;
-  discountRate?: number | null;
-};
-
-let cachedPrices: PriceItem[] | null = null;
-
-async function loadPrices(): Promise<PriceItem[]> {
-  if (cachedPrices) {
-    return cachedPrices;
-  }
-
-  const response = await fetch("/prices.json", {
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new Error("prices.json 불러오기 실패");
-  }
-
-  const data = (await response.json()) as PriceItem[];
-
-  cachedPrices = data;
-
-  return data;
-}
 
 function ProductCard({ product, onAdd }: Props) {
-  const [realTimeData, setRealTimeData] = useState<{
-    name: string | null;
-    normalPrice: number | null;
-    eventPrice: number | null;
-    discountRate: number | null;
-  }>({
-    name: null,
-    normalPrice: null,
-    eventPrice: null,
-    discountRate: null,
-  });
+  const { priceData, loading } = usePriceData(product.barcode);
 
-  const [loadingPrice, setLoadingPrice] = useState(false);
-
-  useEffect(() => {
-    if (!product.barcode) return;
-
-    const trimmedBarcode = product.barcode.trim();
-    let isMounted = true;
-
-    const fetchRealTimePrice = async () => {
-      setLoadingPrice(true);
-
-      try {
-        const allPrices = await loadPrices();
-
-        const data = allPrices.find(
-          (item) => String(item.barcode).trim() === trimmedBarcode
-        );
-
-        if (!data || !isMounted) return;
-
-        const normalPrice = Number(data.normalPrice);
-        const eventPrice =
-          data.eventPrice !== null && data.eventPrice !== undefined
-            ? Number(data.eventPrice)
-            : null;
-
-        const discountRate =
-          data.discountRate !== null && data.discountRate !== undefined
-            ? Number(data.discountRate)
-            : eventPrice && eventPrice > 0 && eventPrice < normalPrice
-              ? Math.round((1 - eventPrice / normalPrice) * 100)
-              : null;
-
-        setRealTimeData({
-          name: data.name || null,
-          normalPrice,
-          eventPrice,
-          discountRate,
-        });
-      } catch (error) {
-        console.error("가격 JSON 조회 실패:", error);
-      } finally {
-        if (isMounted) {
-          setLoadingPrice(false);
-        }
-      }
-    };
-
-    fetchRealTimePrice();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [product.barcode]);
-
-  const displayName = realTimeData.name ?? product.name;
-  const normalPrice = realTimeData.normalPrice ?? Number(product.price);
-  const eventPrice = realTimeData.eventPrice;
-  const discountRate = realTimeData.discountRate;
-
+  const displayName = priceData?.name ?? product.name;
+  const normalPrice = priceData ? Number(priceData.normalPrice) : Number(product.price);
+  const eventPrice =
+    priceData?.eventPrice !== null && priceData?.eventPrice !== undefined
+      ? Number(priceData.eventPrice)
+      : null;
+  const discountRate =
+    priceData?.discountRate !== null && priceData?.discountRate !== undefined
+      ? Number(priceData.discountRate)
+      : eventPrice && eventPrice > 0 && eventPrice < normalPrice
+        ? Math.round((1 - eventPrice / normalPrice) * 100)
+        : null;
+  const loadingPrice = Boolean(product.barcode) && loading;
   const hasEvent =
     !loadingPrice &&
     eventPrice !== null &&
@@ -122,9 +36,16 @@ function ProductCard({ product, onAdd }: Props) {
     discountRate > 0;
   const cartPrice = hasEvent ? eventPrice : normalPrice;
   const cartProduct = {
-    ...product,
+    productId: product.id,
     name: displayName,
     price: cartPrice,
+    imageUrl: product.imageUrl,
+    normalPrice,
+    eventPrice,
+    discountRate,
+    barcode: product.barcode,
+    isOutOfStock: product.isOutOfStock,
+    maxOrderQuantity: product.maxOrderQuantity,
   };
 
   return (
@@ -138,9 +59,10 @@ function ProductCard({ product, onAdd }: Props) {
         />
         <button
           onClick={() => onAdd(cartProduct)}
-          className="absolute bottom-2 right-2 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition shadow-lg min-h-[40px] sm:min-h-[44px]"
+          disabled={product.isOutOfStock || loadingPrice}
+          className="absolute bottom-2 right-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition shadow-lg min-h-[40px] sm:min-h-[44px]"
         >
-          + 담기
+          {product.isOutOfStock ? "품절" : loadingPrice ? "확인중" : "+ 담기"}
         </button>
       </div>
 

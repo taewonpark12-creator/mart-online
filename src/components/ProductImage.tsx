@@ -5,6 +5,7 @@ interface Props {
   alt: string
   fill?: boolean
   sizes?: string
+  priority?: boolean
 }
 
 export function ProductImage({
@@ -12,6 +13,7 @@ export function ProductImage({
   alt,
   fill = false,
   sizes,
+  priority = false,
 }: Props) {
   // 문자열 아니면 차단
   if (typeof src !== "string") {
@@ -45,7 +47,9 @@ export function ProductImage({
         alt={alt}
         fill
         sizes={sizes ?? "100vw"}
-        loading="lazy"
+        quality={75}
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
         decoding="async"
         style={{
           objectFit: "cover",
@@ -59,9 +63,12 @@ export function ProductImage({
     <Image
       src={imageSrc}
       alt={alt}
-      width={500}
-      height={500}
-      loading="lazy"
+      width={320}
+      height={320}
+      sizes={sizes ?? "(max-width: 640px) 160px, 240px"}
+      quality={75}
+      loading={priority ? "eager" : "lazy"}
+      priority={priority}
       decoding="async"
     />
   )

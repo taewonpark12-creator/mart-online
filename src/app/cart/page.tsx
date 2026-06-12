@@ -16,6 +16,7 @@ export default function CartPage() {
 
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
   const amountShort = MIN_ORDER_AMOUNT - totalAmount;
+  const hasOutOfStockItem = items.some((item) => item.isOutOfStock);
 
   const handleUpdateQuantity = (productId: string, newQuantity: number) => {
     const result = updateQuantity(productId, newQuantity);
@@ -40,6 +41,10 @@ export default function CartPage() {
   };
 
   const handleCheckout = () => {
+    if (hasOutOfStockItem) {
+      setError("품절된 상품이 장바구니에 있습니다. 해당 상품을 삭제 후 주문해주세요.");
+      return;
+    }
     if (!meetsMinimum) {
       setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
       return;
@@ -86,13 +91,16 @@ export default function CartPage() {
                           최대 {item.maxOrderQuantity}개 구매 가능
                         </p>
                       )}
+                      {item.isOutOfStock && (
+                        <p className="text-xs text-red-500 mt-1">품절된 상품입니다.</p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center justify-between mt-3 sm:mt-4">
                     <div className="flex items-center gap-1 sm:gap-2">
                       <button
                         onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
-                        disabled={item.quantity <= 1}
+                        disabled={item.quantity <= 1 || item.isOutOfStock}
                         className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
                       >
                         −
@@ -100,7 +108,7 @@ export default function CartPage() {
                       <span className="w-8 sm:w-6 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
                       <button
                         onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
-                        disabled={!!(item.maxOrderQuantity && item.maxOrderQuantity > 0 && item.quantity >= item.maxOrderQuantity)}
+                        disabled={item.isOutOfStock || !!(item.maxOrderQuantity && item.maxOrderQuantity > 0 && item.quantity >= item.maxOrderQuantity)}
                         className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
                       >
                         +
@@ -153,11 +161,17 @@ export default function CartPage() {
                 </p>
               )}
 
+              {hasOutOfStockItem && (
+                <p className="text-xs sm:text-sm text-red-700 bg-red-50 rounded-xl px-3 py-2 sm:py-3">
+                  품절된 상품은 주문할 수 없습니다. 장바구니에서 삭제해주세요.
+                </p>
+              )}
+
               {error && <p className="text-red-500 text-xs sm:text-sm">{error}</p>}
 
               <button
                 onClick={handleCheckout}
-                disabled={!meetsMinimum}
+                disabled={!meetsMinimum || hasOutOfStockItem}
                 className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-4 sm:py-5 rounded-xl transition text-sm sm:text-base min-h-[48px]"
               >
                 주문하기

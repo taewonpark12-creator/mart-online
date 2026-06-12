@@ -21,8 +21,13 @@
     productId: string;
     name: string;
     price: number;
+    barcode?: string | null;
     imageUrl: string | null;
     quantity: number;
+    normalPrice?: number | null;
+    eventPrice?: number | null;
+    discountRate?: number | null;
+    isOutOfStock?: boolean;
     maxOrderQuantity?: number | null; // 최대 주문 수량 (null 또는 0이면 제한 없음)
   };
 

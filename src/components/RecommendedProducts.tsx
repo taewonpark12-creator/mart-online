@@ -1,11 +1,11 @@
 "use client";
 
-import type { Product } from "@/lib/types";
+import type { CartItem, Product } from "@/lib/types";
 import ProductCard from "@/components/ProductCard";
 
 type Props = {
   products: Product[];
-  onAdd: (product: Product) => void;
+  onAdd: (product: Omit<CartItem, "quantity">) => void;
 };
 
 export function RecommendedProducts({ products, onAdd }: Props) {
