@@ -22,7 +22,7 @@ export function RecommendedProducts({ products, onAdd }: Props) {
       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-3 sm:-mx-1 px-3 sm:px-1 scrollbar-hide snap-x snap-mandatory">
         {products.map((product) => (
           <div key={product.id} className="w-[140px] sm:w-[168px] md:w-[200px] shrink-0 snap-start">
-            <ProductCard product={product} onAdd={() => onAdd(product)} />
+            <ProductCard product={product} onAdd={onAdd} />
           </div>
         ))}
       </div>

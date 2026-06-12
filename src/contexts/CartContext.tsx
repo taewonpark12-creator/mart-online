@@ -50,7 +50,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
         const newQuantity = existing.quantity + 1;
         return prev.map((i) =>
-          i.productId === item.productId ? { ...i, quantity: newQuantity } : i
+          i.productId === item.productId ? { ...i, ...item, quantity: newQuantity } : i
         );
       }
       return [...prev, { ...item, quantity: 1 }];

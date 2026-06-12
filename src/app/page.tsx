@@ -159,6 +159,12 @@ export default function ShopPage() {
     fetchProducts();
   }, [fetchProducts]);
 
+  function handleCategoryChange(nextCategory: string) {
+    setCategory(nextCategory);
+    setSearch("");
+    setDebouncedSearch("");
+  }
+
   function handleAdd(product: Product) {
     const result = addItem({
       productId: product.id,
@@ -233,7 +239,7 @@ export default function ShopPage() {
         <div className="sticky top-[56px] sm:top-[64px] bg-white z-10 py-2 sm:py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 mb-2">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             <button
-              onClick={() => setCategory("추천상품")}
+              onClick={() => handleCategoryChange("추천상품")}
               className={`shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition min-h-[44px] ${
                 category === "추천상품"
                   ? "bg-black text-white"
@@ -245,7 +251,7 @@ export default function ShopPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
                 className={`shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition min-h-[44px] ${
                   category === cat
                     ? "bg-black text-white"
@@ -296,7 +302,7 @@ export default function ShopPage() {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {sortedProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} onAdd={() => handleAdd(product)} />
+                    <ProductCard key={product.id} product={product} onAdd={handleAdd} />
                   ))}
                 </div>
               </>

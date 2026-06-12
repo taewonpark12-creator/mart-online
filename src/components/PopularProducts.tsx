@@ -19,7 +19,7 @@ export function PopularProducts({ products, onAdd }: Props) {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onAdd={() => onAdd(product)} />
+          <ProductCard key={product.id} product={product} onAdd={onAdd} />
         ))}
       </div>
     </div>

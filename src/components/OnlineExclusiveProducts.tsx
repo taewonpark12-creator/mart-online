@@ -34,7 +34,7 @@ export function OnlineExclusiveProducts({ products, onAdd }: Props) {
         {exclusiveProducts.map((product) => (
           <div key={product.id} className="w-[140px] sm:w-[168px] md:w-[200px] shrink-0 snap-start">
             {/* 기존에 사용하던 ProductCard 컴포넌트를 재사용합니다. */}
-            <ProductCard product={product} onAdd={() => onAdd(product)} />
+            <ProductCard product={product} onAdd={onAdd} />
           </div>
         ))}
       </div>

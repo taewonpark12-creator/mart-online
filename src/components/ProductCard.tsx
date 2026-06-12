@@ -7,7 +7,7 @@ import { ProductImage } from "@/components/ProductImage";
 
 type Props = {
   product: Product;
-  onAdd: () => void;
+  onAdd: (product: Product) => void;
 };
 
 type PriceItem = {
@@ -120,6 +120,12 @@ function ProductCard({ product, onAdd }: Props) {
     eventPrice > 0 &&
     discountRate !== null &&
     discountRate > 0;
+  const cartPrice = hasEvent ? eventPrice : normalPrice;
+  const cartProduct = {
+    ...product,
+    name: displayName,
+    price: cartPrice,
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full">
@@ -131,7 +137,7 @@ function ProductCard({ product, onAdd }: Props) {
           sizes="(max-width: 640px) 50vw, 240px"
         />
         <button
-          onClick={onAdd}
+          onClick={() => onAdd(cartProduct)}
           className="absolute bottom-2 right-2 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition shadow-lg min-h-[40px] sm:min-h-[44px]"
         >
           + 담기
