@@ -758,7 +758,11 @@ export default function ProductsPage() {
         {/* 카테고리 필터 버튼 */}
         <div className="flex gap-2 flex-wrap mb-6">
           <button
-            onClick={() => setCategoryFilter("")}
+            onClick={() => {
+  setCategoryFilter("");
+  setSearchInput("");
+  setSearchQuery("");
+}}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${!categoryFilter ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
           >
             전체
@@ -766,7 +770,11 @@ export default function ProductsPage() {
           {PRODUCT_CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => setCategoryFilter(cat)}
+              onClick={() => {
+  setCategoryFilter(cat);
+  setSearchInput("");
+  setSearchQuery("");
+}}
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${categoryFilter === cat ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
             >
               {cat}
@@ -776,7 +784,11 @@ export default function ProductsPage() {
             <input
               type="checkbox"
               checked={outOfStockOnly}
-              onChange={(e) => setOutOfStockOnly(e.target.checked)}
+              onChange={(e) => {
+  setOutOfStockOnly(e.target.checked);
+  setSearchInput("");
+  setSearchQuery("");
+}}
               className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
             />
             품절만

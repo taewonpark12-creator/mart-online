@@ -47,13 +47,12 @@ export default function GoPage() {
 
         {/* 제목 */}
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
-  크롬, 네이버 등<br />다른 브라우저에서<br />
-  더 안정적으로 이용할 수 있습니다
+  우측 하단 (⋮) → "다른 브라우저로 열기"를 눌러주세요
         </h1>
 
         {/* 설명 */}
         <p className="text-lg text-gray-600 mb-8">
-          우측 하단 (⋮) → "다른 브라우저로 열기"를 눌러주세요
+          크롬, 네이버 등<br />다른 브라우저에서 더 안정적으로 이용할 수 있습니다
         </p>
 
         {/* 브라우저로 열기 버튼 */}
@@ -63,7 +62,7 @@ export default function GoPage() {
           }}
           className="w-full bg-green-600 hover:bg-green-700 text-white text-xl font-bold py-5 px-6 rounded-xl transition-colors shadow-md active:scale-95 mb-4"
         >
-          카카오톡으로 열기
+          쇼핑하기
         </button>
 
         
