@@ -42,10 +42,12 @@ async function loadPrices(): Promise<PriceItem[]> {
 
 function ProductCard({ product, onAdd }: Props) {
   const [realTimeData, setRealTimeData] = useState<{
+    name: string | null;
     normalPrice: number | null;
     eventPrice: number | null;
     discountRate: number | null;
   }>({
+    name: null,
     normalPrice: null,
     eventPrice: null,
     discountRate: null,
@@ -85,6 +87,7 @@ function ProductCard({ product, onAdd }: Props) {
               : null;
 
         setRealTimeData({
+          name: data.name || null,
           normalPrice,
           eventPrice,
           discountRate,
@@ -105,6 +108,7 @@ function ProductCard({ product, onAdd }: Props) {
     };
   }, [product.barcode]);
 
+  const displayName = realTimeData.name ?? product.name;
   const normalPrice = realTimeData.normalPrice ?? Number(product.price);
   const eventPrice = realTimeData.eventPrice;
   const discountRate = realTimeData.discountRate;
@@ -122,7 +126,7 @@ function ProductCard({ product, onAdd }: Props) {
       <div className="relative bg-gray-50 h-32 sm:h-36 w-full">
         <ProductImage
           src={product.imageUrl}
-          alt={product.name}
+          alt={displayName}
           fill
           sizes="(max-width: 640px) 50vw, 240px"
         />
@@ -140,7 +144,7 @@ function ProductCard({ product, onAdd }: Props) {
             {product.category}
           </span>
           <h3 className="font-semibold text-gray-900 mt-1 leading-snug text-sm sm:text-base line-clamp-2">
-            {product.name}
+            {displayName}
           </h3>
           {product.description && (
             <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 line-clamp-2 hidden sm:block">
