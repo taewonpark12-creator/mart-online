@@ -5564,7 +5564,7 @@
   {
     "barcode": "2318342120354",
     "name": "매실통10L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -5573,7 +5573,7 @@
   {
     "barcode": "2318342120378",
     "name": "매실통20L",
-    "normalPrice": 15000,
+    "normalPrice": 16000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23923,8 +23923,8 @@
   },
   {
     "barcode": "8801043036634",
-    "name": "농심)바나나킥75gT",
-    "normalPrice": 1500,
+    "name": "농심)바나나킥75g",
+    "normalPrice": 1490,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116011,8 +116011,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)",
-    "normalPrice": 19800,
+    "name": "수박(4~5kg/1통)",
+    "normalPrice": 16800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
