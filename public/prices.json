@@ -49089,10 +49089,10 @@
     "barcode": "8801068941432",
     "name": "삼립)포켓몬이상해꽃솔티카라멜롤",
     "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1300,
+    "discountRate": 28,
+    "saleStartDate": "2019-10-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801068941456",
