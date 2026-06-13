@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { PRODUCT_CATEGORIES, formatPrice } from "@/lib/types";
-import * as XLSX from "xlsx";
 
 type Product = {
   id: string;
@@ -23,1222 +22,1025 @@ type Product = {
   maxOrderQuantity?: number | null;
 };
 
+type StatusFilter = "ALL" | "POPULAR" | "RECOMMENDED" | "LIMITED" | "OUT_OF_STOCK";
+type ProductFlag = "isPopular" | "isRecommended" | "isOnlineExclusive" | "isOutOfStock";
+
+type ProductForm = {
+  name: string;
+  description: string;
+  barcode: string;
+  price: string;
+  category: string;
+  imageUrl: string;
+  stock: string;
+  isPopular: boolean;
+  isRecommended: boolean;
+  isOnlineExclusive: boolean;
+  isOutOfStock: boolean;
+  maxOrderQuantity: string;
+};
+
+const STATUS_FILTERS: { value: StatusFilter; label: string }[] = [
+  { value: "ALL", label: "All" },
+  { value: "POPULAR", label: "Popular" },
+  { value: "RECOMMENDED", label: "Recommended" },
+  { value: "LIMITED", label: "Limited Special Price" },
+  { value: "OUT_OF_STOCK", label: "Out of Stock" },
+];
+
+const STATUS_META: Record<ProductFlag, { label: string; activeClass: string; inactiveClass: string }> = {
+  isPopular: {
+    label: "Popular",
+    activeClass: "bg-red-100 text-red-700 border-red-200",
+    inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-red-300 hover:text-red-700",
+  },
+  isRecommended: {
+    label: "Recommended",
+    activeClass: "bg-amber-100 text-amber-800 border-amber-200",
+    inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-amber-300 hover:text-amber-800",
+  },
+  isOnlineExclusive: {
+    label: "Limited Special Price",
+    activeClass: "bg-violet-100 text-violet-700 border-violet-200",
+    inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-violet-300 hover:text-violet-700",
+  },
+  isOutOfStock: {
+    label: "Out of Stock",
+    activeClass: "bg-gray-900 text-white border-gray-900",
+    inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-800",
+  },
+};
+
+const emptyForm = (): ProductForm => ({
+  name: "",
+  description: "",
+  barcode: "",
+  price: "",
+  category: PRODUCT_CATEGORIES[0] ?? "미분류",
+  imageUrl: "",
+  stock: "0",
+  isPopular: false,
+  isRecommended: false,
+  isOnlineExclusive: false,
+  isOutOfStock: false,
+  maxOrderQuantity: "",
+});
+
+function formFromProduct(product: Product): ProductForm {
+  return {
+    name: product.name,
+    description: product.description ?? "",
+    barcode: product.barcode ?? "",
+    price: String(product.price),
+    category: product.category,
+    imageUrl: product.imageUrl ?? "",
+    stock: String(product.stock ?? 0),
+    isPopular: Boolean(product.isPopular),
+    isRecommended: Boolean(product.isRecommended),
+    isOnlineExclusive: Boolean(product.isOnlineExclusive),
+    isOutOfStock: Boolean(product.isOutOfStock),
+    maxOrderQuantity: product.maxOrderQuantity ? String(product.maxOrderQuantity) : "",
+  };
+}
+
+function normalizeProduct(product: Product): Product {
+  return {
+    ...product,
+    isPopular: Boolean(product.isPopular),
+    isRecommended: Boolean(product.isRecommended),
+    isOnlineExclusive: Boolean(product.isOnlineExclusive),
+    isOutOfStock: Boolean(product.isOutOfStock),
+  };
+}
+
+function isSameForm(product: Product, form: ProductForm) {
+  const original = formFromProduct(product);
+  return Object.keys(original).every((key) => {
+    const formKey = key as keyof ProductForm;
+    return original[formKey] === form[formKey];
+  });
+}
+
+function matchesStatus(product: Product, filter: StatusFilter) {
+  if (filter === "POPULAR") return product.isPopular;
+  if (filter === "RECOMMENDED") return product.isRecommended;
+  if (filter === "LIMITED") return product.isOnlineExclusive;
+  if (filter === "OUT_OF_STOCK") return product.isOutOfStock;
+  return true;
+}
+
+function highlightText(text: string, query: string) {
+  const safeQuery = query.trim();
+  if (!safeQuery) return text;
+
+  const lowerText = text.toLowerCase();
+  const lowerQuery = safeQuery.toLowerCase();
+  const start = lowerText.indexOf(lowerQuery);
+  if (start < 0) return text;
+
+  return (
+    <>
+      {text.slice(0, start)}
+      <mark className="rounded bg-yellow-200 px-0.5 text-gray-950">{text.slice(start, start + safeQuery.length)}</mark>
+      {text.slice(start + safeQuery.length)}
+    </>
+  );
+}
+
+function ProductTags({ product }: { product: Product }) {
+  return (
+    <div className="flex flex-wrap gap-1">
+      {product.isPopular && <span className="rounded border border-red-200 bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">Popular</span>}
+      {product.isRecommended && <span className="rounded border border-amber-200 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Recommended</span>}
+      {product.isOnlineExclusive && <span className="rounded border border-violet-200 bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700">Limited Special Price</span>}
+      {product.isOutOfStock && <span className="rounded border border-gray-300 bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white">Out of Stock</span>}
+    </div>
+  );
+}
+
+const ProductListItem = memo(function ProductListItem({
+  product,
+  selected,
+  checked,
+  highlighted,
+  searchQuery,
+  onSelect,
+  onToggleSelect,
+  onEdit,
+  onDelete,
+}: {
+  product: Product;
+  selected: boolean;
+  checked: boolean;
+  highlighted: boolean;
+  searchQuery: string;
+  onSelect: () => void;
+  onToggleSelect: (checked: boolean) => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div
+      className={`grid grid-cols-[auto_56px_minmax(0,1fr)_96px_auto] items-center gap-3 border-b px-3 py-3 transition last:border-b-0 ${
+        selected ? "bg-green-50" : highlighted ? "bg-emerald-50 animate-pulse" : "bg-white hover:bg-gray-50"
+      } ${product.isOutOfStock ? "opacity-70" : ""}`}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onToggleSelect(event.target.checked)}
+        className="h-4 w-4 rounded text-green-600 focus:ring-green-500"
+        aria-label={`${product.name} 선택`}
+      />
+      <button type="button" onClick={onSelect} className="h-12 w-12 overflow-hidden rounded-lg bg-gray-100 text-xs text-gray-400">
+        {product.imageUrl ? (
+          <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center">No Img</span>
+        )}
+      </button>
+      <button type="button" onClick={onSelect} className="min-w-0 text-left">
+        <ProductTags product={product} />
+        <p className="mt-1 truncate font-semibold text-gray-900" title={product.name}>
+          {highlightText(product.name, searchQuery)}
+        </p>
+        <p className="truncate text-xs text-gray-500">{highlightText(product.barcode || "-", searchQuery)} · {product.category}</p>
+      </button>
+      <div className="text-right">
+        <p className="text-sm font-black text-green-700">{formatPrice(Number(product.price) || 0)}</p>
+        <p className="text-xs text-gray-500">재고 {product.stock ?? 0}</p>
+      </div>
+      <div className="flex gap-1">
+        <button type="button" onClick={onEdit} className="rounded-lg bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-200">
+          Edit
+        </button>
+        <button type="button" onClick={onDelete} className="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100">
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+});
+
+function ProductFilterBar({
+  statusFilter,
+  categoryFilter,
+  onStatusChange,
+  onCategoryChange,
+}: {
+  statusFilter: StatusFilter;
+  categoryFilter: string;
+  onStatusChange: (filter: StatusFilter) => void;
+  onCategoryChange: (category: string) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2 overflow-x-auto rounded-2xl border bg-white p-2">
+        {STATUS_FILTERS.map((filter) => (
+          <button
+            key={filter.value}
+            type="button"
+            onClick={() => onStatusChange(filter.value)}
+            className={`shrink-0 rounded-xl px-3 py-2 text-sm font-semibold transition ${
+              statusFilter === filter.value ? "bg-gray-900 text-white shadow-sm" : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        <button
+          type="button"
+          onClick={() => onCategoryChange("")}
+          className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+            !categoryFilter ? "bg-green-600 text-white shadow-sm" : "border bg-white text-gray-600 hover:bg-gray-100"
+          }`}
+        >
+          전체
+        </button>
+        {PRODUCT_CATEGORIES.map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => onCategoryChange(category)}
+            className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+              categoryFilter === category ? "bg-green-600 text-white shadow-sm" : "border bg-white text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProductStatusController({
+  product,
+  busy,
+  onToggle,
+  onEdit,
+}: {
+  product: Product | null;
+  busy: boolean;
+  onToggle: (product: Product, flag: ProductFlag) => void;
+  onEdit: (product: Product) => void;
+}) {
+  if (!product) {
+    return (
+      <aside className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-400">
+        <p className="font-semibold">상품을 선택해주세요.</p>
+        <p className="mt-2 text-sm">왼쪽 목록에서 상품을 선택하면 빠른 상태 제어가 열립니다.</p>
+      </aside>
+    );
+  }
+
+  return (
+    <aside className="sticky top-6 rounded-2xl border bg-white shadow-sm">
+      <div className="border-b p-5">
+        <ProductTags product={product} />
+        <h2 className="mt-2 text-lg font-black text-gray-900">{product.name}</h2>
+        <p className="text-sm text-gray-500">{product.barcode || "바코드 없음"} · {product.category}</p>
+        <p className="mt-3 text-2xl font-black text-green-700">{formatPrice(Number(product.price) || 0)}</p>
+      </div>
+
+      <div className="space-y-5 p-5">
+        <section>
+          <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500">Quick Actions</p>
+          <div className="grid grid-cols-2 gap-2">
+            {(Object.keys(STATUS_META) as ProductFlag[]).map((flag) => {
+              const active = Boolean(product[flag]);
+              const meta = STATUS_META[flag];
+              return (
+                <button
+                  key={flag}
+                  type="button"
+                  disabled={busy}
+                  onClick={() => onToggle(product, flag)}
+                  className={`rounded-xl border px-3 py-3 text-sm font-bold transition disabled:opacity-50 ${
+                    active ? meta.activeClass : meta.inactiveClass
+                  }`}
+                >
+                  {meta.label} {active ? "ON" : "OFF"}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
+          <p className="font-semibold text-gray-900">운영 정보</p>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-xs text-gray-500">재고</p>
+              <p className="font-bold">{product.stock ?? 0}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">최대 주문</p>
+              <p className="font-bold">{product.maxOrderQuantity || "제한 없음"}</p>
+            </div>
+          </div>
+        </section>
+
+        {product.description && (
+          <section className="rounded-xl bg-blue-50 p-4 text-sm text-blue-900">
+            <p className="font-semibold">설명</p>
+            <p className="mt-2 leading-relaxed">{product.description}</p>
+          </section>
+        )}
+
+        <button
+          type="button"
+          onClick={() => onEdit(product)}
+          className="w-full rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white hover:bg-black"
+        >
+          세부 정보 편집
+        </button>
+      </div>
+    </aside>
+  );
+}
+
+function ProductBulkActionBar({
+  selectedCount,
+  bulkCategory,
+  onBulkCategoryChange,
+  onPatch,
+  onDelete,
+  onClear,
+}: {
+  selectedCount: number;
+  bulkCategory: string;
+  onBulkCategoryChange: (category: string) => void;
+  onPatch: (payload: Partial<Product>, message: string) => void;
+  onDelete: () => void;
+  onClear: () => void;
+}) {
+  if (selectedCount === 0) return null;
+
+  return (
+    <div className="sticky top-0 z-20 rounded-2xl border border-green-200 bg-white p-4 shadow-lg">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+        <div>
+          <p className="font-black text-gray-900">{selectedCount}개 상품 선택됨</p>
+          <p className="text-xs text-gray-500">일괄 변경 전 선택 수량과 작업 내용을 확인하세요.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <select
+            value={bulkCategory}
+            onChange={(event) => onBulkCategoryChange(event.target.value)}
+            className="rounded-lg border px-3 py-2 text-sm"
+          >
+            <option value="">카테고리 선택</option>
+            {PRODUCT_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => bulkCategory && onPatch({ category: bulkCategory }, "카테고리가 변경되었습니다.")}
+            disabled={!bulkCategory}
+            className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            카테고리 변경
+          </button>
+          <button type="button" onClick={() => onPatch({ isPopular: true }, "인기상품으로 설정되었습니다.")} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">
+            Popular ON
+          </button>
+          <button type="button" onClick={() => onPatch({ isRecommended: true }, "추천상품으로 설정되었습니다.")} className="rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white">
+            Recommended ON
+          </button>
+          <button type="button" onClick={() => onPatch({ isOnlineExclusive: true }, "한정특가로 설정되었습니다.")} className="rounded-lg bg-violet-600 px-3 py-2 text-sm font-semibold text-white">
+            Limited ON
+          </button>
+          <button type="button" onClick={() => onPatch({ isOutOfStock: true }, "품절 처리되었습니다.")} className="rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white">
+            품절 처리
+          </button>
+          <button type="button" onClick={() => onPatch({ isPopular: false, isRecommended: false, isOnlineExclusive: false }, "상품 상태가 해제되었습니다.")} className="rounded-lg bg-gray-600 px-3 py-2 text-sm font-semibold text-white">
+            태그 해제
+          </button>
+          <button type="button" onClick={onDelete} className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100">
+            삭제
+          </button>
+          <button type="button" onClick={onClear} className="rounded-lg border px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100">
+            선택 해제
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductEditDrawer({
+  open,
+  mode,
+  formData,
+  dirty,
+  saving,
+  onChange,
+  onSubmit,
+  onClose,
+}: {
+  open: boolean;
+  mode: "create" | "edit";
+  formData: ProductForm;
+  dirty: boolean;
+  saving: boolean;
+  onChange: (form: ProductForm) => void;
+  onSubmit: (event?: React.FormEvent) => void;
+  onClose: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <button type="button" aria-label="편집 닫기" className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <aside className="absolute right-0 top-0 h-full w-full max-w-2xl overflow-y-auto bg-white shadow-2xl">
+        <form onSubmit={onSubmit} className="min-h-full p-6">
+          <div className="mb-6 flex items-start justify-between gap-4 border-b pb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-green-700">
+                {mode === "edit" ? "Edit Product" : "Create Product"}
+              </p>
+              <h2 className="mt-1 text-2xl font-black text-gray-900">
+                {mode === "edit" ? "상품 정보 편집" : "새 상품 등록"}
+              </h2>
+              {dirty && <p className="mt-2 text-sm font-semibold text-amber-700">저장되지 않은 변경사항이 있습니다.</p>}
+            </div>
+            <button type="button" onClick={onClose} className="rounded-lg border px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100">
+              닫기
+            </button>
+          </div>
+
+          <div className="space-y-5">
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="block text-sm">
+                <span className="mb-1 block font-semibold text-gray-700">상품명 *</span>
+                <input
+                  required
+                  value={formData.name}
+                  onChange={(event) => onChange({ ...formData, name: event.target.value })}
+                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block font-semibold text-gray-700">바코드</span>
+                <input
+                  value={formData.barcode}
+                  onChange={(event) => onChange({ ...formData, barcode: event.target.value })}
+                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block font-semibold text-gray-700">가격 *</span>
+                <input
+                  required
+                  type="number"
+                  min="0"
+                  value={formData.price}
+                  onChange={(event) => onChange({ ...formData, price: event.target.value })}
+                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block font-semibold text-gray-700">카테고리 *</span>
+                <select
+                  required
+                  value={formData.category}
+                  onChange={(event) => onChange({ ...formData, category: event.target.value })}
+                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                >
+                  {PRODUCT_CATEGORIES.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block font-semibold text-gray-700">재고</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.stock}
+                  onChange={(event) => onChange({ ...formData, stock: event.target.value })}
+                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block font-semibold text-gray-700">최대 주문 수량</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.maxOrderQuantity}
+                  onChange={(event) => onChange({ ...formData, maxOrderQuantity: event.target.value })}
+                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                />
+              </label>
+            </div>
+
+            <label className="block text-sm">
+              <span className="mb-1 block font-semibold text-gray-700">이미지 URL</span>
+              <input
+                value={formData.imageUrl}
+                onChange={(event) => onChange({ ...formData, imageUrl: event.target.value })}
+                className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+              />
+            </label>
+
+            <label className="block text-sm">
+              <span className="mb-1 block font-semibold text-gray-700">설명</span>
+              <textarea
+                rows={3}
+                value={formData.description}
+                onChange={(event) => onChange({ ...formData, description: event.target.value })}
+                className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+              />
+            </label>
+
+            <section className="rounded-2xl border bg-gray-50 p-4">
+              <p className="mb-3 text-sm font-bold text-gray-900">상태 설정</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {(Object.keys(STATUS_META) as ProductFlag[]).map((flag) => (
+                  <label key={flag} className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm font-semibold text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(formData[flag])}
+                      onChange={(event) => onChange({ ...formData, [flag]: event.target.checked })}
+                      className="h-4 w-4 rounded text-green-600 focus:ring-green-500"
+                    />
+                    {STATUS_META[flag].label}
+                  </label>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <div className="sticky bottom-0 mt-8 flex gap-2 border-t bg-white py-4">
+            <button
+              type="submit"
+              disabled={mode === "edit" ? !dirty || saving : saving}
+              className="flex-1 rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {saving ? "저장 중..." : mode === "edit" ? "변경사항 저장" : "상품 등록"}
+            </button>
+            <button type="button" onClick={onClose} className="rounded-xl bg-gray-200 px-4 py-3 text-sm font-bold text-gray-700 hover:bg-gray-300">
+              취소
+            </button>
+          </div>
+        </form>
+      </aside>
+    </div>
+  );
+}
+
 export default function ProductsPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const router = useRouter();
-
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    barcode: "",
-    price: "",
-    category: "미분류",
-    imageUrl: "",
-    stock: "",
-    isRecommended: false,
-    isOnlineExclusive: false,
-    isPopular: false,
-    isOutOfStock: false,
-    maxOrderQuantity: "",
-  });
-
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [showBulkActions, setShowBulkActions] = useState(false);
-  const [bulkCategory, setBulkCategory] = useState("");
-  const [showExcelUpload, setShowExcelUpload] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [imageSearchQuery, setImageSearchQuery] = useState("");
-  const [imageSearchResults, setImageSearchResults] = useState<string[]>([]);
-  const [searchingImages, setSearchingImages] = useState(false);
-  const [autoUploadingImages, setAutoUploadingImages] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [outOfStockOnly, setOutOfStockOnly] = useState(false);
-  const requestIdRef = useRef(0);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkCategory, setBulkCategory] = useState("");
+  const [activeProductId, setActiveProductId] = useState<string | null>(null);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formData, setFormData] = useState<ProductForm>(() => emptyForm());
+  const [savingProductId, setSavingProductId] = useState<string | null>(null);
+  const [busyProductId, setBusyProductId] = useState<string | null>(null);
+  const [flashProductId, setFlashProductId] = useState<string | null>(null);
+  const [toast, setToast] = useState("");
 
-  const fetchProducts = useCallback(async (query: string, category: string, outOfStock: boolean) => {
-    const requestId = ++requestIdRef.current;
+  const activeProduct = useMemo(
+    () => products.find((product) => product.id === activeProductId) ?? products[0] ?? null,
+    [products, activeProductId],
+  );
+
+  const editingProduct = useMemo(
+    () => products.find((product) => product.id === editingProductId) ?? null,
+    [products, editingProductId],
+  );
+
+  const displayedProducts = useMemo(() => {
+    return products.filter((product) => matchesStatus(product, statusFilter));
+  }, [products, statusFilter]);
+
+  const isDirty = useMemo(() => {
+    if (showCreateForm) {
+      return !Object.keys(emptyForm()).every((key) => {
+        const formKey = key as keyof ProductForm;
+        return emptyForm()[formKey] === formData[formKey];
+      });
+    }
+    if (!editingProduct) return false;
+    return !isSameForm(editingProduct, formData);
+  }, [editingProduct, formData, showCreateForm]);
+
+  const allDisplayedSelected =
+    displayedProducts.length > 0 && displayedProducts.every((product) => selectedIds.has(product.id));
+
+  const selectedSummary = useMemo(() => {
+    const selected = products.filter((product) => selectedIds.has(product.id));
+    return {
+      popular: selected.filter((product) => product.isPopular).length,
+      recommended: selected.filter((product) => product.isRecommended).length,
+      limited: selected.filter((product) => product.isOnlineExclusive).length,
+      outOfStock: selected.filter((product) => product.isOutOfStock).length,
+    };
+  }, [products, selectedIds]);
+
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
     try {
-      const fetchWithRetry = async (retries = 3): Promise<void> => {
-        for (let i = 0; i < retries; i++) {
-          try {
-            const params = new URLSearchParams({
-              activeOnly: "false",
-              ...(query ? { q: query } : {}),
-              ...(category ? { category: category } : {}),
-              ...(outOfStock ? { outOfStock: "true" } : {}),
-            });
-            const res = await fetch(`/api/products?${params}`);
-            if (!res.ok) {
-              if (res.status === 401) {
-                router.replace("/admin");
-                return;
-              }
-              const errorData = await res.json().catch(() => ({}));
-              console.error("API Error:", errorData);
-              throw new Error(errorData.error || "데이터를 불러오지 못했습니다.");
-            }
-            const data = await res.json();
-            if (requestId === requestIdRef.current) {
-              setProducts(data);
-            }
-            return;
-          } catch (error) {
-            if (i < retries - 1) {
-              await new Promise(resolve => setTimeout(resolve, 300 * (i + 1)));
-              continue;
-            }
-            throw error;
-          }
-        }
-      };
+      const params = new URLSearchParams({
+        activeOnly: "false",
+        includeOutOfStock: "true",
+        ...(searchQuery ? { q: searchQuery } : {}),
+        ...(categoryFilter ? { category: categoryFilter } : {}),
+      });
+      const res = await fetch(`/api/products?${params.toString()}`);
 
-      await fetchWithRetry();
+      if (res.status === 401) {
+        router.replace("/admin");
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("Failed to load products");
+      }
+
+      const data = await res.json();
+      const normalizedProducts = Array.isArray(data) ? data.map(normalizeProduct) : [];
+      setProducts(normalizedProducts);
+      setActiveProductId((current) => current ?? normalizedProducts[0]?.id ?? null);
     } catch (error) {
-      console.error("로딩 에러:", error);
+      console.error("[admin/products] load failed", error);
+      setToast("상품 목록을 불러오지 못했습니다.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [categoryFilter, router, searchQuery]);
 
   useEffect(() => {
-    fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-  }, [searchQuery, categoryFilter, outOfStockOnly]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearchQuery(searchInput);
-    }, 300);
+    const timer = setTimeout(() => setSearchQuery(searchInput.trim()), 300);
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const url = editingProduct
-        ? `/api/products/${editingProduct.id}`
-        : "/api/products";
-      const method = editingProduct ? "PATCH" : "POST";
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(""), 2200);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
-      const res = await fetch(url, {
-        method,
+  useEffect(() => {
+    if (!flashProductId) return;
+    const timer = setTimeout(() => setFlashProductId(null), 1800);
+    return () => clearTimeout(timer);
+  }, [flashProductId]);
+
+  const closeEditor = useCallback(() => {
+    if (isDirty && !confirm("저장되지 않은 변경사항이 있습니다. 닫으시겠습니까?")) return;
+    setShowCreateForm(false);
+    setEditingProductId(null);
+    setFormData(emptyForm());
+  }, [isDirty]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!showCreateForm && !editingProductId) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeEditor();
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        void saveProduct();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
+
+  function updateProductInState(product: Product) {
+    const normalized = normalizeProduct(product);
+    setProducts((current) =>
+      current.map((item) => (item.id === normalized.id ? normalized : item)),
+    );
+    setFlashProductId(normalized.id);
+  }
+
+  async function saveProduct(event?: React.FormEvent) {
+    event?.preventDefault();
+    if (editingProduct && !isDirty) return;
+
+    const targetId = editingProduct?.id ?? "new";
+    setSavingProductId(targetId);
+    try {
+      const res = await fetch(editingProduct ? `/api/products/${editingProduct.id}` : "/api/products", {
+        method: editingProduct ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           price: Number(formData.price),
           stock: Number(formData.stock),
+          barcode: formData.barcode.trim() || null,
+          imageUrl: formData.imageUrl.trim() || null,
+          description: formData.description.trim() || null,
           maxOrderQuantity: formData.maxOrderQuantity ? Number(formData.maxOrderQuantity) : null,
         }),
       });
 
-      if (res.ok) {
-        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-        setShowForm(false);
-        setEditingProduct(null);
-        setFormData({
-          name: "",
-          description: "",
-          barcode: "",
-          price: "",
-          category: "미분류",
-          imageUrl: "",
-          stock: "",
-          isRecommended: false,
-          isOnlineExclusive: false,
-          isPopular: false,
-          isOutOfStock: false,
-          maxOrderQuantity: "",
-        });
-      } else {
-        const data = await res.json().catch(() => ({}));
-        alert(data.error ?? "저장에 실패했습니다.");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error ?? "상품 저장에 실패했습니다.");
       }
+
+      const saved = normalizeProduct(data);
+      if (editingProduct) {
+        updateProductInState(saved);
+        setToast("상품 수정이 저장되었습니다.");
+      } else {
+        setProducts((current) => [saved, ...current]);
+        setActiveProductId(saved.id);
+        setFlashProductId(saved.id);
+        setToast("상품이 등록되었습니다.");
+      }
+
+      setShowCreateForm(false);
+      setEditingProductId(null);
+      setFormData(emptyForm());
     } catch (error) {
-      console.error(error);
-      alert("저장 중 오류가 발생했습니다.");
+      console.error("[admin/products] save failed", error);
+      alert(error instanceof Error ? error.message : "상품 저장 중 오류가 발생했습니다.");
+    } finally {
+      setSavingProductId(null);
     }
-  };
+  }
 
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product);
-    setFormData({
-      name: product.name,
-      description: product.description || "",
-      barcode: product.barcode || "",
-      price: typeof product.price === 'string' ? product.price : String(product.price),
-      category: product.category as any,
-      imageUrl: product.imageUrl || "",
-      stock: String(product.stock),
-      isRecommended: product.isRecommended,
-      isOnlineExclusive: product.isOnlineExclusive,
-      isPopular: product.isPopular || false,
-      isOutOfStock: product.isOutOfStock || false,
-      maxOrderQuantity: product.maxOrderQuantity ? String(product.maxOrderQuantity) : "",
-    });
-    setShowForm(true);
-  };
-
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`${name} 상품을 삭제하시겠습니까?`)) return;
+  async function toggleFlag(product: Product, flag: ProductFlag) {
+    const previousProduct = product;
+    const nextValue = !product[flag];
+    setBusyProductId(product.id);
+    setProducts((current) =>
+      current.map((item) => (item.id === product.id ? { ...item, [flag]: nextValue } : item)),
+    );
 
     try {
-      const res = await fetch(`/api/admin/products/delete`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: [id] }),
-      });
-
-      if (res.ok) {
-        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-      } else {
-        alert("삭제에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("삭제 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleBulkDelete = async () => {
-    if (selectedIds.size === 0) return;
-    if (!confirm(`${selectedIds.size}개 상품을 삭제하시겠습니까?`)) return;
-
-    try {
-      const res = await fetch(`/api/admin/products/delete`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: Array.from(selectedIds) }),
-      });
-
-      if (res.ok) {
-        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-        setSelectedIds(new Set());
-        setShowBulkActions(false);
-        alert("선택한 상품이 삭제되었습니다.");
-      } else {
-        alert("삭제에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("삭제 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleToggleActive = async (id: string, isOutOfStock: boolean) => {
-    try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`/api/products/${product.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isOutOfStock: !isOutOfStock }),
+        body: JSON.stringify({ [flag]: nextValue }),
       });
-
-      if (res.ok) {
-        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "상태 변경 실패");
+      updateProductInState(data);
+      setToast(`${STATUS_META[flag].label} 상태가 변경되었습니다.`);
     } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedIds(new Set(products.map((p) => p.id)));
-    } else {
-      setSelectedIds(new Set());
-    }
-  };
-
-  const handleSelectOne = (id: string, checked: boolean) => {
-    const newSelected = new Set(selectedIds);
-    if (checked) {
-      newSelected.add(id);
-    } else {
-      newSelected.delete(id);
-    }
-    setSelectedIds(newSelected);
-  };
-
-  const handleBulkCategoryChange = async () => {
-    if (!bulkCategory || selectedIds.size === 0) return;
-
-    try {
-      const promises = Array.from(selectedIds).map(async (id) => {
-        const updateWithRetry = async (retries = 3): Promise<any> => {
-          for (let i = 0; i < retries; i++) {
-            try {
-              const res = await fetch(`/api/products/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ category: bulkCategory }),
-              });
-
-              if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(`상품 ID ${id} 업데이트 실패: ${errorData.error || '알 수 없는 오류'}`);
-              }
-
-              return res.json();
-            } catch (error) {
-              if (i < retries - 1) {
-                await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
-                continue;
-              }
-              throw error;
-            }
-          }
-        };
-
-        return updateWithRetry();
-      });
-
-      await Promise.all(promises);
-      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-      setSelectedIds(new Set());
-      setBulkCategory("");
-      setShowBulkActions(false);
-      alert("카테고리가 일괄 변경되었습니다.");
-    } catch (error) {
-      console.error(error);
-      alert(`일괄 변경 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
-    }
-  };
-
-  const handleBulkOnlineExclusiveChange = async (value: boolean) => {
-    if (selectedIds.size === 0) return;
-
-    try {
-      const promises = Array.from(selectedIds).map((id) =>
-        fetch(`/api/products/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ isOnlineExclusive: value }),
-        })
-      );
-
-      await Promise.all(promises);
-      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-      setSelectedIds(new Set());
-      setShowBulkActions(false);
-      alert("온라인 전용이 일괄 변경되었습니다.");
-    } catch (error) {
-      console.error(error);
-      alert("일괄 변경 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleBulkRecommendedChange = async (value: boolean) => {
-    if (selectedIds.size === 0) return;
-
-    try {
-      const promises = Array.from(selectedIds).map((id) =>
-        fetch(`/api/products/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ isRecommended: value }),
-        })
-      );
-
-      await Promise.all(promises);
-      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-      setSelectedIds(new Set());
-      setShowBulkActions(false);
-      alert("추천 상품이 일괄 변경되었습니다.");
-    } catch (error) {
-      console.error(error);
-      alert("일괄 변경 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleBulkPopularChange = async (value: boolean) => {
-    if (selectedIds.size === 0) return;
-
-    try {
-      const promises = Array.from(selectedIds).map((id) =>
-        fetch(`/api/products/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ isPopular: value }),
-        })
-      );
-
-      await Promise.all(promises);
-      fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-      setSelectedIds(new Set());
-      setShowBulkActions(false);
-      alert("인기 상품이 일괄 변경되었습니다.");
-    } catch (error) {
-      console.error(error);
-      alert("일괄 변경 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleExcelUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[];
-      console.log("엑셀 파싱 결과:", jsonData);
-
-      // 헤더 행 감지 및 건너뛰기
-      const startIndex = jsonData.length > 0 && typeof jsonData[0][1] === 'string' ? 1 : 0;
-
-      const productsToCreate = jsonData.slice(startIndex)
-        .filter((row) => row && row.length >= 2)
-        .map((row) => {
-          const salePrice = row[3];
-          const basePrice = row[2];
-          // 행사가가 0보다 큰 경우에만 행사가 사용, 0이거나 없으면 기본가 사용
-          const hasSalePrice = salePrice !== undefined && salePrice !== null && salePrice !== '' && Number(salePrice) > 0;
-          const finalPrice = hasSalePrice ? Number(salePrice) : Number(basePrice || 0);
-          console.log(`행: ${row[1]}, 전체데이터: [${row.join(', ')}], 기본가(${row[2]}): ${basePrice}, 행사가(${row[3]}): ${salePrice}, 행사가있음: ${hasSalePrice}, 최종가: ${finalPrice}`);
-          return {
-            barcode: row[0] ? String(row[0]) : null,
-            name: row[1] ? String(row[1]).trim() : "",
-            price: finalPrice,
-            category: PRODUCT_CATEGORIES[0],
-            description: null,
-            imageUrl: null,
-            stock: 0,
-            isRecommended: false,
-            isOnlineExclusive: false,
-            isPopular: false,
-          };
-        })
-        .filter((p) => p.name);
-
-      const res = await fetch("/api/products/bulk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productsToCreate),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-        setShowExcelUpload(false);
-        alert(`상품 일괄 처리 완료:\n- 생성: ${data.created}개\n- 업데이트: ${data.updated}개\n- 스킵: ${data.skipped}개\n- 총: ${data.total}개`);
-      } else {
-        const data = await res.json().catch(() => ({}));
-        alert(data.error ?? "일괄 등록에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("엑셀 파일 처리 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingImage(true);
-    try {
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setFormData({ ...formData, imageUrl: data.url });
-      } else {
-        const data = await res.json().catch(() => ({}));
-        alert(data.error ?? "이미지 업로드에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("이미지 업로드 중 오류가 발생했습니다.");
+      console.error("[admin/products] status toggle failed", error);
+      setProducts((current) => current.map((item) => (item.id === previousProduct.id ? previousProduct : item)));
+      alert("상품 상태 변경에 실패했습니다.");
     } finally {
-      setUploadingImage(false);
+      setBusyProductId(null);
     }
-  };
+  }
 
-  const handleImageSearch = async () => {
-    if (!imageSearchQuery.trim()) return;
+  async function deleteProducts(ids: string[]) {
+    if (ids.length === 0) return;
+    if (!confirm(`${ids.length}개 상품을 삭제하시겠습니까?`)) return;
 
-    setSearchingImages(true);
-    try {
-      const res = await fetch(`/api/search-image?query=${encodeURIComponent(imageSearchQuery)}`);
-      if (res.ok) {
-        const data = await res.json();
-        setImageSearchResults(data.images || []);
-      } else {
-        alert("이미지 검색에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("이미지 검색 중 오류가 발생했습니다.");
-    } finally {
-      setSearchingImages(false);
-    }
-  };
+    const res = await fetch("/api/admin/products/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids }),
+    });
 
-  const handleSelectSearchImage = async (imageUrl: string) => {
-    setUploadingImage(true);
-    try {
-      const downloadRes = await fetch("/api/download-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: imageUrl }),
-      });
-
-      if (!downloadRes.ok) {
-        const errorData = await downloadRes.json().catch(() => ({}));
-        alert(errorData.error ?? "이미지 다운로드에 실패했습니다.");
-        return;
-      }
-
-      const blob = await downloadRes.blob();
-      const file = new File([blob], "image.jpg", { type: blob.type });
-
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
-
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
-
-      if (uploadRes.ok) {
-        const data = await uploadRes.json();
-        setFormData({ ...formData, imageUrl: data.url });
-        setImageSearchResults([]);
-        setImageSearchQuery("");
-      } else {
-        const data = await uploadRes.json().catch(() => ({}));
-        alert(data.error ?? "이미지 업로드에 실패했습니다.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("이미지 다운로드 및 업로드 중 오류가 발생했습니다.");
-    } finally {
-      setUploadingImage(false);
-    }
-  };
-
-  const handleAutoImageUpload = async () => {
-    const productsWithoutImages = products.filter(p => !p.imageUrl);
-    if (productsWithoutImages.length === 0) {
-      alert("이미지가 없는 상품이 없습니다.");
+    if (!res.ok) {
+      alert("상품 삭제에 실패했습니다.");
       return;
     }
 
-    const CONCURRENCY = 3;
-    const estimatedTime = Math.ceil(productsWithoutImages.length / CONCURRENCY * 2 / 60);
-    if (!confirm(`${productsWithoutImages.length}개 상품의 이미지를 자동으로 업로드하시겠습니까?\n\n예상 소요 시간: 약 ${estimatedTime}분\n\n동시에 ${CONCURRENCY}개씩 처리하여 속도를 최적화합니다.`)) return;
+    setProducts((current) => current.filter((product) => !ids.includes(product.id)));
+    setSelectedIds(new Set());
+    setActiveProductId((current) => (current && ids.includes(current) ? null : current));
+    setToast("상품을 삭제했습니다.");
+  }
 
-    setAutoUploadingImages(true);
-    let successCount = 0;
-    let failCount = 0;
-    let processedCount = 0;
-    const errors: string[] = [];
+  async function bulkPatch(payload: Partial<Product>, message: string) {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
 
-    const processProduct = async (product: any, retryCount = 0): Promise<void> => {
-      const maxRetries = 2;
+    const previousById = new Map(products.map((product) => [product.id, product]));
+    setProducts((current) =>
+      current.map((product) => (selectedIds.has(product.id) ? { ...product, ...payload } : product)),
+    );
 
-      try {
-        console.log(`[${processedCount + 1}/${productsWithoutImages.length}] 상품 ${product.name} 이미지 검색 시작...`);
-        const searchRes = await fetch(`/api/search-image?query=${encodeURIComponent(product.name)}`);
-
-        if (!searchRes.ok) {
-          const errorData = await searchRes.json().catch(() => ({}));
-          console.error(`상품 ${product.name} 검색 실패:`, errorData);
-
-          if (errorData.error && (errorData.error.includes("속도 제한") || searchRes.status === 429)) {
-            if (retryCount < maxRetries) {
-              const waitTime = Math.pow(2, retryCount) * 5000;
-              console.log(`속도 제한 도달, ${waitTime / 1000}초 대기 후 재시도...`);
-              await new Promise(resolve => setTimeout(resolve, waitTime));
-              return processProduct(product, retryCount + 1);
-            }
-          }
-
-          errors.push(`${product.name}: 검색 실패 - ${errorData.error || '알 수 없는 오류'}`);
-          failCount++;
-          processedCount++;
-          return;
-        }
-
-        const searchData = await searchRes.json();
-        console.log(`상품 ${product.name} 검색 결과:`, searchData.images?.length || 0);
-        if (!searchData.images || searchData.images.length === 0) {
-          errors.push(`${product.name}: 검색 결과 없음`);
-          failCount++;
-          processedCount++;
-          return;
-        }
-
-        const imageUrl = searchData.images[0];
-        console.log(`상품 ${product.name} 이미지 다운로드: ${imageUrl}`);
-
-        const downloadRes = await fetch("/api/download-image", {
-          method: "POST",
+    const results = await Promise.allSettled(
+      ids.map(async (id) => {
+        const res = await fetch(`/api/products/${id}`, {
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: imageUrl }),
+          body: JSON.stringify(payload),
         });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error ?? `bulk update failed: ${id}`);
+        return normalizeProduct(data);
+      }),
+    );
 
-        if (!downloadRes.ok) {
-          const errorData = await downloadRes.json().catch(() => ({}));
-          console.error(`상품 ${product.name} 이미지 다운로드 실패:`, errorData);
+    const savedProducts = results
+      .filter((result): result is PromiseFulfilledResult<Product> => result.status === "fulfilled")
+      .map((result) => result.value);
+    const failedIds = ids.filter((_, index) => results[index].status === "rejected");
 
-          if (retryCount < maxRetries) {
-            console.log(`이미지 다운로드 재시도 (${retryCount + 1}/${maxRetries})...`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return processProduct(product, retryCount + 1);
-          }
+    setProducts((current) =>
+      current.map((product) => {
+        const saved = savedProducts.find((item) => item.id === product.id);
+        if (saved) return saved;
+        if (failedIds.includes(product.id)) return previousById.get(product.id) ?? product;
+        return product;
+      }),
+    );
 
-          errors.push(`${product.name}: 이미지 다운로드 실패 - ${errorData.error || '알 수 없는 오류'}`);
-          failCount++;
-          processedCount++;
-          return;
-        }
-
-        const blob = await downloadRes.blob();
-        const file = new File([blob], "image.jpg", { type: blob.type });
-
-        console.log(`상품 ${product.name} 이미지 업로드 시작...`);
-        const uploadFormData = new FormData();
-        uploadFormData.append("file", file);
-
-        const uploadRes = await fetch("/api/admin/upload", {
-          method: "POST",
-          body: uploadFormData,
-        });
-
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json();
-          console.log(`상품 ${product.name} 업로드 완료: ${uploadData.url}`);
-          const updateRes = await fetch(`/api/products/${product.id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imageUrl: uploadData.url }),
-          });
-
-          if (updateRes.ok) {
-            console.log(`상품 ${product.name} 업데이트 완료`);
-            successCount++;
-            processedCount++;
-          } else {
-            const errorData = await updateRes.json().catch(() => ({}));
-            console.error(`상품 ${product.name} 업데이트 실패:`, errorData);
-
-            if (retryCount < maxRetries) {
-              console.log(`상품 업데이트 재시도 (${retryCount + 1}/${maxRetries})...`);
-              await new Promise(resolve => setTimeout(resolve, 2000));
-              return processProduct(product, retryCount + 1);
-            }
-
-            errors.push(`${product.name}: 업데이트 실패 - ${errorData.error || '알 수 없는 오류'}`);
-            failCount++;
-            processedCount++;
-          }
-        } else {
-          const errorData = await uploadRes.json().catch(() => ({}));
-          console.error(`상품 ${product.name} 업로드 실패:`, errorData);
-
-          if (retryCount < maxRetries) {
-            console.log(`이미지 업로드 재시도 (${retryCount + 1}/${maxRetries})...`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return processProduct(product, retryCount + 1);
-          }
-
-          errors.push(`${product.name}: 업로드 실패 - ${errorData.error || '알 수 없는 오류'}`);
-          failCount++;
-          processedCount++;
-        }
-      } catch (error) {
-        console.error(`상품 ${product.name} 이미지 업로드 실패:`, error);
-
-        if (retryCount < maxRetries) {
-          console.log(`일반 오류 재시도 (${retryCount + 1}/${maxRetries})...`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          return processProduct(product, retryCount + 1);
-        }
-
-        errors.push(`${product.name}: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
-        failCount++;
-        processedCount++;
-      }
-    };
-
-    const processQueue = async (queue: any[]): Promise<void> => {
-      const results = await Promise.allSettled(
-        queue.map(product => processProduct(product))
-      );
-      results.forEach((result, index) => {
-        if (result.status === 'rejected') {
-          console.error(`상품 ${queue[index].name} 처리 실패:`, result.reason);
-        }
-      });
-    };
-
-    for (let i = 0; i < productsWithoutImages.length; i += CONCURRENCY) {
-      const batch = productsWithoutImages.slice(i, i + CONCURRENCY);
-      await processQueue(batch);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    if (savedProducts.length > 0) {
+      setFlashProductId(savedProducts[0].id);
     }
 
-    setAutoUploadingImages(false);
-    fetchProducts(searchQuery, categoryFilter, outOfStockOnly);
-
-    if (errors.length > 0) {
-      console.error("이미지 업로드 오류들:", errors);
-      alert(`이미지 업로드 완료: 성공 ${successCount}개, 실패 ${failCount}개\n\n오류 내용:\n${errors.slice(0, 5).join('\n')}${errors.length > 5 ? `\n...외 ${errors.length - 5}개` : ''}`);
+    if (failedIds.length > 0) {
+      alert(`${failedIds.length}개 상품 변경에 실패했습니다. 실패 항목은 원래 상태로 되돌렸습니다.`);
     } else {
-      alert(`이미지 업로드 완료: 성공 ${successCount}개, 실패 ${failCount}개`);
+      setSelectedIds(new Set());
+      setToast(message);
     }
-  };
+  }
+
+  function guardDirtyChange(next: () => void) {
+    if (isDirty && !confirm("저장되지 않은 변경사항이 있습니다. 계속하시겠습니까?")) return;
+    next();
+  }
+
+  function startEdit(product: Product) {
+    guardDirtyChange(() => {
+      setShowCreateForm(false);
+      setActiveProductId(product.id);
+      setEditingProductId(product.id);
+      setFormData(formFromProduct(product));
+    });
+  }
+
+  function startCreate() {
+    guardDirtyChange(() => {
+      setActiveProductId(null);
+      setEditingProductId(null);
+      setFormData(emptyForm());
+      setShowCreateForm(true);
+    });
+  }
+
+  function toggleSelection(id: string, checked: boolean) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">상품 관리</h1>
-          <div className="flex gap-2">
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">상품 운영 콘솔</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              상품 상태, 노출 태그, 품절 여부를 빠르게 제어하는 실시간 운영 화면입니다.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
             <input
               type="text"
-              placeholder="상품명, 바코드, 설명 검색..."
+              placeholder="상품명, 바코드, 설명 검색"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 w-64"
+              onChange={(event) => setSearchInput(event.target.value)}
+              className="w-full rounded-xl border px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500 sm:w-80"
             />
             <button
-              onClick={handleAutoImageUpload}
-              disabled={autoUploadingImages}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {autoUploadingImages ? "이미지 업로드 중..." : "🖼️ 자동 이미지 업로드"}
-            </button>
-            <button
-              onClick={() => setShowExcelUpload(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
-            >
-              📊 엑셀 일괄 등록
-            </button>
-            <button
-              onClick={() => {
-                setEditingProduct(null);
-                setFormData({
-                  name: "",
-                  description: "",
-                  barcode: "",
-                  price: "",
-                  category: "미분류",
-                  imageUrl: "",
-                  stock: "",
-                  isRecommended: false,
-                  isOnlineExclusive: false,
-                  isPopular: false,
-                  isOutOfStock: false,
-                  maxOrderQuantity: "",
-                });
-                setShowForm(true);
-              }}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 font-medium"
+              type="button"
+              onClick={startCreate}
+              className="rounded-xl bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700"
             >
               + 상품 추가
             </button>
           </div>
         </div>
 
-        {/* 카테고리 필터 버튼 */}
-        <div className="flex gap-2 flex-wrap mb-6">
-          <button
-            onClick={() => {
-  setCategoryFilter("");
-  setSearchInput("");
-  setSearchQuery("");
-}}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${!categoryFilter ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
-          >
-            전체
-          </button>
-          {PRODUCT_CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-  setCategoryFilter(cat);
-  setSearchInput("");
-  setSearchQuery("");
-}}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${categoryFilter === cat ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
-            >
-              {cat}
-            </button>
-          ))}
-          <label className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer border hover:bg-gray-100">
-            <input
-              type="checkbox"
-              checked={outOfStockOnly}
-              onChange={(e) => {
-  setOutOfStockOnly(e.target.checked);
-  setSearchInput("");
-  setSearchQuery("");
-}}
-              className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-            />
-            품절만
-          </label>
+        <ProductFilterBar
+          statusFilter={statusFilter}
+          categoryFilter={categoryFilter}
+          onStatusChange={setStatusFilter}
+          onCategoryChange={(category) => {
+            setCategoryFilter(category);
+            setSearchInput("");
+            setSearchQuery("");
+          }}
+        />
+
+        <div className="mt-4">
+          <ProductBulkActionBar
+            selectedCount={selectedIds.size}
+            bulkCategory={bulkCategory}
+            onBulkCategoryChange={setBulkCategory}
+            onPatch={bulkPatch}
+            onDelete={() => deleteProducts(Array.from(selectedIds))}
+            onClear={() => setSelectedIds(new Set())}
+          />
+          {selectedIds.size > 0 && (
+            <p className="mt-2 text-xs text-gray-500">
+              선택 항목: Popular {selectedSummary.popular} · Recommended {selectedSummary.recommended} · Limited {selectedSummary.limited} · 품절 {selectedSummary.outOfStock}
+            </p>
+          )}
         </div>
 
-        {showExcelUpload && (
-          <div className="bg-white rounded-2xl border p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">엑셀 일괄 등록</h2>
-            <div className="space-y-4">
-              <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
-                <p className="font-semibold mb-2">엑셀 파일 형식:</p>
-                <p>1열: 바코드, 2열: 상품명, 3열: 기본가격, 4열: 행사가(선택)</p>
-                <p className="mt-1 text-xs">4열에 행사가 입력 시 해당 가격으로 등록, 비어있으면 3열 기본가격 사용</p>
-              </div>
-              <input
-                type="file"
-                accept=".xlsx,.xls"
-                onChange={handleExcelUpload}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-              <button
-                onClick={() => setShowExcelUpload(false)}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-medium"
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        )}
-
-        {selectedIds.size > 0 && (
-          <div className="bg-white rounded-2xl border p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                {selectedIds.size}개 상품 선택됨
-              </span>
-              <div className="flex gap-2">
-                <select
-                  value={bulkCategory}
-                  onChange={(e) => setBulkCategory(e.target.value)}
-                  className="px-3 py-2 border rounded-lg text-sm"
-                >
-                  <option value="">카테고리 선택</option>
-                  {PRODUCT_CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={handleBulkCategoryChange}
-                  disabled={!bulkCategory}
-                  className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  카테고리 변경
-                </button>
-                <button
-                  onClick={() => handleBulkOnlineExclusiveChange(true)}
-                  className="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 text-sm"
-                >
-                  온라인전용 설정
-                </button>
-                <button
-                  onClick={() => handleBulkOnlineExclusiveChange(false)}
-                  className="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 text-sm"
-                >
-                  온라인전용 해제
-                </button>
-                <button
-                  onClick={() => handleBulkRecommendedChange(true)}
-                  className="bg-amber-600 text-white px-3 py-2 rounded-lg hover:bg-amber-700 text-sm"
-                >
-                  추천 설정
-                </button>
-                <button
-                  onClick={() => handleBulkRecommendedChange(false)}
-                  className="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 text-sm"
-                >
-                  추천 해제
-                </button>
-                <button
-                  onClick={() => handleBulkPopularChange(true)}
-                  className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-sm"
-                >
-                  인기상품 설정
-                </button>
-                <button
-                  onClick={() => handleBulkPopularChange(false)}
-                  className="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 text-sm"
-                >
-                  인기상품 해제
-                </button>
-                <button
-                  onClick={handleBulkDelete}
-                  className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-sm"
-                >
-                  삭제
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showForm && (
-          <div className="bg-white rounded-2xl border p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">
-              {editingProduct ? "상품 수정" : "새 상품 등록"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    상품명 *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    바코드
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.barcode}
-                    onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    카테고리 *
-                  </label>
-                  <select
-                    required
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  >
-                    {PRODUCT_CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    가격 *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    재고
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    최대 주문 수량
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="비워두면 제한 없음"
-                    value={formData.maxOrderQuantity}
-                    onChange={(e) => setFormData({ ...formData, maxOrderQuantity: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">0 또는 비워두면 제한 없음</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    상품 이미지
-                  </label>
-                  <div className="space-y-3">
-                    <div className="flex gap-2">
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        onChange={handleImageUpload}
-                        disabled={uploadingImage}
-                        className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                      />
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="네이버 이미지 검색..."
-                        value={imageSearchQuery}
-                        onChange={(e) => setImageSearchQuery(e.target.value)}
-                        onKeyPress={(e) => e.key === "Enter" && handleImageSearch()}
-                        disabled={searchingImages || uploadingImage}
-                        className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleImageSearch}
-                        disabled={searchingImages || uploadingImage || !imageSearchQuery.trim()}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {searchingImages ? "검색 중..." : "검색"}
-                      </button>
-                    </div>
-                    {uploadingImage && (
-                      <p className="text-sm text-gray-500">이미지 업로드 중...</p>
-                    )}
-                    {imageSearchResults.length > 0 && (
-                      <div className="grid grid-cols-5 gap-2">
-                        {imageSearchResults.map((imageUrl, index) => (
-                          <div
-                            key={index}
-                            className="relative cursor-pointer group bg-gray-100 rounded-lg overflow-hidden h-20"
-                            onClick={() => handleSelectSearchImage(imageUrl)}
-                          >
-                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                              <img
-                                src={imageUrl}
-                                alt={`검색 결과 ${index + 1}`}
-                                className="max-w-full max-h-full object-contain"
-                                referrerPolicy="no-referrer"
-                              />
-                            </div>
-                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition rounded-lg flex items-center justify-center">
-                              <span className="text-white text-xs opacity-0 group-hover:opacity-100 transition">선택</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {formData.imageUrl && (
-                      <div className="relative w-32 h-32">
-                        <img
-                          src={formData.imageUrl}
-                          alt="상품 이미지 미리보기"
-                          className="w-full h-full object-cover rounded-lg border"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setFormData({ ...formData, imageUrl: "" })}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  설명
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
-
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isRecommended}
-                    onChange={(e) => setFormData({ ...formData, isRecommended: e.target.checked })}
-                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">추천 상품</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isOnlineExclusive}
-                    onChange={(e) => setFormData({ ...formData, isOnlineExclusive: e.target.checked })}
-                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">온라인 전용</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isPopular}
-                    onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
-                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">인기상품</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isOutOfStock}
-                    onChange={(e) => setFormData({ ...formData, isOutOfStock: e.target.checked })}
-                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">품절</span>
-                </label>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 font-medium"
-                >
-                  {editingProduct ? "수정" : "등록"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingProduct(null);
+        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <section className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+            <div className="flex items-center justify-between gap-3 border-b bg-gray-50 px-3 py-3">
+              <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={allDisplayedSelected}
+                  onChange={(event) => {
+                    if (event.target.checked) setSelectedIds(new Set(displayedProducts.map((product) => product.id)));
+                    else setSelectedIds(new Set());
                   }}
-                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-medium"
-                >
-                  취소
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+                  className="h-4 w-4 rounded text-green-600 focus:ring-green-500"
+                />
+                현재 목록 전체 선택
+              </label>
+              <span className="text-xs font-semibold text-gray-500">{displayedProducts.length}개 표시</span>
+            </div>
 
-        {loading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-2xl h-32 animate-pulse border border-gray-100" />
-            ))}
-          </div>
-        ) : products.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-400">
-            등록된 상품이 없습니다.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 bg-white rounded-lg border p-3">
-              <input
-                type="checkbox"
-                checked={selectedIds.size === products.length && products.length > 0}
-                onChange={(e) => handleSelectAll(e.target.checked)}
-                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-              />
-              <span className="text-sm text-gray-600">전체 선택</span>
-            </div>
-            <div className="grid gap-4">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className={`bg-white rounded-2xl border p-1 shadow-sm hover:shadow-md transition ${
-                  product.isOutOfStock ? "opacity-60" : ""
-                }`}
-              >
-                <div className="grid grid-cols-[auto_80px_100px_48px_1fr_100px_80px_auto] items-center gap-1">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(product.id)}
-                    onChange={(e) => handleSelectOne(product.id, e.target.checked)}
-                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                  />
-                  <div className="flex gap-1">
-                    {product.isRecommended && (
-                      <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded">
-                        추천
-                      </span>
-                    )}
-                    {product.isOnlineExclusive && (
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
-                        온라인
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-xs text-gray-500 whitespace-nowrap truncate" title={product.barcode || ""}>
-                    {product.barcode || "-"}
-                  </span>
-                  {product.imageUrl ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-12 h-12 object-cover rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
-                      없음
-                    </div>
-                  )}
-                  <h3 className="font-semibold text-gray-900 truncate" title={product.name}>
-                    {product.name}
-                  </h3>
-                  <p className="text-sm font-bold text-green-700 whitespace-nowrap">
-                    {formatPrice(Number(product.price))}
-                  </p>
-                  <p className="text-xs text-gray-500 whitespace-nowrap">
-                    {product.category}
-                  </p>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => handleEdit(product)}
-                      className="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded-lg hover:bg-gray-200 font-medium"
-                    >
-                      수정
-                    </button>
-                    <button
-                      onClick={() => handleToggleActive(product.id, product.isOutOfStock)}
-                      className={`text-sm px-2 py-1 rounded-lg font-medium ${
-                        product.isOutOfStock
-                          ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
-                          : "bg-green-100 text-green-700 hover:bg-green-200"
-                      }`}
-                    >
-                      {product.isOutOfStock ? "품절해제" : "품절"}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id, product.name)}
-                      className="text-sm bg-red-100 text-red-700 px-2 py-1 rounded-lg hover:bg-red-200 font-medium"
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </div>
+            {loading ? (
+              <div className="space-y-2 p-3">
+                {[1, 2, 3, 4].map((index) => (
+                  <div key={index} className="h-20 animate-pulse rounded-xl bg-gray-100" />
+                ))}
               </div>
-            ))}
-            </div>
-          </div>
-        )}
+            ) : displayedProducts.length === 0 ? (
+              <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
+            ) : (
+              displayedProducts.map((product) => (
+                <ProductListItem
+                  key={product.id}
+                  product={product}
+                  selected={activeProduct?.id === product.id}
+                  checked={selectedIds.has(product.id)}
+                  highlighted={flashProductId === product.id}
+                  searchQuery={searchQuery}
+                  onSelect={() => setActiveProductId(product.id)}
+                  onToggleSelect={(checked) => toggleSelection(product.id, checked)}
+                  onEdit={() => startEdit(product)}
+                  onDelete={() => deleteProducts([product.id])}
+                />
+              ))
+            )}
+          </section>
+
+          <ProductStatusController
+            product={activeProduct}
+            busy={Boolean(busyProductId && activeProduct?.id === busyProductId)}
+            onToggle={toggleFlag}
+            onEdit={startEdit}
+          />
+        </div>
       </div>
+
+      <ProductEditDrawer
+        open={showCreateForm || Boolean(editingProduct)}
+        mode={editingProduct ? "edit" : "create"}
+        formData={formData}
+        dirty={isDirty}
+        saving={Boolean(savingProductId)}
+        onChange={setFormData}
+        onSubmit={saveProduct}
+        onClose={closeEditor}
+      />
+
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-gray-900 px-4 py-2 text-sm text-white shadow-lg">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

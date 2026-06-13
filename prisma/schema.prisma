@@ -41,6 +41,8 @@ model Product {
 model Order {
   id               String          @id @default(cuid())
   orderNumber      String          @unique
+  clientOrderId    String?         @unique
+  priceSourceVersion String?
   customerName     String
   customerPhone    String
   fulfillmentType  FulfillmentType  @default(DELIVERY)
@@ -60,6 +62,8 @@ model Order {
   @@index([customerPhone])
   @@index([createdAt])
   @@index([fulfillmentType])
+  @@index([clientOrderId])
+  @@index([priceSourceVersion])
 }
 
 model OrderItem {

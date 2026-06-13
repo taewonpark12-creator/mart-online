@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import type { OrderStatus } from "@/lib/types";
+import { canTransition, getTransitionError } from "@/lib/order-status";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -25,12 +26,14 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: "주문을 찾을 수 없습니다." }, { status: 404 });
     }
 
-    if (existing.status === "CANCELLED") {
-      return NextResponse.json({ error: "이미 취소된 주문입니다." }, { status: 400 });
-    }
-
-    if (status === "CANCELLED" && existing.status === "DELIVERED") {
-      return NextResponse.json({ error: "배달 완료된 주문은 취소할 수 없습니다." }, { status: 400 });
+    if (!canTransition(existing.status as OrderStatus, status)) {
+      return NextResponse.json(
+        {
+          code: "INVALID_STATUS_TRANSITION",
+          error: getTransitionError(existing.status as OrderStatus, status),
+        },
+        { status: 400 },
+      );
     }
 
     const order = await prisma.order.update({

@@ -2,85 +2,96 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizePhone } from "@/lib/types";
 
+const WINDOW_MS = 60_000;
+const MAX_REQUESTS = 10;
+const rateLimit = new Map<string, { count: number; resetAt: number }>();
+
+function getClientKey(request: Request) {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
+function isRateLimited(key: string) {
+  const now = Date.now();
+  const current = rateLimit.get(key);
+  if (!current || current.resetAt <= now) {
+    rateLimit.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+
+  current.count += 1;
+  return current.count > MAX_REQUESTS;
+}
+
+function maskPhone(phone: string) {
+  const normalized = normalizePhone(phone);
+  if (normalized.length < 7) return "***";
+  return `${normalized.slice(0, 3)}****${normalized.slice(-4)}`;
+}
+
+function maskAddress(address: string) {
+  if (!address) return "";
+  return address.length <= 8 ? `${address.slice(0, 2)}***` : `${address.slice(0, 8)} ***`;
+}
+
 export async function GET(request: Request) {
+  const clientKey = getClientKey(request);
+  if (isRateLimited(clientKey)) {
+    return NextResponse.json({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }, { status: 429 });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
-    const phone = searchParams.get("phone");
+    const orderNumber = String(searchParams.get("orderNumber") ?? "").trim();
+    const phone = String(searchParams.get("phone") ?? "").trim();
+    const normalizedPhone = normalizePhone(phone);
 
-    // 1. phone parameter null 체크 강화
-    if (!phone) {
-      console.error("[GET /api/orders/check] phone parameter is null");
-      return NextResponse.json({ error: "전화번호를 입력해주세요." }, { status: 400 });
+    if (!orderNumber || !normalizedPhone || normalizedPhone.length < 10) {
+      return NextResponse.json(
+        { error: "주문번호와 연락처를 모두 입력해주세요." },
+        { status: 400 },
+      );
     }
 
-    // 4. phone 포맷 통일 처리 (trim 후 정규화)
-    const trimmedPhone = phone.trim();
-    if (!trimmedPhone) {
-      console.error("[GET /api/orders/check] phone parameter is empty after trim");
-      return NextResponse.json({ error: "전화번호를 입력해주세요." }, { status: 400 });
-    }
-
-    const normalized = normalizePhone(trimmedPhone);
-    if (normalized.length < 10) {
-      console.error("[GET /api/orders/check] phone number too short:", normalized);
-      return NextResponse.json({ error: "올바른 전화번호를 입력해주세요." }, { status: 400 });
-    }
-
-    console.log("[GET /api/orders/check] Searching for phone:", normalized);
-
-    const twentyFourHoursAgo = new Date();
-    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-    // 2. Prisma 조회 오류 처리 강화
-    let orders;
-    try {
-      orders = await prisma.order.findMany({
-        where: { createdAt: { gte: twentyFourHoursAgo } },
-        include: { items: { include: { product: true } } },
-        orderBy: { createdAt: "desc" },
-      });
-    } catch (prismaError) {
-      console.error("[GET /api/orders/check] Prisma query error:", prismaError);
-      return NextResponse.json({ error: "데이터베이스 조회 중 오류가 발생했습니다." }, { status: 500 });
-    }
-
-    // 3. orders가 undefined/null일 경우 안전하게 빈 배열 반환
-    if (!orders) {
-      console.warn("[GET /api/orders/check] orders is null/undefined, returning empty array");
-      return NextResponse.json([]);
-    }
-
-    console.log("[GET /api/orders/check] Found orders:", orders.length);
-
-    // 3. matched 값 안전 처리
-    const matched = orders.filter((o) => {
-      if (!o.customerPhone) {
-        console.warn("[GET /api/orders/check] Order has null customerPhone:", o.id);
-        return false;
-      }
-      const normalizedCustomerPhone = normalizePhone(o.customerPhone);
-      const isMatch = normalizedCustomerPhone === normalized;
-      if (isMatch) {
-        console.log("[GET /api/orders/check] Matched order:", o.id, o.orderNumber);
-      }
-      return isMatch;
+    const order = await prisma.order.findFirst({
+      where: { orderNumber },
+      include: { items: { include: { product: true } } },
     });
 
-    // 3. matched가 undefined/null일 경우 안전하게 빈 배열 반환
-    const result = matched || [];
+    if (!order || normalizePhone(order.customerPhone) !== normalizedPhone) {
+      return NextResponse.json([], { status: 200 });
+    }
 
-    console.log("[GET /api/orders/check] Matched orders:", result.length);
-
-    // BigInt를 문자열로 변환하여 직렬화 오류 방지
-    const serialized = JSON.parse(JSON.stringify(result, (key, value) =>
-      typeof value === 'bigint' ? value.toString() : value
-    ));
-
-    return NextResponse.json(serialized);
+    return NextResponse.json([
+      {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        customerPhone: maskPhone(order.customerPhone),
+        fulfillmentType: order.fulfillmentType,
+        deliveryAddress: maskAddress(order.deliveryAddress),
+        deliveryEntrance: order.deliveryEntrance ? "***" : null,
+        pickupTime: order.pickupTime,
+        memo: order.memo ? "***" : null,
+        paymentMethod: order.paymentMethod,
+        outOfStockPolicy: order.outOfStockPolicy,
+        status: order.status,
+        totalAmount: order.totalAmount,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+        items: order.items.map((item) => ({
+          id: item.id,
+          productName: item.productName,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+        })),
+      },
+    ]);
   } catch (error) {
-    // 6. 서버 로그로 실제 에러 원인 출력
-    console.error("[GET /api/orders/check] Unexpected error:", error);
-    console.error("[GET /api/orders/check] Error stack:", error instanceof Error ? error.stack : String(error));
+    console.error("[GET /api/orders/check]", error);
     return NextResponse.json({ error: "조회 중 오류가 발생했습니다." }, { status: 500 });
   }
 }

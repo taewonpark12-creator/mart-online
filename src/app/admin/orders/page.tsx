@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import {
-  ORDER_STATUS_FLOW,
   ORDER_STATUS_FILTER,
   ORDER_STATUS_LABEL,
   ORDER_STATUS_COLOR,
@@ -24,7 +23,6 @@ import { printReceiptNow } from "@/lib/print-receipt";
 import { orderItemName } from "@/lib/order-item";
 import { useOrderNotification } from "@/lib/notification";
 
-// ✅ 서버에서 보내준 JSON 데이터와 일치하는 타입 정의
 type OrderItem = {
   id: string;
   quantity: number;
@@ -51,113 +49,446 @@ type Order = {
   items: OrderItem[];
 };
 
+const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
+  PENDING: "APPROVED",
+  APPROVED: "DELIVERED",
+};
+
+const APPROVED_CANCEL_BLOCK_MESSAGE = "Orders that have already been approved cannot be cancelled.";
+
+function statusRank(status: OrderStatus) {
+  if (status === "PENDING") return 0;
+  if (status === "APPROVED") return 1;
+  if (status === "DELIVERED") return 2;
+  return 3;
+}
+
+function getOrderTotal(order: Order) {
+  return Number(order.totalAmount) || 0;
+}
+
+function getOrderTime(order: Order) {
+  return new Date(order.createdAt).toLocaleString("ko-KR");
+}
+
+function canCancelOrder(order: Order) {
+  return order.status === "PENDING";
+}
+
+function matchesSearch(order: Order, query: string) {
+  if (!query) return true;
+  const normalized = query.toLowerCase();
+  return [
+    order.orderNumber,
+    order.customerName,
+    order.customerPhone,
+    order.deliveryAddress,
+    order.items.map((item) => orderItemName(item)).join(" "),
+  ]
+    .join(" ")
+    .toLowerCase()
+    .includes(normalized);
+}
+
+function OrderSummaryCard({
+  order,
+  selected,
+  fresh,
+  onSelect,
+}: {
+  order: Order;
+  selected: boolean;
+  fresh: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`w-full text-left rounded-2xl border p-4 transition ${
+        selected
+          ? "border-green-500 bg-green-50 shadow-sm"
+          : fresh
+            ? "border-red-200 bg-red-50/80 animate-pulse"
+            : "border-gray-200 bg-white hover:border-green-200 hover:shadow-sm"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            {fresh && <span className="h-2 w-2 rounded-full bg-red-500" />}
+            <p className="font-mono text-sm font-black text-gray-900 truncate">{order.orderNumber}</p>
+          </div>
+          <p className="mt-1 text-sm font-semibold text-gray-800 truncate">
+            {order.customerName}
+          </p>
+          <p className="text-xs text-gray-500 truncate">{order.customerPhone}</p>
+        </div>
+        <span className={`shrink-0 text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
+          {ORDER_STATUS_LABEL[order.status]}
+        </span>
+      </div>
+
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div className="text-xs text-gray-500">
+          <p>{getOrderTime(order)}</p>
+          <p>
+            {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
+            {order.fulfillmentType === "PICKUP" && order.pickupTime
+              ? ` · ${formatPickupTimeLabel(order.pickupTime)}`
+              : ""}
+          </p>
+        </div>
+        <p className="text-base font-black text-green-700">{formatPrice(getOrderTotal(order))}</p>
+      </div>
+    </button>
+  );
+}
+
+function StatusActions({
+  order,
+  updating,
+  onUpdate,
+}: {
+  order: Order;
+  updating: boolean;
+  onUpdate: (status: OrderStatus) => void;
+}) {
+  const nextStatus = NEXT_STATUS[order.status];
+
+  return (
+    <div className="space-y-3">
+      <div className="rounded-xl border border-green-100 bg-green-50 p-4">
+        <p className="text-xs font-bold text-green-800 mb-2">Next Step</p>
+        {nextStatus ? (
+          <button
+            type="button"
+            disabled={updating}
+            onClick={() => onUpdate(nextStatus)}
+            className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-60"
+          >
+            {updating ? "처리 중..." : `${ORDER_STATUS_LABEL[nextStatus]} 처리`}
+          </button>
+        ) : (
+          <p className="text-sm text-gray-600">다음 처리 단계가 없습니다.</p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        {(["PENDING", "APPROVED", "DELIVERED"] as OrderStatus[]).map((status) => (
+          <button
+            key={status}
+            type="button"
+            disabled={updating || order.status === status || order.status === "CANCELLED"}
+            onClick={() => onUpdate(status)}
+            className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+              order.status === status
+                ? "border-gray-900 bg-gray-900 text-white"
+                : "border-gray-200 bg-white text-gray-600 hover:border-green-400 hover:text-green-700 disabled:opacity-40"
+            }`}
+          >
+            {ORDER_STATUS_LABEL[status]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function OrderDetailPanel({
+  order,
+  updating,
+  onUpdateStatus,
+  onCancel,
+  onClose,
+}: {
+  order: Order | null;
+  updating: boolean;
+  onUpdateStatus: (order: Order, status: OrderStatus) => void;
+  onCancel: (order: Order) => void;
+  onClose: () => void;
+}) {
+  if (!order) {
+    return (
+      <aside className="h-full rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-gray-400">
+        <p className="font-semibold">주문을 선택해주세요.</p>
+        <p className="mt-2 text-sm">왼쪽 목록에서 주문을 선택하면 상세 처리 패널이 열립니다.</p>
+      </aside>
+    );
+  }
+
+  const printableOrder = {
+    ...order,
+    totalAmount: Number(order.totalAmount),
+    items: order.items.map((item) => ({ ...item, unitPrice: Number(item.unitPrice) })),
+  };
+
+  return (
+    <aside className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="border-b p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-mono text-lg font-black text-gray-900">{order.orderNumber}</p>
+            <p className="text-xs text-gray-500 mt-1">{getOrderTime(order)}</p>
+          </div>
+          <button type="button" onClick={onClose} className="text-sm text-gray-400 hover:text-gray-700">
+            닫기
+          </button>
+        </div>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
+            {ORDER_STATUS_LABEL[order.status]}
+          </span>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+            canCancelOrder(order)
+              ? "bg-emerald-100 text-emerald-800"
+              : "bg-gray-100 text-gray-600"
+          }`}>
+            {canCancelOrder(order) ? "Cancellable" : "Locked Order (Non-Cancellable)"}
+          </span>
+          <p className="text-2xl font-black text-green-700">{formatPrice(getOrderTotal(order))}</p>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-5">
+        <StatusActions order={order} updating={updating} onUpdate={(status) => onUpdateStatus(order, status)} />
+
+        <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
+          <h2 className="text-sm font-bold text-blue-900 mb-3">Customer Info</h2>
+          <div className="space-y-2 text-sm">
+            <p><span className="text-blue-500 font-semibold mr-2">고객</span>{order.customerName}</p>
+            <p><span className="text-blue-500 font-semibold mr-2">연락처</span>{order.customerPhone}</p>
+            {order.fulfillmentType === "PICKUP" ? (
+              <>
+                <p><span className="text-blue-500 font-semibold mr-2">픽업</span>{order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "시간 미지정"}</p>
+                <p className="text-xs text-gray-600">{STORE.name} · {STORE.address}</p>
+              </>
+            ) : (
+              <>
+                <p><span className="text-blue-500 font-semibold mr-2">주소</span>{order.deliveryAddress}</p>
+                {order.deliveryEntrance && (
+                  <p><span className="text-blue-500 font-semibold mr-2">출입</span>{order.deliveryEntrance}</p>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <h2 className="text-sm font-bold text-gray-900 mb-3">Items Ordered</h2>
+          <div className="divide-y">
+            {order.items.map((item) => (
+              <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
+                <div className="min-w-0">
+                  <p className="font-medium text-gray-800 truncate">{orderItemName(item)}</p>
+                  <p className="text-xs text-gray-500">{formatPrice(Number(item.unitPrice))} x {item.quantity}</p>
+                </div>
+                <p className="font-semibold text-gray-900 shrink-0">
+                  {formatPrice(Number(item.unitPrice) * item.quantity)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
+          <h2 className="text-sm font-bold text-amber-900 mb-3">Payment & Requests</h2>
+          <div className="space-y-2 text-sm">
+            <p>
+              <span className="text-amber-600 font-semibold mr-2">수령</span>
+              {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
+            </p>
+            <p>
+              <span className="text-amber-600 font-semibold mr-2">결제</span>
+              {formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType)}
+            </p>
+            {order.paymentMethod === "BANK_TRANSFER" && (
+              <p className="text-xs text-amber-800">입금 계좌: {BANK_ACCOUNT.display}</p>
+            )}
+            <p>
+              <span className="text-amber-600 font-semibold mr-2">품절</span>
+              {OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy]}
+            </p>
+            {order.memo && (
+              <p>
+                <span className="text-amber-600 font-semibold mr-2">요청</span>
+                <span className="italic">"{order.memo}"</span>
+              </p>
+            )}
+          </div>
+        </section>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => printReceiptNow(printableOrder)}
+            className="rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white hover:bg-black"
+          >
+            영수증 출력
+          </button>
+          <button
+            type="button"
+            disabled={updating || order.status === "DELIVERED" || order.status === "CANCELLED"}
+            onClick={() => onUpdateStatus(order, "DELIVERED")}
+            className="rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
+          >
+            처리 완료
+          </button>
+        </div>
+
+        {canCancelOrder(order) ? (
+          <section className="rounded-xl border border-red-100 bg-red-50 p-4">
+            <h2 className="text-sm font-bold text-red-800 mb-2">Danger Zone</h2>
+            <button
+              type="button"
+              disabled={updating}
+              onClick={() => onCancel(order)}
+              className="w-full rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
+            >
+              주문 취소
+            </button>
+          </section>
+        ) : (
+          <section className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <h2 className="text-sm font-bold text-gray-700 mb-1">Locked Order</h2>
+            <p className="text-xs text-gray-500">승인된 주문은 취소할 수 없습니다.</p>
+          </section>
+        )}
+      </div>
+    </aside>
+  );
+}
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState<OrderStatus | "">("");
+  const [search, setSearch] = useState("");
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [freshOrderIds, setFreshOrderIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  const [notificationInterval, setNotificationInterval] = useState(3000);
   const router = useRouter();
   const isMounted = useRef(true);
   const isFetching = useRef(false);
   const previousPendingCount = useRef(0);
+  const knownOrderIds = useRef<Set<string>>(new Set());
   const {
     isPlaying,
     pendingCount,
     autoplayBlocked,
-    startNotification,
     stopNotification,
     updatePendingCount,
     setNotificationConfig,
     enableAudio,
   } = useOrderNotification();
 
-  // ✅ 데이터를 가져오는 핵심 함수
-  const fetchOrders = useCallback(async () => {
-    if (isFetching.current) return;
-    isFetching.current = true;
-    setLoading(true);
-    
-    try {
-      const params = filter ? `?status=${filter}` : "";
-      // 💡 아까 확인한 관리자 전용 API 주소 사용
-      const res = await fetch(`/api/admin/orders${params}`, {
-        cache: 'no-store',
-      });
+  const selectedOrder = useMemo(
+    () => (selectedOrderId ? orders.find((order) => order.id === selectedOrderId) ?? null : null),
+    [orders, selectedOrderId],
+  );
 
-      if (!res.ok) {
-        if (res.status === 401) {
-          router.replace("/admin");
-          return;
+  const visibleOrders = useMemo(() => {
+    return orders.filter((order) => matchesSearch(order, search.trim()));
+  }, [orders, search]);
+
+  const fetchOrders = useCallback(
+    async ({ silent = false, focusNewest = false }: { silent?: boolean; focusNewest?: boolean } = {}) => {
+      if (isFetching.current) return;
+      isFetching.current = true;
+      if (!silent) setLoading(true);
+
+      try {
+        const params = filter ? `?status=${filter}` : "";
+        const res = await fetch(`/api/admin/orders${params}`, { cache: "no-store" });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            router.replace("/admin");
+            return;
+          }
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "주문 데이터를 불러오지 못했습니다.");
         }
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "데이터를 불러오지 못했습니다.");
-      }
 
-      const data = await res.json();
-      if (isMounted.current) {
+        const data = (await res.json()) as Order[];
+        if (!isMounted.current) return;
+
+        const incomingIds = new Set(data.map((order) => order.id));
+        const newIds = data.filter((order) => !knownOrderIds.current.has(order.id)).map((order) => order.id);
+        knownOrderIds.current = incomingIds;
+
+        if (newIds.length > 0 && knownOrderIds.current.size > newIds.length) {
+          setFreshOrderIds(new Set(newIds));
+          window.setTimeout(() => setFreshOrderIds(new Set()), 7000);
+        }
+
         setOrders(data);
+        if (focusNewest && data[0]) {
+          setSelectedOrderId(data[0].id);
+        } else if (!selectedOrderId && data[0]) {
+          setSelectedOrderId(data[0].id);
+        } else if (selectedOrderId && !incomingIds.has(selectedOrderId)) {
+          setSelectedOrderId(data[0]?.id ?? null);
+        }
+      } catch (error) {
+        console.error("[admin/orders] load failed", error);
+      } finally {
+        if (isMounted.current) setLoading(false);
+        isFetching.current = false;
       }
-    } catch (error) {
-      console.error("로딩 에러:", error);
-    } finally {
-      if (isMounted.current) {
-        setLoading(false);
-      }
-      isFetching.current = false;
-    }
-  }, [filter, router]);
+    },
+    [filter, router, selectedOrderId],
+  );
 
   useEffect(() => {
     isMounted.current = true;
     fetchOrders();
 
-    // 알림 권한 요청
     if (Notification.permission === "default") {
       Notification.requestPermission();
     }
 
     return () => {
       isMounted.current = false;
+      document.title = "mart-online";
     };
   }, [fetchOrders]);
 
-  // pending-count API polling (10-15초 간격)
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
     const fetchPendingCount = async () => {
       try {
-        const res = await fetch("/api/admin/orders/pending-count");
+        const res = await fetch("/api/admin/orders/pending-count", { cache: "no-store" });
         if (!res.ok) return;
 
         const data = await res.json();
-        const currentPendingCount = data.pendingCount || 0;
+        const currentPendingCount = Number(data.pendingCount || 0);
+        const hasNewPending =
+          currentPendingCount > previousPendingCount.current && currentPendingCount > 0;
 
-        // 이전 pendingCount와 비교하여 증가했을 때만 알림 발생
-        if (currentPendingCount > previousPendingCount.current && currentPendingCount > 0) {
-          updatePendingCount(currentPendingCount);
+        updatePendingCount(currentPendingCount);
 
-          // 브라우저 알림
+        if (hasNewPending) {
+          fetchOrders({ silent: true, focusNewest: true });
           if (Notification.permission === "granted" && !document.hidden) {
             new Notification("새 주문 접수", {
-              body: `${currentPendingCount}개의 대기 중인 주문이 있습니다.`,
+              body: `${currentPendingCount}개의 대기 주문이 있습니다.`,
               icon: "/icon.png",
               tag: "order-notification",
             });
           }
-        } else if (currentPendingCount === 0) {
-          updatePendingCount(0);
         }
 
-        // 페이지 타이틀 업데이트
-        if (currentPendingCount > 0) {
-          document.title = `(${currentPendingCount}) 주문 관리 - 한사랑마트`;
-        } else {
-          document.title = "주문 관리 - 한사랑마트";
-        }
-
+        document.title =
+          currentPendingCount > 0
+            ? `(${currentPendingCount}) 주문 관리 - mart-online`
+            : "주문 관리 - mart-online";
         previousPendingCount.current = currentPendingCount;
       } catch (error) {
-        console.error("pending-count API 호출 에러:", error);
+        console.error("[admin/orders] pending-count failed", error);
       }
     };
 
@@ -174,69 +505,94 @@ export default function OrdersPage() {
       }
     };
 
-    // 초기 호출 및 polling 시작
-    startPolling();
-
-    // 브라우저 탭 비활성 시 polling 중단
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        stopPolling();
-      } else {
-        startPolling();
-      }
+      if (document.hidden) stopPolling();
+      else startPolling();
     };
 
+    startPolling();
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       stopPolling();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [updatePendingCount]);
+  }, [fetchOrders, updatePendingCount]);
 
-  async function updateStatus(id: string, status: OrderStatus) {
+  async function updateStatus(order: Order, status: OrderStatus) {
+    if (order.status === status || order.status === "CANCELLED") return;
+    if (status === "CANCELLED" && !canCancelOrder(order)) {
+      alert(APPROVED_CANCEL_BLOCK_MESSAGE);
+      return;
+    }
+    setUpdatingOrderId(order.id);
+
     try {
-      console.log(`주문 상태 변경 시도: ID=${id}, Status=${status}`);
-      const res = await fetch(`/api/admin/orders/${id}`, {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
+      const data = await res.json().catch(() => ({}));
 
-      const responseText = await res.text();
-      console.log(`API 응답 상태: ${res.status}`);
-      console.log(`API 응답 내용: ${responseText}`);
-
-      if (res.ok) {
-        // 주문 승인 또는 취소 시 알림 중지
-        if (status === "APPROVED" || status === "CANCELLED") {
-          stopNotification();
-        }
-        fetchOrders();
+      if (!res.ok) {
+        alert(data.error ?? "상태 변경에 실패했습니다.");
         return;
       }
 
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        data = { error: responseText || "상태 변경에 실패했습니다." };
+      setOrders((current) => {
+        const updatedOrders = current.map((item) => (item.id === order.id ? { ...item, status } : item));
+        const filteredOrders = filter && filter !== status
+          ? updatedOrders.filter((item) => item.id !== order.id)
+          : updatedOrders;
+
+        if (selectedOrderId === order.id && filter && filter !== status) {
+          setSelectedOrderId(filteredOrders[0]?.id ?? null);
+        }
+
+        return filteredOrders;
+      });
+      if (status === "APPROVED" || status === "CANCELLED") {
+        stopNotification();
       }
-      alert(data.error ?? "상태 변경에 실패했습니다.");
     } catch (error) {
-      console.error(error);
+      console.error("[admin/orders] status update failed", error);
       alert("상태 변경 중 오류가 발생했습니다.");
+    } finally {
+      setUpdatingOrderId(null);
     }
   }
 
-  function cancelOrder(id: string, orderNumber: string) {
-    if (!confirm(`주문 ${orderNumber}을(를) 취소하시겠습니까?`)) return;
-    updateStatus(id, "CANCELLED");
+  function cancelOrder(order: Order) {
+    if (!canCancelOrder(order)) {
+      alert(APPROVED_CANCEL_BLOCK_MESSAGE);
+      return;
+    }
+    if (!confirm(`주문 ${order.orderNumber}을 취소하시겠습니까?`)) return;
+    updateStatus(order, "CANCELLED");
   }
 
-  // 알림 설정 토글
-  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
-  const [notificationInterval, setNotificationInterval] = useState(3000);
+  function advanceSelectedOrder() {
+    if (!selectedOrder) return;
+    const next = NEXT_STATUS[selectedOrder.status];
+    if (next) updateStatus(selectedOrder, next);
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if (event.key === "Enter") {
+        event.preventDefault();
+        advanceSelectedOrder();
+      }
+      if (event.key === "Escape") {
+        setSelectedOrderId(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
 
   const handleNotificationConfigChange = () => {
     setNotificationConfig({ interval: notificationInterval });
@@ -246,48 +602,48 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
-            {/* 대기 주문 배지 */}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">주문 운영 콘솔</h1>
+              <p className="text-sm text-gray-500 mt-1">실시간 주문을 선택하고 오른쪽 패널에서 빠르게 처리합니다.</p>
+            </div>
             {pendingCount > 0 && (
-              <div className={`relative inline-flex items-center ${isPlaying ? 'animate-pulse' : ''}`}>
+              <div className={`relative inline-flex items-center ${isPlaying ? "animate-pulse" : ""}`}>
                 <span className="absolute flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                 </span>
-                <span className="ml-4 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                <span className="ml-4 bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full">
                   대기 {pendingCount}
                 </span>
               </div>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setShowNotificationSettings(!showNotificationSettings)}
-              className="text-sm text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"
-              title="알림 설정"
+              type="button"
+              onClick={() => setShowNotificationSettings((value) => !value)}
+              className="text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50"
             >
-              🔔 설정
+              알림 설정
             </button>
             <button
-              onClick={() => fetchOrders()}
-              className="text-sm text-green-600 border border-green-200 px-3 py-1.5 rounded-lg hover:bg-green-50"
+              type="button"
+              onClick={() => fetchOrders({ focusNewest: false })}
+              className="text-sm text-green-700 border border-green-200 px-3 py-2 rounded-lg hover:bg-green-50"
             >
               새로고침
             </button>
           </div>
         </div>
 
-        {/* 알림 설정 패널 */}
         {showNotificationSettings && (
           <div className="bg-white rounded-2xl border p-4 mb-6">
             <h3 className="font-semibold mb-3">알림 설정</h3>
-            <div className="flex items-center gap-4">
-              <label className="text-sm text-gray-600">
-                알림 반복 간격 (초):
-              </label>
+            <div className="flex flex-wrap items-center gap-4">
+              <label className="text-sm text-gray-600">반복 간격(초)</label>
               <input
                 type="number"
                 min="1"
@@ -296,206 +652,98 @@ export default function OrdersPage() {
                 onChange={(e) => setNotificationInterval(Number(e.target.value) * 1000)}
                 className="px-3 py-1.5 border rounded-lg w-20"
               />
-              <button
-                onClick={handleNotificationConfigChange}
-                className="bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 text-sm"
-              >
+              <button type="button" onClick={handleNotificationConfigChange} className="bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 text-sm">
                 적용
               </button>
-              <button
-                onClick={() => stopNotification()}
-                className="bg-red-600 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 text-sm"
-              >
+              <button type="button" onClick={() => stopNotification()} className="bg-red-600 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 text-sm">
                 알림 중지
               </button>
             </div>
           </div>
         )}
 
-        {/* 자동 재생 차단 알림 */}
         {autoplayBlocked && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">🔊</span>
-              <div>
-                <p className="font-semibold text-yellow-800">알림음 자동 재생이 차단되었습니다</p>
-                <p className="text-sm text-yellow-700">브라우저 정책으로 인해 사용자 상호작용이 필요합니다.</p>
-              </div>
+            <div>
+              <p className="font-semibold text-yellow-800">알림 자동 재생이 차단되었습니다.</p>
+              <p className="text-sm text-yellow-700">브라우저 정책상 사용자 상호작용이 필요합니다.</p>
             </div>
-            <button
-              onClick={enableAudio}
-              className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 font-medium"
-            >
-              알림음 활성화
+            <button type="button" onClick={enableAudio} className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 font-medium">
+              알림 활성화
             </button>
           </div>
         )}
 
-        {/* 필터 버튼 영역 */}
-        <div className="flex gap-2 flex-wrap mb-6">
-          <button
-            onClick={() => setFilter("")}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${!filter ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
-          >
-            전체
-          </button>
-          {ORDER_STATUS_FILTER.map((s) => (
+        <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex gap-2 flex-wrap">
             <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${filter === s ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
+              type="button"
+              onClick={() => setFilter("")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${!filter ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
             >
-              {ORDER_STATUS_LABEL[s]}
+              전체
             </button>
-          ))}
+            {ORDER_STATUS_FILTER.map((status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => setFilter(status)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${filter === status ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
+              >
+                {ORDER_STATUS_LABEL[status]}
+              </button>
+            ))}
+          </div>
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="주문번호, 고객명, 연락처, 상품 검색"
+            className="w-full lg:w-80 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
         </div>
 
-        {/* 주문 리스트 영역 */}
-        {loading && orders.length === 0 ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-2xl h-40 animate-pulse border border-gray-100" />
-            ))}
-          </div>
-        ) : orders.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-400">
-            주문 내역이 없습니다.
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition">
-                <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-lg text-gray-900">{order.orderNumber}</span>
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
-                        {ORDER_STATUS_LABEL[order.status]}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-400">
-                      주문일시: {new Date(order.createdAt).toLocaleString("ko-KR")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xl font-black text-green-700">{formatPrice(Number(order.totalAmount))}</p>
-                    <p className="text-xs text-gray-400 font-medium">
-                      {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
-                      {order.fulfillmentType === "PICKUP" && order.pickupTime
-                        ? ` · ${formatPickupTimeLabel(order.pickupTime)}`
-                        : ""}
-                      {" · "}
-                      {formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4 text-sm mb-4">
-                  <div className="bg-blue-50/50 rounded-xl p-3 border border-blue-100/50">
-                    <p className="mb-1">
-                      <span className="text-blue-400 font-bold mr-2">고객</span>
-                      <span className="font-semibold text-gray-900">{order.customerName}</span> 
-                      <span className="text-gray-500 ml-1">({order.customerPhone})</span>
-                    </p>
-                    {order.fulfillmentType === "PICKUP" ? (
-                      <>
-                        <p>
-                          <span className="text-blue-400 font-bold mr-2">픽업</span>
-                          <span className="text-gray-800 font-semibold">
-                            {order.pickupTime
-                              ? formatPickupTimeLabel(order.pickupTime)
-                              : "시간 미지정"}
-                          </span>
-                        </p>
-                        <p className="leading-relaxed text-gray-600 text-xs mt-1">
-                          {STORE.name} · {STORE.address}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="leading-relaxed">
-                        <span className="text-blue-400 font-bold mr-2">주소</span>
-                        <span className="text-gray-800">{order.deliveryAddress}</span>
-                      </p>
-                    )}
-                  </div>
-                  <div className="bg-amber-50/50 rounded-xl p-3 border border-amber-100/50">
-                    <p className="mb-1">
-                      <span className="text-amber-500 font-bold mr-2">품절대응</span>
-                      <span className="text-gray-800">{OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy]}</span>
-                    </p>
-                    {order.memo && (
-                      <p>
-                        <span className="text-amber-500 font-bold mr-2">요청사항</span>
-                        <span className="text-gray-800 italic">"{order.memo}"</span>
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* 주문 상품 목록 */}
-                <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 mb-4 space-y-2">
-                  {order.items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">
-                        {orderItemName(item)}{" "}
-                        <span className="text-gray-400 ml-1">x {item.quantity}</span>
-                      </span>
-                      <span className="font-mono text-gray-500">{formatPrice(Number(item.unitPrice) * item.quantity)}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-2 border-t pt-4 mb-3">
-                  <button
-                    type="button"
-                    onClick={() => printReceiptNow({
-                      ...order,
-                      totalAmount: Number(order.totalAmount),
-                      items: order.items.map(item => ({
-                        ...item,
-                        unitPrice: Number(item.unitPrice),
-                      })),
-                    })}
-                    className="text-xs bg-gray-800 text-white px-3 py-1.5 rounded-lg hover:bg-gray-900 font-medium"
-                  >
-                    🖨️ 영수증 인쇄
-                  </button>
-                </div>
-
-                {/* 상태 관리 버튼 */}
-                <div className="flex flex-wrap gap-1.5 pt-1 items-center">
-                  {ORDER_STATUS_FLOW.map((s) => (
-                    <span key={s} className="contents">
-                      <button
-                        type="button"
-                        onClick={() => updateStatus(order.id, s)}
-                        disabled={order.status === s || order.status === "CANCELLED"}
-                        className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                          order.status === s
-                            ? "bg-gray-800 text-white border-gray-800 font-bold"
-                            : "bg-white text-gray-500 border-gray-200 hover:border-green-500 hover:text-green-600 disabled:opacity-40 disabled:cursor-not-allowed"
-                        }`}
-                      >
-                        {ORDER_STATUS_LABEL[s]}
-                      </button>
-                      {s === "APPROVED" && order.status !== "CANCELLED" && order.status !== "DELIVERED" && (
-                        <button
-                          type="button"
-                          onClick={() => cancelOrder(order.id, order.orderNumber)}
-                          className="text-xs px-3 py-1.5 rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50 hover:border-red-400 font-medium transition-all"
-                        >
-                          주문취소
-                        </button>
-                      )}
-                    </span>
-                  ))}
-                </div>
+        <div className="grid gap-6 lg:grid-cols-[390px_minmax(0,1fr)]">
+          <section className="space-y-3">
+            {loading && orders.length === 0 ? (
+              [1, 2, 3].map((index) => (
+                <div key={index} className="bg-white rounded-2xl h-32 animate-pulse border border-gray-100" />
+              ))
+            ) : visibleOrders.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-400">
+                주문 내역이 없습니다.
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            ) : (
+              visibleOrders
+                .slice()
+                .sort((a, b) => statusRank(a.status) - statusRank(b.status))
+                .map((order) => (
+                  <OrderSummaryCard
+                    key={order.id}
+                    order={order}
+                    selected={selectedOrder?.id === order.id}
+                    fresh={freshOrderIds.has(order.id)}
+                    onSelect={() => {
+                      setSelectedOrderId(order.id);
+                      setFreshOrderIds((current) => {
+                        const next = new Set(current);
+                        next.delete(order.id);
+                        return next;
+                      });
+                    }}
+                  />
+                ))
+            )}
+          </section>
 
+          <OrderDetailPanel
+            order={selectedOrder}
+            updating={Boolean(updatingOrderId && selectedOrder?.id === updatingOrderId)}
+            onUpdateStatus={updateStatus}
+            onCancel={cancelOrder}
+            onClose={() => setSelectedOrderId(null)}
+          />
+        </div>
+      </div>
     </div>
   );
 }

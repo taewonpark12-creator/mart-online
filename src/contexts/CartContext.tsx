@@ -23,6 +23,7 @@ interface CartContextType {
   updateQuantity: (productId: string, quantity: number) => { success: boolean; message?: string };
   removeItem: (productId: string) => void;
   clearCart: () => void;
+  replaceItems: (items: CartItem[]) => void;
   syncWithProducts: (products: ProductSyncItem[]) => void;
   totalAmount: number;
   totalCount: number;
@@ -161,6 +162,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => setItems([]), []);
 
+  const replaceItems = useCallback((nextItems: CartItem[]) => {
+    setItems(nextItems.map(sanitizeCartItem).filter((item): item is CartItem => item !== null));
+  }, []);
+
   const syncWithProducts = useCallback((products: ProductSyncItem[]) => {
     const map = new Map(products.map((p) => [p.id, p]));
 
@@ -197,12 +202,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       removeItem,
       clearCart,
+      replaceItems,
       syncWithProducts,
       totalAmount,
       totalCount,
       loaded,
     }),
-    [items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount, loaded],
+    [items, addItem, updateQuantity, removeItem, clearCart, replaceItems, syncWithProducts, totalAmount, totalCount, loaded],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

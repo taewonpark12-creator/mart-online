@@ -17,9 +17,11 @@ export function PopularProducts({ products, onAdd }: Props) {
         <span className="text-2xl">🔥</span>
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900">인기상품</h2>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-3 sm:-mx-1 px-3 sm:px-1 scrollbar-hide snap-x snap-mandatory">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onAdd={onAdd} />
+          <div key={product.id} className="w-[140px] sm:w-[168px] md:w-[200px] shrink-0 snap-start">
+            <ProductCard product={product} onAdd={onAdd} />
+          </div>
         ))}
       </div>
     </div>

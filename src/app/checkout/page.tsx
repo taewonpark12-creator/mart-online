@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
@@ -20,17 +20,17 @@ import {
 import { parseJsonResponse } from "@/lib/fetch-json";
 import { STORE } from "@/lib/store";
 
-interface SavedAddress {
-  id: string;
-  address: string;
-  entrance?: string;
-}
+const SHIPPING_PROFILES_KEY = "shippingProfiles";
+const MAX_SHIPPING_PROFILES = 5;
 
-interface SavedCustomer {
+type ShippingProfile = {
   id: string;
   name: string;
   phone: string;
-}
+  address: string;
+  entrance?: string;
+  updatedAt: string;
+};
 
 type CompletedOrder = {
   orderNumber: string;
@@ -53,9 +53,16 @@ function getFulfillmentLabel(fulfillmentType: FulfillmentType) {
   return FULFILLMENT_OPTIONS.find((option) => option.value === fulfillmentType)?.label ?? fulfillmentType;
 }
 
+function sortProfiles(profiles: ShippingProfile[]) {
+  return profiles
+    .filter((profile) => profile.name && profile.phone && profile.address)
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .slice(0, MAX_SHIPPING_PROFILES);
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalAmount, clearCart } = useCart();
+  const { items, totalAmount, clearCart, replaceItems } = useCart();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [fulfillmentType, setFulfillmentType] = useState<FulfillmentType>("DELIVERY");
@@ -68,97 +75,85 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null);
-  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
-  const [showSaveAddress, setShowSaveAddress] = useState(false);
-  const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
-  const [showSaveCustomer, setShowSaveCustomer] = useState(false);
+  const [shippingProfiles, setShippingProfiles] = useState<ShippingProfile[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState("");
+  const [profileMessage, setProfileMessage] = useState("");
+  const [clientOrderId, setClientOrderId] = useState(() =>
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  );
 
   const isDelivery = fulfillmentType === "DELIVERY";
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
   const hasOutOfStockItem = items.some((item) => item.isOutOfStock);
 
-  // 장바구니가 비어있으면 장바구니 페이지로 이동
   useEffect(() => {
     if (items.length === 0 && !completedOrder) {
       router.push("/cart");
     }
   }, [items, completedOrder, router]);
 
-  // Load saved addresses from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("savedAddresses");
-    if (saved) {
-      try {
-        setSavedAddresses(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load saved addresses:", e);
+    const saved = localStorage.getItem(SHIPPING_PROFILES_KEY);
+    if (!saved) return;
+
+    try {
+      const profiles = sortProfiles(JSON.parse(saved));
+      setShippingProfiles(profiles);
+      if (profiles[0]) {
+        applyShippingProfile(profiles[0], "최근 배송 정보를 자동으로 불러왔습니다.");
       }
+    } catch (e) {
+      console.error("Failed to load shipping profiles:", e);
     }
   }, []);
 
-  // Load saved customers from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("savedCustomers");
-    if (saved) {
-      try {
-        setSavedCustomers(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load saved customers:", e);
-      }
+  function applyShippingProfile(profile: ShippingProfile, message = "저장된 배송 정보를 불러왔습니다.") {
+    setSelectedProfileId(profile.id);
+    setName(profile.name);
+    setPhone(profile.phone);
+    setAddress(profile.address);
+    setDeliveryEntrance(profile.entrance || "");
+    setProfileMessage(message);
+  }
+
+  function persistShippingProfiles(profiles: ShippingProfile[]) {
+    const nextProfiles = sortProfiles(profiles);
+    setShippingProfiles(nextProfiles);
+    localStorage.setItem(SHIPPING_PROFILES_KEY, JSON.stringify(nextProfiles));
+  }
+
+  function handleSaveShippingProfile() {
+    if (!name.trim() || !phone.trim() || !address.trim()) {
+      setProfileMessage("이름, 연락처, 주소를 모두 입력한 뒤 저장해주세요.");
+      return;
     }
-  }, []);
 
-  const handleSaveAddress = () => {
-    if (!address) return;
-    
-    const newAddress: SavedAddress = {
-      id: Date.now().toString(),
-      address,
-      entrance: deliveryEntrance || undefined,
+    const profile: ShippingProfile = {
+      id: selectedProfileId || Date.now().toString(),
+      name: name.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+      entrance: deliveryEntrance.trim() || undefined,
+      updatedAt: new Date().toISOString(),
     };
-    
-    const updated = [...savedAddresses, newAddress];
-    setSavedAddresses(updated);
-    localStorage.setItem("savedAddresses", JSON.stringify(updated));
-    setShowSaveAddress(false);
-  };
 
-  const handleSelectAddress = (saved: SavedAddress) => {
-    setAddress(saved.address);
-    setDeliveryEntrance(saved.entrance || "");
-  };
+    persistShippingProfiles([
+      profile,
+      ...shippingProfiles.filter((savedProfile) => savedProfile.id !== profile.id),
+    ]);
+    setSelectedProfileId(profile.id);
+    setProfileMessage("배송 정보가 저장되었습니다.");
+  }
 
-  const handleDeleteAddress = (id: string) => {
-    const updated = savedAddresses.filter(a => a.id !== id);
-    setSavedAddresses(updated);
-    localStorage.setItem("savedAddresses", JSON.stringify(updated));
-  };
-
-  const handleSaveCustomer = () => {
-    if (!name || !phone) return;
-    
-    const newCustomer: SavedCustomer = {
-      id: Date.now().toString(),
-      name,
-      phone,
-    };
-    
-    const updated = [...savedCustomers, newCustomer];
-    setSavedCustomers(updated);
-    localStorage.setItem("savedCustomers", JSON.stringify(updated));
-    setShowSaveCustomer(false);
-  };
-
-  const handleSelectCustomer = (saved: SavedCustomer) => {
-    setName(saved.name);
-    setPhone(saved.phone);
-  };
-
-  const handleDeleteCustomer = (id: string) => {
-    const updated = savedCustomers.filter(c => c.id !== id);
-    setSavedCustomers(updated);
-    localStorage.setItem("savedCustomers", JSON.stringify(updated));
-  };
+  function handleDeleteShippingProfile(id: string) {
+    persistShippingProfiles(shippingProfiles.filter((profile) => profile.id !== id));
+    if (selectedProfileId === id) {
+      setSelectedProfileId("");
+    }
+    setProfileMessage("저장된 배송 정보를 삭제했습니다.");
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -169,7 +164,7 @@ export default function CheckoutPage() {
       return;
     }
     if (hasOutOfStockItem) {
-      setError("품절된 상품이 장바구니에 있습니다. 해당 상품을 삭제 후 주문해주세요.");
+      setError("품절된 상품이 장바구니에 있습니다. 해당 상품을 제거 후 주문해주세요.");
       return;
     }
     if (items.some((item) => !Number.isInteger(item.quantity) || item.quantity <= 0)) {
@@ -177,17 +172,63 @@ export default function CheckoutPage() {
       return;
     }
     if (!isDelivery && !pickupTime) {
-      setError("픽업 예정 시각을 선택해 주세요.");
+      setError("픽업 예정 시간을 선택해주세요.");
       return;
     }
+
     setError("");
     setLoading(true);
 
     try {
+      const cartPayload = {
+        totalAmount,
+        items: items.map((i) => ({
+          productId: i.productId,
+          barcode: i.barcode,
+          name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+          normalPrice: i.normalPrice,
+          eventPrice: i.eventPrice,
+          discountRate: i.discountRate,
+        })),
+      };
+
+      const validationRes = await fetch("/api/orders/validate-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cartPayload),
+      });
+      const validationData = await parseJsonResponse<{
+        code?: string;
+        error?: string;
+        updatedCart?: CartItem[];
+      }>(validationRes);
+
+      if (!validationRes.ok) {
+        if (Array.isArray(validationData.updatedCart)) {
+          replaceItems(validationData.updatedCart);
+        }
+        if (validationData.code === "PRICE_CHANGED") {
+          throw new Error("상품 가격이 변경되었습니다. 장바구니를 다시 확인해주세요.");
+        }
+        if (validationData.code === "PRICE_SOURCE_UNAVAILABLE") {
+          throw new Error("가격 정보를 확인할 수 없습니다. 잠시 후 다시 시도해주세요.");
+        }
+        if (validationData.code === "OUT_OF_STOCK") {
+          throw new Error(validationData.error ?? "품절된 상품이 포함되어 있습니다.");
+        }
+        if (validationData.code === "MIN_ORDER_AMOUNT_CHANGED") {
+          throw new Error(validationData.error ?? `최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
+        }
+        throw new Error(validationData.error ?? "장바구니를 다시 확인해주세요.");
+      }
+
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          clientOrderId,
           customerName: name,
           customerPhone: phone,
           fulfillmentType,
@@ -211,11 +252,32 @@ export default function CheckoutPage() {
         }),
       });
 
-      const data = await parseJsonResponse<{ orderNumber?: string; error?: string }>(res);
-      if (!res.ok) throw new Error(data.error ?? "주문에 실패했습니다.");
+      const data = await parseJsonResponse<{
+        orderNumber?: string;
+        error?: string;
+        code?: string;
+        updatedCart?: CartItem[];
+      }>(res);
+      if (!res.ok) {
+        if (Array.isArray(data.updatedCart)) {
+          replaceItems(data.updatedCart);
+        }
+        if (data.code === "PRICE_CHANGED") {
+          throw new Error("상품 가격이 변경되었습니다. 장바구니를 다시 확인해주세요.");
+        }
+        if (data.code === "PRICE_SOURCE_UNAVAILABLE") {
+          throw new Error("가격 정보를 확인할 수 없습니다. 잠시 후 다시 시도해주세요.");
+        }
+        if (data.code === "OUT_OF_STOCK") {
+          throw new Error(data.error ?? "재고가 부족한 상품이 포함되어 있습니다.");
+        }
+        if (data.code === "MIN_ORDER_AMOUNT_CHANGED") {
+          throw new Error(data.error ?? `최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
+        }
+        throw new Error(data.error ?? "주문에 실패했습니다.");
+      }
       if (!data.orderNumber) throw new Error("주문번호를 받지 못했습니다.");
 
-      // 주문 완료 후 장바구니 비우기
       setCompletedOrder({
         orderNumber: data.orderNumber,
         customerName: name,
@@ -229,6 +291,11 @@ export default function CheckoutPage() {
         totalAmount,
       });
       clearCart();
+      setClientOrderId(
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      );
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
       const isNetworkError =
@@ -251,7 +318,7 @@ export default function CheckoutPage() {
         <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
           <div className="bg-white border rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-sm">
             <div className="text-center mb-6">
-              <span className="text-4xl sm:text-5xl block mb-3">✓</span>
+              <span className="text-4xl sm:text-5xl block mb-3">완료</span>
               <h1 className="text-xl sm:text-2xl font-bold text-green-800 mb-2">
                 주문이 접수되었습니다
               </h1>
@@ -273,7 +340,7 @@ export default function CheckoutPage() {
                         <div className="min-w-0">
                           <p className="font-medium text-gray-900 truncate">{item.name}</p>
                           <p className="text-xs text-gray-500 mt-0.5">
-                            {formatPrice(item.price)} × {item.quantity}
+                            {formatPrice(item.price)} x {item.quantity}
                           </p>
                         </div>
                         <p className="font-semibold text-green-700 shrink-0">
@@ -338,17 +405,17 @@ export default function CheckoutPage() {
             </div>
 
             <div className="mt-6">
-  <button
-    type="button"
-    onClick={() => {
-      setCompletedOrder(null);
-      router.push("/");
-    }}
-    className="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
-  >
-    계속 쇼핑하기
-  </button>
-</div>
+              <button
+                type="button"
+                onClick={() => {
+                  setCompletedOrder(null);
+                  router.push("/");
+                }}
+                className="w-full bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-semibold text-sm min-h-[48px]"
+              >
+                계속 쇼핑하기
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -361,7 +428,7 @@ export default function CheckoutPage() {
       <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
         <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2 text-green-800">주문 정보</h1>
         <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-          배송/픽업 정보를 입력하고 주문을 완료하세요.
+          배송 또는 픽업 정보를 확인하고 주문을 완료해주세요.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
@@ -392,22 +459,50 @@ export default function CheckoutPage() {
             </div>
           </fieldset>
 
-          {savedCustomers.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">저장된 고객 정보</label>
+          <section className="bg-white border border-green-100 rounded-2xl p-4 space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-bold text-gray-900">배송 프로필</h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  이름, 연락처, 주소를 한 번에 저장합니다.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleSaveShippingProfile}
+                className="shrink-0 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-semibold"
+              >
+                배송 정보 저장
+              </button>
+            </div>
+
+            {shippingProfiles.length > 0 && (
               <div className="space-y-2">
-                {savedCustomers.map((saved) => (
-                  <div key={saved.id} className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2">
+                <p className="text-xs font-medium text-gray-600">최근 배송 정보</p>
+                {shippingProfiles.map((profile) => (
+                  <div
+                    key={profile.id}
+                    className={`flex items-center gap-2 rounded-xl px-3 py-2 border ${
+                      selectedProfileId === profile.id
+                        ? "bg-green-50 border-green-200"
+                        : "bg-gray-50 border-gray-100"
+                    }`}
+                  >
                     <button
                       type="button"
-                      onClick={() => handleSelectCustomer(saved)}
+                      onClick={() => applyShippingProfile(profile)}
                       className="flex-1 text-left text-sm text-gray-700 hover:text-green-700"
                     >
-                      {saved.name} ({saved.phone})
+                      <span className="font-semibold">{profile.name}</span>
+                      <span className="text-gray-500"> ({profile.phone})</span>
+                      <span className="block text-xs text-gray-500 truncate">
+                        {profile.address}
+                        {profile.entrance && ` (${profile.entrance})`}
+                      </span>
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleDeleteCustomer(saved.id)}
+                      onClick={() => handleDeleteShippingProfile(profile.id)}
                       className="text-gray-400 hover:text-red-500 text-sm min-h-[32px]"
                     >
                       삭제
@@ -415,8 +510,10 @@ export default function CheckoutPage() {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+
+            {profileMessage && <p className="text-xs text-green-700">{profileMessage}</p>}
+          </section>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">이름 *</label>
@@ -441,68 +538,8 @@ export default function CheckoutPage() {
             />
           </div>
 
-          {name && phone && (
-            <button
-              type="button"
-              onClick={() => setShowSaveCustomer(!showSaveCustomer)}
-              className="text-sm text-green-600 hover:text-green-700 font-medium"
-            >
-              {showSaveCustomer ? "저장 취소" : "고객 정보 저장"}
-            </button>
-          )}
-
-          {showSaveCustomer && (
-            <div className="bg-green-50 rounded-xl p-4">
-              <p className="text-sm text-green-800 mb-3">
-                현재 입력하신 이름과 연락처를 저장하시겠습니까?
-              </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleSaveCustomer}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
-                >
-                  저장
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowSaveCustomer(false)}
-                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 text-sm font-medium"
-                >
-                  취소
-                </button>
-              </div>
-            </div>
-          )}
-
           {isDelivery ? (
             <>
-              {savedAddresses.length > 0 && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">저장된 배송지</label>
-                  <div className="space-y-2">
-                    {savedAddresses.map((saved) => (
-                      <div key={saved.id} className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2">
-                        <button
-                          type="button"
-                          onClick={() => handleSelectAddress(saved)}
-                          className="flex-1 text-left text-sm text-gray-700 hover:text-green-700"
-                        >
-                          {saved.address}
-                          {saved.entrance && ` (${saved.entrance})`}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteAddress(saved.id)}
-                          className="text-gray-400 hover:text-red-500 text-sm min-h-[32px]"
-                        >
-                          삭제
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">배달 주소 *</label>
                 <input
@@ -521,18 +558,9 @@ export default function CheckoutPage() {
                   value={deliveryEntrance}
                   onChange={(e) => setDeliveryEntrance(e.target.value)}
                   className="w-full border rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                  placeholder="예: 자율 출입, 비밀번호 #1234"
+                  placeholder="예: 자유 출입, 비밀번호 #1234"
                 />
               </div>
-              {address && (
-                <button
-                  type="button"
-                  onClick={handleSaveAddress}
-                  className="text-sm text-green-600 hover:text-green-700 font-medium min-h-[32px]"
-                >
-                  + 이 배송지 저장
-                </button>
-              )}
             </>
           ) : (
             <>
@@ -544,7 +572,7 @@ export default function CheckoutPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  픽업 예정 시각 *
+                  픽업 예정 시간 *
                 </label>
                 <select
                   required
@@ -552,7 +580,7 @@ export default function CheckoutPage() {
                   onChange={(e) => setPickupTime(e.target.value)}
                   className="w-full border rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 bg-white"
                 >
-                  <option value="">시간을 선택해 주세요</option>
+                  <option value="">시간을 선택해주세요</option>
                   {PICKUP_TIME_SLOTS.map((slot) => (
                     <option key={slot.value} value={slot.value}>
                       {slot.label}
@@ -593,8 +621,7 @@ export default function CheckoutPage() {
                   <p className="font-semibold text-blue-900 mb-1">입금 계좌 안내</p>
                   <p className="font-mono font-bold text-gray-900">{BANK_ACCOUNT.display}</p>
                   <p className="text-blue-800 text-xs mt-2">
-                    주문 확정 후 위 계좌로 입금해 주세요. 입금자명은 주문자 성함으로 보내주시면
-                    확인이 빠릅니다.
+                    주문 확정 후 위 계좌로 입금해주세요. 입금자명은 주문자 성함으로 보내주시면 확인이 빠릅니다.
                   </p>
                 </div>
               )}
@@ -634,11 +661,7 @@ export default function CheckoutPage() {
               onChange={(e) => setMemo(e.target.value)}
               rows={2}
               className="w-full border rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 resize-none"
-              placeholder={
-                isDelivery
-                  ? "예: 문 앞에 놔주세요"
-                  : "예: 박스에 포장해주세요"
-              }
+              placeholder={isDelivery ? "예: 문 앞에 놓아주세요" : "예: 박스에 포장해주세요"}
             />
           </div>
 
@@ -646,22 +669,22 @@ export default function CheckoutPage() {
             <p className="font-medium text-green-800 mb-1">주문 요약</p>
             <p className="text-gray-600 mb-2">
               {isDelivery ? "배송" : "픽업"}
-              {!isDelivery && pickupTime && ` · ${pickupTime}경`}
+              {!isDelivery && pickupTime && ` · ${pickupTime}`}
             </p>
             {items.map((i) => (
               <p key={i.productId} className="text-gray-600">
-                {i.name} × {i.quantity}
+                {i.name} x {i.quantity}
               </p>
             ))}
             <p className="font-bold text-green-700 mt-2">{formatPrice(totalAmount)}</p>
             {hasOutOfStockItem && (
               <p className="text-red-700 text-xs mt-2">
-                품절된 상품은 주문할 수 없습니다. 장바구니에서 삭제해주세요.
+                품절된 상품은 주문할 수 없습니다. 장바구니에서 제거해주세요.
               </p>
             )}
             {!meetsMinimum && (
               <p className="text-amber-700 text-xs mt-2">
-                최소 {formatPrice(MIN_ORDER_AMOUNT)} 이상 주문해 주세요.
+                최소 {formatPrice(MIN_ORDER_AMOUNT)} 이상 주문해주세요.
               </p>
             )}
           </div>

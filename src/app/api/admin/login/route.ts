@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminPassword, ADMIN_COOKIE_NAME } from "@/lib/auth";
+import {
+  verifyAdminPassword,
+  ADMIN_COOKIE_NAME,
+  ADMIN_LAST_LOGIN_COOKIE_NAME,
+} from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,27 +11,38 @@ export async function POST(req: NextRequest) {
     const password = typeof body?.password === "string" ? body.password : "";
 
     if (!verifyAdminPassword(password)) {
-      return NextResponse.json({ error: "비밀번호가 올바르지 않습니다." }, { status: 401 });
+      return NextResponse.json(
+        { error: "비밀번호가 올바르지 않습니다. 다시 시도해주세요." },
+        { status: 401 },
+      );
     }
 
-    const res = NextResponse.json({ success: true });
-    res.cookies.set(ADMIN_COOKIE_NAME, "authenticated", {
+    const loginAt = new Date().toISOString();
+    const res = NextResponse.json({ success: true, lastLoginAt: loginAt });
+    const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "lax" as const,
       maxAge: 60 * 60 * 24,
       path: "/",
-    });
+    };
+
+    res.cookies.set(ADMIN_COOKIE_NAME, "authenticated", cookieOptions);
+    res.cookies.set(ADMIN_LAST_LOGIN_COOKIE_NAME, loginAt, cookieOptions);
 
     return res;
   } catch (error) {
     console.error("[POST /api/admin/login]", error);
-    return NextResponse.json({ error: "로그인 요청을 처리하지 못했습니다." }, { status: 400 });
+    return NextResponse.json(
+      { error: "로그인 요청을 처리하지 못했습니다." },
+      { status: 400 },
+    );
   }
 }
 
 export async function DELETE() {
   const res = NextResponse.json({ success: true });
   res.cookies.set(ADMIN_COOKIE_NAME, "", { maxAge: 0, path: "/" });
+  res.cookies.set(ADMIN_LAST_LOGIN_COOKIE_NAME, "", { maxAge: 0, path: "/" });
   return res;
 }

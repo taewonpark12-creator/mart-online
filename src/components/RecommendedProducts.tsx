@@ -19,11 +19,9 @@ export function RecommendedProducts({ products, onAdd }: Props) {
         </span>
         <h2 className="text-base sm:text-lg font-bold text-gray-900">오늘의 추천상품</h2>
       </div>
-      <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-3 sm:-mx-1 px-3 sm:px-1 scrollbar-hide snap-x snap-mandatory">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {products.map((product) => (
-          <div key={product.id} className="w-[140px] sm:w-[168px] md:w-[200px] shrink-0 snap-start">
-            <ProductCard product={product} onAdd={onAdd} />
-          </div>
+          <ProductCard key={product.id} product={product} onAdd={onAdd} />
         ))}
       </div>
     </section>

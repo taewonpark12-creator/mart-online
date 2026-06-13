@@ -44,6 +44,7 @@ function OrderCheckPageContent() {
   const searchParams = useSearchParams();
   const orderNumberParam = searchParams.get("orderNumber");
   
+  const [lookupOrderNumber, setLookupOrderNumber] = useState("");
   const [phone, setPhone] = useState("");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
@@ -82,8 +83,9 @@ function OrderCheckPageContent() {
 
   async function handleSearch() {
     const trimmed = phone.trim();
-    if (!trimmed) {
-      setError("전화번호를 입력해주세요.");
+    const trimmedOrderNumber = lookupOrderNumber.trim();
+    if (!trimmedOrderNumber || !trimmed) {
+      setError("주문번호와 연락처를 모두 입력해주세요.");
       return;
     }
 
@@ -92,7 +94,9 @@ function OrderCheckPageContent() {
     setHasSearched(true);
 
     try {
-      const res = await fetch(`/api/orders/check?phone=${encodeURIComponent(trimmed)}`);
+      const res = await fetch(
+        `/api/orders/check?orderNumber=${encodeURIComponent(trimmedOrderNumber)}&phone=${encodeURIComponent(trimmed)}`,
+      );
       const data = await parseJsonResponse<Order[] | { error?: string }>(res);
 
       if (!res.ok) {
@@ -169,25 +173,35 @@ function OrderCheckPageContent() {
           </>
         )}
 
-        {/* 전화번호로 조회 */}
+        {/* 주문번호 + 전화번호로 조회 */}
         {!orderNumberParam && (
           <>
-            <div className="flex gap-2 mb-4">
+            <div className="space-y-2 mb-4">
               <input
-                type="tel"
-                placeholder="010-0000-0000"
-                className="flex-1 border rounded-xl px-3 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                type="text"
+                placeholder="주문번호"
+                className="w-full border rounded-xl px-3 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                value={lookupOrderNumber}
+                onChange={(e) => setLookupOrderNumber(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
-              <button
-                onClick={handleSearch}
-                disabled={loading}
-                className="bg-green-600 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-60 shrink-0 text-sm"
-              >
-                {loading ? "조회중" : "조회"}
-              </button>
+              <div className="flex gap-2">
+                <input
+                  type="tel"
+                  placeholder="010-0000-0000"
+                  className="flex-1 border rounded-xl px-3 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+                <button
+                  onClick={handleSearch}
+                  disabled={loading}
+                  className="bg-green-600 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-60 shrink-0 text-sm"
+                >
+                  {loading ? "조회중" : "조회"}
+                </button>
+              </div>
             </div>
 
             {error && <p className="text-red-500 text-xs sm:text-sm mb-4">{error}</p>}
