@@ -1,11 +1,12 @@
 "use client";
 
 import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BANK_ACCOUNT } from "@/lib/types";
 
 function OrderCompletePageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("orderNumber") || "";
 
@@ -34,7 +35,7 @@ function OrderCompletePageContent() {
 
           <div>
   <button
-    onClick={() => window.location.href = "/"}
+    onClick={() => router.replace("/")}
     className="w-full border text-gray-600 px-6 py-4 rounded-xl font-semibold text-sm sm:text-base min-h-[48px]"
   >
     계속 쇼핑하기

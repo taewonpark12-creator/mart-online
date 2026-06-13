@@ -162,6 +162,8 @@ export default function CheckoutPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
+
     if (!meetsMinimum) {
       setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
       return;
@@ -195,6 +197,7 @@ export default function CheckoutPage() {
           memo,
           paymentMethod: isDelivery ? paymentMethod : undefined,
           outOfStockPolicy,
+          totalAmount,
           items: items.map((i) => ({
             productId: i.productId,
             barcode: i.barcode,
@@ -227,7 +230,13 @@ export default function CheckoutPage() {
       });
       clearCart();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "주문에 실패했습니다.");
+      const message = err instanceof Error ? err.message : "";
+      const isNetworkError =
+        !message ||
+        message.toLowerCase().includes("fetch") ||
+        message.toLowerCase().includes("network") ||
+        message.toLowerCase().includes("failed");
+      setError(isNetworkError ? "주문을 접수하지 못했습니다. 잠시 후 다시 시도해주세요." : message);
     } finally {
       setLoading(false);
     }

@@ -11,18 +11,24 @@ type Props = {
   onAdd: (product: Omit<CartItem, "quantity">) => void;
 };
 
+function toSafePrice(value: unknown, fallback = 0) {
+  const next = Number(value);
+  return Number.isFinite(next) && next >= 0 ? next : fallback;
+}
+
 function ProductCard({ product, onAdd }: Props) {
   const { priceData, loading } = usePriceData(product.barcode);
 
-  const displayName = priceData?.name ?? product.name;
-  const normalPrice = priceData ? Number(priceData.normalPrice) : Number(product.price);
+  const dbPrice = toSafePrice(product.price);
+  const displayName = priceData?.name || product.name || "상품명 없음";
+  const normalPrice = priceData ? toSafePrice(priceData.normalPrice, dbPrice) : dbPrice;
   const eventPrice =
     priceData?.eventPrice !== null && priceData?.eventPrice !== undefined
-      ? Number(priceData.eventPrice)
+      ? toSafePrice(priceData.eventPrice, 0)
       : null;
   const discountRate =
     priceData?.discountRate !== null && priceData?.discountRate !== undefined
-      ? Number(priceData.discountRate)
+      ? toSafePrice(priceData.discountRate, 0)
       : eventPrice && eventPrice > 0 && eventPrice < normalPrice
         ? Math.round((1 - eventPrice / normalPrice) * 100)
         : null;

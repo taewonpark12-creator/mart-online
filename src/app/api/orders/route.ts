@@ -15,6 +15,7 @@ import {
   validatePhoneNumber,
   validateName,
   validateAddress,
+  sanitizeInput,
   getClientIp,
   getUserAgent,
   getSecurityHeaders,
@@ -43,6 +44,11 @@ type PriceItem = {
   discountRate?: number | null;
 };
 
+function toSafePrice(value: unknown, fallback = 0) {
+  const next = Number(value);
+  return Number.isFinite(next) && next >= 0 ? next : fallback;
+}
+
 class OrderValidationError extends Error {
   constructor(
     message: string,
@@ -56,8 +62,35 @@ async function loadPriceMap() {
   try {
     const filePath = path.join(process.cwd(), "public", "prices.json");
     const raw = await readFile(filePath, "utf8");
-    const prices = JSON.parse(raw) as PriceItem[];
-    return new Map(prices.map((item) => [String(item.barcode).trim(), item]));
+    const prices = JSON.parse(raw) as unknown;
+    if (!Array.isArray(prices)) {
+      return new Map<string, PriceItem>();
+    }
+
+    const map = new Map<string, PriceItem>();
+    for (const item of prices) {
+      if (!item || typeof item !== "object") continue;
+      const priceItem = item as Partial<PriceItem>;
+      const barcode = String(priceItem.barcode ?? "").trim();
+      const normalPrice = Number(priceItem.normalPrice);
+      if (!barcode || !Number.isFinite(normalPrice)) continue;
+
+      map.set(barcode, {
+        barcode,
+        name: typeof priceItem.name === "string" ? priceItem.name : undefined,
+        normalPrice,
+        eventPrice:
+          priceItem.eventPrice !== null && priceItem.eventPrice !== undefined
+            ? Number(priceItem.eventPrice)
+            : null,
+        discountRate:
+          priceItem.discountRate !== null && priceItem.discountRate !== undefined
+            ? Number(priceItem.discountRate)
+            : null,
+      });
+    }
+
+    return map;
   } catch (error) {
     console.error("[POST /api/orders] Failed to load prices.json", error);
     return new Map<string, PriceItem>();
@@ -88,18 +121,22 @@ function getSyncedProductInfo(
   const priceInfo = barcode ? priceMap.get(barcode) : undefined;
 
   if (!priceInfo) {
+    const dbPrice = toSafePrice(product.price);
     return {
       name: product.name,
-      price: Number(product.price),
-      normalPrice: Number(product.price),
+      price: dbPrice,
+      normalPrice: dbPrice,
       eventPrice: null,
       discountRate: null,
     };
   }
 
-  const normalPrice = Number(priceInfo.normalPrice);
+  const dbPrice = toSafePrice(product.price);
+  const normalPrice = toSafePrice(priceInfo.normalPrice, dbPrice);
   const eventPrice =
-    priceInfo.eventPrice !== null && priceInfo.eventPrice !== undefined ? Number(priceInfo.eventPrice) : null;
+    priceInfo.eventPrice !== null && priceInfo.eventPrice !== undefined
+      ? toSafePrice(priceInfo.eventPrice, 0)
+      : null;
   const discountRate = getDiscountRate(priceInfo, normalPrice, eventPrice);
   const hasEvent = eventPrice !== null && eventPrice > 0 && discountRate !== null && discountRate > 0;
 
@@ -145,15 +182,27 @@ export async function POST(req: NextRequest) {
       paymentMethod,
       outOfStockPolicy,
       items,
+      totalAmount: submittedTotalAmount,
     } = body;
 
-    const fulfillmentType: FulfillmentType = rawFulfillment === "PICKUP" ? "PICKUP" : "DELIVERY";
+    if (!VALID_FULFILLMENT.includes(rawFulfillment)) {
+      return NextResponse.json({ error: "수령 방식을 올바르게 선택해주세요." }, { status: 400 });
+    }
 
-    if (!customerName?.trim() || !validateName(customerName)) {
+    const fulfillmentType: FulfillmentType = rawFulfillment;
+
+    const safeCustomerName = sanitizeInput(String(customerName ?? ""));
+    const safeCustomerPhone = sanitizeInput(String(customerPhone ?? ""));
+    const safeDeliveryAddress = sanitizeInput(String(deliveryAddress ?? ""));
+    const safeDeliveryEntrance = sanitizeInput(String(deliveryEntrance ?? ""));
+    const safePickupTime = sanitizeInput(String(pickupTime ?? ""));
+    const safeMemo = sanitizeInput(String(memo ?? ""));
+
+    if (!safeCustomerName || !validateName(safeCustomerName)) {
       return NextResponse.json({ error: "유효하지 않은 이름입니다." }, { status: 400 });
     }
 
-    if (!customerPhone?.trim() || !validatePhoneNumber(customerPhone)) {
+    if (!safeCustomerPhone || !validatePhoneNumber(safeCustomerPhone)) {
       return NextResponse.json({ error: "유효하지 않은 연락처입니다." }, { status: 400 });
     }
 
@@ -162,14 +211,14 @@ export async function POST(req: NextRequest) {
     }
 
     if (fulfillmentType === "DELIVERY") {
-      if (!deliveryAddress?.trim() || !validateAddress(deliveryAddress)) {
+      if (!safeDeliveryAddress || !validateAddress(safeDeliveryAddress)) {
         return NextResponse.json({ error: "유효하지 않은 배달 주소입니다." }, { status: 400 });
       }
       if (!paymentMethod || !VALID_PAYMENT.includes(paymentMethod)) {
         return NextResponse.json({ error: "결제 방법을 선택해 주세요." }, { status: 400 });
       }
     } else {
-      const time = pickupTime?.trim();
+      const time = safePickupTime;
       if (!time || !PICKUP_TIME_VALUES.has(time)) {
         return NextResponse.json({ error: "픽업 예정 시간을 선택해 주세요." }, { status: 400 });
       }
@@ -177,6 +226,13 @@ export async function POST(req: NextRequest) {
 
     if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: "주문 상품이 없습니다." }, { status: 400 });
+    }
+
+    if (
+      submittedTotalAmount !== undefined &&
+      (!Number.isFinite(Number(submittedTotalAmount)) || Number(submittedTotalAmount) < 0)
+    ) {
+      return NextResponse.json({ error: "주문 금액을 다시 확인해주세요." }, { status: 400 });
     }
 
     const submittedItems = items.map(parseSubmittedItem);
@@ -243,17 +299,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (
+      submittedTotalAmount !== undefined &&
+      Math.floor(Number(submittedTotalAmount)) !== totalAmount
+    ) {
+      return NextResponse.json({ error: PRICE_CHANGED_MESSAGE }, { status: 409 });
+    }
+
     const isPickup = fulfillmentType === "PICKUP";
     const order = await prisma.order.create({
       data: {
         orderNumber: generateOrderNumber(),
-        customerName: customerName.trim(),
-        customerPhone: customerPhone.trim(),
+        customerName: safeCustomerName,
+        customerPhone: safeCustomerPhone,
         fulfillmentType,
-        deliveryAddress: isPickup ? `매장 픽업 · ${STORE.name}` : deliveryAddress.trim(),
-        deliveryEntrance: isPickup ? null : deliveryEntrance?.trim() || null,
-        pickupTime: isPickup ? pickupTime.trim() : null,
-        memo: memo?.trim() || null,
+        deliveryAddress: isPickup ? `매장 픽업 · ${STORE.name}` : safeDeliveryAddress,
+        deliveryEntrance: isPickup ? null : safeDeliveryEntrance || null,
+        pickupTime: isPickup ? safePickupTime : null,
+        memo: safeMemo || null,
         paymentMethod: isPickup ? null : paymentMethod,
         outOfStockPolicy: outOfStockPolicy ?? "CONTACT",
         totalAmount,

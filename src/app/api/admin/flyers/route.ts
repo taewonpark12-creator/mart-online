@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { sanitizeInput } from "@/lib/security";
 
-const prisma = new PrismaClient();
+function isSafeImageUrl(imageUrl: string): boolean {
+  return (
+    imageUrl.startsWith("/") ||
+    imageUrl.startsWith("https://") ||
+    imageUrl.startsWith("http://")
+  );
+}
 
-// GET - 관리자용 전단지 목록 조회
 export async function GET() {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
@@ -17,12 +23,11 @@ export async function GET() {
 
     return NextResponse.json(flyers);
   } catch (error) {
-    console.error("전단지 조회 오류:", error);
-    return NextResponse.json({ error: "전단지 조회 실패" }, { status: 500 });
+    console.error("[GET /api/admin/flyers]", error);
+    return NextResponse.json({ error: "전단지 조회에 실패했습니다." }, { status: 500 });
   }
 }
 
-// POST - 전단지 이미지 업로드
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
@@ -30,13 +35,12 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { imageUrl } = body;
+    const imageUrl = sanitizeInput(String(body?.imageUrl ?? "")).slice(0, 500);
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "이미지 URL이 필요합니다" }, { status: 400 });
+    if (!imageUrl || !isSafeImageUrl(imageUrl)) {
+      return NextResponse.json({ error: "올바른 이미지 URL이 필요합니다." }, { status: 400 });
     }
 
-    // 현재 가장 높은 order 값 찾기
     const maxOrderFlyer = await prisma.flyer.findFirst({
       orderBy: { order: "desc" },
     });
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(flyer);
   } catch (error) {
-    console.error("전단지 업로드 오류:", error);
-    return NextResponse.json({ error: "전단지 업로드 실패" }, { status: 500 });
+    console.error("[POST /api/admin/flyers]", error);
+    return NextResponse.json({ error: "전단지 업로드에 실패했습니다." }, { status: 500 });
   }
 }

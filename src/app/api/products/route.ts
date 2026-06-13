@@ -1,173 +1,111 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { prisma } from "@/lib/prisma";
-
 import { isAdminAuthenticated } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { sanitizeInput, validateAmount } from "@/lib/security";
 
+function serializeProduct<T extends { price: bigint | number }>(product: T) {
+  return {
+    ...product,
+    price: product.price.toString(),
+  };
+}
 
+function toNonNegativeInt(value: unknown, fallback = 0) {
+  const next = Number(value);
+  return Number.isFinite(next) && next >= 0 ? Math.floor(next) : fallback;
+}
 
 export async function GET(req: NextRequest) {
-
   try {
-
     const { searchParams } = new URL(req.url);
-
-    const category = searchParams.get("category");
-
-    const q = searchParams.get("q")?.trim() ?? "";
-
+    const category = sanitizeInput(searchParams.get("category") ?? "");
+    const q = sanitizeInput(searchParams.get("q")?.trim() ?? "").slice(0, 100);
     const activeOnly = searchParams.get("activeOnly") !== "false";
-
     const recommendedOnly = searchParams.get("recommended") === "true";
-
     const excludeRecommended = searchParams.get("excludeRecommended") === "true";
-
     const popularOnly = searchParams.get("popular") === "true";
-
     const onlineExclusiveOnly = searchParams.get("onlineExclusive") === "true";
-
     const outOfStockOnly = searchParams.get("outOfStock") === "true";
-
     const includeOutOfStock = searchParams.get("includeOutOfStock") === "true";
+    const requiresAdmin = !activeOnly || outOfStockOnly || includeOutOfStock;
+
+    if (requiresAdmin && !(await isAdminAuthenticated())) {
+      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+    }
 
     const products = await prisma.product.findMany({
-
       where: {
-
         ...(activeOnly ? { isActive: true } : {}),
-
         ...(recommendedOnly ? { isRecommended: true } : {}),
-
         ...(excludeRecommended ? { isRecommended: false } : {}),
-
-        // @ts-ignore - Prisma client not regenerated yet
         ...(popularOnly ? { isPopular: true } : {}),
-
         ...(onlineExclusiveOnly ? { isOnlineExclusive: true } : {}),
-
         ...(category && category !== "전체" ? { category } : {}),
-
         ...(outOfStockOnly ? { isOutOfStock: true } : {}),
-
-        // 고객 페이지에서는 기본적으로 품절 상품 제외 (관리자가 포함 요청 시 제외하지 않음)
         ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
-
         ...(q
-
           ? {
-
               OR: [
-
                 { name: { contains: q } },
-
                 { description: { contains: q } },
-
                 { barcode: { contains: q } },
-
               ],
-
             }
-
           : {}),
-
       },
-
       orderBy: recommendedOnly
         ? [{ recommendedOrder: "desc" }, { name: "asc" }]
         : [{ category: "asc" }, { name: "asc" }],
-
     });
 
-
-
-    // BigInt를 문자열로 변환하여 JSON 직렬화 문제 해결
-    const serializedProducts = products.map((product) => ({
-      ...product,
-      price: product.price.toString(),
-    }));
-
-    return NextResponse.json(serializedProducts);
-
+    return NextResponse.json(products.map(serializeProduct));
   } catch (error) {
-
     console.error("Products API Error:", error);
-    console.error("Error details:", error instanceof Error ? error.message : String(error));
-
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "상품 목록을 불러오는데 실패했습니다." },
-      { status: 500 }
-    );
-
+    return NextResponse.json({ error: "상품 목록을 불러오지 못했습니다." }, { status: 500 });
   }
-
 }
 
-
-
 export async function POST(req: NextRequest) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
 
   try {
-    if (!(await isAdminAuthenticated())) {
-
-      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
-
-    }
-
-
-
     const body = await req.json();
+    const name = sanitizeInput(String(body.name ?? ""));
+    const description = body.description == null ? null : sanitizeInput(String(body.description));
+    const barcode = sanitizeInput(String(body.barcode ?? ""));
+    const category = sanitizeInput(String(body.category ?? ""));
+    const imageUrl = sanitizeInput(String(body.imageUrl ?? ""));
+    const price = Number(body.price);
+    const stock = toNonNegativeInt(body.stock);
+    const maxOrderQuantity = toNonNegativeInt(body.maxOrderQuantity, 0);
 
-    // [수정됨] 여기에 isRecommended와 isOnlineExclusive를 추가했습니다
-
-    const { name, description, barcode, price, category, imageUrl, stock, isRecommended, isOnlineExclusive, isPopular, isOutOfStock, maxOrderQuantity } = body;
-
-
-
-    if (!name || !price || !category) {
-
-      return NextResponse.json({ error: "필수 항목이 누락되었습니다." }, { status: 400 });
-
+    if (!name || name.length > 100 || !category || !validateAmount(price)) {
+      return NextResponse.json(
+        { error: "상품명, 가격, 카테고리를 올바르게 입력해 주세요." },
+        { status: 400 },
+      );
     }
-
-
 
     const product = await prisma.product.create({
-
       data: {
-
         name,
-
-        description: description ?? null,
-
-        barcode: barcode?.trim() || null,
-
-        price: Number(price),
-
+        description,
+        barcode: barcode || null,
+        price,
         category,
-
-        imageUrl: imageUrl?.trim() || null,
-
-        stock: Number(stock) || 0,
-
-        // [수정됨] 여기도 두 줄을 추가했습니다
-
-        isRecommended: Boolean(isRecommended),
-
-        isOnlineExclusive: Boolean(isOnlineExclusive),
-
-        // @ts-ignore - Prisma client not regenerated yet
-        isPopular: Boolean(isPopular),
-
-        isOutOfStock: Boolean(isOutOfStock),
-
-        maxOrderQuantity: maxOrderQuantity && maxOrderQuantity > 0 ? Number(maxOrderQuantity) : null,
-
+        imageUrl: imageUrl || null,
+        stock,
+        isRecommended: Boolean(body.isRecommended),
+        isOnlineExclusive: Boolean(body.isOnlineExclusive),
+        isPopular: Boolean(body.isPopular),
+        isOutOfStock: Boolean(body.isOutOfStock),
+        maxOrderQuantity: maxOrderQuantity > 0 ? maxOrderQuantity : null,
       },
-
     });
 
-    // Audit Log 기록
     await createAuditLog({
       action: "CREATE",
       entity: "Product",
@@ -177,20 +115,9 @@ export async function POST(req: NextRequest) {
       userAgent: req.headers.get("user-agent") || undefined,
     });
 
-    // BigInt를 문자열로 변환하여 JSON 직렬화 문제 해결
-    const serializedProduct = {
-      ...product,
-      price: product.price.toString(),
-    };
-
-    return NextResponse.json(serializedProduct, { status: 201 });
+    return NextResponse.json(serializeProduct(product), { status: 201 });
   } catch (error) {
     console.error("Product creation error:", error);
-    console.error("Error details:", error instanceof Error ? error.message : String(error));
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "상품 생성 중 오류가 발생했습니다." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "상품 생성 중 오류가 발생했습니다." }, { status: 500 });
   }
-
 }

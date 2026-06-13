@@ -39,15 +39,47 @@ async function loadPriceMap() {
       if (!response.ok) {
         throw new Error("prices.json 불러오기 실패");
       }
-      return response.json() as Promise<PriceData[]>;
+      return response.json() as Promise<unknown>;
     })
     .then((items) => {
       const next = new Map<string, PriceData>();
+      if (!Array.isArray(items)) {
+        cachedPriceMap = next;
+        return next;
+      }
+
       for (const item of items) {
-        next.set(String(item.barcode).trim(), item);
+        if (!item || typeof item !== "object") continue;
+
+        const priceItem = item as Partial<PriceData>;
+        const barcode = String(priceItem.barcode ?? "").trim();
+        const normalPrice = Number(priceItem.normalPrice);
+        if (!barcode || !Number.isFinite(normalPrice)) continue;
+
+        next.set(barcode, {
+          barcode,
+          name: typeof priceItem.name === "string" ? priceItem.name : undefined,
+          normalPrice,
+          eventPrice:
+            priceItem.eventPrice !== null && priceItem.eventPrice !== undefined
+              ? Number(priceItem.eventPrice)
+              : null,
+          discountRate:
+            priceItem.discountRate !== null && priceItem.discountRate !== undefined
+              ? Number(priceItem.discountRate)
+              : null,
+        });
       }
       cachedPriceMap = next;
       return next;
+    })
+    .catch((error) => {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("prices.json 조회 실패. DB 가격으로 표시합니다.", error);
+      }
+      const fallback = new Map<string, PriceData>();
+      cachedPriceMap = fallback;
+      return fallback;
     })
     .finally(() => {
       pendingPriceMap = null;
@@ -70,9 +102,6 @@ export function PriceProvider({ children }: { children: ReactNode }) {
         if (isMounted) {
           setPricesByBarcode(priceMap);
         }
-      })
-      .catch((error) => {
-        console.error("prices.json 조회 실패:", error);
       })
       .finally(() => {
         if (isMounted) {

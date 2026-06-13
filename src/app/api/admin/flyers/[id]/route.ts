@@ -1,38 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { isAdminAuthenticated } from "@/lib/auth";
 
-const prisma = new PrismaClient();
-
-// PATCH - 전단지 순서 변경 또는 활성화/비활성화
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
     const body = await req.json();
-    const { order, isActive } = body;
+    const updateData: { order?: number; isActive?: boolean } = {};
+
+    if (body?.order !== undefined) {
+      const nextOrder = Number(body.order);
+      if (!Number.isFinite(nextOrder) || nextOrder < 0) {
+        return NextResponse.json({ error: "전단지 순서를 올바르게 입력해주세요." }, { status: 400 });
+      }
+      updateData.order = Math.floor(nextOrder);
+    }
+
+    if (body?.isActive !== undefined) {
+      if (typeof body.isActive !== "boolean") {
+        return NextResponse.json({ error: "전단지 표시 상태가 올바르지 않습니다." }, { status: 400 });
+      }
+      updateData.isActive = body.isActive;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: "수정할 항목이 없습니다." }, { status: 400 });
+    }
 
     const flyer = await prisma.flyer.update({
       where: { id },
-      data: {
-        ...(order !== undefined && { order }),
-        ...(isActive !== undefined && { isActive }),
-      },
+      data: updateData,
     });
 
     return NextResponse.json(flyer);
   } catch (error) {
-    console.error("전단지 수정 오류:", error);
-    return NextResponse.json({ error: "전단지 수정 실패" }, { status: 500 });
+    console.error("[PATCH /api/admin/flyers/[id]]", error);
+    return NextResponse.json({ error: "전단지 수정에 실패했습니다." }, { status: 500 });
   }
 }
 
-// DELETE - 전단지 삭제
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
     await prisma.flyer.delete({
@@ -41,7 +62,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("전단지 삭제 오류:", error);
-    return NextResponse.json({ error: "전단지 삭제 실패" }, { status: 500 });
+    console.error("[DELETE /api/admin/flyers/[id]]", error);
+    return NextResponse.json({ error: "전단지 삭제에 실패했습니다." }, { status: 500 });
   }
 }

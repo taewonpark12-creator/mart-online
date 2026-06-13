@@ -1,22 +1,25 @@
 import { NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/auth";
+import { sanitizeInput } from "@/lib/security";
 
-const NAVER_CLIENT_ID = "5CTXJMXh6ZfTnjgxw5og";
-const NAVER_CLIENT_SECRET = "Pmg86kSmBd";
+const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID ?? "5CTXJMXh6ZfTnjgxw5og";
+const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET ?? "Pmg86kSmBd";
 
 export async function GET(req: Request) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get("query");
+  const query = sanitizeInput(searchParams.get("query") ?? "").slice(0, 100);
 
   if (!query) {
-    return NextResponse.json(
-      { error: "검색어가 없습니다." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "검색어가 없습니다." }, { status: 400 });
   }
 
   try {
     const url = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
-      query
+      query,
     )}&display=10&sort=sim`;
 
     const response = await fetch(url, {
@@ -28,45 +31,25 @@ export async function GET(req: Request) {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-
-      console.error("네이버 API 실패:", errorText);
-
-      return NextResponse.json(
-        {
-          error: "네이버 API 실패",
-          detail: errorText,
-        },
-        { status: 500 }
-      );
+      console.error("Naver image search failed:", response.status);
+      return NextResponse.json({ error: "이미지 검색에 실패했습니다." }, { status: 500 });
     }
 
     const data = await response.json();
-
     const images =
       data?.items
-        ?.map((item: any) => item.image)
-        .filter((img: string) => img && img.startsWith("http")) || [];
-
-    // 👉 핵심 개선: 가장 좋은 이미지 1개만 선택
-    const bestImage = images[0] || null;
+        ?.map((item: { image?: unknown }) => item.image)
+        .filter((img: unknown): img is string => typeof img === "string" && img.startsWith("http")) || [];
 
     return NextResponse.json({
       success: true,
       query,
-      image: bestImage,
+      image: images[0] || null,
       images: images.slice(0, 5),
       count: images.length,
     });
   } catch (error) {
-    console.error("이미지 검색 에러:", error);
-
-    return NextResponse.json(
-      {
-        error: "서버 오류",
-        detail: String(error),
-      },
-      { status: 500 }
-    );
+    console.error("Image search error:", error);
+    return NextResponse.json({ error: "이미지 검색 중 오류가 발생했습니다." }, { status: 500 });
   }
 }

@@ -6,8 +6,25 @@ import { isAdminAuthenticated } from "@/lib/auth";
 import { deleteProductById } from "@/lib/product-delete";
 import { isProductImagePath } from "@/lib/upload";
 import { createAuditLog } from "@/lib/audit";
+import { sanitizeInput, validateAmount } from "@/lib/security";
 
 type Params = { params: Promise<{ id: string }> };
+
+function toNonNegativeInt(value: unknown, fallback = 0): number {
+  const next = Number(value);
+  if (!Number.isFinite(next)) {
+    return fallback;
+  }
+  return Math.max(0, Math.floor(next));
+}
+
+function toOptionalPositiveInt(value: unknown): number | null {
+  const next = Number(value);
+  if (!Number.isFinite(next) || next <= 0) {
+    return null;
+  }
+  return Math.floor(next);
+}
 
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
@@ -24,15 +41,35 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
 
     const nextImageUrl =
-      body.imageUrl !== undefined ? body.imageUrl?.trim() || null : existing.imageUrl;
+      body.imageUrl !== undefined
+        ? sanitizeInput(String(body.imageUrl ?? "")).slice(0, 500) || null
+        : existing.imageUrl;
+    const nextName =
+      body.name !== undefined ? sanitizeInput(String(body.name ?? "")).slice(0, 100) : undefined;
+    const nextCategory =
+      body.category !== undefined ? sanitizeInput(String(body.category ?? "")).slice(0, 50) : undefined;
+    const nextDescription =
+      body.description !== undefined
+        ? sanitizeInput(String(body.description ?? "")).slice(0, 500) || null
+        : undefined;
+    const nextBarcode =
+      body.barcode !== undefined ? sanitizeInput(String(body.barcode ?? "")).slice(0, 64) || null : undefined;
+
+    if (nextName !== undefined && nextName.length === 0) {
+      return NextResponse.json({ error: "상품명을 입력해주세요." }, { status: 400 });
+    }
+
+    if (nextCategory !== undefined && nextCategory.length === 0) {
+      return NextResponse.json({ error: "카테고리를 입력해주세요." }, { status: 400 });
+    }
 
     const updateData: any = {
-      ...(body.name !== undefined && { name: body.name }),
-      ...(body.description !== undefined && { description: body.description }),
-      ...(body.barcode !== undefined && { barcode: body.barcode?.trim() || null }),
-      ...(body.category !== undefined && { category: body.category }),
+      ...(nextName !== undefined && { name: nextName }),
+      ...(nextDescription !== undefined && { description: nextDescription }),
+      ...(nextBarcode !== undefined && { barcode: nextBarcode }),
+      ...(nextCategory !== undefined && { category: nextCategory }),
       ...(body.imageUrl !== undefined && { imageUrl: nextImageUrl }),
-      ...(body.stock !== undefined && { stock: Number(body.stock) }),
+      ...(body.stock !== undefined && { stock: toNonNegativeInt(body.stock, existing.stock) }),
       ...(body.isActive !== undefined && { isActive: Boolean(body.isActive) }),
       ...(body.isRecommended !== undefined && { isRecommended: Boolean(body.isRecommended) }),
       ...(body.isOnlineExclusive !== undefined && { isOnlineExclusive: Boolean(body.isOnlineExclusive) }),
@@ -40,19 +77,23 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       ...(body.isPopular !== undefined && { isPopular: Boolean(body.isPopular) }),
       ...(body.isOutOfStock !== undefined && { isOutOfStock: Boolean(body.isOutOfStock) }),
       ...(body.maxOrderQuantity !== undefined && {
-        maxOrderQuantity: body.maxOrderQuantity && body.maxOrderQuantity > 0 ? Number(body.maxOrderQuantity) : null,
+        maxOrderQuantity: toOptionalPositiveInt(body.maxOrderQuantity),
       }),
       ...(body.recommendedOrder !== undefined && {
-        recommendedOrder: Number(body.recommendedOrder) || 0,
+        recommendedOrder: toNonNegativeInt(body.recommendedOrder),
       }),
       // @ts-ignore - Prisma client not regenerated yet
       ...(body.popularOrder !== undefined && {
-        popularOrder: Number(body.popularOrder) || 0,
+        popularOrder: toNonNegativeInt(body.popularOrder),
       }),
     };
 
     if (body.price !== undefined) {
-      updateData.price = BigInt(body.price);
+      const nextPrice = Number(body.price);
+      if (!validateAmount(nextPrice)) {
+        return NextResponse.json({ error: "상품 가격을 올바르게 입력해주세요." }, { status: 400 });
+      }
+      updateData.price = BigInt(Math.floor(nextPrice));
     }
 
     const product = await prisma.product.update({
@@ -60,7 +101,6 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       data: updateData,
     });
 
-    // Audit Log 기록
     await createAuditLog({
       action: "UPDATE",
       entity: "Product",
@@ -80,23 +120,17 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       try {
         await unlink(oldPath);
       } catch {
-        /* 이전 파일이 없으면 무시 */
+        // Ignore missing previous local image files.
       }
     }
 
-    // BigInt를 문자열로 변환하여 JSON 직렬화 문제 해결
-    const serializedProduct = {
+    return NextResponse.json({
       ...product,
       price: product.price.toString(),
-    };
-
-    return NextResponse.json(serializedProduct);
+    });
   } catch (error) {
-    console.error("상품 업데이트 오류:", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "상품 업데이트 중 오류가 발생했습니다." },
-      { status: 500 }
-    );
+    console.error("[PATCH /api/products/[id]]", error);
+    return NextResponse.json({ error: "상품 업데이트 중 오류가 발생했습니다." }, { status: 500 });
   }
 }
 
@@ -112,7 +146,6 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }
 
-  // Audit Log 기록
   await createAuditLog({
     action: "DELETE",
     entity: "Product",

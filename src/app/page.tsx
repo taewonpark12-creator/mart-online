@@ -14,6 +14,9 @@ import { PriceProvider } from "@/contexts/PriceContext";
 import type { CartItem, Product } from "@/lib/types";
 import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 
+const PRODUCT_LOAD_ERROR_MESSAGE = "상품을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+const PRODUCT_FETCH_TIMEOUT_MS = 10000;
+
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [recommended, setRecommended] = useState<Product[]>([]);
@@ -24,6 +27,7 @@ export default function ShopPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleProductCount, setVisibleProductCount] = useState(60);
   const [loading, setLoading] = useState(true);
+  const [productError, setProductError] = useState("");
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
   
   const { items, addItem, updateQuantity, removeItem, clearCart, syncWithProducts, totalAmount, totalCount } =
@@ -88,47 +92,53 @@ export default function ShopPage() {
 
   const fetchProducts = useCallback(async () => {
     fetchCount.current += 1;
-    console.log(`[fetchProducts] 호출 횟수: ${fetchCount.current}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.debug(`[fetchProducts] request: ${fetchCount.current}`);
+    }
     setLoading(true);
-    const params = new URLSearchParams();
-
-    console.log("[fetchProducts] category:", category);
-    console.log("[fetchProducts] debouncedSearch:", debouncedSearch);
-    console.log("[fetchProducts] showRecommended:", showRecommended);
+    setProductError("");
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), PRODUCT_FETCH_TIMEOUT_MS);
+    try {
+      const params = new URLSearchParams();
 
     // 검색은 항상 전체 상품 기준으로 수행
     if (debouncedSearch) {
       params.set("q", debouncedSearch);
-      console.log("[fetchProducts] Setting search param:", debouncedSearch);
     } else {
       // 검색어가 없을 때만 카테고리 필터 적용
       if (category && category !== "추천상품" && category !== "전체") {
         params.set("category", category);
-        console.log("[fetchProducts] Setting category param:", category);
       }
       if (showRecommended) {
         params.set("recommended", "true");
-        console.log("[fetchProducts] Setting recommended param: true");
       }
     }
 
     const qs = params.toString();
-    console.log("[fetchProducts] Query string:", qs);
 
     const recommendedParams = showRecommended ? "?recommended=true" : null;
     const popularParams = showRecommended ? "?popular=true" : null;
     const exclusiveParams = showRecommended ? "?onlineExclusive=true" : null;
 
     const [listRes, recommendedRes, popularRes, exclusiveRes] = await Promise.all([
-      fetch(`/api/products${qs ? `?${qs}` : ""}`),
-      recommendedParams ? fetch(`/api/products${recommendedParams}`) : Promise.resolve(null),
-      popularParams ? fetch(`/api/products${popularParams}`) : Promise.resolve(null),
-      exclusiveParams ? fetch(`/api/products${exclusiveParams}`) : Promise.resolve(null),
+      fetch(`/api/products${qs ? `?${qs}` : ""}`, { signal: controller.signal }),
+      recommendedParams ? fetch(`/api/products${recommendedParams}`, { signal: controller.signal }) : Promise.resolve(null),
+      popularParams ? fetch(`/api/products${popularParams}`, { signal: controller.signal }) : Promise.resolve(null),
+      exclusiveParams ? fetch(`/api/products${exclusiveParams}`, { signal: controller.signal }) : Promise.resolve(null),
     ]);
+
+    if (
+      !listRes.ok ||
+      (recommendedRes && !recommendedRes.ok) ||
+      (popularRes && !popularRes.ok) ||
+      (exclusiveRes && !exclusiveRes.ok)
+    ) {
+      throw new Error("Failed to load product data");
+    }
 
     const listData = await listRes.json();
     const listArray = Array.isArray(listData) ? listData : [];
-    console.log("[fetchProducts] listArray length:", listArray.length);
     let recData: Product[] = [];
     let popData: Product[] = [];
     let excData: Product[] = [];
@@ -137,7 +147,6 @@ export default function ShopPage() {
       const raw = await recommendedRes.json();
       recData = Array.isArray(raw) ? raw : [];
       setRecommended(recData);
-      console.log("[fetchProducts] recData length:", recData.length);
     } else {
       setRecommended([]);
     }
@@ -146,7 +155,6 @@ export default function ShopPage() {
       const raw = await popularRes.json();
       popData = Array.isArray(raw) ? raw : [];
       setPopular(popData);
-      console.log("[fetchProducts] popData length:", popData.length);
     } else {
       setPopular([]);
     }
@@ -155,7 +163,6 @@ export default function ShopPage() {
       const raw = await exclusiveRes.json();
       excData = Array.isArray(raw) ? raw : [];
       setExclusive(excData);
-      console.log("[fetchProducts] excData length:", excData.length);
     } else {
       setExclusive([]);
     }
@@ -163,7 +170,15 @@ export default function ShopPage() {
     setProducts(listArray);
     syncWithProducts(showRecommended ? [...recData, ...popData, ...excData, ...listArray] : listArray);
 
-    setLoading(false);
+    } catch (error) {
+      setProductError(PRODUCT_LOAD_ERROR_MESSAGE);
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("상품 로딩 실패:", error);
+      }
+    } finally {
+      window.clearTimeout(timeout);
+      setLoading(false);
+    }
   }, [category, debouncedSearch, showRecommended, syncWithProducts]);
 
   useEffect(() => {
@@ -275,6 +290,19 @@ export default function ShopPage() {
             ))}
           </div>
         </div>
+
+        {productError && !loading && (
+          <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p className="font-medium">{productError}</p>
+            <button
+              type="button"
+              onClick={fetchProducts}
+              className="mt-2 rounded-lg bg-white px-3 py-2 text-xs font-bold text-red-700 shadow-sm border border-red-100"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="space-y-4">
