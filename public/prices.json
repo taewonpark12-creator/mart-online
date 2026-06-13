@@ -116777,7 +116777,7 @@
   {
     "barcode": "9100000214214",
     "name": "대파(1단)",
-    "normalPrice": 1980,
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116839,7 +116839,7 @@
   },
   {
     "barcode": "9100000214528",
-    "name": "양주오이지오이(50개/1포)행사",
+    "name": "양주오이지오이(50개/1포)",
     "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
@@ -117190,7 +117190,7 @@
   },
   {
     "barcode": "9100000216560",
-    "name": "청산오이지오이(50개/1포)행",
+    "name": "청산오이지오이(50개/1포)",
     "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
