@@ -100648,8 +100648,8 @@
   },
   {
     "barcode": "8809232165943",
-    "name": "사과(1봉)행사",
-    "normalPrice": 14800,
+    "name": "사과(1봉)",
+    "normalPrice": 17800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -101629,8 +101629,8 @@
   },
   {
     "barcode": "8809280980215",
-    "name": "사과(10개/1봉)행사",
-    "normalPrice": 14800,
+    "name": "사과(10개/1봉)",
+    "normalPrice": 17800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116164,8 +116164,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)행사",
-    "normalPrice": 980,
+    "name": "새송이버섯(1봉)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116794,8 +116794,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)행사",
-    "normalPrice": 3980,
+    "name": "표고버섯(500g/1봉)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117280,8 +117280,8 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(1개)행사",
-    "normalPrice": 980,
+    "name": "인큐호박(1개)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117515,7 +117515,7 @@
   {
     "barcode": "9100000217956",
     "name": "바나나(1송이)행사",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
