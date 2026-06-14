@@ -16,8 +16,27 @@ function toSafePrice(value: unknown, fallback = 0) {
   return Number.isFinite(next) && next >= 0 ? next : fallback;
 }
 
+const BADGE_META = [
+  {
+    key: "isRecommended",
+    label: "추천상품",
+    className: "bg-amber-400 text-amber-950",
+  },
+  {
+    key: "isOnlineExclusive",
+    label: "한정특가",
+    className: "bg-red-500 text-white",
+  },
+  {
+    key: "isPopular",
+    label: "인기상품",
+    className: "bg-emerald-500 text-white",
+  },
+] as const;
+
 function ProductCard({ product, onAdd }: Props) {
   const { priceData, loading } = usePriceData(product.barcode);
+  const badges = BADGE_META.filter((badge) => Boolean(product[badge.key]));
 
   const dbPrice = toSafePrice(product.price);
   const displayName = priceData?.name || product.name || "상품명 없음";
@@ -63,6 +82,18 @@ function ProductCard({ product, onAdd }: Props) {
           fill
           sizes="(max-width: 640px) 50vw, 240px"
         />
+        {badges.length > 0 && (
+          <div className="absolute left-2 top-2 z-10 flex flex-wrap gap-1 pr-12">
+            {badges.map((badge) => (
+              <span
+                key={badge.key}
+                className={`rounded-full px-2 py-0.5 text-[10px] sm:text-xs font-black shadow-sm ${badge.className}`}
+              >
+                {badge.label}
+              </span>
+            ))}
+          </div>
+        )}
         <button
           onClick={() => onAdd(cartProduct)}
           disabled={product.isOutOfStock || loadingPrice}

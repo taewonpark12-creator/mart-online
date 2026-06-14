@@ -9,7 +9,7 @@ type PriceItem = {
   barcode: string;
   name?: string;
   normalPrice: number;
-  eventPrice: number | null;
+  eventPrice?: number | null;
   discountRate?: number | null;
 };
 
@@ -42,6 +42,33 @@ function toSafePrice(value: unknown): number {
   return Math.floor(next);
 }
 
+function getRequestBarcodes(body: unknown) {
+  const rows =
+    typeof body === "object" &&
+    body !== null &&
+    "barcodes" in body &&
+    Array.isArray((body as { barcodes?: unknown }).barcodes)
+      ? (body as { barcodes: unknown[] }).barcodes
+      : Array.isArray(body)
+        ? body
+        : [body];
+
+  return rows
+    .map((item: unknown) => {
+      if (typeof item === "string" || typeof item === "number") {
+        return toSafeBarcode(item);
+      }
+
+      if (typeof item === "object" && item !== null) {
+        const row = item as Record<string, unknown>;
+        return toSafeBarcode(row.barcode ?? row.BarCode ?? row["바코드"] ?? row[0] ?? "");
+      }
+
+      return "";
+    })
+    .filter((barcode) => barcode.length > 0);
+}
+
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
@@ -49,88 +76,78 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const rows = Array.isArray(body) ? body : [body];
+    const uniqueBarcodes = Array.from(new Set(getRequestBarcodes(body)));
 
-    const prices = loadPrices();
-    const priceByBarcode = new Map(
-      prices
-        .map((item) => [toSafeBarcode(item.barcode), item] as const)
-        .filter(([barcode]) => barcode.length > 0),
-    );
-
-    const barcodes = rows
-      .map((item: any) => {
-        if (typeof item === "string" || typeof item === "number") {
-          return toSafeBarcode(item);
-        }
-
-        return toSafeBarcode(
-          item?.barcode ?? item?.BarCode ?? item?.["바코드"] ?? item?.[0] ?? "",
-        );
-      })
-      .filter((barcode) => barcode.length > 0);
-
-    if (barcodes.length === 0) {
+    if (uniqueBarcodes.length === 0) {
       return NextResponse.json({ error: "등록할 바코드가 없습니다." }, { status: 400 });
     }
 
-    const uniqueBarcodes = Array.from(new Set(barcodes));
+    const priceByBarcode = new Map(
+      loadPrices()
+        .map((item) => [toSafeBarcode(item.barcode), item] as const)
+        .filter(([barcode]) => barcode.length > 0),
+    );
 
     const existingProducts = await prisma.product.findMany({
       where: {
         barcode: { in: uniqueBarcodes },
       },
     });
-
     const existingByBarcode = new Map(
       existingProducts
-        .filter((p) => p.barcode)
-        .map((p) => [String(p.barcode).trim(), p]),
+        .filter((product) => product.barcode)
+        .map((product) => [String(product.barcode).trim(), product]),
     );
 
     let createdCount = 0;
-    let skippedCount = 0;
-    let notFoundCount = 0;
+    let updatedCount = 0;
     const notFoundBarcodes: string[] = [];
 
     for (const barcode of uniqueBarcodes) {
-      if (existingByBarcode.has(barcode)) {
-        skippedCount++;
-        continue;
-      }
-
       const priceInfo = priceByBarcode.get(barcode);
 
       if (!priceInfo) {
-        notFoundCount++;
         notFoundBarcodes.push(barcode);
+        continue;
+      }
+
+      const productData = {
+        barcode,
+        name: sanitizeInput(String(priceInfo.name ?? barcode)).slice(0, 100) || barcode,
+        price: toSafePrice(priceInfo.normalPrice),
+      };
+      const existingProduct = existingByBarcode.get(barcode);
+
+      if (existingProduct) {
+        await prisma.product.update({
+          where: { id: existingProduct.id },
+          data: productData,
+        });
+        updatedCount++;
         continue;
       }
 
       await prisma.product.create({
         data: {
-          barcode,
-          name: sanitizeInput(String(priceInfo.name ?? barcode)).slice(0, 100) || barcode,
-          price: toSafePrice(priceInfo.normalPrice),
+          ...productData,
           category: "미분류",
           description: null,
           imageUrl: null,
           stock: 0,
           isRecommended: false,
           isOnlineExclusive: false,
-          // @ts-ignore - Prisma client may not be regenerated yet
           isPopular: false,
           isOutOfStock: false,
         },
       });
-
       createdCount++;
     }
 
     return NextResponse.json({
       created: createdCount,
-      skipped: skippedCount,
-      notFound: notFoundCount,
+      updated: updatedCount,
+      success: createdCount + updatedCount,
+      notFound: notFoundBarcodes.length,
       notFoundBarcodes,
       total: uniqueBarcodes.length,
     });

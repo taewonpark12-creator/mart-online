@@ -20,6 +20,7 @@ class OrderNotificationManager {
   private onStatusChange?: (playing: boolean) => void;
   private userInteracted: boolean = false;
   private onAutoplayBlocked?: () => void;
+  private autoplayBlocked: boolean = false;
 
   constructor() {
     // 생성자에서 Audio 객체 생성하지 않음 (SSR 오류 방지)
@@ -27,7 +28,7 @@ class OrderNotificationManager {
     // 사용자 상호작용 감지
     if (typeof window !== 'undefined') {
       const enableAudio = () => {
-        this.userInteracted = true;
+        this.enableAudio();
         // 이벤트 리스너 제거 (한 번만 실행)
         document.removeEventListener('click', enableAudio);
         document.removeEventListener('keydown', enableAudio);
@@ -49,6 +50,7 @@ class OrderNotificationManager {
     if (!this.audio) {
       this.audio = new Audio('/notification.mp3');
       this.audio.loop = false;
+      this.audio.preload = 'auto';
 
       // 오디오 로드 오류 처리
       this.audio.addEventListener('error', () => {
@@ -86,6 +88,7 @@ class OrderNotificationManager {
     audio.play().catch((error) => {
       if (error.name === 'NotAllowedError') {
         console.warn('자동 재생이 차단됨. 사용자 상호작용 필요.');
+        this.autoplayBlocked = true;
         this.onAutoplayBlocked?.();
       } else if (error.name === 'NotSupportedError') {
         console.error('알림음 파일을 찾을 수 없거나 지원되지 않는 형식입니다.');
@@ -160,6 +163,15 @@ class OrderNotificationManager {
   // 수동으로 오디오 활성화 (사용자 상호작용 후 호출)
   enableAudio() {
     this.userInteracted = true;
+    this.autoplayBlocked = false;
+
+    if (this.config.soundEnabled && this.pendingOrderCount > 0) {
+      this.playSound();
+      if (!this.isPlaying) {
+        this.isPlaying = true;
+        this.onStatusChange?.(true);
+      }
+    }
   }
 
   // 리소스 정리

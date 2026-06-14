@@ -40,32 +40,42 @@ type ProductForm = {
   maxOrderQuantity: string;
 };
 
+type BulkBarcodeResult = {
+  created: number;
+  updated: number;
+  success: number;
+  notFound: number;
+  notFoundBarcodes: string[];
+  total: number;
+  error?: string;
+};
+
 const STATUS_FILTERS: { value: StatusFilter; label: string }[] = [
-  { value: "ALL", label: "All" },
-  { value: "POPULAR", label: "Popular" },
-  { value: "RECOMMENDED", label: "Recommended" },
-  { value: "LIMITED", label: "Limited Special Price" },
-  { value: "OUT_OF_STOCK", label: "Out of Stock" },
+  { value: "ALL", label: "전체" },
+  { value: "POPULAR", label: "인기상품" },
+  { value: "RECOMMENDED", label: "추천상품" },
+  { value: "LIMITED", label: "한정특가" },
+  { value: "OUT_OF_STOCK", label: "품절" },
 ];
 
 const STATUS_META: Record<ProductFlag, { label: string; activeClass: string; inactiveClass: string }> = {
   isPopular: {
-    label: "Popular",
+    label: "인기상품",
     activeClass: "bg-red-100 text-red-700 border-red-200",
     inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-red-300 hover:text-red-700",
   },
   isRecommended: {
-    label: "Recommended",
+    label: "추천상품",
     activeClass: "bg-amber-100 text-amber-800 border-amber-200",
     inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-amber-300 hover:text-amber-800",
   },
   isOnlineExclusive: {
-    label: "Limited Special Price",
+    label: "한정특가",
     activeClass: "bg-violet-100 text-violet-700 border-violet-200",
     inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-violet-300 hover:text-violet-700",
   },
   isOutOfStock: {
-    label: "Out of Stock",
+    label: "품절",
     activeClass: "bg-gray-900 text-white border-gray-900",
     inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-800",
   },
@@ -150,10 +160,10 @@ function highlightText(text: string, query: string) {
 function ProductTags({ product }: { product: Product }) {
   return (
     <div className="flex flex-wrap gap-1">
-      {product.isPopular && <span className="rounded border border-red-200 bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">Popular</span>}
-      {product.isRecommended && <span className="rounded border border-amber-200 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Recommended</span>}
-      {product.isOnlineExclusive && <span className="rounded border border-violet-200 bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700">Limited Special Price</span>}
-      {product.isOutOfStock && <span className="rounded border border-gray-300 bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white">Out of Stock</span>}
+      {product.isPopular && <span className="rounded border border-red-200 bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">인기상품</span>}
+      {product.isRecommended && <span className="rounded border border-amber-200 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">추천상품</span>}
+      {product.isOnlineExclusive && <span className="rounded border border-violet-200 bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700">한정특가</span>}
+      {product.isOutOfStock && <span className="rounded border border-gray-300 bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white">품절</span>}
     </div>
   );
 }
@@ -196,7 +206,7 @@ const ProductListItem = memo(function ProductListItem({
         {product.imageUrl ? (
           <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
         ) : (
-          <span className="flex h-full w-full items-center justify-center">No Img</span>
+          <span className="flex h-full w-full items-center justify-center">이미지 없음</span>
         )}
       </button>
       <button type="button" onClick={onSelect} className="min-w-0 text-left">
@@ -212,10 +222,10 @@ const ProductListItem = memo(function ProductListItem({
       </div>
       <div className="flex gap-1">
         <button type="button" onClick={onEdit} className="rounded-lg bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-200">
-          Edit
+          수정
         </button>
         <button type="button" onClick={onDelete} className="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100">
-          Delete
+          삭제
         </button>
       </div>
     </div>
@@ -308,7 +318,7 @@ function ProductStatusController({
 
       <div className="space-y-5 p-5">
         <section>
-          <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500">Quick Actions</p>
+          <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500">빠른 상태 변경</p>
           <div className="grid grid-cols-2 gap-2">
             {(Object.keys(STATUS_META) as ProductFlag[]).map((flag) => {
               const active = Boolean(product[flag]);
@@ -323,7 +333,7 @@ function ProductStatusController({
                     active ? meta.activeClass : meta.inactiveClass
                   }`}
                 >
-                  {meta.label} {active ? "ON" : "OFF"}
+                  {meta.label} {active ? "켜짐" : "꺼짐"}
                 </button>
               );
             })}
@@ -409,13 +419,13 @@ function ProductBulkActionBar({
             카테고리 변경
           </button>
           <button type="button" onClick={() => onPatch({ isPopular: true }, "인기상품으로 설정되었습니다.")} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">
-            Popular ON
+            인기상품 설정
           </button>
           <button type="button" onClick={() => onPatch({ isRecommended: true }, "추천상품으로 설정되었습니다.")} className="rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white">
-            Recommended ON
+            추천상품 설정
           </button>
           <button type="button" onClick={() => onPatch({ isOnlineExclusive: true }, "한정특가로 설정되었습니다.")} className="rounded-lg bg-violet-600 px-3 py-2 text-sm font-semibold text-white">
-            Limited ON
+            한정특가 설정
           </button>
           <button type="button" onClick={() => onPatch({ isOutOfStock: true }, "품절 처리되었습니다.")} className="rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white">
             품절 처리
@@ -464,7 +474,7 @@ function ProductEditDrawer({
           <div className="mb-6 flex items-start justify-between gap-4 border-b pb-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-wide text-green-700">
-                {mode === "edit" ? "Edit Product" : "Create Product"}
+                {mode === "edit" ? "상품 수정" : "상품 등록"}
               </p>
               <h2 className="mt-1 text-2xl font-black text-gray-900">
                 {mode === "edit" ? "상품 정보 편집" : "새 상품 등록"}
@@ -616,6 +626,9 @@ export default function ProductsPage() {
   const [busyProductId, setBusyProductId] = useState<string | null>(null);
   const [flashProductId, setFlashProductId] = useState<string | null>(null);
   const [toast, setToast] = useState("");
+  const [bulkBarcodeText, setBulkBarcodeText] = useState("");
+  const [bulkBarcodeLoading, setBulkBarcodeLoading] = useState(false);
+  const [bulkBarcodeResult, setBulkBarcodeResult] = useState<BulkBarcodeResult | null>(null);
 
   const activeProduct = useMemo(
     () => products.find((product) => product.id === activeProductId) ?? products[0] ?? null,
@@ -672,7 +685,7 @@ export default function ProductsPage() {
       }
 
       if (!res.ok) {
-        throw new Error("Failed to load products");
+        throw new Error("상품 목록을 불러오지 못했습니다.");
       }
 
       const data = await res.json();
@@ -853,7 +866,7 @@ export default function ProductsPage() {
           body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error ?? `bulk update failed: ${id}`);
+        if (!res.ok) throw new Error(data.error ?? `일괄 변경 실패: ${id}`);
         return normalizeProduct(data);
       }),
     );
@@ -881,6 +894,73 @@ export default function ProductsPage() {
     } else {
       setSelectedIds(new Set());
       setToast(message);
+    }
+  }
+
+  async function registerBulkBarcodes() {
+    const barcodes = Array.from(
+      new Set(
+        bulkBarcodeText
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter(Boolean),
+      ),
+    );
+
+    if (barcodes.length === 0) {
+      setBulkBarcodeResult({
+        created: 0,
+        updated: 0,
+        success: 0,
+        notFound: 0,
+        notFoundBarcodes: [],
+        total: 0,
+        error: "등록할 바코드를 입력해주세요.",
+      });
+      return;
+    }
+
+    setBulkBarcodeLoading(true);
+    setBulkBarcodeResult(null);
+
+    try {
+      const res = await fetch("/api/products/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ barcodes }),
+      });
+      const data = (await res.json().catch(() => ({}))) as BulkBarcodeResult;
+
+      if (!res.ok) {
+        setBulkBarcodeResult({
+          created: 0,
+          updated: 0,
+          success: 0,
+          notFound: 0,
+          notFoundBarcodes: [],
+          total: barcodes.length,
+          error: data.error ?? "바코드 대량 등록에 실패했습니다.",
+        });
+        return;
+      }
+
+      setBulkBarcodeResult(data);
+      setBulkBarcodeText("");
+      setToast("바코드 대량 등록이 완료되었습니다.");
+      await fetchProducts();
+    } catch (error) {
+      console.error("[admin/products] bulk barcode registration failed", error);
+      setBulkBarcodeResult({
+        created: 0,
+        updated: 0,
+        success: 0,
+        notFound: 0,
+        notFoundBarcodes: [],
+        total: barcodes.length,
+        error: "바코드 대량 등록 중 오류가 발생했습니다.",
+      });
+    } finally {
+      setBulkBarcodeLoading(false);
     }
   }
 
@@ -956,6 +1036,59 @@ export default function ProductsPage() {
           }}
         />
 
+        <section className="mt-4 rounded-2xl border bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
+            <div className="flex-1">
+              <label className="mb-2 block text-sm font-bold text-gray-800">
+                바코드 텍스트 대량 등록
+              </label>
+              <textarea
+                value={bulkBarcodeText}
+                onChange={(event) => setBulkBarcodeText(event.target.value)}
+                placeholder={"8801234567890\n8801234567891\n8801234567892"}
+                rows={5}
+                className="w-full resize-y rounded-xl border px-3 py-2 text-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                한 줄에 하나의 바코드만 입력하세요. 상품명과 가격은 POS prices.json 기준으로만 등록됩니다.
+              </p>
+            </div>
+            <div className="w-full lg:w-64">
+              <button
+                type="button"
+                onClick={registerBulkBarcodes}
+                disabled={bulkBarcodeLoading}
+                className="w-full rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white hover:bg-black disabled:opacity-60"
+              >
+                {bulkBarcodeLoading ? "등록 중..." : "등록"}
+              </button>
+              {bulkBarcodeResult && (
+                <div className="mt-3 rounded-xl border bg-gray-50 p-3 text-xs text-gray-700">
+                  {bulkBarcodeResult.error ? (
+                    <p className="font-semibold text-red-600">{bulkBarcodeResult.error}</p>
+                  ) : (
+                    <>
+                      <p>전체: {bulkBarcodeResult.total}개</p>
+                      <p>성공: {bulkBarcodeResult.success}개</p>
+                      <p>신규 등록: {bulkBarcodeResult.created}개</p>
+                      <p>업데이트: {bulkBarcodeResult.updated}개</p>
+                      <p>실패: {bulkBarcodeResult.notFound}개</p>
+                      {bulkBarcodeResult.notFoundBarcodes.length > 0 && (
+                        <div className="mt-2">
+                          <p className="font-semibold text-red-600">POS에 없는 바코드</p>
+                          <p className="mt-1 break-words font-mono">
+                            {bulkBarcodeResult.notFoundBarcodes.join(", ")}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         <div className="mt-4">
           <ProductBulkActionBar
             selectedCount={selectedIds.size}
@@ -967,7 +1100,7 @@ export default function ProductsPage() {
           />
           {selectedIds.size > 0 && (
             <p className="mt-2 text-xs text-gray-500">
-              선택 항목: Popular {selectedSummary.popular} · Recommended {selectedSummary.recommended} · Limited {selectedSummary.limited} · 품절 {selectedSummary.outOfStock}
+              선택 항목: 인기상품 {selectedSummary.popular} · 추천상품 {selectedSummary.recommended} · 한정특가 {selectedSummary.limited} · 품절 {selectedSummary.outOfStock}
             </p>
           )}
         </div>

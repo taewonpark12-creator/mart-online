@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 type AuthCheckResponse = {
   authenticated?: boolean;
@@ -84,6 +84,7 @@ function AccessBadge({
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const hasRedirectedRef = useRef(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -91,6 +92,13 @@ export default function AdminLoginPage() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [lastLoginAt, setLastLoginAt] = useState<string | null>(null);
   const [sessionCheckedAt] = useState(() => new Date().toISOString());
+  const dashboardPath = "/admin/dashboard";
+
+  const redirectToDashboard = useCallback(() => {
+    if (hasRedirectedRef.current || pathname === dashboardPath) return;
+    hasRedirectedRef.current = true;
+    router.replace(dashboardPath);
+  }, [pathname, router]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -105,8 +113,7 @@ export default function AdminLoginPage() {
         if (res.ok) {
           const data = (await res.json()) as AuthCheckResponse;
           setLastLoginAt(data.lastLoginAt ?? null);
-          hasRedirectedRef.current = true;
-          router.replace("/admin/dashboard");
+          redirectToDashboard();
           return;
         }
       } catch (err) {
@@ -122,7 +129,7 @@ export default function AdminLoginPage() {
 
     checkSession();
     return () => controller.abort();
-  }, [router]);
+  }, [redirectToDashboard]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -152,8 +159,7 @@ export default function AdminLoginPage() {
       }
 
       setLastLoginAt(data.lastLoginAt ?? new Date().toISOString());
-      hasRedirectedRef.current = true;
-      router.push("/admin/dashboard");
+      redirectToDashboard();
     } catch (err) {
       console.error("[admin/login] login failed", err);
       setError("접속 요청을 처리하지 못했습니다. 네트워크 상태를 확인하고 다시 시도하세요.");
@@ -174,15 +180,15 @@ export default function AdminLoginPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-300">
-                  Admin Operations Gateway
+                  관리자 운영 게이트웨이
                 </p>
                 <h1 className="mt-5 text-4xl font-black leading-tight">
                   Mart Online
-                  <span className="block text-gray-300">Control Platform</span>
+                  <span className="block text-gray-300">관리 플랫폼</span>
                 </h1>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold text-gray-300">
-                SYSTEM READY
+                시스템 준비 완료
               </div>
             </div>
 
@@ -192,9 +198,9 @@ export default function AdminLoginPage() {
 
             <div className="mt-8 grid grid-cols-3 gap-3">
               {[
-                ["Orders", "실시간 주문 큐", "대기 주문 감지"],
-                ["Products", "상품 상태 제어", "노출 태그 관리"],
-                ["Flyers", "전단 운영", "고객 화면 반영"],
+                ["주문", "실시간 주문 큐", "대기 주문 감지"],
+                ["상품", "상품 상태 제어", "노출 태그 관리"],
+                ["전단", "전단 운영", "고객 화면 반영"],
               ].map(([title, metric, detail]) => (
                 <div key={title} className="rounded-xl border border-white/10 bg-white/[0.06] p-4">
                   <p className="text-sm font-black text-white">{title}</p>
@@ -207,17 +213,17 @@ export default function AdminLoginPage() {
 
           <div className="space-y-3">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">
-              Access Monitor
+              접속 모니터
             </p>
             <div className="grid grid-cols-2 gap-3">
               <AccessBadge
                 tone={lastLoginAt ? "success" : "neutral"}
-                label="Last Success"
+                label="최근 성공"
                 detail={formatLoginTime(lastLoginAt)}
               />
               <AccessBadge
                 tone={error ? "warning" : "success"}
-                label={error ? "Action Required" : "Gateway Stable"}
+                label={error ? "확인 필요" : "게이트웨이 정상"}
                 detail={error ? "입력값을 확인하세요." : `검증 ${formatLoginTime(sessionCheckedAt)}`}
               />
             </div>
@@ -229,7 +235,7 @@ export default function AdminLoginPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700">
-                  Secure Entry
+                  보안 접속
                 </p>
                 <h2 className="mt-2 text-3xl font-black text-gray-950">관리자 로그인</h2>
               </div>
@@ -243,8 +249,8 @@ export default function AdminLoginPage() {
           </div>
 
           <div className="mb-5 grid gap-3 sm:grid-cols-2">
-            <AccessBadge tone="neutral" label="Session Check" detail="완료, 로그인 필요" />
-            <AccessBadge tone={lastLoginAt ? "success" : "neutral"} label="Recent Login" detail={formatLoginTime(lastLoginAt)} />
+            <AccessBadge tone="neutral" label="세션 확인" detail="완료, 로그인 필요" />
+            <AccessBadge tone={lastLoginAt ? "success" : "neutral"} label="최근 로그인" detail={formatLoginTime(lastLoginAt)} />
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">

@@ -12,17 +12,19 @@ import { FlyerBanner } from "@/components/FlyerBanner";
 import { useCart } from "@/contexts/CartContext";
 import { PriceProvider } from "@/contexts/PriceContext";
 import type { CartItem, Product } from "@/lib/types";
-import { MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
+import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 
 const PRODUCT_LOAD_ERROR_MESSAGE = "상품을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
 const PRODUCT_FETCH_TIMEOUT_MS = 10000;
 const INITIAL_VISIBLE_SEARCH_COUNT = 60;
 
 export default function HomePage() {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [homeProducts, setHomeProducts] = useState<Product[]>([]);
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [exclusiveProducts, setExclusiveProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [category, setCategory] = useState<string>(CATEGORIES[0] ?? "전체");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleSearchCount, setVisibleSearchCount] = useState(INITIAL_VISIBLE_SEARCH_COUNT);
@@ -33,8 +35,13 @@ export default function HomePage() {
   const { addItem, syncWithProducts, totalAmount, totalCount } = useCart();
   const fetchCount = useRef(0);
   const isSearchMode = debouncedSearch.length > 0;
+  const categoryProducts =
+    category === CATEGORIES[0]
+      ? allProducts
+      : allProducts.filter((product) => product.category === category);
   const visibleSearchResults = searchResults.slice(0, visibleSearchCount);
   const hasMoreSearchResults = visibleSearchCount < searchResults.length;
+  const visibleCategories = (CATEGORIES as readonly string[]).filter((item) => item !== "추천상품");
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -78,31 +85,35 @@ export default function HomePage() {
         return;
       }
 
-      const [homeRes, popularRes, exclusiveRes] = await Promise.all([
+      const [allRes, homeRes, popularRes, exclusiveRes] = await Promise.all([
+        fetch("/api/products", { signal: controller.signal }),
         fetch("/api/products?recommended=true", { signal: controller.signal }),
         fetch("/api/products?popular=true", { signal: controller.signal }),
         fetch("/api/products?onlineExclusive=true", { signal: controller.signal }),
       ]);
 
-      if (!homeRes.ok || !popularRes.ok || !exclusiveRes.ok) {
+      if (!allRes.ok || !homeRes.ok || !popularRes.ok || !exclusiveRes.ok) {
         throw new Error("Failed to load home products");
       }
 
-      const [homeRaw, popularRaw, exclusiveRaw] = await Promise.all([
+      const [allRaw, homeRaw, popularRaw, exclusiveRaw] = await Promise.all([
+        allRes.json(),
         homeRes.json(),
         popularRes.json(),
         exclusiveRes.json(),
       ]);
 
+      const nextAllProducts = Array.isArray(allRaw) ? allRaw : [];
       const nextHomeProducts = Array.isArray(homeRaw) ? homeRaw : [];
       const nextPopularProducts = Array.isArray(popularRaw) ? popularRaw : [];
       const nextExclusiveProducts = Array.isArray(exclusiveRaw) ? exclusiveRaw : [];
 
+      setAllProducts(nextAllProducts);
       setHomeProducts(nextHomeProducts);
       setPopularProducts(nextPopularProducts);
       setExclusiveProducts(nextExclusiveProducts);
       setSearchResults([]);
-      syncWithProducts([...nextHomeProducts, ...nextPopularProducts, ...nextExclusiveProducts]);
+      syncWithProducts(nextAllProducts);
     } catch (error) {
       setProductError(PRODUCT_LOAD_ERROR_MESSAGE);
       if (process.env.NODE_ENV !== "production") {
@@ -138,6 +149,12 @@ export default function HomePage() {
     });
   }, [addItem]);
 
+  const handleCategoryChange = useCallback((nextCategory: string) => {
+    setCategory(nextCategory);
+    setSearch("");
+    setDebouncedSearch("");
+  }, []);
+
   return (
     <PriceProvider>
       <div className="min-h-screen bg-white">
@@ -155,7 +172,7 @@ export default function HomePage() {
             </a>
 
             <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
-              당일 배달
+              숭의동, 용현동 배달
             </div>
 
             <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
@@ -194,6 +211,25 @@ export default function HomePage() {
                 x
               </button>
             )}
+          </div>
+
+          <div className="mb-4 sm:mb-6 overflow-x-auto">
+            <div className="flex gap-2 pb-1">
+              {visibleCategories.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => handleCategoryChange(item)}
+                  className={`shrink-0 rounded-full border px-3 py-2 text-xs sm:text-sm font-semibold transition ${
+                    category === item
+                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
 
           {productError && !loading && (
@@ -247,21 +283,39 @@ export default function HomePage() {
             )
           ) : (
             <>
-              <div className="mb-8">
-                <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
+              {category === CATEGORIES[0] && (
+                <>
+                  <div className="mb-8">
+                    <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
+                  </div>
+
+                  <OnlineExclusiveProducts products={exclusiveProducts} onAdd={handleAdd} />
+
+                  {popularProducts.length > 0 && (
+                    <div className="mb-8">
+                      <PopularProducts products={popularProducts} onAdd={handleAdd} />
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div className="flex items-center gap-2 mt-8 mb-4">
+                <span className="w-8 h-1 bg-gray-200 rounded-full" />
+                <h2 className="text-lg font-bold text-gray-900">
+                  {category === CATEGORIES[0] ? "전체 상품" : category}
+                </h2>
               </div>
 
-              <OnlineExclusiveProducts products={exclusiveProducts} onAdd={handleAdd} />
-
-              {popularProducts.length > 0 && (
-                <div className="mb-8">
-                  <PopularProducts products={popularProducts} onAdd={handleAdd} />
+              {categoryProducts.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {categoryProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} onAdd={handleAdd} />
+                  ))}
                 </div>
+              ) : (
+                <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
               )}
 
-              {homeProducts.length === 0 && exclusiveProducts.length === 0 && popularProducts.length === 0 && (
-                <div className="py-20 text-center text-gray-400">등록된 추천 상품이 없습니다.</div>
-              )}
             </>
           )}
         </main>

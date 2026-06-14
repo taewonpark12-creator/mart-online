@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Administrator\\mart-online\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\components\\PopularProducts.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\components\\PopularProducts.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\app\\checkout\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\checkout\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\app\\order-complete\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\order-complete\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\page.tsx||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,24 +26,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "page.tsx",
-              "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\checkout\\page.tsx",
-              "RelativeDocumentMoniker": "src\\app\\checkout\\page.tsx",
-              "ToolTip": "C:\\Users\\Administrator\\mart-online\\src\\app\\checkout\\page.tsx",
-              "RelativeToolTip": "src\\app\\checkout\\page.tsx",
-              "ViewState": "AgIAAEoBAAAAAAAAAAAAAFUBAAAGAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "PopularProducts.tsx",
+              "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\components\\PopularProducts.tsx",
+              "RelativeDocumentMoniker": "src\\components\\PopularProducts.tsx",
+              "ToolTip": "C:\\Users\\Administrator\\mart-online\\src\\components\\PopularProducts.tsx",
+              "RelativeToolTip": "src\\components\\PopularProducts.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-06-12T10:18:15.842Z",
+              "WhenOpened": "2026-06-13T12:47:54.956Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "page.tsx",
               "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\order-complete\\page.tsx",
               "RelativeDocumentMoniker": "src\\app\\order-complete\\page.tsx",
@@ -47,20 +51,32 @@
               "RelativeToolTip": "src\\app\\order-complete\\page.tsx",
               "ViewState": "AgIAACIAAAAAAAAAAAAAACkAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-06-12T10:13:36.77Z",
+              "WhenOpened": "2026-06-12T10:13:36.77Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx",
+              "RelativeDocumentMoniker": "src\\app\\page.tsx",
+              "ToolTip": "C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx",
+              "RelativeToolTip": "src\\app\\page.tsx",
+              "ViewState": "AgIAAKUAAAAAAAAAAAAlwK4AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-12T09:52:12.162Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "page.tsx",
-              "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx",
-              "RelativeDocumentMoniker": "src\\app\\page.tsx",
-              "ToolTip": "C:\\Users\\Administrator\\mart-online\\src\\app\\page.tsx",
-              "RelativeToolTip": "src\\app\\page.tsx",
-              "ViewState": "AgIAANgAAAAAAAAAAAAUwN8AAAAGAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\Administrator\\mart-online\\src\\app\\checkout\\page.tsx",
+              "RelativeDocumentMoniker": "src\\app\\checkout\\page.tsx",
+              "ToolTip": "C:\\Users\\Administrator\\mart-online\\src\\app\\checkout\\page.tsx",
+              "RelativeToolTip": "src\\app\\checkout\\page.tsx",
+              "ViewState": "AgIAAEoBAAAAAAAAAAAAAFUBAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
-              "WhenOpened": "2026-06-12T09:52:12.162Z"
+              "WhenOpened": "2026-06-12T10:18:15.842Z"
             }
           ]
         }

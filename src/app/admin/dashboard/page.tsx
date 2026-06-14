@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 
 type Stats = {
@@ -16,18 +16,74 @@ type Stats = {
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [statsError, setStatsError] = useState("");
   const [period, setPeriod] = useState<"daily" | "monthly">("daily");
 
   const router = useRouter();
+  const pathname = usePathname();
+
+  const redirectToAdminLogin = useCallback(() => {
+    if (pathname !== "/admin") {
+      router.replace("/admin");
+    }
+  }, [pathname, router]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/admin/auth", { cache: "no-store" });
+        if (!res.ok) {
+          if (!cancelled) {
+            setIsAuthenticated(false);
+          }
+          redirectToAdminLogin();
+          return;
+        }
+        if (!cancelled) {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("[admin/dashboard] auth check failed", error);
+        if (!cancelled) {
+          setIsAuthenticated(false);
+        }
+        redirectToAdminLogin();
+        return;
+      } finally {
+        if (!cancelled) {
+          setCheckingAuth(false);
+        }
+      }
+    }
+
+    checkAuth();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [redirectToAdminLogin]);
 
   const fetchStats = useCallback(async () => {
+    if (checkingAuth || !isAuthenticated) return;
+
     setLoading(true);
+    setStatsError("");
 
     try {
       const res = await fetch(`/api/admin/stats?period=${period}`);
 
       if (!res.ok) {
-        router.replace("/admin");
+        if (res.status === 401 || res.status === 403) {
+          setIsAuthenticated(false);
+          redirectToAdminLogin();
+          return;
+        }
+
+        setStatsError("대시보드 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
         return;
       }
 
@@ -35,10 +91,11 @@ export default function DashboardPage() {
       setStats(data);
     } catch (error) {
       console.error(error);
+      setStatsError("대시보드 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
       setLoading(false);
     }
-  }, [period, router]);
+  }, [checkingAuth, isAuthenticated, period, redirectToAdminLogin]);
 
   useEffect(() => {
     fetchStats();
@@ -91,7 +148,13 @@ export default function DashboardPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">대시보드</h1>
 
-        {!stats ? (
+        {statsError && (
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            {statsError}
+          </div>
+        )}
+
+        {checkingAuth || (!stats && !statsError) ? (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div

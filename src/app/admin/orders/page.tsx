@@ -54,7 +54,7 @@ const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
   APPROVED: "DELIVERED",
 };
 
-const APPROVED_CANCEL_BLOCK_MESSAGE = "Orders that have already been approved cannot be cancelled.";
+const APPROVED_CANCEL_BLOCK_MESSAGE = "이미 승인된 주문은 취소할 수 없습니다.";
 
 function statusRank(status: OrderStatus) {
   if (status === "PENDING") return 0;
@@ -73,6 +73,10 @@ function getOrderTime(order: Order) {
 
 function canCancelOrder(order: Order) {
   return order.status === "PENDING";
+}
+
+function countPendingOrders(orders: Order[]) {
+  return orders.filter((order) => order.status === "PENDING").length;
 }
 
 function matchesSearch(order: Order, query: string) {
@@ -159,7 +163,7 @@ function StatusActions({
   return (
     <div className="space-y-3">
       <div className="rounded-xl border border-green-100 bg-green-50 p-4">
-        <p className="text-xs font-bold text-green-800 mb-2">Next Step</p>
+        <p className="text-xs font-bold text-green-800 mb-2">다음 처리 단계</p>
         {nextStatus ? (
           <button
             type="button"
@@ -244,7 +248,7 @@ function OrderDetailPanel({
               ? "bg-emerald-100 text-emerald-800"
               : "bg-gray-100 text-gray-600"
           }`}>
-            {canCancelOrder(order) ? "Cancellable" : "Locked Order (Non-Cancellable)"}
+            {canCancelOrder(order) ? "취소 가능" : "확정 주문(취소 불가)"}
           </span>
           <p className="text-2xl font-black text-green-700">{formatPrice(getOrderTotal(order))}</p>
         </div>
@@ -254,7 +258,7 @@ function OrderDetailPanel({
         <StatusActions order={order} updating={updating} onUpdate={(status) => onUpdateStatus(order, status)} />
 
         <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
-          <h2 className="text-sm font-bold text-blue-900 mb-3">Customer Info</h2>
+          <h2 className="text-sm font-bold text-blue-900 mb-3">고객 정보</h2>
           <div className="space-y-2 text-sm">
             <p><span className="text-blue-500 font-semibold mr-2">고객</span>{order.customerName}</p>
             <p><span className="text-blue-500 font-semibold mr-2">연락처</span>{order.customerPhone}</p>
@@ -275,7 +279,7 @@ function OrderDetailPanel({
         </section>
 
         <section className="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <h2 className="text-sm font-bold text-gray-900 mb-3">Items Ordered</h2>
+          <h2 className="text-sm font-bold text-gray-900 mb-3">주문 상품</h2>
           <div className="divide-y">
             {order.items.map((item) => (
               <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
@@ -292,7 +296,7 @@ function OrderDetailPanel({
         </section>
 
         <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
-          <h2 className="text-sm font-bold text-amber-900 mb-3">Payment & Requests</h2>
+          <h2 className="text-sm font-bold text-amber-900 mb-3">결제 및 요청사항</h2>
           <div className="space-y-2 text-sm">
             <p>
               <span className="text-amber-600 font-semibold mr-2">수령</span>
@@ -338,7 +342,7 @@ function OrderDetailPanel({
 
         {canCancelOrder(order) ? (
           <section className="rounded-xl border border-red-100 bg-red-50 p-4">
-            <h2 className="text-sm font-bold text-red-800 mb-2">Danger Zone</h2>
+            <h2 className="text-sm font-bold text-red-800 mb-2">취소 처리</h2>
             <button
               type="button"
               disabled={updating}
@@ -350,7 +354,7 @@ function OrderDetailPanel({
           </section>
         ) : (
           <section className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-            <h2 className="text-sm font-bold text-gray-700 mb-1">Locked Order</h2>
+            <h2 className="text-sm font-bold text-gray-700 mb-1">취소 불가 주문</h2>
             <p className="text-xs text-gray-500">승인된 주문은 취소할 수 없습니다.</p>
           </section>
         )}
@@ -376,12 +380,9 @@ export default function OrdersPage() {
   const knownOrderIds = useRef<Set<string>>(new Set());
   const {
     isPlaying,
-    pendingCount,
-    autoplayBlocked,
     stopNotification,
     updatePendingCount,
     setNotificationConfig,
-    enableAudio,
   } = useOrderNotification();
 
   const selectedOrder = useMemo(
@@ -392,6 +393,11 @@ export default function OrdersPage() {
   const visibleOrders = useMemo(() => {
     return orders.filter((order) => matchesSearch(order, search.trim()));
   }, [orders, search]);
+
+  const pendingOrderCount = useMemo(
+    () => countPendingOrders(orders),
+    [orders],
+  );
 
   const fetchOrders = useCallback(
     async ({ silent = false, focusNewest = false }: { silent?: boolean; focusNewest?: boolean } = {}) => {
@@ -424,6 +430,28 @@ export default function OrdersPage() {
           window.setTimeout(() => setFreshOrderIds(new Set()), 7000);
         }
 
+        const currentPendingCount = countPendingOrders(data);
+        const hasNewPending =
+          currentPendingCount > previousPendingCount.current && currentPendingCount > 0;
+
+        updatePendingCount(currentPendingCount);
+
+        if (hasNewPending) {
+          if (Notification.permission === "granted" && !document.hidden) {
+            new Notification("새 주문 접수", {
+              body: `${currentPendingCount}개의 대기 주문이 있습니다.`,
+              icon: "/icon.png",
+              tag: "order-notification",
+            });
+          }
+        }
+
+        document.title =
+          currentPendingCount > 0
+            ? `(${currentPendingCount}) 주문 관리 - mart-online`
+            : "주문 관리 - mart-online";
+        previousPendingCount.current = currentPendingCount;
+
         setOrders(data);
         if (focusNewest && data[0]) {
           setSelectedOrderId(data[0].id);
@@ -439,7 +467,7 @@ export default function OrdersPage() {
         isFetching.current = false;
       }
     },
-    [filter, router, selectedOrderId],
+    [filter, router, selectedOrderId, updatePendingCount],
   );
 
   useEffect(() => {
@@ -459,43 +487,14 @@ export default function OrdersPage() {
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
-    const fetchPendingCount = async () => {
-      try {
-        const res = await fetch("/api/admin/orders/pending-count", { cache: "no-store" });
-        if (!res.ok) return;
-
-        const data = await res.json();
-        const currentPendingCount = Number(data.pendingCount || 0);
-        const hasNewPending =
-          currentPendingCount > previousPendingCount.current && currentPendingCount > 0;
-
-        updatePendingCount(currentPendingCount);
-
-        if (hasNewPending) {
-          fetchOrders({ silent: true, focusNewest: true });
-          if (Notification.permission === "granted" && !document.hidden) {
-            new Notification("새 주문 접수", {
-              body: `${currentPendingCount}개의 대기 주문이 있습니다.`,
-              icon: "/icon.png",
-              tag: "order-notification",
-            });
-          }
-        }
-
-        document.title =
-          currentPendingCount > 0
-            ? `(${currentPendingCount}) 주문 관리 - mart-online`
-            : "주문 관리 - mart-online";
-        previousPendingCount.current = currentPendingCount;
-      } catch (error) {
-        console.error("[admin/orders] pending-count failed", error);
-      }
+    const pollOrders = () => {
+      fetchOrders({ silent: true, focusNewest: true });
     };
 
     const startPolling = () => {
       if (interval) clearInterval(interval);
-      fetchPendingCount();
-      interval = setInterval(fetchPendingCount, 12000);
+      pollOrders();
+      interval = setInterval(pollOrders, 12000);
     };
 
     const stopPolling = () => {
@@ -609,14 +608,14 @@ export default function OrdersPage() {
               <h1 className="text-2xl font-bold text-gray-900">주문 운영 콘솔</h1>
               <p className="text-sm text-gray-500 mt-1">실시간 주문을 선택하고 오른쪽 패널에서 빠르게 처리합니다.</p>
             </div>
-            {pendingCount > 0 && (
+            {pendingOrderCount > 0 && (
               <div className={`relative inline-flex items-center ${isPlaying ? "animate-pulse" : ""}`}>
                 <span className="absolute flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                 </span>
                 <span className="ml-4 bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full">
-                  대기 {pendingCount}
+                  대기 {pendingOrderCount}
                 </span>
               </div>
             )}
@@ -659,18 +658,6 @@ export default function OrdersPage() {
                 알림 중지
               </button>
             </div>
-          </div>
-        )}
-
-        {autoplayBlocked && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
-            <div>
-              <p className="font-semibold text-yellow-800">알림 자동 재생이 차단되었습니다.</p>
-              <p className="text-sm text-yellow-700">브라우저 정책상 사용자 상호작용이 필요합니다.</p>
-            </div>
-            <button type="button" onClick={enableAudio} className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 font-medium">
-              알림 활성화
-            </button>
           </div>
         )}
 

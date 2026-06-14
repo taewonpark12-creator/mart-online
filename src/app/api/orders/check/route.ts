@@ -45,51 +45,50 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const orderNumber = String(searchParams.get("orderNumber") ?? "").trim();
     const phone = String(searchParams.get("phone") ?? "").trim();
     const normalizedPhone = normalizePhone(phone);
 
-    if (!orderNumber || !normalizedPhone || normalizedPhone.length < 10) {
-      return NextResponse.json(
-        { error: "주문번호와 연락처를 모두 입력해주세요." },
-        { status: 400 },
-      );
+    if (!normalizedPhone || normalizedPhone.length < 10) {
+      return NextResponse.json({ error: "연락처를 입력해주세요." }, { status: 400 });
     }
 
-    const order = await prisma.order.findFirst({
-      where: { orderNumber },
+    const orders = await prisma.order.findMany({
+      where: {
+        customerPhone: {
+          contains: normalizedPhone.slice(-4),
+        },
+      },
       include: { items: { include: { product: true } } },
+      orderBy: { createdAt: "desc" },
     });
 
-    if (!order || normalizePhone(order.customerPhone) !== normalizedPhone) {
-      return NextResponse.json([], { status: 200 });
-    }
-
-    return NextResponse.json([
-      {
-        id: order.id,
-        orderNumber: order.orderNumber,
-        customerName: order.customerName,
-        customerPhone: maskPhone(order.customerPhone),
-        fulfillmentType: order.fulfillmentType,
-        deliveryAddress: maskAddress(order.deliveryAddress),
-        deliveryEntrance: order.deliveryEntrance ? "***" : null,
-        pickupTime: order.pickupTime,
-        memo: order.memo ? "***" : null,
-        paymentMethod: order.paymentMethod,
-        outOfStockPolicy: order.outOfStockPolicy,
-        status: order.status,
-        totalAmount: order.totalAmount,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
-        items: order.items.map((item) => ({
-          id: item.id,
-          productName: item.productName,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
+    return NextResponse.json(
+      orders
+        .filter((order) => normalizePhone(order.customerPhone) === normalizedPhone)
+        .map((order) => ({
+          id: order.id,
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerPhone: maskPhone(order.customerPhone),
+          fulfillmentType: order.fulfillmentType,
+          deliveryAddress: maskAddress(order.deliveryAddress),
+          deliveryEntrance: order.deliveryEntrance ? "***" : null,
+          pickupTime: order.pickupTime,
+          memo: order.memo ? "***" : null,
+          paymentMethod: order.paymentMethod,
+          outOfStockPolicy: order.outOfStockPolicy,
+          status: order.status,
+          totalAmount: order.totalAmount,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          items: order.items.map((item) => ({
+            id: item.id,
+            productName: item.productName,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+          })),
         })),
-      },
-    ]);
+    );
   } catch (error) {
     console.error("[GET /api/orders/check]", error);
     return NextResponse.json({ error: "조회 중 오류가 발생했습니다." }, { status: 500 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
@@ -63,6 +63,7 @@ function sortProfiles(profiles: ShippingProfile[]) {
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalAmount, clearCart, replaceItems } = useCart();
+  const submitLockRef = useRef(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [fulfillmentType, setFulfillmentType] = useState<FulfillmentType>("DELIVERY");
@@ -157,21 +158,26 @@ export default function CheckoutPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (loading) return;
+    if (loading || submitLockRef.current) return;
+    submitLockRef.current = true;
 
     if (!meetsMinimum) {
+      submitLockRef.current = false;
       setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
       return;
     }
     if (hasOutOfStockItem) {
+      submitLockRef.current = false;
       setError("품절된 상품이 장바구니에 있습니다. 해당 상품을 제거 후 주문해주세요.");
       return;
     }
     if (items.some((item) => !Number.isInteger(item.quantity) || item.quantity <= 0)) {
+      submitLockRef.current = false;
       setError("장바구니 수량을 다시 확인해주세요.");
       return;
     }
     if (!isDelivery && !pickupTime) {
+      submitLockRef.current = false;
       setError("픽업 예정 시간을 선택해주세요.");
       return;
     }
@@ -306,6 +312,7 @@ export default function CheckoutPage() {
       setError(isNetworkError ? "주문을 접수하지 못했습니다. 잠시 후 다시 시도해주세요." : message);
     } finally {
       setLoading(false);
+      submitLockRef.current = false;
     }
   }
 
