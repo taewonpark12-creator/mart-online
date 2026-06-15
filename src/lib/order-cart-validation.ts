@@ -27,6 +27,12 @@ export class OrderValidationError extends Error {
   }
 }
 
+function parseFiniteNumber(value: unknown) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string" && value.trim() !== "") return Number(value);
+  return Number.NaN;
+}
+
 export function parseSubmittedItem(item: SubmittedOrderItem) {
   if (!item || typeof item !== "object") {
     throw new OrderValidationError("INVALID_ORDER", "주문 상품 형식이 올바르지 않습니다.");
@@ -34,25 +40,26 @@ export function parseSubmittedItem(item: SubmittedOrderItem) {
 
   const productId = typeof item.productId === "string" ? item.productId.trim() : "";
   const barcode = typeof item.barcode === "string" ? item.barcode.trim() : null;
+  const price = parseFiniteNumber(item.price);
+  const quantity = parseFiniteNumber(item.quantity);
 
   if (!productId) {
     throw new OrderValidationError("INVALID_ORDER", "유효하지 않은 상품이 포함되어 있습니다.");
   }
 
-  if (typeof item.price !== "number" || !Number.isFinite(item.price) || item.price < 0 || !Number.isInteger(item.price)) {
+  if (!Number.isFinite(price) || price < 0 || !Number.isInteger(price)) {
     throw new OrderValidationError("INVALID_ORDER", "상품 가격을 다시 확인해주세요.", 400, productId);
   }
 
   if (
-    typeof item.quantity !== "number" ||
-    !Number.isFinite(item.quantity) ||
-    !Number.isInteger(item.quantity) ||
-    item.quantity <= 0
+    !Number.isFinite(quantity) ||
+    !Number.isInteger(quantity) ||
+    quantity <= 0
   ) {
     throw new OrderValidationError("INVALID_ORDER", "상품 수량을 다시 확인해주세요.", 400, productId);
   }
 
-  return { productId, barcode, price: item.price, quantity: item.quantity };
+  return { productId, barcode, price, quantity };
 }
 
 export async function validateSubmittedCart(rawItems: unknown) {
@@ -89,24 +96,6 @@ export async function validateSubmittedCart(rawItems: unknown) {
     const product = productMap.get(item.productId);
     if (!product) {
       throw new OrderValidationError("INVALID_ORDER", "유효하지 않은 상품이 포함되어 있습니다.", 400, item.productId);
-    }
-
-    const currentBarcode = product.barcode?.trim() || null;
-    if (currentBarcode && item.barcode !== currentBarcode) {
-      throw new OrderValidationError(
-        "INVALID_ORDER",
-        "상품 정보가 변경되었습니다. 장바구니를 다시 확인해주세요.",
-        400,
-        product.id,
-      );
-    }
-    if (!currentBarcode && item.barcode) {
-      throw new OrderValidationError(
-        "INVALID_ORDER",
-        "상품 정보가 변경되었습니다. 장바구니를 다시 확인해주세요.",
-        400,
-        product.id,
-      );
     }
 
     const maxOrderQuantity =

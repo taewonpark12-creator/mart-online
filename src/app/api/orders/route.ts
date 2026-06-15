@@ -182,6 +182,56 @@ function assertNoUnsafePrismaValue(value: unknown, path = "data") {
   }
 }
 
+function toFiniteNumber(value: unknown) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string" && value.trim() !== "") return Number(value);
+  return Number.NaN;
+}
+
+function normalizeOrderItemsForRoute(
+  rawItems: unknown,
+  logValidationFail: (reason: string, field: string, value: unknown) => void,
+) {
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    logValidationFail("items_missing_or_empty", "items", rawItems);
+    return null;
+  }
+
+  return rawItems.map((rawItem, index) => {
+    if (!rawItem || typeof rawItem !== "object") {
+      logValidationFail("item_not_object", `items[${index}]`, rawItem);
+      return null;
+    }
+
+    const item = rawItem as Record<string, unknown>;
+    const productId = typeof item.productId === "string" ? item.productId.trim() : "";
+    const price = toFiniteNumber(item.price);
+    const quantity = toFiniteNumber(item.quantity);
+
+    if (!productId) {
+      logValidationFail("missing_product_id", `items[${index}].productId`, item.productId);
+      return null;
+    }
+
+    if (!Number.isFinite(price) || price < 0 || !Number.isInteger(price)) {
+      logValidationFail("invalid_item_price", `items[${index}].price`, item.price);
+      return null;
+    }
+
+    if (!Number.isFinite(quantity) || !Number.isInteger(quantity) || quantity <= 0) {
+      logValidationFail("invalid_item_quantity", `items[${index}].quantity`, item.quantity);
+      return null;
+    }
+
+    return {
+      ...item,
+      productId,
+      price: Number(price),
+      quantity: Number(quantity),
+    };
+  });
+}
+
 function buildOrderCreateData(details: {
   clientOrderId: string;
   priceSourceVersion: string;
@@ -311,6 +361,14 @@ export async function POST(req: NextRequest) {
     });
   };
 
+  const logValidationFail = (reason: string, field: string, value: unknown) => {
+    console.log("[ORDER_VALIDATE_FAIL]", {
+      reason,
+      field,
+      value,
+    });
+  };
+
   const failAtCurrentStage = (details: Omit<Parameters<typeof fail>[0], "requestId" | "stage" | "elapsedMs" | "clientOrderId" | "orderNumber" | "payloadSummary">) =>
     fail({
       ...details,
@@ -331,11 +389,32 @@ export async function POST(req: NextRequest) {
       vercel: Boolean(process.env.VERCEL),
     });
     logStage("request_parse");
-    const body = await req.json();
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch (parseError) {
+      console.log("[ORDER_JSON_PARSE_ERROR]", parseError);
+      return failAtCurrentStage({
+        code: "INVALID_JSON",
+        error: "주문 요청 JSON 형식이 올바르지 않습니다.",
+        status: 400,
+      });
+    }
+    console.log("[ORDER_DEBUG_BODY]", body);
     if (typeof body !== "object" || body === null) {
+      logValidationFail("body_not_object", "body", body);
       throw new OrderValidationError("INVALID_ORDER", "주문 요청 형식이 올바르지 않습니다.");
     }
-    payloadSummary = summarizePayload(body as Record<string, unknown>);
+    if (!("items" in body)) {
+      logValidationFail("items_missing", "items", undefined);
+      return failAtCurrentStage({
+        code: "INVALID_ORDER",
+        error: "주문 상품이 없습니다.",
+        status: 400,
+      });
+    }
+    const orderBody = body as Record<string, unknown>;
+    payloadSummary = summarizePayload(orderBody);
     logStage("request_parse_complete", payloadSummary);
     const {
       clientOrderId: rawClientOrderId,
@@ -348,7 +427,7 @@ export async function POST(req: NextRequest) {
       memo,
       paymentMethod,
       items,
-    } = body;
+    } = orderBody;
 
     const clientOrderId = parseClientOrderId(rawClientOrderId);
     clientOrderIdForRecovery = clientOrderId;
@@ -393,7 +472,8 @@ export async function POST(req: NextRequest) {
     }
 
     logStage("validation");
-    if (!VALID_FULFILLMENT.includes(rawFulfillment)) {
+    if (typeof rawFulfillment !== "string" || !VALID_FULFILLMENT.includes(rawFulfillment as FulfillmentType)) {
+      logValidationFail("invalid_fulfillment_type", "fulfillmentType", rawFulfillment);
       return failAtCurrentStage({
         code: "INVALID_ORDER",
         error: "수령 방식을 올바르게 선택해주세요.",
@@ -401,7 +481,11 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const fulfillmentType: FulfillmentType = rawFulfillment;
+    const fulfillmentType = rawFulfillment as FulfillmentType;
+    const safePaymentMethod =
+      typeof paymentMethod === "string" && VALID_PAYMENT.includes(paymentMethod as PaymentMethod)
+        ? (paymentMethod as PaymentMethod)
+        : null;
     const safeCustomerName = sanitizeInput(String(customerName ?? ""));
     const safeCustomerPhone = sanitizeInput(String(customerPhone ?? ""));
     const safeDeliveryAddress = sanitizeInput(String(deliveryAddress ?? ""));
@@ -410,27 +494,52 @@ export async function POST(req: NextRequest) {
     const safeMemo = sanitizeInput(String(memo ?? ""));
 
     if (!safeCustomerName || !validateName(safeCustomerName)) {
+      logValidationFail("invalid_customer_name", "customerName", customerName);
       return failAtCurrentStage({ code: "INVALID_ORDER", error: "유효하지 않은 이름입니다.", status: 400 });
     }
 
     if (!safeCustomerPhone || !validatePhoneNumber(safeCustomerPhone)) {
+      logValidationFail("invalid_customer_phone", "customerPhone", customerPhone);
       return failAtCurrentStage({ code: "INVALID_ORDER", error: "유효하지 않은 연락처입니다.", status: 400 });
     }
 
     if (fulfillmentType === "DELIVERY") {
       if (!safeDeliveryAddress || !validateAddress(safeDeliveryAddress)) {
+        logValidationFail("invalid_delivery_address", "deliveryAddress", deliveryAddress);
         return failAtCurrentStage({ code: "INVALID_ORDER", error: "유효하지 않은 배달 주소입니다.", status: 400 });
       }
-      if (!paymentMethod || !VALID_PAYMENT.includes(paymentMethod)) {
-        return failAtCurrentStage({ code: "INVALID_ORDER", error: "결제 방법을 선택해주세요.", status: 400 });
+      if (paymentMethod && !safePaymentMethod) {
+        logValidationFail("invalid_payment_method", "paymentMethod", paymentMethod);
+        return failAtCurrentStage({ code: "INVALID_ORDER", error: "결제 방법을 다시 확인해주세요.", status: 400 });
       }
-    } else if (!safePickupTime || !PICKUP_TIME_VALUES.has(safePickupTime)) {
-      return failAtCurrentStage({ code: "INVALID_ORDER", error: "픽업 예정 시간을 선택해주세요.", status: 400 });
+    } else if (safePickupTime && !PICKUP_TIME_VALUES.has(safePickupTime)) {
+      logValidationFail("invalid_pickup_time", "pickupTime", pickupTime);
+      return failAtCurrentStage({ code: "INVALID_ORDER", error: "픽업 예정 시간을 다시 확인해주세요.", status: 400 });
     }
 
     logStage("price_validation");
     logStage("items_raw_payload", { items });
-    const validated = await validateSubmittedCart(items);
+    const normalizedItems = normalizeOrderItemsForRoute(items, logValidationFail);
+    if (!normalizedItems || normalizedItems.some((item) => item === null)) {
+      return failAtCurrentStage({
+        code: "INVALID_ORDER",
+        error: "주문 상품을 다시 확인해주세요.",
+        status: 400,
+      });
+    }
+    let validated: Awaited<ReturnType<typeof validateSubmittedCart>>;
+    try {
+      validated = await validateSubmittedCart(normalizedItems);
+    } catch (validationError) {
+      if (validationError instanceof OrderValidationError) {
+        logValidationFail("cart_validation_failed", "items", {
+          code: validationError.code,
+          message: validationError.message,
+          productId: validationError.productId,
+        });
+      }
+      throw validationError;
+    }
     priceSourceVersion = validated.priceSourceVersion;
     logStage("price_validation_complete", {
       itemCount: validated.orderItems.length,
@@ -510,7 +619,7 @@ export async function POST(req: NextRequest) {
           deliveryEntrance: safeDeliveryEntrance,
           pickupTime: safePickupTime,
           memo: safeMemo,
-          paymentMethod: paymentMethod as PaymentMethod | null,
+          paymentMethod: safePaymentMethod,
           totalAmount: validated.totalAmount,
           orderItems: validated.orderItems,
         });
