@@ -101630,7 +101630,7 @@
   {
     "barcode": "8809280980215",
     "name": "사과(10개/1봉)",
-    "normalPrice": 17800,
+    "normalPrice": 15800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116840,7 +116840,7 @@
   {
     "barcode": "9100000214528",
     "name": "양주오이지오이(50개/1포)",
-    "normalPrice": 14800,
+    "normalPrice": 13800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117514,7 +117514,7 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
+    "name": "바나나(1송이)",
     "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
@@ -117739,8 +117739,8 @@
   },
   {
     "barcode": "9100000218809",
-    "name": "파프리카(2개/1봉)",
-    "normalPrice": 2480,
+    "name": "파프리카(2개/1봉)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
