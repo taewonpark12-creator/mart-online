@@ -45552,8 +45552,8 @@
     "barcode": "8801063110093",
     "name": "유동)고등어400g",
     "normalPrice": 3500,
-    "eventPrice": 2480,
-    "discountRate": 29,
+    "eventPrice": 3480,
+    "discountRate": 1,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -45695,18 +45695,18 @@
   {
     "barcode": "8801063311100",
     "name": "유동)꽁치400g",
-    "normalPrice": 4500,
-    "eventPrice": 3980,
-    "discountRate": 12,
+    "normalPrice": 4900,
+    "eventPrice": 4500,
+    "discountRate": 8,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801063311117",
     "name": "유동)고등어400g",
-    "normalPrice": 3500,
+    "normalPrice": 4000,
     "eventPrice": 2480,
-    "discountRate": 29,
+    "discountRate": 38,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
