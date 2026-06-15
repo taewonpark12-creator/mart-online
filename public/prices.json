@@ -116903,7 +116903,7 @@
   {
     "barcode": "9100000214757",
     "name": "왕매실(5kg/1망)행사",
-    "normalPrice": 19800,
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117379,8 +117379,8 @@
   },
   {
     "barcode": "9100000217116",
-    "name": "알타리무(5단)행사",
-    "normalPrice": 9800,
+    "name": "알타리무(3단)",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118162,8 +118162,8 @@
   },
   {
     "barcode": "9101003821",
-    "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 1480,
+    "name": "팩느타리버섯(1팩)",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
