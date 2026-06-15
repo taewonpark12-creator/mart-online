@@ -21179,7 +21179,7 @@
   {
     "barcode": "8801039000687",
     "name": "해표)통밀가루1kg",
-    "normalPrice": 3800,
+    "normalPrice": 4200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -21332,7 +21332,7 @@
   {
     "barcode": "8801039004340",
     "name": "해표)건강한올리고당1.2kg",
-    "normalPrice": 6200,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -45551,9 +45551,9 @@
   {
     "barcode": "8801063110093",
     "name": "유동)고등어400g",
-    "normalPrice": 3500,
+    "normalPrice": 4000,
     "eventPrice": 3480,
-    "discountRate": 1,
+    "discountRate": 13,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -45705,8 +45705,8 @@
     "barcode": "8801063311117",
     "name": "유동)고등어400g",
     "normalPrice": 4000,
-    "eventPrice": 2480,
-    "discountRate": 38,
+    "eventPrice": 3480,
+    "discountRate": 13,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
