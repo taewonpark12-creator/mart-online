@@ -126,6 +126,15 @@ function getPrismaTarget(error: unknown) {
   return undefined;
 }
 
+function isMissingOrderMetadataColumn(error: unknown) {
+  if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== "P2022") {
+    return false;
+  }
+
+  const metaText = JSON.stringify(error.meta ?? {});
+  return metaText.includes("clientOrderId") || metaText.includes("priceSourceVersion");
+}
+
 function summarizePayload(body: Record<string, unknown> | null | undefined) {
   if (!body) return null;
   const items = Array.isArray(body.items) ? body.items : [];
@@ -176,6 +185,7 @@ function assertNoUnsafePrismaValue(value: unknown, path = "data") {
 function buildOrderCreateData(details: {
   clientOrderId: string;
   priceSourceVersion: string;
+  includeMetadata: boolean;
   orderNumber: string;
   customerName: string;
   customerPhone: string;
@@ -195,8 +205,12 @@ function buildOrderCreateData(details: {
 }) {
   const isPickup = details.fulfillmentType === "PICKUP";
   const data = {
-    clientOrderId: details.clientOrderId,
-    priceSourceVersion: details.priceSourceVersion,
+    ...(details.includeMetadata
+      ? {
+          clientOrderId: details.clientOrderId,
+          priceSourceVersion: details.priceSourceVersion,
+        }
+      : {}),
     orderNumber: details.orderNumber,
     status: "PENDING" as const,
     customerName: details.customerName,
@@ -233,6 +247,20 @@ function classifyPrismaError(error: unknown) {
     if (error.code === "P2003") {
       return { errorCode: "FOREIGN_KEY_ERROR", status: 409, message: "연결된 데이터가 올바르지 않아 주문을 처리하지 못했습니다." };
     }
+    if (error.code === "P2022") {
+      if (isMissingOrderMetadataColumn(error)) {
+        return {
+          errorCode: "ORDER_METADATA_COLUMNS_MISSING",
+          status: 503,
+          message: "주문 DB 스키마가 최신 상태가 아닙니다. clientOrderId/priceSourceVersion 컬럼을 확인해주세요.",
+        };
+      }
+      return {
+        errorCode: "DB_SCHEMA_MISMATCH",
+        status: 503,
+        message: "주문 DB 스키마가 애플리케이션과 일치하지 않습니다.",
+      };
+    }
     if (["P1000", "P1001", "P1002", "P1008", "P1017"].includes(error.code)) {
       return { errorCode: "PRISMA_CONNECTION_ERROR", status: 503, message: "데이터베이스 연결 상태가 불안정합니다. 잠시 후 다시 시도해주세요." };
     }
@@ -266,6 +294,7 @@ export async function POST(req: NextRequest) {
   let clientOrderIdForRecovery: string | undefined;
   let orderNumberForLog: string | undefined;
   let payloadSummary: unknown = null;
+  let supportsOrderMetadata = true;
   const userAgent = getUserAgent(req);
 
   const logStage = (nextStage: string, extra?: unknown) => {
@@ -325,10 +354,29 @@ export async function POST(req: NextRequest) {
     clientOrderIdForRecovery = clientOrderId;
     logStage("idempotency_check", { clientOrderId });
 
-    const existingOrder = await prisma.order.findUnique({
-      where: { clientOrderId },
-      select: { orderNumber: true, priceSourceVersion: true },
-    });
+    let existingOrder: { orderNumber: string; priceSourceVersion?: string | null } | null = null;
+    try {
+      existingOrder = await prisma.order.findUnique({
+        where: { clientOrderId },
+        select: { orderNumber: true, priceSourceVersion: true },
+      });
+    } catch (metadataError) {
+      if (!isMissingOrderMetadataColumn(metadataError)) {
+        throw metadataError;
+      }
+      supportsOrderMetadata = false;
+      logOrderFailure({
+        requestId,
+        errorCode: "ORDER_METADATA_COLUMNS_MISSING",
+        stage: "idempotency_check",
+        elapsedMs: getElapsedMs(startedAt),
+        endpoint: "/api/orders",
+        clientOrderId,
+        payloadSummary,
+        message: "clientOrderId/priceSourceVersion columns are missing; continuing without idempotency metadata.",
+        error: serializeError(metadataError),
+      });
+    }
     if (existingOrder) {
       orderNumberForLog = existingOrder.orderNumber;
       priceSourceVersion = existingOrder.priceSourceVersion ?? undefined;
@@ -432,16 +480,20 @@ export async function POST(req: NextRequest) {
       };
 
       try {
-      const duplicate = await runTransactionStage("transaction_idempotency_check", () =>
-        tx.order.findUnique({
-          where: { clientOrderId },
-          select: { id: true, orderNumber: true, priceSourceVersion: true },
-        }),
-      );
-      if (duplicate) {
-        orderNumberForLog = duplicate.orderNumber;
-        logStage("response_send", { duplicate: true, status: 200 });
-        return { ...duplicate, duplicate: true };
+      if (supportsOrderMetadata) {
+        const duplicate = await runTransactionStage("transaction_idempotency_check", () =>
+          tx.order.findUnique({
+            where: { clientOrderId },
+            select: { id: true, orderNumber: true, priceSourceVersion: true },
+          }),
+        );
+        if (duplicate) {
+          orderNumberForLog = duplicate.orderNumber;
+          logStage("response_send", { duplicate: true, status: 200 });
+          return { ...duplicate, duplicate: true };
+        }
+      } else {
+        logStage("transaction_idempotency_skipped", { reason: "ORDER_METADATA_COLUMNS_MISSING" });
       }
 
       for (let attempt = 0; attempt < ORDER_NUMBER_RETRY_LIMIT; attempt++) {
@@ -451,6 +503,7 @@ export async function POST(req: NextRequest) {
         const orderCreateData = buildOrderCreateData({
           clientOrderId,
           priceSourceVersion: validated.priceSourceVersion,
+          includeMetadata: supportsOrderMetadata,
           orderNumber: nextOrderNumber,
           customerName: safeCustomerName,
           customerPhone: safeCustomerPhone,
@@ -475,13 +528,19 @@ export async function POST(req: NextRequest) {
             () =>
               tx.order.create({
                 data: orderCreateData,
-                select: { id: true, orderNumber: true, priceSourceVersion: true },
+                select: supportsOrderMetadata
+                  ? { id: true, orderNumber: true, priceSourceVersion: true }
+                  : { id: true, orderNumber: true },
               }),
             { attempt, orderNumber: nextOrderNumber },
           );
-          return { ...createdOrder, duplicate: false };
+          return {
+            ...createdOrder,
+            priceSourceVersion: "priceSourceVersion" in createdOrder ? createdOrder.priceSourceVersion : null,
+            duplicate: false,
+          };
         } catch (createError) {
-          if (isPrismaUniqueError(createError, "clientOrderId")) {
+          if (supportsOrderMetadata && isPrismaUniqueError(createError, "clientOrderId")) {
             const existing = await runTransactionStage(
               "order_create_duplicate_recovery",
               () =>
@@ -510,6 +569,24 @@ export async function POST(req: NextRequest) {
               });
               continue;
             }
+          }
+
+          if (isMissingOrderMetadataColumn(createError) && supportsOrderMetadata) {
+            supportsOrderMetadata = false;
+            logOrderFailure({
+              requestId,
+              errorCode: "ORDER_METADATA_COLUMNS_MISSING",
+              stage: "order_create",
+              elapsedMs: getElapsedMs(startedAt),
+              priceSourceVersion,
+              endpoint: "/api/orders",
+              clientOrderId: clientOrderIdForRecovery,
+              orderNumber: nextOrderNumber,
+              payloadSummary,
+              message: "Order metadata columns are missing during create; aborting this transaction.",
+              error: serializeError(createError),
+            });
+            throw createError;
           }
 
           if (isPrismaUniqueError(createError, "orderNumber") && attempt < ORDER_NUMBER_RETRY_LIMIT - 1) {

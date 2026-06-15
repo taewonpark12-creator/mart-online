@@ -149,12 +149,6 @@ export default function CheckoutPage() {
     event.preventDefault();
     if (loading || submitLockRef.current) return;
     submitLockRef.current = true;
-
-    if (!meetsMinimum) {
-      submitLockRef.current = false;
-      setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
-      return;
-    }
     if (items.some((item) => !Number.isInteger(item.quantity) || item.quantity <= 0)) {
       submitLockRef.current = false;
       setError("장바구니 수량을 다시 확인해주세요.");
@@ -234,12 +228,19 @@ export default function CheckoutPage() {
       }>(res);
 
       if (!res.ok) {
-        console.error("[checkout] /api/orders failed", {
-          status: res.status,
-          errorCode: data.errorCode ?? data.code,
-          requestId: data.requestId ?? res.headers.get("x-request-id"),
-          body: data,
-        });
+        console.error(
+          "[checkout] /api/orders failed",
+          JSON.stringify(
+            {
+              status: res.status,
+              errorCode: data.errorCode ?? data.code,
+              requestId: data.requestId ?? res.headers.get("x-request-id"),
+              body: data,
+            },
+            null,
+            2,
+          ),
+        );
         if (Array.isArray(data.updatedCart)) replaceItems(data.updatedCart);
         if (data.code === "PRICE_CHANGED") {
           throw new Error("상품 가격이 변경되었습니다. 장바구니를 다시 확인해주세요.");
@@ -587,7 +588,7 @@ export default function CheckoutPage() {
             </button>
             <button
               type="submit"
-              disabled={loading || !meetsMinimum}
+              disabled={loading}
               className="flex-[2] bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white py-3 rounded-xl font-semibold transition min-h-[48px]"
             >
               {loading ? "처리 중..." : "주문 확정"}
