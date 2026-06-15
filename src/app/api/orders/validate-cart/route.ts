@@ -56,13 +56,14 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const validated = await validateSubmittedCart(body.items, body.totalAmount);
+    const validated = await validateSubmittedCart(body.items);
     priceSourceVersion = validated.priceSourceVersion;
 
     return jsonWithSecurity({
       requestId,
       code: "OK",
       totalAmount: validated.totalAmount,
+      warning: validated.minimumOrderWarning,
       priceSourceVersion: validated.priceSourceVersion,
       updatedCart: validated.updatedCart,
     });

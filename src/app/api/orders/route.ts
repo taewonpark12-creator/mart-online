@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { STORE } from "@/lib/store";
 import {
+  MIN_ORDER_AMOUNT,
   PICKUP_TIME_SLOTS,
   generateOrderNumber,
   type FulfillmentType,
@@ -35,7 +36,7 @@ export const runtime = "nodejs";
 const VALID_FULFILLMENT: FulfillmentType[] = ["DELIVERY", "PICKUP"];
 const VALID_PAYMENT: PaymentMethod[] = ["ONSITE_CARD", "ONSITE_CASH", "BANK_TRANSFER"];
 const PICKUP_TIME_VALUES = new Set(PICKUP_TIME_SLOTS.map((s) => s.value));
-const ORDER_NUMBER_RETRY_LIMIT = 5;
+const ORDER_NUMBER_RETRY_LIMIT = 3;
 
 function jsonWithSecurity(body: unknown, init?: ResponseInit, requestId?: string) {
   const response = NextResponse.json(body, init);
@@ -97,7 +98,7 @@ function fail(details: {
 function parseClientOrderId(value: unknown) {
   const clientOrderId = typeof value === "string" ? value.trim() : "";
   if (!clientOrderId || clientOrderId.length > 100) {
-    throw new OrderValidationError("INVALID_ORDER", "clientOrderId媛 ?꾩슂?⑸땲??");
+    throw new OrderValidationError("INVALID_ORDER", "clientOrderId가 필요합니다.");
   }
   return clientOrderId;
 }
@@ -154,44 +155,104 @@ function serializeError(error: unknown) {
   return error;
 }
 
+function assertNoUnsafePrismaValue(value: unknown, path = "data") {
+  if (value === undefined) {
+    throw new OrderValidationError("INVALID_ORDER", `${path} 값이 올바르지 않습니다.`);
+  }
+  if (typeof value === "number" && (!Number.isFinite(value) || Number.isNaN(value))) {
+    throw new OrderValidationError("INVALID_ORDER", `${path} 숫자 값이 올바르지 않습니다.`);
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertNoUnsafePrismaValue(item, `${path}[${index}]`));
+    return;
+  }
+  if (value && typeof value === "object") {
+    Object.entries(value).forEach(([key, childValue]) => {
+      assertNoUnsafePrismaValue(childValue, `${path}.${key}`);
+    });
+  }
+}
+
+function buildOrderCreateData(details: {
+  clientOrderId: string;
+  priceSourceVersion: string;
+  orderNumber: string;
+  customerName: string;
+  customerPhone: string;
+  fulfillmentType: FulfillmentType;
+  deliveryAddress: string;
+  deliveryEntrance: string;
+  pickupTime: string;
+  memo: string;
+  paymentMethod: PaymentMethod | null;
+  totalAmount: number;
+  orderItems: Array<{
+    productId: string;
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+  }>;
+}) {
+  const isPickup = details.fulfillmentType === "PICKUP";
+  const data = {
+    clientOrderId: details.clientOrderId,
+    priceSourceVersion: details.priceSourceVersion,
+    orderNumber: details.orderNumber,
+    status: "PENDING" as const,
+    customerName: details.customerName,
+    customerPhone: details.customerPhone,
+    fulfillmentType: details.fulfillmentType,
+    deliveryAddress: isPickup ? `매장 픽업 · ${STORE.name}` : details.deliveryAddress,
+    deliveryEntrance: isPickup ? null : details.deliveryEntrance || null,
+    pickupTime: isPickup ? details.pickupTime : null,
+    memo: details.memo || null,
+    paymentMethod: isPickup ? null : details.paymentMethod,
+    totalAmount: details.totalAmount,
+    items: { create: details.orderItems },
+  } satisfies Prisma.OrderCreateInput;
+
+  assertNoUnsafePrismaValue(data);
+  return data;
+}
+
 function classifyPrismaError(error: unknown) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === "P2002") {
       const target = getPrismaTarget(error);
       if (target?.some((field) => field.includes("clientOrderId"))) {
-        return { errorCode: "DUPLICATE_CLIENT_ORDER_ID", status: 409, message: "?대? 泥섎━??二쇰Ц ?붿껌?낅땲??", target };
+        return { errorCode: "DUPLICATE_CLIENT_ORDER_ID", status: 409, message: "이미 처리된 주문 요청입니다.", target };
       }
       if (target?.some((field) => field.includes("orderNumber"))) {
-        return { errorCode: "DUPLICATE_ORDER_NUMBER", status: 409, message: "二쇰Ц踰덊샇 ?앹꽦 以?異⑸룎??諛쒖깮?덉뒿?덈떎. ?ㅼ떆 ?쒕룄?댁＜?몄슂.", target };
+        return { errorCode: "DUPLICATE_ORDER_NUMBER", status: 409, message: "주문번호 생성 중 충돌이 발생했습니다. 다시 시도해주세요.", target };
       }
-      return { errorCode: "UNIQUE_CONSTRAINT_VIOLATION", status: 409, message: "以묐났???곗씠?곌? ?덉뼱 泥섎━?섏? 紐삵뻽?듬땲??", target };
+      return { errorCode: "UNIQUE_CONSTRAINT_VIOLATION", status: 409, message: "중복된 데이터가 있어 처리하지 못했습니다.", target };
     }
     if (error.code === "P2025") {
-      return { errorCode: "NOT_FOUND", status: 404, message: "?붿껌???곗씠?곕? 李얠쓣 ???놁뒿?덈떎." };
+      return { errorCode: "NOT_FOUND", status: 404, message: "요청한 데이터를 찾을 수 없습니다." };
     }
     if (error.code === "P2003") {
-      return { errorCode: "FOREIGN_KEY_ERROR", status: 409, message: "?곌껐???곗씠?곌? ?щ컮瑜댁? ?딆븘 二쇰Ц??泥섎━?섏? 紐삵뻽?듬땲??" };
+      return { errorCode: "FOREIGN_KEY_ERROR", status: 409, message: "연결된 데이터가 올바르지 않아 주문을 처리하지 못했습니다." };
     }
     if (["P1000", "P1001", "P1002", "P1008", "P1017"].includes(error.code)) {
-      return { errorCode: "PRISMA_CONNECTION_ERROR", status: 503, message: "?곗씠?곕쿋?댁뒪 ?곌껐 ?곹깭媛 遺덉븞?뺥빀?덈떎. ?좎떆 ???ㅼ떆 ?쒕룄?댁＜?몄슂." };
+      return { errorCode: "PRISMA_CONNECTION_ERROR", status: 503, message: "데이터베이스 연결 상태가 불안정합니다. 잠시 후 다시 시도해주세요." };
     }
-    return { errorCode: "DB_UNKNOWN_ERROR", status: 500, message: "데이터베이스 처리 중 알 수 없는 오류가 발생했습니다." };
+    return { errorCode: "DB_UNKNOWN_ERROR", status: 503, message: "데이터베이스 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." };
   }
 
   if (error instanceof Prisma.PrismaClientValidationError) {
-    return { errorCode: "PRISMA_VALIDATION_ERROR", status: 400, message: "二쇰Ц ?곗씠???뺤떇???щ컮瑜댁? ?딆뒿?덈떎." };
+    return { errorCode: "PRISMA_VALIDATION_ERROR", status: 400, message: "주문 데이터 형식이 올바르지 않습니다." };
   }
 
   if (error instanceof Prisma.PrismaClientInitializationError) {
-    return { errorCode: "PRISMA_INITIALIZATION_ERROR", status: 503, message: "?곗씠?곕쿋?댁뒪 ?곌껐??珥덇린?뷀븯吏 紐삵뻽?듬땲??" };
+    return { errorCode: "PRISMA_INITIALIZATION_ERROR", status: 503, message: "데이터베이스 연결을 초기화하지 못했습니다." };
   }
 
   if (error instanceof Prisma.PrismaClientRustPanicError) {
-    return { errorCode: "PRISMA_CONNECTION_ERROR", status: 503, message: "?곗씠?곕쿋?댁뒪 泥섎━ ?붿쭊 ?ㅻ쪟媛 諛쒖깮?덉뒿?덈떎. ?좎떆 ???ㅼ떆 ?쒕룄?댁＜?몄슂." };
+    return { errorCode: "PRISMA_CONNECTION_ERROR", status: 503, message: "데이터베이스 처리 엔진 오류가 발생했습니다. 잠시 후 다시 시도해주세요." };
   }
 
   if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-    return { errorCode: "DB_UNKNOWN_ERROR", status: 500, message: "데이터베이스 요청 처리 중 알 수 없는 오류가 발생했습니다." };
+    return { errorCode: "DB_UNKNOWN_ERROR", status: 503, message: "데이터베이스 요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." };
   }
 
   return null;
@@ -243,7 +304,7 @@ export async function POST(req: NextRequest) {
     logStage("request_parse");
     const body = await req.json();
     if (typeof body !== "object" || body === null) {
-      throw new OrderValidationError("INVALID_ORDER", "二쇰Ц ?붿껌 ?뺤떇???щ컮瑜댁? ?딆뒿?덈떎.");
+      throw new OrderValidationError("INVALID_ORDER", "주문 요청 형식이 올바르지 않습니다.");
     }
     payloadSummary = summarizePayload(body as Record<string, unknown>);
     logStage("request_parse_complete", payloadSummary);
@@ -258,7 +319,6 @@ export async function POST(req: NextRequest) {
       memo,
       paymentMethod,
       items,
-      totalAmount: submittedTotalAmount,
     } = body;
 
     const clientOrderId = parseClientOrderId(rawClientOrderId);
@@ -290,7 +350,7 @@ export async function POST(req: NextRequest) {
     if (!VALID_FULFILLMENT.includes(rawFulfillment)) {
       return failAtCurrentStage({
         code: "INVALID_ORDER",
-        error: "?섎졊 諛⑹떇???щ컮瑜닿쾶 ?좏깮?댁＜?몄슂.",
+        error: "수령 방식을 올바르게 선택해주세요.",
         status: 400,
       });
     }
@@ -304,32 +364,44 @@ export async function POST(req: NextRequest) {
     const safeMemo = sanitizeInput(String(memo ?? ""));
 
     if (!safeCustomerName || !validateName(safeCustomerName)) {
-      return failAtCurrentStage({ code: "INVALID_ORDER", error: "?좏슚?섏? ?딆? ?대쫫?낅땲??", status: 400 });
+      return failAtCurrentStage({ code: "INVALID_ORDER", error: "유효하지 않은 이름입니다.", status: 400 });
     }
 
     if (!safeCustomerPhone || !validatePhoneNumber(safeCustomerPhone)) {
-      return failAtCurrentStage({ code: "INVALID_ORDER", error: "?좏슚?섏? ?딆? ?곕씫泥섏엯?덈떎.", status: 400 });
+      return failAtCurrentStage({ code: "INVALID_ORDER", error: "유효하지 않은 연락처입니다.", status: 400 });
     }
 
     if (fulfillmentType === "DELIVERY") {
       if (!safeDeliveryAddress || !validateAddress(safeDeliveryAddress)) {
-        return failAtCurrentStage({ code: "INVALID_ORDER", error: "?좏슚?섏? ?딆? 諛곕떖 二쇱냼?낅땲??", status: 400 });
+        return failAtCurrentStage({ code: "INVALID_ORDER", error: "유효하지 않은 배달 주소입니다.", status: 400 });
       }
       if (!paymentMethod || !VALID_PAYMENT.includes(paymentMethod)) {
-        return failAtCurrentStage({ code: "INVALID_ORDER", error: "寃곗젣 諛⑸쾿???좏깮?댁＜?몄슂.", status: 400 });
+        return failAtCurrentStage({ code: "INVALID_ORDER", error: "결제 방법을 선택해주세요.", status: 400 });
       }
     } else if (!safePickupTime || !PICKUP_TIME_VALUES.has(safePickupTime)) {
-      return failAtCurrentStage({ code: "INVALID_ORDER", error: "?쎌뾽 ?덉젙 ?쒓컙???좏깮?댁＜?몄슂.", status: 400 });
+      return failAtCurrentStage({ code: "INVALID_ORDER", error: "픽업 예정 시간을 선택해주세요.", status: 400 });
     }
 
     logStage("price_validation");
-    const validated = await validateSubmittedCart(items, submittedTotalAmount);
+    logStage("items_raw_payload", { items });
+    const validated = await validateSubmittedCart(items);
     priceSourceVersion = validated.priceSourceVersion;
-    const isPickup = fulfillmentType === "PICKUP";
     logStage("price_validation_complete", {
       itemCount: validated.orderItems.length,
+      parsedItems: validated.submittedItems,
+      orderItems: validated.orderItems,
       totalAmount: validated.totalAmount,
+      minimumOrderWarning: validated.minimumOrderWarning,
       priceSourceVersion,
+    });
+    console.log({
+      requestId,
+      clientOrderId,
+      itemsCount: validated.orderItems.length,
+      rawItems: items,
+      parsedItems: validated.submittedItems,
+      serverCalculatedTotalAmount: validated.totalAmount,
+      MIN_ORDER_AMOUNT,
     });
 
     logStage("transaction_start");
@@ -369,63 +441,104 @@ export async function POST(req: NextRequest) {
       if (duplicate) {
         orderNumberForLog = duplicate.orderNumber;
         logStage("response_send", { duplicate: true, status: 200 });
-        return duplicate;
+        return { ...duplicate, duplicate: true };
       }
 
-      logStage("order_number_generate");
-      let nextOrderNumber = generateOrderNumber();
-      let hasAvailableOrderNumber = false;
       for (let attempt = 0; attempt < ORDER_NUMBER_RETRY_LIMIT; attempt++) {
-        const existingOrderNumber = await runTransactionStage(
-          "order_number_check",
-          () =>
-            tx.order.findUnique({
-              where: { orderNumber: nextOrderNumber },
-              select: { id: true },
-            }),
-          { attempt, orderNumber: nextOrderNumber },
-        );
-        if (!existingOrderNumber) {
-          hasAvailableOrderNumber = true;
-          break;
+        logStage("order_number_generate", { attempt });
+        const nextOrderNumber = generateOrderNumber();
+        orderNumberForLog = nextOrderNumber;
+        const orderCreateData = buildOrderCreateData({
+          clientOrderId,
+          priceSourceVersion: validated.priceSourceVersion,
+          orderNumber: nextOrderNumber,
+          customerName: safeCustomerName,
+          customerPhone: safeCustomerPhone,
+          fulfillmentType,
+          deliveryAddress: safeDeliveryAddress,
+          deliveryEntrance: safeDeliveryEntrance,
+          pickupTime: safePickupTime,
+          memo: safeMemo,
+          paymentMethod: paymentMethod as PaymentMethod | null,
+          totalAmount: validated.totalAmount,
+          orderItems: validated.orderItems,
+        });
+
+        logStage("prisma_input_payload", {
+          attempt,
+          data: orderCreateData,
+        });
+
+        try {
+          const createdOrder = await runTransactionStage(
+            "order_create",
+            () =>
+              tx.order.create({
+                data: orderCreateData,
+                select: { id: true, orderNumber: true, priceSourceVersion: true },
+              }),
+            { attempt, orderNumber: nextOrderNumber },
+          );
+          return { ...createdOrder, duplicate: false };
+        } catch (createError) {
+          if (isPrismaUniqueError(createError, "clientOrderId")) {
+            const existing = await runTransactionStage(
+              "order_create_duplicate_recovery",
+              () =>
+                tx.order.findUnique({
+                  where: { clientOrderId },
+                  select: { id: true, orderNumber: true, priceSourceVersion: true },
+                }),
+              { attempt, clientOrderId },
+            );
+            if (existing) {
+              orderNumberForLog = existing.orderNumber;
+              return { ...existing, duplicate: true };
+            }
+            if (attempt < ORDER_NUMBER_RETRY_LIMIT - 1) {
+              logOrderFailure({
+                requestId,
+                errorCode: "DUPLICATE_CLIENT_ORDER_ID_RETRY",
+                stage: "order_create",
+                elapsedMs: getElapsedMs(startedAt),
+                priceSourceVersion,
+                endpoint: "/api/orders",
+                clientOrderId: clientOrderIdForRecovery,
+                orderNumber: nextOrderNumber,
+                payloadSummary,
+                error: serializeError(createError),
+              });
+              continue;
+            }
+          }
+
+          if (isPrismaUniqueError(createError, "orderNumber") && attempt < ORDER_NUMBER_RETRY_LIMIT - 1) {
+            logOrderFailure({
+              requestId,
+              errorCode: "DUPLICATE_ORDER_NUMBER_RETRY",
+              stage: "order_create",
+              elapsedMs: getElapsedMs(startedAt),
+              priceSourceVersion,
+              endpoint: "/api/orders",
+              clientOrderId: clientOrderIdForRecovery,
+              orderNumber: nextOrderNumber,
+              payloadSummary,
+              error: serializeError(createError),
+            });
+            continue;
+          }
+
+          throw createError;
         }
-        nextOrderNumber = generateOrderNumber();
-      }
-      if (!hasAvailableOrderNumber) {
-        throw new OrderValidationError(
-          "DUPLICATE_ORDER_NUMBER",
-          "二쇰Ц踰덊샇 ?앹꽦 以?異⑸룎??諛쒖깮?덉뒿?덈떎. ?ㅼ떆 ?쒕룄?댁＜?몄슂.",
-          409,
-          undefined,
-          undefined,
-          validated.priceSourceVersion,
-        );
       }
 
-      orderNumberForLog = nextOrderNumber;
-      return runTransactionStage(
-        "order_create",
-        () =>
-          tx.order.create({
-            data: {
-              clientOrderId,
-              priceSourceVersion: validated.priceSourceVersion,
-              orderNumber: nextOrderNumber,
-              status: "PENDING",
-              customerName: safeCustomerName,
-              customerPhone: safeCustomerPhone,
-              fulfillmentType,
-              deliveryAddress: isPickup ? `留ㅼ옣 ?쎌뾽 쨌 ${STORE.name}` : safeDeliveryAddress,
-              deliveryEntrance: isPickup ? null : safeDeliveryEntrance || null,
-              pickupTime: isPickup ? safePickupTime : null,
-              memo: safeMemo || null,
-              paymentMethod: isPickup ? null : paymentMethod,
-              totalAmount: validated.totalAmount,
-              items: { create: validated.orderItems },
-            },
-            select: { id: true, orderNumber: true, priceSourceVersion: true },
-          }),
-        { orderNumber: nextOrderNumber },
+      throw new OrderValidationError(
+        "DUPLICATE_ORDER_NUMBER",
+        "주문번호 생성 중 충돌이 발생했습니다. 다시 시도해주세요.",
+        409,
+        undefined,
+        undefined,
+        validated.priceSourceVersion,
       );
       } catch (transactionError) {
         logOrderFailure({
@@ -446,32 +559,54 @@ export async function POST(req: NextRequest) {
     orderNumberForLog = order.orderNumber;
     logStage("transaction_commit", { orderNumber: order.orderNumber });
 
-    await createAuditLog({
-      action: "CREATE",
-      entity: "Order",
-      entityId: order.id,
-      changes: {
+    try {
+      if (order.duplicate) {
+        logStage("audit_log_skipped", { duplicate: true, orderNumber: order.orderNumber });
+      } else {
+      await createAuditLog({
+        action: "CREATE",
+        entity: "Order",
+        entityId: order.id,
+        changes: {
+          requestId,
+          orderNumber: order.orderNumber,
+          customerName: safeCustomerName,
+          totalAmount: validated.totalAmount,
+          itemCount: validated.orderItems.length,
+          priceSourceVersion: validated.priceSourceVersion,
+        },
+        ipAddress: getClientIp(req),
+        userAgent: getUserAgent(req),
+      });
+      logStage("audit_log", { orderNumber: order.orderNumber });
+      }
+    } catch (auditError) {
+      logOrderFailure({
         requestId,
+        errorCode: "AUDIT_LOG_FAILED",
+        stage: "audit_log",
+        elapsedMs: getElapsedMs(startedAt),
+        priceSourceVersion,
+        endpoint: "/api/orders",
+        clientOrderId: clientOrderIdForRecovery,
         orderNumber: order.orderNumber,
-        customerName: safeCustomerName,
-        totalAmount: validated.totalAmount,
-        itemCount: validated.orderItems.length,
-        priceSourceVersion: validated.priceSourceVersion,
-      },
-      ipAddress: getClientIp(req),
-      userAgent: getUserAgent(req),
-    });
-    logStage("audit_log", { orderNumber: order.orderNumber });
+        payloadSummary,
+        error: serializeError(auditError),
+      });
+    }
 
-    logStage("response_send", { status: 201, orderNumber: order.orderNumber });
+    logStage("response_send", { status: order.duplicate ? 200 : 201, orderNumber: order.orderNumber });
     return jsonWithSecurity(
       {
         requestId,
         orderNumber: order.orderNumber,
         clientOrderId,
+        duplicate: order.duplicate,
         priceSourceVersion: order.priceSourceVersion,
+        totalAmount: validated.totalAmount,
+        warning: validated.minimumOrderWarning,
       },
-      { status: 201 },
+      { status: order.duplicate ? 200 : 201 },
       requestId,
     );
   } catch (error) {
@@ -574,7 +709,7 @@ export async function POST(req: NextRequest) {
       requestId,
       code: error instanceof TypeError ? "NULL_POINTER" : "UNKNOWN_RUNTIME_ERROR",
       error: "주문 처리 중 오류가 발생했습니다.",
-      status: 500,
+      status: 503,
       ...baseFailure,
     });
   }

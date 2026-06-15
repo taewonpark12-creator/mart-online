@@ -135,7 +135,7 @@ function OrderSummaryCard({
           <p>
             {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
             {order.fulfillmentType === "PICKUP" && order.pickupTime
-              ? ` 쨌 ${formatPickupTimeLabel(order.pickupTime)}`
+              ? ` · ${formatPickupTimeLabel(order.pickupTime)}`
               : ""}
           </p>
         </div>
@@ -159,7 +159,7 @@ function StatusActions({
   return (
     <div className="space-y-3">
       <div className="rounded-xl border border-green-100 bg-green-50 p-4">
-        <p className="text-xs font-bold text-green-800 mb-2">?ㅼ쓬 泥섎━ ?④퀎</p>
+        <p className="text-xs font-bold text-green-800 mb-2">다음 처리 단계</p>
         {nextStatus ? (
           <button
             type="button"
@@ -167,10 +167,10 @@ function StatusActions({
             onClick={() => onUpdate(nextStatus)}
             className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-60"
           >
-            {updating ? "泥섎━ 以?.." : `${ORDER_STATUS_LABEL[nextStatus]} 泥섎━`}
+            {updating ? "처리 중..." : `${ORDER_STATUS_LABEL[nextStatus]} 처리`}
           </button>
         ) : (
-          <p className="text-sm text-gray-600">?ㅼ쓬 泥섎━ ?④퀎媛 ?놁뒿?덈떎.</p>
+          <p className="text-sm text-gray-600">다음 처리 단계가 없습니다.</p>
         )}
       </div>
 
@@ -211,8 +211,8 @@ function OrderDetailPanel({
   if (!order) {
     return (
       <aside className="h-full rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-gray-400">
-        <p className="font-semibold">二쇰Ц???좏깮?댁＜?몄슂.</p>
-        <p className="mt-2 text-sm">?쇱そ 紐⑸줉?먯꽌 二쇰Ц???좏깮?섎㈃ ?곸꽭 泥섎━ ?⑤꼸???대┰?덈떎.</p>
+        <p className="font-semibold">주문을 선택해주세요.</p>
+        <p className="mt-2 text-sm">왼쪽 목록에서 주문을 선택하면 상세 처리 패널이 열립니다.</p>
       </aside>
     );
   }
@@ -232,7 +232,7 @@ function OrderDetailPanel({
             <p className="text-xs text-gray-500 mt-1">{getOrderTime(order)}</p>
           </div>
           <button type="button" onClick={onClose} className="text-sm text-gray-400 hover:text-gray-700">
-            ?リ린
+            닫기
           </button>
         </div>
         <div className="mt-3 flex items-center justify-between gap-3">
@@ -254,20 +254,20 @@ function OrderDetailPanel({
         <StatusActions order={order} updating={updating} onUpdate={(status) => onUpdateStatus(order, status)} />
 
         <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
-          <h2 className="text-sm font-bold text-blue-900 mb-3">怨좉컼 ?뺣낫</h2>
+          <h2 className="text-sm font-bold text-blue-900 mb-3">고객 정보</h2>
           <div className="space-y-2 text-sm">
-            <p><span className="text-blue-500 font-semibold mr-2">怨좉컼</span>{order.customerName}</p>
+            <p><span className="text-blue-500 font-semibold mr-2">고객</span>{order.customerName}</p>
             <p><span className="text-blue-500 font-semibold mr-2">연락처</span>{order.customerPhone}</p>
             {order.fulfillmentType === "PICKUP" ? (
               <>
                 <p><span className="text-blue-500 font-semibold mr-2">픽업</span>{order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "시간 미정"}</p>
-                <p className="text-xs text-gray-600">{STORE.name} 쨌 {STORE.address}</p>
+                <p className="text-xs text-gray-600">{STORE.name} · {STORE.address}</p>
               </>
             ) : (
               <>
-                <p><span className="text-blue-500 font-semibold mr-2">二쇱냼</span>{order.deliveryAddress}</p>
+                <p><span className="text-blue-500 font-semibold mr-2">주소</span>{order.deliveryAddress}</p>
                 {order.deliveryEntrance && (
-                  <p><span className="text-blue-500 font-semibold mr-2">異쒖엯</span>{order.deliveryEntrance}</p>
+                  <p><span className="text-blue-500 font-semibold mr-2">출입</span>{order.deliveryEntrance}</p>
                 )}
               </>
             )}
@@ -275,7 +275,7 @@ function OrderDetailPanel({
         </section>
 
         <section className="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <h2 className="text-sm font-bold text-gray-900 mb-3">二쇰Ц ?곹뭹</h2>
+          <h2 className="text-sm font-bold text-gray-900 mb-3">주문 상품</h2>
           <div className="divide-y">
             {order.items.map((item) => (
               <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
@@ -292,22 +292,22 @@ function OrderDetailPanel({
         </section>
 
         <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
-          <h2 className="text-sm font-bold text-amber-900 mb-3">寃곗젣 諛??붿껌?ы빆</h2>
+          <h2 className="text-sm font-bold text-amber-900 mb-3">결제 및 요청사항</h2>
           <div className="space-y-2 text-sm">
             <p>
-              <span className="text-amber-600 font-semibold mr-2">?섎졊</span>
+              <span className="text-amber-600 font-semibold mr-2">수령</span>
               {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
             </p>
             <p>
-              <span className="text-amber-600 font-semibold mr-2">寃곗젣</span>
+              <span className="text-amber-600 font-semibold mr-2">결제</span>
               {formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType)}
             </p>
             {order.paymentMethod === "BANK_TRANSFER" && (
-              <p className="text-xs text-amber-800">?낃툑 怨꾩쥖: {BANK_ACCOUNT.display}</p>
+              <p className="text-xs text-amber-800">입금 계좌: {BANK_ACCOUNT.display}</p>
             )}
             {order.memo && (
               <p>
-                <span className="text-amber-600 font-semibold mr-2">?붿껌</span>
+                <span className="text-amber-600 font-semibold mr-2">요청</span>
                 <span className="italic">"{order.memo}"</span>
               </p>
             )}
@@ -320,7 +320,7 @@ function OrderDetailPanel({
             onClick={() => printReceiptNow(printableOrder)}
             className="rounded-xl bg-gray-900 px-4 py-3 text-sm font-bold text-white hover:bg-black"
           >
-            ?곸닔利?異쒕젰
+            영수증 출력
           </button>
           <button
             type="button"
@@ -328,26 +328,26 @@ function OrderDetailPanel({
             onClick={() => onUpdateStatus(order, "PAID")}
             className="rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
           >
-            泥섎━ ?꾨즺
+            처리 완료
           </button>
         </div>
 
         {canCancelOrder(order) ? (
           <section className="rounded-xl border border-red-100 bg-red-50 p-4">
-            <h2 className="text-sm font-bold text-red-800 mb-2">痍⑥냼 泥섎━</h2>
+            <h2 className="text-sm font-bold text-red-800 mb-2">취소 처리</h2>
             <button
               type="button"
               disabled={updating}
               onClick={() => onCancel(order)}
               className="w-full rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
             >
-              二쇰Ц 痍⑥냼
+              주문 취소
             </button>
           </section>
         ) : (
           <section className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-            <h2 className="text-sm font-bold text-gray-700 mb-1">痍⑥냼 遺덇? 二쇰Ц</h2>
-            <p className="text-xs text-gray-500">?뱀씤??二쇰Ц? 痍⑥냼?????놁뒿?덈떎.</p>
+            <h2 className="text-sm font-bold text-gray-700 mb-1">취소 불가 주문</h2>
+            <p className="text-xs text-gray-500">처리된 주문은 취소할 수 없습니다.</p>
           </section>
         )}
       </div>
@@ -422,7 +422,7 @@ export default function OrdersPage() {
             return;
           }
           const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.error || "二쇰Ц ?곗씠?곕? 遺덈윭?ㅼ? 紐삵뻽?듬땲??");
+          throw new Error(errorData.error || "주문 데이터를 불러오지 못했습니다.");
         }
 
         const data = (await res.json()) as Order[];
@@ -445,8 +445,8 @@ export default function OrdersPage() {
 
         if (hasNewPending) {
           if (Notification.permission === "granted" && !document.hidden) {
-            new Notification("??二쇰Ц ?묒닔", {
-              body: `${currentPendingCount}媛쒖쓽 ?湲?二쇰Ц???덉뒿?덈떎.`,
+            new Notification("새 주문 접수", {
+              body: `${currentPendingCount}개의 대기 주문이 있습니다.`,
               icon: "/icon.png",
               tag: "order-notification",
             });
@@ -455,8 +455,8 @@ export default function OrdersPage() {
 
         document.title =
           currentPendingCount > 0
-            ? `(${currentPendingCount}) 二쇰Ц 愿由?- mart-online`
-            : "二쇰Ц 愿由?- mart-online";
+            ? `(${currentPendingCount}) 주문 관리 - mart-online`
+            : "주문 관리 - mart-online";
         previousPendingCount.current = currentPendingCount;
 
         setOrders(data);
@@ -542,7 +542,7 @@ export default function OrdersPage() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert(data.error ?? "?곹깭 蹂寃쎌뿉 ?ㅽ뙣?덉뒿?덈떎.");
+        alert(data.error ?? "상태 변경에 실패했습니다.");
         return;
       }
 
@@ -563,7 +563,7 @@ export default function OrdersPage() {
       }
     } catch (error) {
       console.error("[admin/orders] status update failed", error);
-      alert("?곹깭 蹂寃?以??ㅻ쪟媛 諛쒖깮?덉뒿?덈떎.");
+      alert("상태 변경 중 오류가 발생했습니다.");
     } finally {
       setUpdatingOrderId(null);
     }
@@ -574,7 +574,7 @@ export default function OrdersPage() {
       alert(PAID_CANCEL_BLOCK_MESSAGE);
       return;
     }
-    if (!confirm(`二쇰Ц ${order.orderNumber}??痍⑥냼?섏떆寃좎뒿?덇퉴?`)) return;
+    if (!confirm(`주문 ${order.orderNumber}을 취소하시겠습니까?`)) return;
     updateStatus(order, "CANCELED");
   }
 
@@ -612,8 +612,8 @@ export default function OrdersPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
           <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">二쇰Ц ?댁쁺 肄섏넄</h1>
-              <p className="text-sm text-gray-500 mt-1">?ㅼ떆媛?二쇰Ц???좏깮?섍퀬 ?ㅻⅨ履??⑤꼸?먯꽌 鍮좊Ⅴ寃?泥섎━?⑸땲??</p>
+              <h1 className="text-2xl font-bold text-gray-900">주문 운영 콘솔</h1>
+              <p className="text-sm text-gray-500 mt-1">실시간 주문을 선택하고 오른쪽 패널에서 빠르게 처리합니다.</p>
             </div>
             {pendingOrderCount > 0 && (
               <div className={`relative inline-flex items-center ${isPlaying ? "animate-pulse" : ""}`}>
@@ -622,7 +622,7 @@ export default function OrdersPage() {
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                 </span>
                 <span className="ml-4 bg-red-100 text-red-800 text-xs font-bold px-2.5 py-1 rounded-full">
-                  ?湲?{pendingOrderCount}
+                  대기 {pendingOrderCount}
                 </span>
               </div>
             )}
@@ -633,23 +633,23 @@ export default function OrdersPage() {
               onClick={() => setShowNotificationSettings((value) => !value)}
               className="text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50"
             >
-              ?뚮┝ ?ㅼ젙
+              알림 설정
             </button>
             <button
               type="button"
               onClick={() => fetchOrders({ focusNewest: false })}
               className="text-sm text-green-700 border border-green-200 px-3 py-2 rounded-lg hover:bg-green-50"
             >
-              ?덈줈怨좎묠
+              새로고침
             </button>
           </div>
         </div>
 
         {showNotificationSettings && (
           <div className="bg-white rounded-2xl border p-4 mb-6">
-            <h3 className="font-semibold mb-3">?뚮┝ ?ㅼ젙</h3>
+            <h3 className="font-semibold mb-3">알림 설정</h3>
             <div className="flex flex-wrap items-center gap-4">
-              <label className="text-sm text-gray-600">諛섎났 媛꾧꺽(珥?</label>
+              <label className="text-sm text-gray-600">반복 간격(초)</label>
               <input
                 type="number"
                 min="1"
@@ -659,10 +659,10 @@ export default function OrdersPage() {
                 className="px-3 py-1.5 border rounded-lg w-20"
               />
               <button type="button" onClick={handleNotificationConfigChange} className="bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 text-sm">
-                ?곸슜
+                적용
               </button>
               <button type="button" onClick={() => stopNotification()} className="bg-red-600 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 text-sm">
-                ?뚮┝ 以묒?
+                알림 중지
               </button>
             </div>
           </div>
@@ -675,7 +675,7 @@ export default function OrdersPage() {
               onClick={() => setFilter("")}
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${!filter ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"}`}
             >
-              ?꾩껜
+              전체
             </button>
             {ORDER_STATUS_FILTER.map((status) => (
               <button
@@ -704,7 +704,7 @@ export default function OrdersPage() {
               ))
             ) : visibleOrders.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-400">
-                二쇰Ц ?댁뿭???놁뒿?덈떎.
+                주문 내역이 없습니다.
               </div>
             ) : (
               visibleOrders

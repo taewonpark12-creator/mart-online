@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     if (!(await isAdminAuthenticated())) {
       return NextResponse.json(
-        { error: "?몄쬆???꾩슂?⑸땲??" },
+        { error: "인증이 필요합니다." },
         { status: 401 }
       );
     }
@@ -117,7 +117,7 @@ export async function GET(req: NextRequest) {
 
           return {
             id: item.productId ?? "",
-            name: product?.name ?? "?????놁쓬",
+            name: product?.name ?? "상품명 없음",
             quantity: item._sum.quantity ?? 0,
           };
         })
@@ -145,7 +145,7 @@ export async function GET(req: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "?듦퀎 議고쉶 ?ㅽ뙣",
+            : "통계 조회 실패",
       },
       { status: 500 }
     );

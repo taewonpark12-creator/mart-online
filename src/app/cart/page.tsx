@@ -43,7 +43,7 @@ export default function CartPage() {
   const handleUpdateQuantity = (productId: string, newQuantity: number) => {
     const result = updateQuantity(productId, newQuantity);
     if (!result.success) {
-      setError(result.message || "?섎웾 蹂寃??ㅽ뙣");
+      setError(result.message || "수량 변경에 실패했습니다.");
     } else {
       setError("");
     }
@@ -64,7 +64,7 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (!meetsMinimum) {
-      setError(`理쒖냼 二쇰Ц 湲덉븸? ${formatPrice(MIN_ORDER_AMOUNT)}?낅땲??`);
+      setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
       return;
     }
     router.push("/checkout");
@@ -74,15 +74,15 @@ export default function CartPage() {
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
       <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
-        <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2 text-green-800">?λ컮援щ땲</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2 text-green-800">장바구니</h1>
         <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-          ?댁? ?곹뭹???뺤씤?섍퀬 二쇰Ц??吏꾪뻾?섏꽭??
+          담은 상품을 확인하고 주문을 진행하세요.
         </p>
 
         {items.length === 0 ? (
           <div className="bg-white border rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center shadow-sm">
-            <span className="text-4xl sm:text-5xl mb-4 block">?썟</span>
-            <p className="text-gray-500 text-sm sm:text-base mb-6">?λ컮援щ땲媛 鍮꾩뼱 ?덉뒿?덈떎.</p>
+            <span className="text-4xl sm:text-5xl mb-4 block">장바구니</span>
+            <p className="text-gray-500 text-sm sm:text-base mb-6">장바구니가 비어 있습니다.</p>
             <GoBackToShoppingButton />
           </div>
         ) : (
@@ -119,7 +119,7 @@ export default function CartPage() {
                           </p>
                           {item.quantity > 1 && (
                             <p className="text-xs text-gray-500">
-                              ?⑷퀎 {formatPrice(item.price * item.quantity)}
+                              합계 {formatPrice(item.price * item.quantity)}
                             </p>
                           )}
                         </div>
@@ -130,10 +130,11 @@ export default function CartPage() {
                       )}
                       {item.maxOrderQuantity && item.maxOrderQuantity > 0 && (
                         <p className="text-xs text-gray-500 mt-1">
-                          理쒕? {item.maxOrderQuantity}媛?援щℓ 媛??                        </p>
+                          최대 {item.maxOrderQuantity}개 구매 가능
+                        </p>
                       )}
                       {item.isOutOfStock && (
-                        <p className="text-xs text-red-500 mt-1">?덉젅???곹뭹?낅땲??</p>
+                        <p className="text-xs text-red-500 mt-1">품절된 상품입니다.</p>
                       )}
                     </div>
                   </div>
@@ -144,7 +145,7 @@ export default function CartPage() {
                         disabled={item.quantity <= 1 || item.isOutOfStock}
                         className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
                       >
-                        ??
+                        -
                       </button>
                       <span className="w-8 sm:w-6 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
                       <button
@@ -157,19 +158,19 @@ export default function CartPage() {
                     </div>
                     {confirmingDeleteProductId === item.productId ? (
                       <div className="flex flex-col items-end gap-1">
-                        <p className="text-xs text-gray-600 mb-1">?곹뭹????젣?좉퉴??</p>
+                        <p className="text-xs text-gray-600 mb-1">상품을 삭제할까요?</p>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={handleDeleteCancel}
                             className="text-gray-500 hover:text-gray-700 text-sm sm:text-base min-h-[44px] px-3 py-2"
                           >
-                            痍⑥냼
+                            취소
                           </button>
                           <button
                             onClick={() => handleRemove(item.productId)}
                             className="text-red-500 hover:text-red-700 text-sm sm:text-base min-h-[44px] px-3 py-2 font-medium"
                           >
-                            ??젣
+                            삭제
                           </button>
                         </div>
                       </div>
@@ -181,7 +182,7 @@ export default function CartPage() {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        ??젣
+                        삭제
                       </button>
                     )}
                   </div>
@@ -192,14 +193,14 @@ export default function CartPage() {
 
             <div className="bg-white border rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
               <div className="flex justify-between font-bold text-base sm:text-lg">
-                <span>?⑷퀎</span>
+                <span>합계</span>
                 <span className="text-green-700">{formatPrice(totalAmount)}</span>
               </div>
 
               {!meetsMinimum && (
                 <p className="text-xs sm:text-sm text-amber-700 bg-amber-50 rounded-xl px-3 py-2 sm:py-3">
-                  {formatPrice(MIN_ORDER_AMOUNT)} ?댁긽 二쇰Ц 媛?ν빀?덈떎.{" "}
-                  <span className="font-medium">{formatPrice(amountShort)}</span> ???댁븘二쇱꽭??
+                  {formatPrice(MIN_ORDER_AMOUNT)} 이상 주문 가능합니다.{" "}
+                  <span className="font-medium">{formatPrice(amountShort)}</span> 더 담아주세요.
                 </p>
               )}
 
@@ -211,7 +212,7 @@ export default function CartPage() {
                 disabled={!meetsMinimum}
                 className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-4 sm:py-5 rounded-xl transition text-sm sm:text-base min-h-[48px]"
               >
-                二쇰Ц?섍린
+                주문하기
               </button>
               <div className="flex justify-center mt-4">
                 <GoBackToShoppingButton />

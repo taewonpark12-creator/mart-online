@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { MIN_ORDER_AMOUNT } from "@/lib/types";
 import {
-  PRICE_CHANGED_MESSAGE,
   getSyncedProductInfo,
   loadPriceSource,
   type PriceItem,
@@ -29,37 +28,36 @@ export class OrderValidationError extends Error {
 }
 
 export function parseSubmittedItem(item: SubmittedOrderItem) {
+  if (!item || typeof item !== "object") {
+    throw new OrderValidationError("INVALID_ORDER", "주문 상품 형식이 올바르지 않습니다.");
+  }
+
   const productId = typeof item.productId === "string" ? item.productId.trim() : "";
   const barcode = typeof item.barcode === "string" ? item.barcode.trim() : null;
-  const price = Number(item.price);
-  const quantity = Number(item.quantity);
 
   if (!productId) {
     throw new OrderValidationError("INVALID_ORDER", "유효하지 않은 상품이 포함되어 있습니다.");
   }
-  if (!Number.isFinite(price) || price < 0 || !Number.isInteger(price)) {
-    throw new OrderValidationError("PRICE_CHANGED", PRICE_CHANGED_MESSAGE, 409, productId);
-  }
-  if (!Number.isFinite(quantity) || !Number.isInteger(quantity) || quantity <= 0) {
-    throw new OrderValidationError("INVALID_ORDER", "상품 수량을 다시 확인해주세요.", 400, productId);
-  }
 
-  return { productId, barcode, price, quantity };
-}
-
-export async function validateSubmittedCart(
-  rawItems: unknown,
-  submittedTotalAmount?: unknown,
-) {
-  if (!Array.isArray(rawItems) || rawItems.length === 0) {
-    throw new OrderValidationError("INVALID_ORDER", "주문 상품이 없습니다.");
+  if (typeof item.price !== "number" || !Number.isFinite(item.price) || item.price < 0 || !Number.isInteger(item.price)) {
+    throw new OrderValidationError("INVALID_ORDER", "상품 가격을 다시 확인해주세요.", 400, productId);
   }
 
   if (
-    submittedTotalAmount !== undefined &&
-    (!Number.isFinite(Number(submittedTotalAmount)) || Number(submittedTotalAmount) < 0)
+    typeof item.quantity !== "number" ||
+    !Number.isFinite(item.quantity) ||
+    !Number.isInteger(item.quantity) ||
+    item.quantity <= 0
   ) {
-    throw new OrderValidationError("INVALID_ORDER", "주문 금액을 다시 확인해주세요.");
+    throw new OrderValidationError("INVALID_ORDER", "상품 수량을 다시 확인해주세요.", 400, productId);
+  }
+
+  return { productId, barcode, price: item.price, quantity: item.quantity };
+}
+
+export async function validateSubmittedCart(rawItems: unknown) {
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    throw new OrderValidationError("INVALID_ORDER", "주문 상품이 없습니다.");
   }
 
   const { priceMap, priceSourceVersion } = await loadPriceSource();
@@ -85,6 +83,7 @@ export async function validateSubmittedCart(
   let totalAmount = 0;
   const updatedCart = [];
   const orderItems = [];
+  let minimumOrderWarning: string | null = null;
 
   for (const item of submittedItems) {
     const product = productMap.get(item.productId);
@@ -125,7 +124,7 @@ export async function validateSubmittedCart(
     updatedCart.push({
       productId: product.id,
       name: synced.name,
-      price: synced.price,
+      price: item.price,
       barcode: product.barcode,
       imageUrl: product.imageUrl,
       quantity: item.quantity,
@@ -136,49 +135,25 @@ export async function validateSubmittedCart(
       maxOrderQuantity: product.maxOrderQuantity,
     });
 
-    if (item.price !== synced.price) {
-      throw new OrderValidationError(
-        "PRICE_CHANGED",
-        PRICE_CHANGED_MESSAGE,
-        409,
-        product.id,
-        updatedCart,
-        priceSourceVersion,
-      );
+    const lineTotal = item.price * item.quantity;
+    if (!Number.isSafeInteger(lineTotal) || lineTotal < 0) {
+      throw new OrderValidationError("INVALID_ORDER", "주문 금액을 다시 확인해주세요.", 400, product.id);
     }
 
-    totalAmount += synced.price * item.quantity;
+    totalAmount += lineTotal;
+    if (!Number.isSafeInteger(totalAmount) || totalAmount < 0) {
+      throw new OrderValidationError("INVALID_ORDER", "주문 금액을 다시 확인해주세요.", 400, product.id);
+    }
     orderItems.push({
       productId: product.id,
       productName: synced.name,
       quantity: item.quantity,
-      unitPrice: synced.price,
+      unitPrice: item.price,
     });
   }
 
   if (totalAmount < MIN_ORDER_AMOUNT) {
-    throw new OrderValidationError(
-      "MIN_ORDER_AMOUNT_CHANGED",
-      `최소 주문 금액은 ${MIN_ORDER_AMOUNT.toLocaleString("ko-KR")}원입니다.`,
-      400,
-      undefined,
-      updatedCart,
-      priceSourceVersion,
-    );
-  }
-
-  if (
-    submittedTotalAmount !== undefined &&
-    Math.floor(Number(submittedTotalAmount)) !== totalAmount
-  ) {
-    throw new OrderValidationError(
-      "PRICE_CHANGED",
-      PRICE_CHANGED_MESSAGE,
-      409,
-      undefined,
-      updatedCart,
-      priceSourceVersion,
-    );
+    minimumOrderWarning = `최소 주문 금액 ${MIN_ORDER_AMOUNT.toLocaleString("ko-KR")}원 미만 주문입니다.`;
   }
 
   return {
@@ -186,6 +161,7 @@ export async function validateSubmittedCart(
     orderItems,
     updatedCart,
     totalAmount,
+    minimumOrderWarning,
     priceSourceVersion,
   };
 }

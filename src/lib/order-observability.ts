@@ -3,7 +3,6 @@ import { randomUUID } from "crypto";
 export type OrderErrorCode =
   | "PRICE_CHANGED"
   | "PRICE_SOURCE_UNAVAILABLE"
-  | "MIN_ORDER_AMOUNT_CHANGED"
   | "INVALID_ORDER"
   | "INVALID_STATUS_TRANSITION"
   | "ORDER_NOT_FOUND"
