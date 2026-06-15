@@ -262,9 +262,17 @@ export default function CheckoutPage() {
         orderNumber?: string;
         error?: string;
         code?: string;
+        errorCode?: string;
+        requestId?: string;
         updatedCart?: CartItem[];
       }>(res);
       if (!res.ok) {
+        console.error("[checkout] /api/orders failed", {
+          status: res.status,
+          errorCode: data.errorCode ?? data.code,
+          requestId: data.requestId ?? res.headers.get("x-request-id"),
+          body: data,
+        });
         if (Array.isArray(data.updatedCart)) {
           replaceItems(data.updatedCart);
         }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import {
   ORDER_STATUS_FILTER,
@@ -374,6 +374,7 @@ export default function OrdersPage() {
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [notificationInterval, setNotificationInterval] = useState(3000);
   const router = useRouter();
+  const pathname = usePathname();
   const isMounted = useRef(true);
   const isFetching = useRef(false);
   const previousPendingCount = useRef(0);
@@ -411,6 +412,20 @@ export default function OrdersPage() {
 
         if (!res.ok) {
           if (res.status === 401) {
+            console.log("[ADMIN REDIRECT]", {
+              source: "/admin/orders",
+              target: "/admin",
+              reason: "orders_api_unauthorized",
+              pathname,
+              isAuthenticated: false,
+              status: res.status,
+              timestamp: Date.now(),
+            });
+            console.log("[REDIRECT EXECUTE]", {
+              from: pathname,
+              to: "/admin",
+              timestamp: Date.now(),
+            });
             router.replace("/admin");
             return;
           }
@@ -467,7 +482,7 @@ export default function OrdersPage() {
         isFetching.current = false;
       }
     },
-    [filter, router, selectedOrderId, updatePendingCount],
+    [filter, pathname, router, selectedOrderId, updatePendingCount],
   );
 
   useEffect(() => {

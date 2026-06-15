@@ -18,10 +18,10 @@ function PopularProductsComponent({ products, onAdd }: Props) {
         <span className="text-2xl">🔥</span>
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900">인기상품</h2>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid auto-cols-[7.5rem] grid-flow-col grid-rows-3 gap-3 overflow-x-auto overscroll-x-contain pb-2 snap-x snap-mandatory sm:auto-cols-[8.5rem] md:auto-cols-[9.5rem]">
         {products.map((product) => (
-          <div key={product.id} className="min-w-0">
-            <ProductCard product={product} onAdd={onAdd} />
+          <div key={product.id} className="min-w-0 snap-start">
+            <ProductCard product={product} onAdd={onAdd} compact />
           </div>
         ))}
       </div>

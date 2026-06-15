@@ -167,8 +167,10 @@
   }
 
   export function generateOrderNumber() {
-    const now = new Date();
-    const date = now.toISOString().slice(0, 10).replace(/-/g, "");
-    const rand = Math.floor(Math.random() * 9000) + 1000;
-    return `ORD-${date}-${rand}`;
+    const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, "");
+    const randomPart =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase()
+        : Math.random().toString(36).slice(2, 14).toUpperCase().padEnd(12, "0");
+    return `ORD-${timestamp}-${randomPart}`;
   }

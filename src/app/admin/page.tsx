@@ -95,7 +95,21 @@ export default function AdminLoginPage() {
   const dashboardPath = "/admin/dashboard";
 
   const redirectToDashboard = useCallback(() => {
+    console.log("[ADMIN REDIRECT]", {
+      source: "/admin",
+      target: dashboardPath,
+      reason: "already_logged_in_or_login_success",
+      pathname,
+      isAuthenticated: true,
+      alreadyRedirected: hasRedirectedRef.current,
+      timestamp: Date.now(),
+    });
     if (hasRedirectedRef.current || pathname === dashboardPath) return;
+    console.log("[REDIRECT EXECUTE]", {
+      from: pathname,
+      to: dashboardPath,
+      timestamp: Date.now(),
+    });
     hasRedirectedRef.current = true;
     router.replace(dashboardPath);
   }, [pathname, router]);
@@ -108,6 +122,16 @@ export default function AdminLoginPage() {
         const res = await fetch("/api/admin/auth", {
           cache: "no-store",
           signal: controller.signal,
+        });
+        console.log("[AUTH STATE]", {
+          source: "/admin",
+          pathname,
+          loading: checkingSession,
+          authenticated: res.ok,
+          tokenExists: "httpOnly_unreadable",
+          sessionExists: res.ok,
+          status: res.status,
+          timestamp: Date.now(),
         });
 
         if (res.ok) {
@@ -152,6 +176,16 @@ export default function AdminLoginPage() {
       });
 
       const data = (await res.json().catch(() => ({}))) as LoginResponse;
+      console.log("[AUTH STATE]", {
+        source: "/admin",
+        pathname,
+        loading: submitting,
+        authenticated: res.ok,
+        tokenExists: "httpOnly_set_by_response_if_success",
+        sessionExists: res.ok,
+        status: res.status,
+        timestamp: Date.now(),
+      });
 
       if (!res.ok) {
         setError(data.error ?? "비밀번호가 맞지 않습니다. 다시 입력하세요.");

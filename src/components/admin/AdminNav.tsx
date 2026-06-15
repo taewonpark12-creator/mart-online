@@ -16,6 +16,19 @@ export function AdminNav() {
 
   async function handleLogout() {
     await fetch("/api/admin/login", { method: "DELETE" });
+    console.log("[ADMIN REDIRECT]", {
+      source: "AdminNav",
+      target: "/admin",
+      reason: "logout",
+      pathname,
+      isAuthenticated: false,
+      timestamp: Date.now(),
+    });
+    console.log("[REDIRECT EXECUTE]", {
+      from: pathname,
+      to: "/admin",
+      timestamp: Date.now(),
+    });
     router.push("/admin");
   }
 

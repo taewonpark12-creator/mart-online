@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { PRODUCT_CATEGORIES, formatPrice } from "@/lib/types";
 
@@ -610,6 +610,7 @@ function ProductEditDrawer({
 
 export default function ProductsPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
@@ -680,6 +681,20 @@ export default function ProductsPage() {
       const res = await fetch(`/api/products?${params.toString()}`);
 
       if (res.status === 401) {
+        console.log("[ADMIN REDIRECT]", {
+          source: "/admin/products",
+          target: "/admin",
+          reason: "products_api_unauthorized",
+          pathname,
+          isAuthenticated: false,
+          status: res.status,
+          timestamp: Date.now(),
+        });
+        console.log("[REDIRECT EXECUTE]", {
+          from: pathname,
+          to: "/admin",
+          timestamp: Date.now(),
+        });
         router.replace("/admin");
         return;
       }
@@ -698,7 +713,7 @@ export default function ProductsPage() {
     } finally {
       setLoading(false);
     }
-  }, [categoryFilter, router, searchQuery]);
+  }, [categoryFilter, pathname, router, searchQuery]);
 
   useEffect(() => {
     fetchProducts();

@@ -41,7 +41,7 @@ export default function HomePage() {
       : allProducts.filter((product) => product.category === category);
   const visibleSearchResults = searchResults.slice(0, visibleSearchCount);
   const hasMoreSearchResults = visibleSearchCount < searchResults.length;
-  const visibleCategories = (CATEGORIES as readonly string[]).filter((item) => item !== "추천상품");
+  const visibleCategories = (CATEGORIES as readonly string[]).filter((item) => item !== CATEGORIES[0]);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);

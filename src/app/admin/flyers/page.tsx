@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 
 type Flyer = {
@@ -15,6 +15,7 @@ type Flyer = {
 
 export default function FlyerManagementPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -27,6 +28,20 @@ export default function FlyerManagementPage() {
       const res = await fetch("/api/admin/flyers");
       if (!res.ok) {
         if (res.status === 401) {
+          console.log("[ADMIN REDIRECT]", {
+            source: "/admin/flyers",
+            target: "/admin",
+            reason: "flyers_api_unauthorized",
+            pathname,
+            isAuthenticated: false,
+            status: res.status,
+            timestamp: Date.now(),
+          });
+          console.log("[REDIRECT EXECUTE]", {
+            from: pathname,
+            to: "/admin",
+            timestamp: Date.now(),
+          });
           router.replace("/admin");
           return;
         }

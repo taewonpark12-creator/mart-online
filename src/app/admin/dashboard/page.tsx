@@ -24,8 +24,26 @@ export default function DashboardPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const redirectToAdminLogin = useCallback(() => {
+  const redirectToAdminLogin = useCallback((details?: {
+    reason?: string;
+    isAuthenticated?: boolean;
+    loading?: boolean;
+  }) => {
+    console.log("[ADMIN REDIRECT]", {
+      source: "/admin/dashboard",
+      target: "/admin",
+      reason: details?.reason ?? "auth_failed",
+      pathname,
+      isAuthenticated: details?.isAuthenticated,
+      loading: details?.loading,
+      timestamp: Date.now(),
+    });
     if (pathname !== "/admin") {
+      console.log("[REDIRECT EXECUTE]", {
+        from: pathname,
+        to: "/admin",
+        timestamp: Date.now(),
+      });
       router.replace("/admin");
     }
   }, [pathname, router]);
@@ -36,11 +54,25 @@ export default function DashboardPage() {
     async function checkAuth() {
       try {
         const res = await fetch("/api/admin/auth", { cache: "no-store" });
+        console.log("[AUTH STATE]", {
+          source: "/admin/dashboard",
+          pathname,
+          loading: checkingAuth,
+          authenticated: res.ok,
+          tokenExists: "httpOnly_unreadable",
+          sessionExists: res.ok,
+          status: res.status,
+          timestamp: Date.now(),
+        });
         if (!res.ok) {
           if (!cancelled) {
             setIsAuthenticated(false);
           }
-          redirectToAdminLogin();
+          redirectToAdminLogin({
+            reason: "auth_check_non_ok",
+            isAuthenticated: false,
+            loading: checkingAuth,
+          });
           return;
         }
         if (!cancelled) {
@@ -51,7 +83,11 @@ export default function DashboardPage() {
         if (!cancelled) {
           setIsAuthenticated(false);
         }
-        redirectToAdminLogin();
+        redirectToAdminLogin({
+          reason: "auth_check_error",
+          isAuthenticated: false,
+          loading: checkingAuth,
+        });
         return;
       } finally {
         if (!cancelled) {
@@ -78,8 +114,22 @@ export default function DashboardPage() {
 
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
+          console.log("[AUTH STATE]", {
+            source: "/admin/dashboard",
+            pathname,
+            loading,
+            authenticated: false,
+            tokenExists: "httpOnly_unreadable",
+            sessionExists: false,
+            status: res.status,
+            timestamp: Date.now(),
+          });
           setIsAuthenticated(false);
-          redirectToAdminLogin();
+          redirectToAdminLogin({
+            reason: "stats_auth_failed",
+            isAuthenticated: false,
+            loading,
+          });
           return;
         }
 
