@@ -21483,6 +21483,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801039008010",
+    "name": "해표)양념쌈장1.5kg+400g",
+    "normalPrice": 7500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801039008461",
     "name": "해표)태양초고추장170g",
     "normalPrice": 2000,
@@ -21504,6 +21513,15 @@
     "barcode": "8801039008539",
     "name": "사조)통영굴참치액900g",
     "normalPrice": 11000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801039008607",
+    "name": "해표)초고추장170g",
+    "normalPrice": 990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116930,7 +116948,7 @@
   {
     "barcode": "9100000214757",
     "name": "왕매실(5kg/1망)행사",
-    "normalPrice": 14800,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
