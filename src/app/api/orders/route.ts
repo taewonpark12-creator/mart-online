@@ -354,11 +354,11 @@ export async function POST(req: NextRequest) {
     clientOrderIdForRecovery = clientOrderId;
     logStage("idempotency_check", { clientOrderId });
 
-    let existingOrder: { orderNumber: string; priceSourceVersion?: string | null } | null = null;
+    let existingOrder: { orderNumber: string; status: string; totalAmount: number; priceSourceVersion?: string | null } | null = null;
     try {
       existingOrder = await prisma.order.findUnique({
         where: { clientOrderId },
-        select: { orderNumber: true, priceSourceVersion: true },
+        select: { orderNumber: true, status: true, totalAmount: true, priceSourceVersion: true },
       });
     } catch (metadataError) {
       if (!isMissingOrderMetadataColumn(metadataError)) {
@@ -383,11 +383,9 @@ export async function POST(req: NextRequest) {
       logStage("response_send", { duplicate: true, status: 200 });
       return jsonWithSecurity(
         {
-          requestId,
           orderNumber: existingOrder.orderNumber,
-          clientOrderId,
-          duplicate: true,
-          priceSourceVersion: existingOrder.priceSourceVersion,
+          status: existingOrder.status,
+          totalAmount: existingOrder.totalAmount,
         },
         { status: 200 },
         requestId,
@@ -484,13 +482,13 @@ export async function POST(req: NextRequest) {
         const duplicate = await runTransactionStage("transaction_idempotency_check", () =>
           tx.order.findUnique({
             where: { clientOrderId },
-            select: { id: true, orderNumber: true, priceSourceVersion: true },
+            select: { id: true, orderNumber: true },
           }),
         );
         if (duplicate) {
           orderNumberForLog = duplicate.orderNumber;
           logStage("response_send", { duplicate: true, status: 200 });
-          return { ...duplicate, duplicate: true };
+          return { ...duplicate, priceSourceVersion: null, duplicate: true };
         }
       } else {
         logStage("transaction_idempotency_skipped", { reason: "ORDER_METADATA_COLUMNS_MISSING" });
@@ -528,15 +526,13 @@ export async function POST(req: NextRequest) {
             () =>
               tx.order.create({
                 data: orderCreateData,
-                select: supportsOrderMetadata
-                  ? { id: true, orderNumber: true, priceSourceVersion: true }
-                  : { id: true, orderNumber: true },
+                select: { id: true, orderNumber: true },
               }),
             { attempt, orderNumber: nextOrderNumber },
           );
           return {
             ...createdOrder,
-            priceSourceVersion: "priceSourceVersion" in createdOrder ? createdOrder.priceSourceVersion : null,
+            priceSourceVersion: null,
             duplicate: false,
           };
         } catch (createError) {
@@ -546,13 +542,13 @@ export async function POST(req: NextRequest) {
               () =>
                 tx.order.findUnique({
                   where: { clientOrderId },
-                  select: { id: true, orderNumber: true, priceSourceVersion: true },
+                  select: { id: true, orderNumber: true },
                 }),
               { attempt, clientOrderId },
             );
             if (existing) {
               orderNumberForLog = existing.orderNumber;
-              return { ...existing, duplicate: true };
+              return { ...existing, priceSourceVersion: null, duplicate: true };
             }
             if (attempt < ORDER_NUMBER_RETRY_LIMIT - 1) {
               logOrderFailure({
@@ -638,23 +634,13 @@ export async function POST(req: NextRequest) {
 
     const verifiedOrder = await prisma.order.findUnique({
       where: { id: order.id },
-      select: supportsOrderMetadata
-        ? {
-            id: true,
-            orderNumber: true,
-            clientOrderId: true,
-            priceSourceVersion: true,
-            status: true,
-            totalAmount: true,
-            createdAt: true,
-          }
-        : {
-            id: true,
-            orderNumber: true,
-            status: true,
-            totalAmount: true,
-            createdAt: true,
-          },
+      select: {
+        id: true,
+        orderNumber: true,
+        status: true,
+        totalAmount: true,
+        createdAt: true,
+      },
     });
 
     console.log("[ORDER_CREATE_VERIFY]", {
@@ -720,15 +706,9 @@ export async function POST(req: NextRequest) {
     logStage("response_send", { status: order.duplicate ? 200 : 201, orderNumber: verifiedOrder.orderNumber });
     return jsonWithSecurity(
       {
-        requestId,
-        id: verifiedOrder.id,
         orderNumber: verifiedOrder.orderNumber,
-        clientOrderId: "clientOrderId" in verifiedOrder ? verifiedOrder.clientOrderId ?? clientOrderId : clientOrderId,
-        duplicate: order.duplicate,
-        priceSourceVersion: "priceSourceVersion" in verifiedOrder ? verifiedOrder.priceSourceVersion : null,
         status: verifiedOrder.status,
         totalAmount: verifiedOrder.totalAmount,
-        warning: validated.minimumOrderWarning,
       },
       { status: order.duplicate ? 200 : 201 },
       requestId,
@@ -750,7 +730,7 @@ export async function POST(req: NextRequest) {
         logStage("idempotency_recovery");
         const existing = await prisma.order.findUnique({
           where: { clientOrderId: clientOrderIdForRecovery },
-          select: { orderNumber: true, priceSourceVersion: true },
+          select: { orderNumber: true, status: true, totalAmount: true, priceSourceVersion: true },
         });
         if (existing) {
           orderNumberForLog = existing.orderNumber;
@@ -758,11 +738,9 @@ export async function POST(req: NextRequest) {
           logStage("response_send", { duplicate: true, status: 200 });
           return jsonWithSecurity(
             {
-              requestId,
               orderNumber: existing.orderNumber,
-              clientOrderId: clientOrderIdForRecovery,
-              duplicate: true,
-              priceSourceVersion: existing.priceSourceVersion,
+              status: existing.status,
+              totalAmount: existing.totalAmount,
             },
             { status: 200 },
             requestId,
