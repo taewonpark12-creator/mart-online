@@ -43,6 +43,7 @@ export default function HomePage() {
   const visibleSearchResults = searchResults.slice(0, visibleSearchCount);
   const hasMoreSearchResults = visibleSearchCount < searchResults.length;
   const visibleCategories = CATEGORIES as readonly string[];
+  const isHomeView = !hasCategorySelection;
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -157,6 +158,97 @@ export default function HomePage() {
     setDebouncedSearch("");
   }, []);
 
+  console.log({
+    category,
+    hasCategorySelection,
+    isSearchMode,
+  });
+
+  const renderProductView = () => {
+    if (loading) {
+      return (
+        <div className="space-y-4">
+          <div className="h-32 bg-gray-50 rounded-3xl animate-pulse" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="h-48 bg-gray-50 rounded-3xl animate-pulse" />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (isSearchMode) {
+      if (searchResults.length === 0) {
+        return <div className="py-20 text-center text-gray-400">검색 결과가 없습니다.</div>;
+      }
+
+      return (
+        <>
+          <div className="flex items-center gap-2 mt-8 mb-4">
+            <span className="w-8 h-1 bg-gray-200 rounded-full" />
+            <h2 className="text-lg font-bold text-gray-900">검색 결과</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {visibleSearchResults.map((product) => (
+              <ProductCard key={product.id} product={product} onAdd={handleAdd} />
+            ))}
+          </div>
+          {hasMoreSearchResults && (
+            <div className="flex justify-center mt-6">
+              <button
+                type="button"
+                onClick={() => setVisibleSearchCount((count) => count + INITIAL_VISIBLE_SEARCH_COUNT)}
+                className="px-5 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold min-h-[44px]"
+              >
+                더 보기
+              </button>
+            </div>
+          )}
+        </>
+      );
+    }
+
+    if (isHomeView) {
+      return (
+        <>
+          <div className="mb-8">
+            <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
+          </div>
+
+          <OnlineExclusiveProducts products={exclusiveProducts} onAdd={handleAdd} />
+
+          {popularProducts.length > 0 && (
+            <div className="mb-8">
+              <PopularProducts products={popularProducts} onAdd={handleAdd} />
+            </div>
+          )}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className="flex items-center gap-2 mt-8 mb-4">
+          <span className="w-8 h-1 bg-gray-200 rounded-full" />
+          <h2 className="text-lg font-bold text-gray-900">
+            {category === CATEGORIES[0] ? "전체 상품" : category}
+          </h2>
+        </div>
+
+        {categoryProducts.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {categoryProducts.map((product) => (
+              <ProductCard key={product.id} product={product} onAdd={handleAdd} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
+        )}
+      </>
+    );
+  };
+
   return (
     <PriceProvider>
       <div className="min-h-screen bg-white">
@@ -247,83 +339,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {loading ? (
-            <div className="space-y-4">
-              <div className="h-32 bg-gray-50 rounded-3xl animate-pulse" />
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="h-48 bg-gray-50 rounded-3xl animate-pulse" />
-                ))}
-              </div>
-            </div>
-          ) : isSearchMode ? (
-            searchResults.length > 0 ? (
-              <>
-                <div className="flex items-center gap-2 mt-8 mb-4">
-                  <span className="w-8 h-1 bg-gray-200 rounded-full" />
-                  <h2 className="text-lg font-bold text-gray-900">검색 결과</h2>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {visibleSearchResults.map((product) => (
-                    <ProductCard key={product.id} product={product} onAdd={handleAdd} />
-                  ))}
-                </div>
-                {hasMoreSearchResults && (
-                  <div className="flex justify-center mt-6">
-                    <button
-                      type="button"
-                      onClick={() => setVisibleSearchCount((count) => count + INITIAL_VISIBLE_SEARCH_COUNT)}
-                      className="px-5 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold min-h-[44px]"
-                    >
-                      더 보기
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="py-20 text-center text-gray-400">검색 결과가 없습니다.</div>
-            )
-          ) : (
-            <>
-              {category === CATEGORIES[0] && (
-                <>
-                  <div className="mb-8">
-                    <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
-                  </div>
-
-                  <OnlineExclusiveProducts products={exclusiveProducts} onAdd={handleAdd} />
-
-                  {popularProducts.length > 0 && (
-                    <div className="mb-8">
-                      <PopularProducts products={popularProducts} onAdd={handleAdd} />
-                    </div>
-                  )}
-                </>
-              )}
-
-              {hasCategorySelection && (
-                <>
-                  <div className="flex items-center gap-2 mt-8 mb-4">
-                    <span className="w-8 h-1 bg-gray-200 rounded-full" />
-                    <h2 className="text-lg font-bold text-gray-900">
-                      {category === CATEGORIES[0] ? "전체 상품" : category}
-                    </h2>
-                  </div>
-
-                  {categoryProducts.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {categoryProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} onAdd={handleAdd} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
-                  )}
-                </>
-              )}
-
-            </>
-          )}
+          {renderProductView()}
         </main>
 
         {toast.show && (

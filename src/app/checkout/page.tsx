@@ -470,7 +470,7 @@ export default function CheckoutPage() {
                   value={address}
                   onChange={(event) => setAddress(event.target.value)}
                   className="w-full border rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                  placeholder="예: 서울시 강남구 123-4, 101호"
+                  placeholder="예: 숭의동 123, OO빌라 101호"
                 />
               </div>
               <div>
