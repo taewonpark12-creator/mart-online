@@ -636,26 +636,71 @@ export async function POST(req: NextRequest) {
     orderNumberForLog = order.orderNumber;
     logStage("transaction_commit", { orderNumber: order.orderNumber });
 
+    const verifiedOrder = await prisma.order.findUnique({
+      where: { id: order.id },
+      select: supportsOrderMetadata
+        ? {
+            id: true,
+            orderNumber: true,
+            clientOrderId: true,
+            priceSourceVersion: true,
+            status: true,
+            totalAmount: true,
+            createdAt: true,
+          }
+        : {
+            id: true,
+            orderNumber: true,
+            status: true,
+            totalAmount: true,
+            createdAt: true,
+          },
+    });
+
+    console.log("[ORDER_CREATE_VERIFY]", {
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      clientOrderId,
+      exists: !!verifiedOrder,
+    });
+    logStage("order_create_verify", {
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      exists: !!verifiedOrder,
+      status: verifiedOrder?.status,
+    });
+
+    if (!verifiedOrder) {
+      throw new OrderValidationError(
+        "ORDER_COMMIT_VERIFY_FAILED",
+        "주문 저장 확인에 실패했습니다. 다시 시도해주세요.",
+        503,
+        undefined,
+        undefined,
+        priceSourceVersion,
+      );
+    }
+
     try {
       if (order.duplicate) {
         logStage("audit_log_skipped", { duplicate: true, orderNumber: order.orderNumber });
       } else {
-      await createAuditLog({
-        action: "CREATE",
-        entity: "Order",
-        entityId: order.id,
-        changes: {
-          requestId,
-          orderNumber: order.orderNumber,
-          customerName: safeCustomerName,
-          totalAmount: validated.totalAmount,
-          itemCount: validated.orderItems.length,
-          priceSourceVersion: validated.priceSourceVersion,
-        },
-        ipAddress: getClientIp(req),
-        userAgent: getUserAgent(req),
-      });
-      logStage("audit_log", { orderNumber: order.orderNumber });
+        await createAuditLog({
+          action: "CREATE",
+          entity: "Order",
+          entityId: verifiedOrder.id,
+          changes: {
+            requestId,
+            orderNumber: verifiedOrder.orderNumber,
+            customerName: safeCustomerName,
+            totalAmount: validated.totalAmount,
+            itemCount: validated.orderItems.length,
+            priceSourceVersion: validated.priceSourceVersion,
+          },
+          ipAddress: getClientIp(req),
+          userAgent: getUserAgent(req),
+        });
+        logStage("audit_log", { orderNumber: verifiedOrder.orderNumber });
       }
     } catch (auditError) {
       logOrderFailure({
@@ -666,21 +711,23 @@ export async function POST(req: NextRequest) {
         priceSourceVersion,
         endpoint: "/api/orders",
         clientOrderId: clientOrderIdForRecovery,
-        orderNumber: order.orderNumber,
+        orderNumber: verifiedOrder.orderNumber,
         payloadSummary,
         error: serializeError(auditError),
       });
     }
 
-    logStage("response_send", { status: order.duplicate ? 200 : 201, orderNumber: order.orderNumber });
+    logStage("response_send", { status: order.duplicate ? 200 : 201, orderNumber: verifiedOrder.orderNumber });
     return jsonWithSecurity(
       {
         requestId,
-        orderNumber: order.orderNumber,
-        clientOrderId,
+        id: verifiedOrder.id,
+        orderNumber: verifiedOrder.orderNumber,
+        clientOrderId: "clientOrderId" in verifiedOrder ? verifiedOrder.clientOrderId ?? clientOrderId : clientOrderId,
         duplicate: order.duplicate,
-        priceSourceVersion: order.priceSourceVersion,
-        totalAmount: validated.totalAmount,
+        priceSourceVersion: "priceSourceVersion" in verifiedOrder ? verifiedOrder.priceSourceVersion : null,
+        status: verifiedOrder.status,
+        totalAmount: verifiedOrder.totalAmount,
         warning: validated.minimumOrderWarning,
       },
       { status: order.duplicate ? 200 : 201 },

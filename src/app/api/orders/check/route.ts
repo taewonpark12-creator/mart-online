@@ -61,10 +61,24 @@ export async function GET(request: Request) {
       include: { items: { include: { product: true } } },
       orderBy: { createdAt: "desc" },
     });
+    const matchedOrders = orders.filter((order) => normalizePhone(order.customerPhone) === normalizedPhone);
+    console.log("[CUSTOMER_ORDERS_FETCH]", {
+      source: "prisma.order",
+      phoneLast4: normalizedPhone.slice(-4),
+      candidateCount: orders.length,
+      matchedCount: matchedOrders.length,
+      latestMatchedOrder: matchedOrders[0]
+        ? {
+            id: matchedOrders[0].id,
+            orderNumber: matchedOrders[0].orderNumber,
+            status: matchedOrders[0].status,
+            createdAt: matchedOrders[0].createdAt,
+          }
+        : null,
+    });
 
     return NextResponse.json(
-      orders
-        .filter((order) => normalizePhone(order.customerPhone) === normalizedPhone)
+      matchedOrders
         .map((order) => ({
           id: order.id,
           orderNumber: order.orderNumber,

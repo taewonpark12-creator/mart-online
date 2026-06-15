@@ -11,10 +11,25 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
 
+    const rawOrderCount = await prisma.order.count();
     const orders = await prisma.order.findMany({
       where: status ? { status: status as never } : undefined,
       include: { items: { include: { product: true } } },
       orderBy: { createdAt: "desc" },
+    });
+    console.log("[ADMIN_ORDERS_FETCH]", {
+      source: "prisma.order",
+      statusFilter: status,
+      rawOrderCount,
+      returnedCount: orders.length,
+      latestOrder: orders[0]
+        ? {
+            id: orders[0].id,
+            orderNumber: orders[0].orderNumber,
+            status: orders[0].status,
+            createdAt: orders[0].createdAt,
+          }
+        : null,
     });
 
     // BigInt를 문자열로 변환하여 JSON 직렬화 문제 해결
