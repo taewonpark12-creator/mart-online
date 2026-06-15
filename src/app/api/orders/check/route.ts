@@ -76,7 +76,6 @@ export async function GET(request: Request) {
           pickupTime: order.pickupTime,
           memo: order.memo ? "***" : null,
           paymentMethod: order.paymentMethod,
-          outOfStockPolicy: order.outOfStockPolicy,
           status: order.status,
           totalAmount: order.totalAmount,
           createdAt: order.createdAt,

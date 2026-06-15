@@ -1,7 +1,6 @@
 import { STORE } from "@/lib/store";
 import {
   BANK_ACCOUNT,
-  OUT_OF_STOCK_POLICY_LABEL,
   FULFILLMENT_TYPE_LABEL,
   formatPaymentMethodLabel,
   formatPickupTimeLabel,
@@ -12,7 +11,6 @@ import { orderItemBarcode, orderItemName } from "@/lib/order-item";
 
 export type { ReceiptOrder };
 
-/** ★ 글자 크기 (px) */
 export const RECEIPT_FONT = {
   base: 15,
   itemName: 15,
@@ -22,14 +20,11 @@ export const RECEIPT_FONT = {
   footer: 9,
 };
 
-/**
- * ★ 레이아웃 (참고 영수증 · 80mm)
- */
 export const RECEIPT_LAYOUT = {
   paperWidthMm: 76,
-  colQty: 40,      
-  colUnit: 70,     
-  colAmount: 75,    
+  colQty: 40,
+  colUnit: 70,
+  colAmount: 75,
 };
 
 function esc(text: string) {
@@ -50,7 +45,6 @@ function fmtNum(n: number) {
   return n.toLocaleString("ko-KR");
 }
 
-/** 마스킹 없이 전체 번호 노출 (숫자 포맷팅만 적용) */
 function maskPhone(phone: string) {
   const digits = phone.replace(/\D/g, "");
   if (digits.length === 11) {
@@ -71,12 +65,6 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   const F = RECEIPT_FONT;
   const L = RECEIPT_LAYOUT;
   const date = formatReceiptDate(order.createdAt);
-
-  const outOfStockLabel =
-    order.outOfStockPolicy && OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy]
-      ? OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy]
-      : "연락바람";
-
   const isPickup = order.fulfillmentType === "PICKUP";
   const deliveryMemo = order.memo?.trim() ? esc(order.memo.trim()) : "없음";
   const entrance = order.deliveryEntrance?.trim()
@@ -86,23 +74,20 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   const fulfillmentBlock = isPickup
     ? `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.PICKUP), true)}
-  ${infoLine("픽업 매장", esc(`${STORE.name} · ${STORE.address}`), true)}
-  ${infoLine("픽업 예정", esc(order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미지정"), true)}`
+  ${infoLine("픽업 매장", esc(`${STORE.name} / ${STORE.address}`), true)}
+  ${infoLine("픽업 예정", esc(order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"), true)}`
     : `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.DELIVERY), true)}
   ${infoLine("배달지", esc(order.deliveryAddress), true)}
   ${infoLine("공동현관 출입정보", entrance)}`;
 
-  const paymentLabel = esc(
-    formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType),
-  );
+  const paymentLabel = esc(formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType));
   const bankExtra =
     order.paymentMethod === "BANK_TRANSFER"
       ? `<br /><span style="font-size:10px;">${esc(BANK_ACCOUNT.display)}</span>`
       : "";
 
   const colStyle = `table-layout:fixed;width:100%;border-collapse:collapse;font-size:${F.row}px;`;
-  
   const colGroup = `
     <colgroup>
       <col />
@@ -115,10 +100,10 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
     .map((item, index) => {
       const lineTotal = item.unitPrice * item.quantity;
       const barcode = orderItemBarcode(item);
-
       const barcodeRow = barcode
         ? `<tr class="item-barcode"><td colspan="4" style="padding-left:10px;"><b>${esc(barcode)}</b></td></tr>`
         : "";
+
       return `
       <tbody class="item-group">
         <tr class="item-name">
@@ -153,27 +138,19 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       background:#fff;
     }
     body { padding: 2mm 4mm 4mm 2mm; }
-    
-    .hr {
-      border:none;
-      border-top:1px dashed #000;
-      margin:7px 0;
-    }
-    
+    .hr { border:none; border-top:1px dashed #000; margin:7px 0; }
     .info {
       margin:3px 0;
-      margin-right: 15px;         
-      width: calc(100% - 15px);   
+      margin-right:15px;
+      width:calc(100% - 15px);
       font-size:${F.base}px;
-      overflow-wrap: break-word;
-      word-break: break-all;      
-      white-space: normal;        
+      overflow-wrap:break-word;
+      word-break:break-all;
+      white-space:normal;
       line-height:1.4;
     }
-    .info-label { font-weight:700; white-space: nowrap; } 
-    
-    .items-table { ${colStyle} margin-right: 35px; width: calc(100% - 35px); }
-    
+    .info-label { font-weight:700; white-space:nowrap; }
+    .items-table { ${colStyle} margin-right:35px; width:calc(100% - 35px); }
     .items-table thead th {
       font-weight:700;
       font-size:13px;
@@ -182,10 +159,9 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       border-bottom:1px solid #000;
     }
     .items-table thead .h-name { text-align:left; }
-    .items-table thead .h-qty { text-align:right; }
+    .items-table thead .h-qty,
     .items-table thead .h-unit,
     .items-table thead .h-amt { text-align:right; }
-    
     .item-group { page-break-inside:avoid; }
     .item-name td {
       font-size:${F.itemName}px;
@@ -196,28 +172,25 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       padding:8px 0 2px 0;
       vertical-align:top;
     }
-    
     .item-barcode td {
       font-size:${F.barcode}px;
-      font-weight: 800;
-      color: #000;
-      line-height: 1.3;
-      padding: 0 0 2px 0;
-      letter-spacing: 0.05em;
+      font-weight:800;
+      color:#000;
+      line-height:1.3;
+      padding:0 0 2px 0;
+      letter-spacing:0.05em;
     }
-    
     .item-values td { padding-bottom:6px; vertical-align:top; }
-    .item-values .v-qty { text-align:right; white-space:nowrap; }
+    .item-values .v-qty,
     .item-values .v-unit,
     .item-values .v-amt { text-align:right; white-space:nowrap; }
-    
     .total {
       text-align:right;
       font-size:${F.total}px;
       font-weight:800;
       margin-top:8px;
       padding-top:6px;
-      margin-right: 35px;
+      margin-right:35px;
       border-top:1px dashed #000;
     }
     .footer {
@@ -236,7 +209,6 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${fulfillmentBlock}
   ${infoLine("연락처", esc(maskPhone(order.customerPhone)))}
   ${infoLine(isPickup ? "요청사항" : "배달 요청사항", deliveryMemo)}
-  ${infoLine("상품 품절 시 처리방법", outOfStockLabel)}
   <hr class="hr" />
 
   <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>

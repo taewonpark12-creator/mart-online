@@ -25,6 +25,7 @@ export default function HomePage() {
   const [exclusiveProducts, setExclusiveProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [category, setCategory] = useState<string>(CATEGORIES[0] ?? "전체");
+  const [hasCategorySelection, setHasCategorySelection] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleSearchCount, setVisibleSearchCount] = useState(INITIAL_VISIBLE_SEARCH_COUNT);
@@ -41,7 +42,7 @@ export default function HomePage() {
       : allProducts.filter((product) => product.category === category);
   const visibleSearchResults = searchResults.slice(0, visibleSearchCount);
   const hasMoreSearchResults = visibleSearchCount < searchResults.length;
-  const visibleCategories = (CATEGORIES as readonly string[]).filter((item) => item !== CATEGORIES[0]);
+  const visibleCategories = CATEGORIES as readonly string[];
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -151,6 +152,7 @@ export default function HomePage() {
 
   const handleCategoryChange = useCallback((nextCategory: string) => {
     setCategory(nextCategory);
+    setHasCategorySelection(true);
     setSearch("");
     setDebouncedSearch("");
   }, []);
@@ -221,7 +223,7 @@ export default function HomePage() {
                   type="button"
                   onClick={() => handleCategoryChange(item)}
                   className={`shrink-0 rounded-full border px-3 py-2 text-xs sm:text-sm font-semibold transition ${
-                    category === item
+                    hasCategorySelection && category === item
                       ? "border-emerald-600 bg-emerald-600 text-white"
                       : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
                   }`}
@@ -299,21 +301,25 @@ export default function HomePage() {
                 </>
               )}
 
-              <div className="flex items-center gap-2 mt-8 mb-4">
-                <span className="w-8 h-1 bg-gray-200 rounded-full" />
-                <h2 className="text-lg font-bold text-gray-900">
-                  {category === CATEGORIES[0] ? "전체 상품" : category}
-                </h2>
-              </div>
+              {hasCategorySelection && (
+                <>
+                  <div className="flex items-center gap-2 mt-8 mb-4">
+                    <span className="w-8 h-1 bg-gray-200 rounded-full" />
+                    <h2 className="text-lg font-bold text-gray-900">
+                      {category === CATEGORIES[0] ? "전체 상품" : category}
+                    </h2>
+                  </div>
 
-              {categoryProducts.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {categoryProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} onAdd={handleAdd} />
-                  ))}
-                </div>
-              ) : (
-                <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
+                  {categoryProducts.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                      {categoryProducts.map((product) => (
+                        <ProductCard key={product.id} product={product} onAdd={handleAdd} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
+                  )}
+                </>
               )}
 
             </>

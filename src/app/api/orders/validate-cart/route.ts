@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     console.error("[POST /api/orders/validate-cart]", { requestId, error });
     return fail({
       requestId,
-      code: "SERVER_ERROR",
+      code: "UNKNOWN_RUNTIME_ERROR",
       error: "장바구니 검증 중 오류가 발생했습니다.",
       status: 500,
       priceSourceVersion,

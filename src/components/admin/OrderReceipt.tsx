@@ -3,13 +3,11 @@ import { orderItemBarcode, orderItemName } from "@/lib/order-item";
 import { RECEIPT_FONT, RECEIPT_LAYOUT } from "@/lib/receipt-html";
 import {
   BANK_ACCOUNT,
-  OUT_OF_STOCK_POLICY_LABEL,
   FULFILLMENT_TYPE_LABEL,
   formatPaymentMethodLabel,
   formatPickupTimeLabel,
   formatPrice,
   type OrderStatus,
-  type OutOfStockPolicy,
   type PaymentMethod,
   type FulfillmentType,
 } from "@/lib/types";
@@ -23,7 +21,6 @@ export type ReceiptOrder = {
   deliveryEntrance?: string | null;
   pickupTime?: string | null;
   paymentMethod: PaymentMethod | null;
-  outOfStockPolicy: OutOfStockPolicy;
   memo: string | null;
   status: OrderStatus;
   totalAmount: number;
@@ -59,14 +56,12 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
   const date = new Date(order.createdAt);
   const p = (n: number) => String(n).padStart(2, "0");
   const dateStr = `${date.getFullYear()}.${p(date.getMonth() + 1)}.${p(date.getDate())} ${p(date.getHours())}:${p(date.getMinutes())}:${p(date.getSeconds())}`;
-
-  const L = RECEIPT_LAYOUT;
   const isPickup = order.fulfillmentType === "PICKUP";
 
   return (
     <div
       className="text-black font-sans"
-      style={{ fontSize: `${RECEIPT_FONT.base}px`, maxWidth: `${L.paperWidthMm}mm` }}
+      style={{ fontSize: `${RECEIPT_FONT.base}px`, maxWidth: `${RECEIPT_LAYOUT.paperWidthMm}mm` }}
     >
       <InfoRow label="날짜">{dateStr}</InfoRow>
       <InfoRow label="주문번호">
@@ -87,11 +82,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
             <span className="block text-[10px] font-normal mt-0.5">{STORE.address}</span>
           </InfoRow>
           <InfoRow label="픽업 예정">
-            <b>
-              {order.pickupTime
-                ? formatPickupTimeLabel(order.pickupTime)
-                : "미지정"}
-            </b>
+            <b>{order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"}</b>
           </InfoRow>
         </>
       ) : (
@@ -107,9 +98,6 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
       <InfoRow label="연락처">{maskPhone(order.customerPhone)}</InfoRow>
       <InfoRow label={isPickup ? "요청사항" : "배달 요청사항"}>
         {order.memo?.trim() || "없음"}
-      </InfoRow>
-      <InfoRow label="상품 품절 시 처리방법">
-        {OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] ?? "연락바람"}
       </InfoRow>
       <hr className="border-dashed border-black my-2" />
 
@@ -127,9 +115,9 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
       >
         <colgroup>
           <col />
-          <col style={{ width: `${L.colQty}px` }} />
-          <col style={{ width: `${L.colUnit}px` }} />
-          <col style={{ width: `${L.colAmount}px` }} />
+          <col style={{ width: `${RECEIPT_LAYOUT.colQty}px` }} />
+          <col style={{ width: `${RECEIPT_LAYOUT.colUnit}px` }} />
+          <col style={{ width: `${RECEIPT_LAYOUT.colAmount}px` }} />
         </colgroup>
         <thead>
           <tr className="font-bold text-[11px]">
@@ -147,7 +135,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
                 className="font-bold pb-0.5"
                 style={{ fontSize: `${RECEIPT_FONT.itemName}px`, wordBreak: "keep-all" }}
               >
-                {index + 1})* <b>{orderItemName(item)}</b>
+                {index + 1}) <b>{orderItemName(item)}</b>
               </td>
             </tr>
             {orderItemBarcode(item) && (

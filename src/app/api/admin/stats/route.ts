@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+﻿import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 
@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     if (!(await isAdminAuthenticated())) {
       return NextResponse.json(
-        { error: "인증이 필요합니다." },
+        { error: "?몄쬆???꾩슂?⑸땲??" },
         { status: 401 }
       );
     }
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         prisma.order.count({
           where: {
             createdAt: { gte: today },
-            status: { not: "CANCELLED" },
+            status: { not: "CANCELED" },
           },
         }),
 
@@ -64,9 +64,7 @@ export async function GET(req: NextRequest) {
             gte: date,
             lt: nextDate,
           },
-          status: {
-            in: ["APPROVED", "DELIVERED"],
-          },
+          status: "PAID",
         },
       });
 
@@ -103,7 +101,7 @@ export async function GET(req: NextRequest) {
         where: {
           order: {
             status: {
-              not: "CANCELLED",
+              not: "CANCELED",
             },
           },
         },
@@ -119,7 +117,7 @@ export async function GET(req: NextRequest) {
 
           return {
             id: item.productId ?? "",
-            name: product?.name ?? "알 수 없음",
+            name: product?.name ?? "?????놁쓬",
             quantity: item._sum.quantity ?? 0,
           };
         })
@@ -147,7 +145,7 @@ export async function GET(req: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "통계 조회 실패",
+            : "?듦퀎 議고쉶 ?ㅽ뙣",
       },
       { status: 500 }
     );

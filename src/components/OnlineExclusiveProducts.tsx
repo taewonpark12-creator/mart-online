@@ -1,6 +1,7 @@
 "use client";
 
 import type { CartItem, Product } from "@/lib/types";
+import { HorizontalScrollHint } from "@/components/HorizontalScrollHint";
 import ProductCard from "@/components/ProductCard";
 
 type Props = {
@@ -22,13 +23,13 @@ export function OnlineExclusiveProducts({ products, onAdd }: Props) {
         <h2 className="text-lg sm:text-xl font-bold text-gray-900">한정특가</h2>
       </div>
 
-      <div className="grid auto-cols-[calc((100%-1rem)/2)] grid-flow-col grid-rows-2 gap-4 overflow-x-auto overscroll-x-contain pb-2 snap-x snap-mandatory sm:auto-cols-[calc((100%-2rem)/3)]">
+      <HorizontalScrollHint className="grid auto-cols-[calc((100%-1rem)/2)] grid-flow-col grid-rows-2 gap-4 overflow-x-auto overscroll-x-contain pb-2 snap-x snap-mandatory sm:auto-cols-[calc((100%-2rem)/3)]">
         {exclusiveProducts.map((product) => (
           <div key={product.id} className="snap-start">
             <ProductCard product={product} onAdd={onAdd} />
           </div>
         ))}
-      </div>
+      </HorizontalScrollHint>
     </section>
   );
 }

@@ -175,7 +175,7 @@ function classifyPrismaError(error: unknown) {
     if (["P1000", "P1001", "P1002", "P1008", "P1017"].includes(error.code)) {
       return { errorCode: "PRISMA_CONNECTION_ERROR", status: 503, message: "?곗씠?곕쿋?댁뒪 ?곌껐 ?곹깭媛 遺덉븞?뺥빀?덈떎. ?좎떆 ???ㅼ떆 ?쒕룄?댁＜?몄슂." };
     }
-    return { errorCode: "SERVER_ERROR", status: 500, message: "?곗씠?곕쿋?댁뒪 泥섎━ 以??ㅻ쪟媛 諛쒖깮?덉뒿?덈떎." };
+    return { errorCode: "DB_UNKNOWN_ERROR", status: 500, message: "데이터베이스 처리 중 알 수 없는 오류가 발생했습니다." };
   }
 
   if (error instanceof Prisma.PrismaClientValidationError) {
@@ -191,7 +191,7 @@ function classifyPrismaError(error: unknown) {
   }
 
   if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-    return { errorCode: "SERVER_ERROR", status: 500, message: "데이터베이스 요청 처리 중 알 수 없는 오류가 발생했습니다." };
+    return { errorCode: "DB_UNKNOWN_ERROR", status: 500, message: "데이터베이스 요청 처리 중 알 수 없는 오류가 발생했습니다." };
   }
 
   return null;
@@ -257,7 +257,6 @@ export async function POST(req: NextRequest) {
       pickupTime,
       memo,
       paymentMethod,
-      outOfStockPolicy,
       items,
       totalAmount: submittedTotalAmount,
     } = body;
@@ -323,11 +322,11 @@ export async function POST(req: NextRequest) {
       return failAtCurrentStage({ code: "INVALID_ORDER", error: "?쎌뾽 ?덉젙 ?쒓컙???좏깮?댁＜?몄슂.", status: 400 });
     }
 
-    logStage("cart_validation");
+    logStage("price_validation");
     const validated = await validateSubmittedCart(items, submittedTotalAmount);
     priceSourceVersion = validated.priceSourceVersion;
     const isPickup = fulfillmentType === "PICKUP";
-    logStage("validation_complete", {
+    logStage("price_validation_complete", {
       itemCount: validated.orderItems.length,
       totalAmount: validated.totalAmount,
       priceSourceVersion,
@@ -373,38 +372,6 @@ export async function POST(req: NextRequest) {
         return duplicate;
       }
 
-      for (const item of validated.orderItems) {
-        logStage("inventory_check", { productId: item.productId, quantity: item.quantity });
-        const updated = await runTransactionStage(
-          "inventory_update",
-          () =>
-            tx.product.updateMany({
-              where: {
-                id: item.productId,
-                isActive: true,
-                isOutOfStock: false,
-                stock: { gte: item.quantity },
-              },
-              data: {
-                stock: { decrement: item.quantity },
-              },
-            }),
-          { productId: item.productId, quantity: item.quantity },
-        );
-        logStage("inventory_update", { productId: item.productId, quantity: item.quantity, updatedCount: updated.count });
-
-        if (updated.count !== 1) {
-          throw new OrderValidationError(
-            "OUT_OF_STOCK",
-            "?ш퀬媛 遺議깊븳 ?곹뭹???ы븿?섏뼱 ?덉뒿?덈떎. ?λ컮援щ땲瑜??ㅼ떆 ?뺤씤?댁＜?몄슂.",
-            409,
-            item.productId,
-            validated.updatedCart,
-            validated.priceSourceVersion,
-          );
-        }
-      }
-
       logStage("order_number_generate");
       let nextOrderNumber = generateOrderNumber();
       let hasAvailableOrderNumber = false;
@@ -444,6 +411,7 @@ export async function POST(req: NextRequest) {
               clientOrderId,
               priceSourceVersion: validated.priceSourceVersion,
               orderNumber: nextOrderNumber,
+              status: "PENDING",
               customerName: safeCustomerName,
               customerPhone: safeCustomerPhone,
               fulfillmentType,
@@ -452,7 +420,6 @@ export async function POST(req: NextRequest) {
               pickupTime: isPickup ? safePickupTime : null,
               memo: safeMemo || null,
               paymentMethod: isPickup ? null : paymentMethod,
-              outOfStockPolicy: outOfStockPolicy ?? "CONTACT",
               totalAmount: validated.totalAmount,
               items: { create: validated.orderItems },
             },
@@ -605,7 +572,7 @@ export async function POST(req: NextRequest) {
 
     return fail({
       requestId,
-      code: "SERVER_ERROR",
+      code: error instanceof TypeError ? "NULL_POINTER" : "UNKNOWN_RUNTIME_ERROR",
       error: "주문 처리 중 오류가 발생했습니다.",
       status: 500,
       ...baseFailure,

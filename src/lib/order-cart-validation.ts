@@ -110,15 +110,6 @@ export async function validateSubmittedCart(
       );
     }
 
-    if (product.isOutOfStock) {
-      throw new OrderValidationError(
-        "OUT_OF_STOCK",
-        "품절된 상품이 포함되어 있습니다. 장바구니를 다시 확인해주세요.",
-        409,
-        product.id,
-      );
-    }
-
     const maxOrderQuantity =
       product.maxOrderQuantity && product.maxOrderQuantity > 0 ? product.maxOrderQuantity : null;
     if (maxOrderQuantity && item.quantity > maxOrderQuantity) {
