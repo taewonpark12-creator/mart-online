@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
             gte: date,
             lt: nextDate,
           },
-          status: "COMPLETED",
+          status: "DELIVERED",
         },
       });
 
