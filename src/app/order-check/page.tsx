@@ -4,26 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
-import {
-  STORE,
-} from "@/lib/store";
 import { formatPrice } from "@/lib/types";
 import { parseJsonResponse } from "@/lib/fetch-json";
 
 type FulfillmentType = "DELIVERY" | "PICKUP";
 
-type CartItem = {
-  id: string;
+type OrderCartItem = {
+  id?: string;
+  productId?: string;
   name: string;
   price: number;
-  qty: number;
+  qty?: number;
+  quantity?: number;
 };
-
-function createClientOrderId() {
-  return typeof crypto !== "undefined" && "randomUUID" in crypto
-    ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -43,9 +36,8 @@ export default function CheckoutPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [completedOrder, setCompletedOrder] = useState<any>(null);
-
-  const [clientOrderId, setClientOrderId] = useState(createClientOrderId());
+  const [completedOrder, setCompletedOrder] =
+    useState<{ orderNumber: string } | null>(null);
 
   const isDelivery = fulfillmentType === "DELIVERY";
 
@@ -75,33 +67,33 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      const payload = {
-        clientOrderId,
-
+      const orderData = {
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
-
-        fulfillmentType: isDelivery ? "DELIVERY" : "PICKUP",
-
+        fulfillmentType,
         deliveryAddress: isDelivery ? address.trim() : undefined,
         pickupTime: !isDelivery ? pickupTime : undefined,
-
         memo: note.trim() || undefined,
-
         paymentMethod: isDelivery ? "ONSITE_CASH" : undefined,
+        outOfStockPolicy: "CONTACT",
+        items: items.map((item) => {
+          const orderItem = item as OrderCartItem;
+          const id = orderItem.id ?? orderItem.productId ?? "";
+          const qty = orderItem.qty ?? orderItem.quantity ?? 0;
 
-        items: items.map((i) => ({
-          productId: i.productId,
-          name: i.name,
-          price: i.price,
-          quantity: i.quantity,
-        })),
+          return {
+            productId: id,
+            name: orderItem.name,
+            price: orderItem.price,
+            quantity: qty,
+          };
+        }),
       };
 
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(orderData),
       });
 
       const data = await parseJsonResponse<{
@@ -119,17 +111,9 @@ export default function CheckoutPage() {
 
       setCompletedOrder({
         orderNumber: data.orderNumber,
-        customerName,
-        customerPhone,
-        fulfillmentType,
-        deliveryAddress: isDelivery ? address : undefined,
-        pickupTime: !isDelivery ? pickupTime : undefined,
-        items: [...items],
-        totalAmount,
       });
 
       clearCart();
-      setClientOrderId(createClientOrderId());
     } catch (err) {
       setError(err instanceof Error ? err.message : "주문 실패");
     } finally {
