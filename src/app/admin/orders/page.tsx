@@ -39,6 +39,16 @@ function getOrderTime(order: Order) {
   return new Date(order.createdAt).toLocaleString("ko-KR");
 }
 
+function getStatusPriority(status: OrderStatus): number {
+  const priority: Record<OrderStatus, number> = {
+    PENDING: 0,
+    APPROVED: 1,
+    DELIVERED: 2,
+    CANCELLED: 3,
+  };
+  return priority[status] ?? 999;
+}
+
 function matchesSearch(order: Order, query: string) {
   if (!query) return true;
   const normalized = query.toLowerCase();
@@ -66,7 +76,13 @@ export default function OrdersPage() {
     ? orders.find((order) => order.id === selectedOrderId) ?? null
     : null;
 
-  const visibleOrders = orders.filter((order) => matchesSearch(order, search.trim()));
+  const visibleOrders = orders
+    .filter((order) => matchesSearch(order, search.trim()))
+    .sort((a, b) => {
+      const statusPriorityDiff = getStatusPriority(a.status) - getStatusPriority(b.status);
+      if (statusPriorityDiff !== 0) return statusPriorityDiff;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
   const fetchOrders = async () => {
     setLoading(true);
