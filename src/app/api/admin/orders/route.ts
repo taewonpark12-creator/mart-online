@@ -21,12 +21,14 @@ function serializeOrder(order: {
   status: string;
   totalAmount: number;
   createdAt: Date;
-  items: Array<{
+  items?: Array<{
     id: string;
     productId: string | null;
-    productName: string;
-    unitPrice: number;
-    quantity: number;
+    productName?: string;
+    name?: string;
+    unitPrice?: number;
+    price?: number;
+    quantity?: number;
   }>;
 }) {
   return {
@@ -41,11 +43,11 @@ function serializeOrder(order: {
     status: order.status,
     totalAmount: Number(order.totalAmount ?? 0),
     createdAt: order.createdAt.toISOString(),
-    items: order.items.map((item) => ({
+    items: (order.items || []).map((item) => ({
       id: item.id,
       productId: item.productId,
-      productName: item.productName,
-      price: Number(item.unitPrice ?? 0),
+      productName: item.productName || item.name || "상품명 없음",
+      unitPrice: Number(item.unitPrice ?? item.price ?? 0),
       quantity: Number(item.quantity ?? 0),
     })),
   };

@@ -32,7 +32,7 @@ type Order = {
   status: OrderStatus;
   totalAmount: number;
   createdAt: string;
-  items: OrderItem[];
+  items?: OrderItem[];
 };
 
 function getOrderTime(order: Order) {
@@ -47,7 +47,7 @@ function matchesSearch(order: Order, query: string) {
     order.customerName,
     order.customerPhone,
     order.deliveryAddress,
-    order.items.map((item) => item.productName).join(" "),
+    (order.items || []).map((item) => item.productName).join(" "),
   ].join(" ").toLowerCase();
   return searchFields.includes(normalized);
 }
@@ -300,19 +300,23 @@ export default function OrdersPage() {
                 <div className="border-t pt-4">
                   <h3 className="font-bold text-sm mb-3">주문 상품</h3>
                   <div className="space-y-2">
-                    {selectedOrder.items.map((item) => (
-                      <div key={item.id} className="flex justify-between items-center text-sm py-2 border-b">
-                        <div className="flex-1">
-                          <p className="font-medium">{item.productName}</p>
-                          <p className="text-xs text-gray-500">
-                            {formatPrice(item.unitPrice)} x {item.quantity}
+                    {selectedOrder.items && selectedOrder.items.length > 0 ? (
+                      selectedOrder.items.map((item) => (
+                        <div key={item.id} className="flex justify-between items-center text-sm py-2 border-b">
+                          <div className="flex-1">
+                            <p className="font-medium">{item.productName || "상품명 없음"}</p>
+                            <p className="text-xs text-gray-500">
+                              {formatPrice(item.unitPrice || 0)} x {item.quantity || 0}
+                            </p>
+                          </div>
+                          <p className="font-semibold">
+                            {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
                           </p>
                         </div>
-                        <p className="font-semibold">
-                          {formatPrice(item.unitPrice * item.quantity)}
-                        </p>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500">주문 상품 정보가 없습니다.</p>
+                    )}
                   </div>
                 </div>
               </div>
