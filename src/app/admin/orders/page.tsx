@@ -327,6 +327,19 @@ export default function OrdersPage() {
     }
   };
 
+  const sendTestNotification = () => {
+    try {
+      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+        new Notification("테스트 알림", {
+          body: "알림이 정상 작동합니다.",
+          icon: "/favicon.ico",
+        });
+      }
+    } catch (error) {
+      console.error("[admin/orders] test notification failed", error);
+    }
+  };
+
   const requestNotificationPermission = async () => {
     try {
       if (typeof window !== "undefined" && "Notification" in window) {
@@ -437,20 +450,34 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          {notificationSupported && notificationPermission !== "granted" && (
-            <div className="flex items-center gap-2">
-              {notificationPermission === "denied" ? (
-                <span className="text-sm text-gray-500">브라우저 설정에서 알림을 허용해주세요.</span>
-              ) : (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-600">주문 알림:</span>
+            {!notificationSupported ? (
+              <span className="text-sm text-gray-500">이 브라우저는 알림을 지원하지 않습니다.</span>
+            ) : notificationPermission === "granted" ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-green-600 font-medium">알림 켜짐</span>
+                <button
+                  onClick={sendTestNotification}
+                  className="text-xs text-gray-600 border border-gray-300 px-2 py-1 rounded hover:bg-gray-50"
+                >
+                  테스트
+                </button>
+              </div>
+            ) : notificationPermission === "default" ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">알림이 꺼져 있습니다.</span>
                 <button
                   onClick={requestNotificationPermission}
-                  className="text-sm text-gray-600 border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50"
+                  className="text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
                 >
                   알림 허용
                 </button>
-              )}
-            </div>
-          )}
+              </div>
+            ) : (
+              <span className="text-sm text-gray-500">알림이 차단되어 있습니다. 브라우저 설정에서 알림을 허용해주세요.</span>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
