@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { formatPrice } from "@/lib/types";
 
-type OrderStatus = "PENDING" | "PAID" | "FAILED" | "CANCELED";
+type OrderStatus = "PENDING" | "PAID" | "FAILED" | "CANCELED" | "CANCELLED";
 
 type OrderItem = {
   id: string;
@@ -33,6 +33,7 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   PAID: "처리 완료",
   FAILED: "실패",
   CANCELED: "취소",
+  CANCELLED: "취소",
 };
 
 const STATUS_CLASS: Record<OrderStatus, string> = {
@@ -40,6 +41,7 @@ const STATUS_CLASS: Record<OrderStatus, string> = {
   PAID: "bg-green-100 text-green-800",
   FAILED: "bg-red-100 text-red-800",
   CANCELED: "bg-gray-100 text-gray-700",
+  CANCELLED: "bg-gray-100 text-gray-700",
 };
 
 export default function AdminOrdersPage() {
@@ -144,7 +146,7 @@ export default function AdminOrdersPage() {
           >
             전체
           </button>
-          {(["PENDING", "PAID", "FAILED", "CANCELED"] as OrderStatus[]).map((item) => (
+          {(["PENDING", "PAID", "FAILED", "CANCELED", "CANCELLED"] as OrderStatus[]).map((item) => (
             <button
               key={item}
               type="button"
@@ -245,7 +247,7 @@ export default function AdminOrdersPage() {
                   <section className="rounded-xl bg-amber-50 p-4">
                     <h2 className="mb-3 text-sm font-black text-amber-900">처리 상태</h2>
                     <div className="grid grid-cols-2 gap-2">
-                      {(["PENDING", "PAID", "FAILED", "CANCELED"] as OrderStatus[]).map((item) => (
+                      {(["PENDING", "PAID", "FAILED", "CANCELED", "CANCELLED"] as OrderStatus[]).map((item) => (
                         <button
                           key={item}
                           type="button"

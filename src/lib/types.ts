@@ -90,7 +90,7 @@ export const BANK_ACCOUNT = {
   display: "국민은행 654937-01-011941 주식회사알마트",
 };
 
-export type OrderStatus = "PENDING" | "PAID" | "FAILED" | "CANCELED";
+export type OrderStatus = "PENDING" | "PAID" | "FAILED" | "CANCELED" | "CANCELLED";
 
 export const ORDER_STATUS_FLOW: OrderStatus[] = ["PENDING", "PAID"];
 
@@ -98,6 +98,7 @@ export const ORDER_STATUS_FILTER: OrderStatus[] = [
   ...ORDER_STATUS_FLOW,
   "FAILED",
   "CANCELED",
+  "CANCELLED",
 ];
 
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
@@ -105,6 +106,7 @@ export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
   PAID: "결제완료",
   FAILED: "결제실패",
   CANCELED: "주문취소",
+  CANCELLED: "주문취소",
 };
 
 export const ORDER_STATUS_COLOR: Record<OrderStatus, string> = {
@@ -112,6 +114,7 @@ export const ORDER_STATUS_COLOR: Record<OrderStatus, string> = {
   PAID: "bg-green-100 text-green-800",
   FAILED: "bg-red-100 text-red-800",
   CANCELED: "bg-gray-100 text-gray-700",
+  CANCELLED: "bg-gray-100 text-gray-700",
 };
 
 export const CATEGORIES = [
