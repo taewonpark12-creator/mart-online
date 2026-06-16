@@ -134,6 +134,7 @@ export default function CheckoutPage() {
 
       if (!res.ok || !result?.orderNumber) {
         setError(result?.error || result?.message || SAVE_ERROR);
+        alert("주문 접수에 실패했습니다. 다시 시도해주세요.");
         return;
       }
 
@@ -152,6 +153,7 @@ export default function CheckoutPage() {
     } catch (error) {
       console.error("[CHECKOUT_SUBMIT_ERROR]", error);
       setError(SAVE_ERROR);
+      alert("주문 접수에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setSubmitting(false);
     }
@@ -291,9 +293,9 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className="w-full rounded-xl bg-green-600 px-4 py-4 text-sm font-bold text-white hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400"
+            className="w-full rounded-xl bg-green-600 px-4 py-4 text-sm font-bold text-white hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {submitting ? "주문 저장 중..." : "주문 완료하기"}
+            {submitting ? "주문 접수 중..." : "주문하기"}
           </button>
 
           <button

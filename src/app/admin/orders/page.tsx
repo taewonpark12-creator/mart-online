@@ -255,6 +255,13 @@ export default function OrdersPage() {
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
   const [notificationSupported, setNotificationSupported] = useState(false);
+  const [todaySummary, setTodaySummary] = useState<{
+    total: number;
+    pending: number;
+    approved: number;
+    delivered: number;
+    cancelled: number;
+  } | null>(null);
 
   const selectedOrder = selectedOrderId
     ? orders.find((order) => order.id === selectedOrderId) ?? null
@@ -315,6 +322,17 @@ export default function OrdersPage() {
     }
   };
 
+  const fetchTodaySummary = async () => {
+    try {
+      const res = await fetch("/api/admin/orders/today-summary", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      setTodaySummary(data);
+    } catch (error) {
+      console.error("[admin/orders] today-summary fetch failed", error);
+    }
+  };
+
   const showBrowserNotification = (count: number) => {
     try {
       if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
@@ -368,6 +386,12 @@ export default function OrdersPage() {
       setNotificationSupported(true);
       setNotificationPermission(Notification.permission);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchTodaySummary();
+    const interval = setInterval(fetchTodaySummary, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -488,6 +512,34 @@ export default function OrdersPage() {
             )}
           </div>
         </div>
+
+        {todaySummary && (
+          <div className="mb-6 rounded-xl bg-white border border-gray-200 p-4">
+            <h2 className="text-sm font-bold text-gray-900 mb-3">오늘 주문 요약</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="bg-gray-50 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500 mb-1">전체</p>
+                <p className="text-lg font-bold text-gray-900">{todaySummary.total}</p>
+              </div>
+              <div className="bg-amber-50 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500 mb-1">신규주문</p>
+                <p className="text-lg font-bold text-amber-800">{todaySummary.pending}</p>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500 mb-1">확인완료</p>
+                <p className="text-lg font-bold text-blue-800">{todaySummary.approved}</p>
+              </div>
+              <div className="bg-green-50 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500 mb-1">배송완료</p>
+                <p className="text-lg font-bold text-green-800">{todaySummary.delivered}</p>
+              </div>
+              <div className="bg-red-50 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500 mb-1">취소됨</p>
+                <p className="text-lg font-bold text-red-800">{todaySummary.cancelled}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex gap-2 flex-wrap">
