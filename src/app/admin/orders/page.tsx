@@ -246,8 +246,12 @@ export default function OrdersPage() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  const [pendingCount, setPendingCount] = useState<number>(0);
+  const [previousPendingCount, setPreviousPendingCount] = useState<number>(0);
+  const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
 
-  const selectedOrder = selectedOrderId 
+  const selectedOrder = selectedOrderId
     ? orders.find((order) => order.id === selectedOrderId) ?? null
     : null;
 
@@ -285,9 +289,65 @@ export default function OrdersPage() {
     }
   };
 
+  const fetchPendingCount = async () => {
+    try {
+      const res = await fetch("/api/admin/orders/pending-count", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      const newPendingCount = data.pendingCount ?? 0;
+      setPendingCount(newPendingCount);
+      
+      if (newPendingCount > previousPendingCount && previousPendingCount > 0) {
+        setShowNewOrderAlert(true);
+        if (notificationPermission === "granted") {
+          showBrowserNotification(newPendingCount);
+        }
+      }
+      setPreviousPendingCount(newPendingCount);
+    } catch (error) {
+      console.error("[admin/orders] pending-count fetch failed", error);
+    }
+  };
+
+  const showBrowserNotification = (count: number) => {
+    try {
+      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+        new Notification("신규 주문", {
+          body: `대기 중인 주문이 ${count}건 있습니다.`,
+          icon: "/favicon.ico",
+        });
+      }
+    } catch (error) {
+      console.error("[admin/orders] browser notification failed", error);
+    }
+  };
+
+  const requestNotificationPermission = async () => {
+    try {
+      if (typeof window !== "undefined" && "Notification" in window) {
+        const permission = await Notification.requestPermission();
+        setNotificationPermission(permission);
+      }
+    } catch (error) {
+      console.error("[admin/orders] notification permission request failed", error);
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
   }, [filter]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotificationPermission(Notification.permission);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPendingCount();
+    const interval = setInterval(fetchPendingCount, 15000);
+    return () => clearInterval(interval);
+  }, [previousPendingCount, notificationPermission]);
 
   async function updateStatus(status: OrderStatus) {
     if (!selectedOrderId) return;
@@ -320,17 +380,45 @@ export default function OrdersPage() {
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {showNewOrderAlert && (
+          <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+              <p className="text-sm font-semibold text-red-800">신규 주문이 도착했습니다.</p>
+            </div>
+            <button
+              onClick={() => {
+                setShowNewOrderAlert(false);
+                fetchOrders();
+              }}
+              className="text-sm text-red-700 hover:text-red-900 font-medium"
+            >
+              확인
+            </button>
+          </div>
+        )}
+
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          <button
-            onClick={() => fetchOrders()}
-            className="text-sm text-green-700 border border-green-200 px-3 py-2 rounded-lg hover:bg-green-50"
-          >
-            새로고침
-          </button>
+          <div className="flex items-center gap-3">
+            {notificationPermission === "default" && (
+              <button
+                onClick={requestNotificationPermission}
+                className="text-sm text-gray-600 border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50"
+              >
+                알림 허용
+              </button>
+            )}
+            <button
+              onClick={() => fetchOrders()}
+              className="text-sm text-green-700 border border-green-200 px-3 py-2 rounded-lg hover:bg-green-50"
+            >
+              새로고침
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
