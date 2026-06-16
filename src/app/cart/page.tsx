@@ -1,12 +1,12 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice, MIN_ORDER_AMOUNT } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
 import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
+import OrderModal from "@/components/OrderModal";
 import type { CartItem } from "@/lib/types";
 
 type CartDiscount =
@@ -32,10 +32,10 @@ function getCartDiscount(item: CartItem): CartDiscount {
 }
 
 export default function CartPage() {
-  const router = useRouter();
   const { items, updateQuantity, removeItem, totalAmount } = useCart();
   const [error, setError] = useState("");
   const [confirmingDeleteProductId, setConfirmingDeleteProductId] = useState<string | null>(null);
+  const [orderOpen, setOrderOpen] = useState(false);
 
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
   const amountShort = MIN_ORDER_AMOUNT - totalAmount;
@@ -67,7 +67,7 @@ export default function CartPage() {
       setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
       return;
     }
-    router.push("/checkout");
+    setOrderOpen(true);
   };
 
   return (
@@ -220,6 +220,7 @@ export default function CartPage() {
             </div>
           </>
         )}
+        <OrderModal open={orderOpen} onClose={() => setOrderOpen(false)} />
       </div>
     </div>
   );

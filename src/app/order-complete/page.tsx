@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BANK_ACCOUNT } from "@/lib/types";
@@ -8,7 +8,22 @@ import { BANK_ACCOUNT } from "@/lib/types";
 function OrderCompletePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orderNumber = searchParams.get("orderNumber") || "";
+  const fallbackOrderNumber = searchParams.get("orderNumber") || "";
+  const [orderNumber, setOrderNumber] = useState(fallbackOrderNumber);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("completedOrder");
+      if (!saved) return;
+
+      const completedOrder = JSON.parse(saved);
+      if (typeof completedOrder?.orderNumber === "string") {
+        setOrderNumber(completedOrder.orderNumber);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f8faf8]">

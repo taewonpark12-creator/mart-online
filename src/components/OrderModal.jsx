@@ -1,320 +1,333 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import { STORE } from '../data/store';
-import { buildOrderMessage, formatPrice, generateOrderNumber } from '../utils/format';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
+import { MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
+import { STORE } from "@/lib/store";
 
-export default function OrderModal() {
-  const { items, total, orderOpen, setOrderOpen, clearCart, minDeliveryAmount } = useCart();
+const PICKUP_TIMES = [
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+  "22:30",
+];
 
-  const [form, setForm] = useState({
-    customerName: '',
-    phone: '',
-    deliveryType: '픽업',
-    address: '',
-    note: '',
-    pickupTime: '09:30',
-  });
-  const [submitted, setSubmitted] = useState(null);
+const INITIAL_FORM = {
+  customerName: "",
+  phone: "",
+  deliveryType: "PICKUP",
+  address: "",
+  note: "",
+  pickupTime: "09:30",
+};
 
-  if (!orderOpen) return null;
+const ORDER_SAVE_ERROR = "주문 저장에 실패했습니다. 다시 시도해주세요.";
 
-  const update = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+function formatPickupTime(value) {
+  const [hourText, minute] = value.split(":");
+  const hour = Number(hourText);
+  const period = hour >= 12 ? "오후" : "오전";
+  const displayHour = hour > 12 ? hour - 12 : hour;
+  return `${period} ${String(displayHour).padStart(2, "0")}:${minute}`;
+}
 
-  const deliveryBlocked =
-    form.deliveryType === '배달' && total < minDeliveryAmount;
+function normalizeOrderItem(item) {
+  const productId = String(item.productId ?? "").trim();
+  const price = Number(item.price);
+  const quantity = Number(item.quantity);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (deliveryBlocked) return;
+  if (
+    !productId ||
+    !Number.isFinite(price) ||
+    price < 0 ||
+    !Number.isInteger(quantity) ||
+    quantity <= 0
+  ) {
+    return null;
+  }
 
-    const fulfillmentType = form.deliveryType === '배달' ? 'DELIVERY' : 'PICKUP';
+  return {
+    productId,
+    name: item.name,
+    price,
+    quantity,
+  };
+}
+
+export default function OrderModal({ open, onClose }) {
+  const router = useRouter();
+  const { items, totalAmount, clearCart } = useCart();
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [submitting, setSubmitting] = useState(false);
+
+  if (!open) return null;
+
+  const isDelivery = form.deliveryType === "DELIVERY";
+  const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
+  const canSubmit =
+    !submitting &&
+    !deliveryBlocked &&
+    items.length > 0 &&
+    form.customerName.trim() &&
+    form.phone.trim() &&
+    (isDelivery ? form.address.trim() : form.pickupTime);
+
+  const update = (key, value) => {
+    setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const close = () => {
+    if (submitting) return;
+    onClose();
+  };
+
+  const resetForm = () => {
+    setForm(INITIAL_FORM);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!canSubmit) return;
+
+    const orderItems = items.map(normalizeOrderItem);
+    if (orderItems.some((item) => item === null)) {
+      alert(ORDER_SAVE_ERROR);
+      return;
+    }
 
     const orderData = {
-      customerName: form.customerName,
-      customerPhone: form.phone,
-      fulfillmentType,
-      deliveryAddress: form.deliveryType === '배달' ? form.address : undefined,
-      pickupTime: form.deliveryType === '픽업' ? form.pickupTime : undefined,
-      memo: form.note,
-      paymentMethod: form.deliveryType === '배달' ? 'ONSITE_CASH' : undefined,
-      outOfStockPolicy: 'CONTACT',
-      items: items.map((item) => ({
-        productId: item.id,
-        quantity: item.qty,
-      })),
+      customerName: form.customerName.trim(),
+      customerPhone: form.phone.trim(),
+      fulfillmentType: form.deliveryType,
+      deliveryAddress: isDelivery ? form.address.trim() : undefined,
+      pickupTime: !isDelivery ? form.pickupTime : undefined,
+      memo: form.note.trim() || undefined,
+      paymentMethod: isDelivery ? "ONSITE_CASH" : undefined,
+      outOfStockPolicy: "CONTACT",
+      items: orderItems,
     };
 
-    try {
-      console.log('주문 데이터:', orderData);
-      console.log('카트 아이템:', items);
+    setSubmitting(true);
 
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
+      const result = await res.json().catch(() => ({}));
 
-      const responseText = await res.text();
-      console.log('API 응답 상태:', res.status);
-      console.log('API 응답 내용:', responseText);
-
-      if (!res.ok) {
-        let errorData;
-        try {
-          errorData = JSON.parse(responseText);
-        } catch {
-          errorData = { error: responseText || '주문 처리 중 오류가 발생했습니다.' };
-        }
-        alert(errorData.error || '주문 처리 중 오류가 발생했습니다.');
+      if (!res.ok || !result.orderNumber) {
+        alert(ORDER_SAVE_ERROR);
         return;
       }
 
-      const data = JSON.parse(responseText);
-      const order = { ...form, orderNumber: data.orderNumber };
-      const msg = buildOrderMessage(order, items, total);
-      navigator.clipboard?.writeText(msg).catch(() => {});
-
       try {
-        const saved = JSON.parse(localStorage.getItem('hansarang-orders') || '[]');
-        saved.unshift({
-          orderNumber: data.orderNumber,
-          ...form,
-          items,
-          total,
-          status: '접수',
-          createdAt: new Date().toISOString(),
-        });
-        localStorage.setItem('hansarang-orders', JSON.stringify(saved.slice(0, 20)));
+        localStorage.setItem(
+          "completedOrder",
+          JSON.stringify({ orderNumber: result.orderNumber }),
+        );
       } catch {
         /* ignore */
       }
 
-      setSubmitted(order);
-    } catch (error) {
-      console.error('주문 제출 오류:', error);
-      alert('주문 처리 중 오류가 발생했습니다.');
-    }
-  };
-
-  const close = () => {
-    setOrderOpen(false);
-    if (submitted) {
       clearCart();
-      setSubmitted(null);
-      setForm({
-        customerName: '',
-        phone: '',
-        deliveryType: '픽업',
-        address: '',
-        note: '',
-        pickupTime: '09:30',
-      });
+      resetForm();
+      onClose();
+      router.push("/order-complete");
+    } catch (error) {
+      console.error("[OrderModal] submit failed", error);
+      alert(ORDER_SAVE_ERROR);
+    } finally {
+      setSubmitting(false);
     }
   };
-
-  const phoneMain = STORE.phone.replace(/-/g, '');
-  const smsBody = submitted
-    ? encodeURIComponent(buildOrderMessage(submitted, items, total))
-    : '';
 
   return (
-    <div className="overlay overlay-center" onClick={close}>
-      <div className="modal order-modal" onClick={(e) => e.stopPropagation()}>
-        {!submitted ? (
-          <>
-            <p className="section-eyebrow">Order</p>
-            <h2>주문하기</h2>
-            <form onSubmit={handleSubmit} className="order-form">
-              <fieldset>
-                <legend>주문자 정보</legend>
-                <label>
-                  이름 *
-                  <input
-                    required
-                    value={form.customerName}
-                    onChange={(e) => update('customerName', e.target.value)}
-                    placeholder="홍길동"
-                  />
-                </label>
-                <label>
-                  연락처 *
-                  <input
-                    required
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => update('phone', e.target.value)}
-                    placeholder="010-1234-5678"
-                  />
-                </label>
-              </fieldset>
-
-              <fieldset>
-                <legend>수령 방법</legend>
-                <div className="method-grid">
-                  {['픽업', '배달'].map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      className={`method-btn ${form.deliveryType === type ? 'active' : ''}`}
-                      onClick={() => update('deliveryType', type)}
-                    >
-                      <span>{type === '픽업' ? '🏪' : '🚚'}</span>
-                      <strong>{type}</strong>
-                      <small>
-                        {type === '픽업' ? '매장 방문 수령' : '배달 주소로 배송'}
-                      </small>
-                    </button>
-                  ))}
-                </div>
-                {form.deliveryType === '배달' && (
-                  <>
-                    <label>
-                      배달 주소 *
-                      <input
-                        required
-                        value={form.address}
-                        onChange={(e) => update('address', e.target.value)}
-                        placeholder="인천광역시 미추홀구 ..."
-                      />
-                    </label>
-                    <p className="form-hint">
-                      배달 가능 지역: 반경 {STORE.deliveryRadiusKm}km 이내 / 최소 주문{' '}
-                      {formatPrice(minDeliveryAmount)}
-                    </p>
-                    {deliveryBlocked && (
-                      <p className="form-error">
-                        배달 주문은 {formatPrice(minDeliveryAmount)} 이상이어야 합니다.
-                      </p>
-                    )}
-                  </>
-                )}
-                {form.deliveryType === '픽업' && (
-                  <>
-                    <label>
-                      픽업 예정 시각 *
-                      <select
-                        required
-                        value={form.pickupTime}
-                        onChange={(e) => update('pickupTime', e.target.value)}
-                      >
-                        <option value="09:30">오전 09:30</option>
-                        <option value="10:00">오전 10:00</option>
-                        <option value="10:30">오전 10:30</option>
-                        <option value="11:00">오전 11:00</option>
-                        <option value="11:30">오전 11:30</option>
-                        <option value="12:00">오후 12:00</option>
-                        <option value="12:30">오후 12:30</option>
-                        <option value="13:00">오후 13:00</option>
-                        <option value="13:30">오후 13:30</option>
-                        <option value="14:00">오후 14:00</option>
-                        <option value="14:30">오후 14:30</option>
-                        <option value="15:00">오후 15:00</option>
-                        <option value="15:30">오후 15:30</option>
-                        <option value="16:00">오후 16:00</option>
-                        <option value="16:30">오후 16:30</option>
-                        <option value="17:00">오후 17:00</option>
-                        <option value="17:30">오후 17:30</option>
-                        <option value="18:00">오후 18:00</option>
-                        <option value="18:30">오후 18:30</option>
-                        <option value="19:00">오후 19:00</option>
-                        <option value="19:30">오후 19:30</option>
-                        <option value="20:00">오후 20:00</option>
-                        <option value="20:30">오후 20:30</option>
-                        <option value="21:00">오후 21:00</option>
-                        <option value="21:30">오후 21:30</option>
-                        <option value="22:00">오후 22:00</option>
-                        <option value="22:30">오후 22:30</option>
-                      </select>
-                    </label>
-                    <div className="pickup-box">
-                      <strong>{STORE.name}</strong>
-                      <p>{STORE.address}</p>
-                      <p>{STORE.hours}</p>
-                    </div>
-                  </>
-                )}
-              </fieldset>
-
-              <label>
-                요청사항
-                <textarea
-                  rows={3}
-                  value={form.note}
-                  onChange={(e) => update('note', e.target.value)}
-                  placeholder="배달 시 문 앞에 놓아주세요 / 특정 상품 대체 요청 등"
-                />
-              </label>
-
-              <div className="order-summary-box">
-                <h3>주문 내역</h3>
-                <ul>
-                  {items.map((i) => (
-                    <li key={i.id}>
-                      <span>
-                        {i.name} × {i.qty}
-                      </span>
-                      <span>{formatPrice(i.price * i.qty)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="order-total-line">
-                  <span>총 결제금액</span>
-                  <strong>{formatPrice(total)}</strong>
-                </div>
-                <p className="pay-note">💳 결제는 상품 수령 시 현장에서 진행됩니다.</p>
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-forest btn-block"
-                disabled={deliveryBlocked}
-              >
-                주문 완료하기
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className="order-success text-center">
-            <div className="success-icon">✓</div>
-            <h2 className="mb-2">주문이 완료되었습니다</h2>
-            
-            {/* 주문번호 노출 줄임 및 안내 문구 추가 */}
-            <div className="bg-gray-50 p-4 rounded-xl mb-4 border border-dashed border-gray-200">
-              <p className="text-sm text-gray-500 mb-1">주문번호</p>
-              <p className="text-lg font-mono font-bold text-gray-800">{submitted.orderNumber}</p>
-              <p className="text-xs text-green-600 font-bold mt-2">
-                ✨ 번호를 외우지 않으셔도 됩니다!<br/>
-                입력하신 연락처({submitted.phone})로 조회가 가능합니다.
-              </p>
-            </div>
-
-            <p className="mb-4 text-sm text-gray-600">주문 내용이 클립보드에 복사되었습니다.</p>
-            
-            <div className="success-actions">
-              <a href={`tel:${phoneMain}`} className="btn btn-forest">
-                전화로 확인
-              </a>
-              <a href={`sms:${phoneMain}?body=${smsBody}`} className="btn btn-outline">
-                문자로 보내기
-              </a>
-            </div>
-            
-            <div className="pay-notice mt-6 text-left">
-              <h4 className="font-bold mb-2">현장 결제 안내</h4>
-              <ul className="text-xs space-y-1 text-gray-500 list-disc ml-4">
-                <li>결제는 상품 수령 시 현장에서 진행됩니다.</li>
-                <li>카드 및 현금 결제 모두 가능합니다.</li>
-                <li>주문 확인 후 마트에서 연락드릴 수 있습니다.</li>
-              </ul>
-            </div>
-            
-            <button type="button" className="btn btn-outline btn-block mt-6" onClick={close}>
-              쇼핑 계속하기
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-3 py-6"
+      onClick={close}
+    >
+      <div
+        className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="border-b px-5 py-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-green-700">Order</p>
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <h2 className="text-xl font-black text-gray-900">주문하기</h2>
+            <button
+              type="button"
+              onClick={close}
+              disabled={submitting}
+              className="rounded-full px-3 py-1 text-sm text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+            >
+              닫기
             </button>
           </div>
-        )}
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5 p-5">
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-bold text-gray-900">주문자 정보</legend>
+            <label className="block text-sm font-semibold text-gray-700">
+              이름 *
+              <input
+                required
+                value={form.customerName}
+                onChange={(event) => update("customerName", event.target.value)}
+                placeholder="홍길동"
+                className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              />
+            </label>
+            <label className="block text-sm font-semibold text-gray-700">
+              연락처 *
+              <input
+                required
+                type="tel"
+                value={form.phone}
+                onChange={(event) => update("phone", event.target.value)}
+                placeholder="010-1234-5678"
+                className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              />
+            </label>
+          </fieldset>
+
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-bold text-gray-900">수령 방법</legend>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: "픽업", value: "PICKUP", hint: "매장 방문 수령" },
+                { label: "배달", value: "DELIVERY", hint: "주소로 배달" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => update("deliveryType", option.value)}
+                  className={`rounded-xl border p-3 text-left transition ${
+                    form.deliveryType === option.value
+                      ? "border-green-500 bg-green-50 text-green-900"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-green-200"
+                  }`}
+                >
+                  <strong className="block text-sm">{option.label}</strong>
+                  <small className="text-xs text-gray-500">{option.hint}</small>
+                </button>
+              ))}
+            </div>
+
+            {isDelivery ? (
+              <>
+                <label className="block text-sm font-semibold text-gray-700">
+                  배달 주소 *
+                  <input
+                    required
+                    value={form.address}
+                    onChange={(event) => update("address", event.target.value)}
+                    placeholder="주소를 입력해주세요"
+                    className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+                  />
+                </label>
+                <p className="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  배달 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상 가능합니다.
+                </p>
+                {deliveryBlocked && (
+                  <p className="text-sm font-semibold text-red-500">
+                    배달 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <label className="block text-sm font-semibold text-gray-700">
+                  픽업 예정 시간 *
+                  <select
+                    required
+                    value={form.pickupTime}
+                    onChange={(event) => update("pickupTime", event.target.value)}
+                    className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+                  >
+                    {PICKUP_TIMES.map((time) => (
+                      <option key={time} value={time}>
+                        {formatPickupTime(time)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="rounded-xl bg-green-50 px-3 py-3 text-sm text-green-900">
+                  <strong>{STORE.name}</strong>
+                  <p className="mt-1 text-xs text-green-700">{STORE.address}</p>
+                </div>
+              </>
+            )}
+          </fieldset>
+
+          <label className="block text-sm font-semibold text-gray-700">
+            요청사항
+            <textarea
+              rows={3}
+              value={form.note}
+              onChange={(event) => update("note", event.target.value)}
+              placeholder="배달 요청사항이나 대체 상품 요청을 입력해주세요"
+              className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+            />
+          </label>
+
+          <section className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <h3 className="mb-3 text-sm font-bold text-gray-900">주문 내역</h3>
+            <div className="space-y-2">
+              {items.map((item) => (
+                <div key={item.productId} className="flex justify-between gap-3 text-sm">
+                  <span className="min-w-0 truncate">
+                    {item.name} x {item.quantity}
+                  </span>
+                  <span className="shrink-0 font-semibold">
+                    {formatPrice(item.price * item.quantity)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 flex justify-between border-t pt-3 text-base font-black">
+              <span>총 결제금액</span>
+              <span className="text-green-700">{formatPrice(totalAmount)}</span>
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              결제는 상품 수령 시 현장에서 진행됩니다.
+            </p>
+          </section>
+
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="w-full rounded-xl bg-green-600 px-4 py-4 text-sm font-bold text-white hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400"
+          >
+            {submitting ? "주문 저장 중..." : "주문 완료하기"}
+          </button>
+        </form>
       </div>
     </div>
   );
