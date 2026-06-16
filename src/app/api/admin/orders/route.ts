@@ -5,7 +5,7 @@ import { isAdminAuthenticated } from "@/lib/auth";
 export async function GET(req: NextRequest) {
   try {
     if (!(await isAdminAuthenticated())) {
-      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+      return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
@@ -14,9 +14,10 @@ export async function GET(req: NextRequest) {
     const rawOrderCount = await prisma.order.count();
     const orders = await prisma.order.findMany({
       where: status ? { status: status as never } : undefined,
-      include: { items: { include: { product: true } } },
+      include: { items: true },
       orderBy: { createdAt: "desc" },
     });
+
     console.log("ADMIN_ORDERS_COUNT", orders.length);
     console.log("ADMIN_ORDERS_FIRST", orders[0]);
     console.log("[ADMIN_ORDERS_FETCH]", {
@@ -34,28 +35,25 @@ export async function GET(req: NextRequest) {
         : null,
     });
 
-    // BigInt를 문자열로 변환하여 JSON 직렬화 문제 해결
     const serializedOrders = orders.map((order) => ({
       ...order,
       totalAmount: order.totalAmount.toString(),
       items: order.items.map((item) => ({
         ...item,
         unitPrice: item.unitPrice.toString(),
-        ...(item.product && {
-          product: {
-            ...item.product,
-            price: item.product.price.toString(),
-          },
-        }),
       })),
     }));
 
     return NextResponse.json(serializedOrders);
   } catch (error) {
-    console.error("ORDERS API ERROR:", error);
+    console.error("[ADMIN_ORDERS_ERROR]", error);
+
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "주문 데이터를 불러오지 못했습니다." },
-      { status: 500 }
+      {
+        error: "ADMIN_ORDERS_FAILED",
+        message: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
     );
   }
 }
