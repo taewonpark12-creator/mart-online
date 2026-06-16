@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
-import { STORE } from "@/lib/store";
 
 const PICKUP_TIMES = [
   "09:30",
@@ -38,16 +37,15 @@ const PICKUP_TIMES = [
 
 const INITIAL_FORM = {
   customerName: "",
-  phone: "",
-  deliveryType: "PICKUP",
-  address: "",
-  note: "",
+  customerPhone: "",
+  fulfillmentType: "PICKUP",
+  deliveryAddress: "",
   pickupTime: "09:30",
 };
 
-const ORDER_SAVE_ERROR = "주문 저장에 실패했습니다. 다시 시도해주세요.";
+const SAVE_ERROR = "주문 저장에 실패했습니다. 다시 시도해주세요.";
 
-function formatPickupTime(value) {
+function pickupLabel(value) {
   const [hourText, minute] = value.split(":");
   const hour = Number(hourText);
   const period = hour >= 12 ? "오후" : "오전";
@@ -55,13 +53,15 @@ function formatPickupTime(value) {
   return `${period} ${String(displayHour).padStart(2, "0")}:${minute}`;
 }
 
-function normalizeOrderItem(item) {
+function toOrderItem(item) {
   const productId = String(item.productId ?? "").trim();
+  const productName = String(item.name ?? "").trim();
   const price = Number(item.price);
   const quantity = Number(item.quantity);
 
   if (
     !productId ||
+    !productName ||
     !Number.isFinite(price) ||
     price < 0 ||
     !Number.isInteger(quantity) ||
@@ -72,7 +72,7 @@ function normalizeOrderItem(item) {
 
   return {
     productId,
-    name: item.name,
+    productName,
     price,
     quantity,
   };
@@ -86,48 +86,40 @@ export default function OrderModal({ open, onClose }) {
 
   if (!open) return null;
 
-  const isDelivery = form.deliveryType === "DELIVERY";
+  const isDelivery = form.fulfillmentType === "DELIVERY";
   const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
   const canSubmit =
     !submitting &&
     !deliveryBlocked &&
     items.length > 0 &&
     form.customerName.trim() &&
-    form.phone.trim() &&
-    (isDelivery ? form.address.trim() : form.pickupTime);
+    form.customerPhone.trim() &&
+    (isDelivery ? form.deliveryAddress.trim() : form.pickupTime);
 
   const update = (key, value) => {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
   const close = () => {
-    if (submitting) return;
-    onClose();
+    if (!submitting) onClose();
   };
 
-  const resetForm = () => {
-    setForm(INITIAL_FORM);
-  };
-
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (!canSubmit) return;
 
-    const orderItems = items.map(normalizeOrderItem);
+    const orderItems = items.map(toOrderItem);
     if (orderItems.some((item) => item === null)) {
-      alert(ORDER_SAVE_ERROR);
+      alert(SAVE_ERROR);
       return;
     }
 
-    const orderData = {
+    const payload = {
       customerName: form.customerName.trim(),
-      customerPhone: form.phone.trim(),
-      fulfillmentType: form.deliveryType,
-      deliveryAddress: isDelivery ? form.address.trim() : undefined,
+      customerPhone: form.customerPhone.trim(),
+      fulfillmentType: form.fulfillmentType,
+      deliveryAddress: isDelivery ? form.deliveryAddress.trim() : undefined,
       pickupTime: !isDelivery ? form.pickupTime : undefined,
-      memo: form.note.trim() || undefined,
-      paymentMethod: isDelivery ? "ONSITE_CASH" : undefined,
-      outOfStockPolicy: "CONTACT",
       items: orderItems,
     };
 
@@ -137,19 +129,14 @@ export default function OrderModal({ open, onClose }) {
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(payload),
       });
       const result = await res.json().catch(() => null);
       console.log("ORDER_CREATE_STATUS", res.status);
       console.log("ORDER_CREATE_RESULT", result);
 
-      if (!res.ok) {
-        alert(result?.error || result?.message || "주문 저장 실패");
-        return;
-      }
-
-      if (!result?.orderNumber) {
-        alert(result?.error || result?.message || ORDER_SAVE_ERROR);
+      if (!res.ok || !result?.orderNumber) {
+        alert(result?.error || result?.message || SAVE_ERROR);
         return;
       }
 
@@ -163,16 +150,16 @@ export default function OrderModal({ open, onClose }) {
       }
 
       clearCart();
-      resetForm();
+      setForm(INITIAL_FORM);
       onClose();
       router.push("/order-complete");
     } catch (error) {
-      console.error("[OrderModal] submit failed", error);
-      alert(ORDER_SAVE_ERROR);
+      console.error("[ORDER_MODAL_SUBMIT_ERROR]", error);
+      alert(SAVE_ERROR);
     } finally {
       setSubmitting(false);
     }
-  };
+  }
 
   return (
     <div
@@ -184,9 +171,13 @@ export default function OrderModal({ open, onClose }) {
         onClick={(event) => event.stopPropagation()}
       >
         <div className="border-b px-5 py-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-green-700">Order</p>
-          <div className="mt-1 flex items-center justify-between gap-3">
-            <h2 className="text-xl font-black text-gray-900">주문하기</h2>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-green-700">
+                Order
+              </p>
+              <h2 className="mt-1 text-xl font-black text-gray-900">주문하기</h2>
+            </div>
             <button
               type="button"
               onClick={close}
@@ -200,68 +191,55 @@ export default function OrderModal({ open, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-5 p-5">
           <fieldset className="space-y-3">
-            <legend className="text-sm font-bold text-gray-900">주문자 정보</legend>
-            <label className="block text-sm font-semibold text-gray-700">
-              이름 *
-              <input
-                required
-                value={form.customerName}
-                onChange={(event) => update("customerName", event.target.value)}
-                placeholder="홍길동"
-                className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
-              />
-            </label>
-            <label className="block text-sm font-semibold text-gray-700">
-              연락처 *
-              <input
-                required
-                type="tel"
-                value={form.phone}
-                onChange={(event) => update("phone", event.target.value)}
-                placeholder="010-1234-5678"
-                className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
-              />
-            </label>
+            <legend className="text-sm font-bold text-gray-900">고객 정보</legend>
+            <input
+              required
+              value={form.customerName}
+              onChange={(event) => update("customerName", event.target.value)}
+              placeholder="고객명"
+              className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+            />
+            <input
+              required
+              type="tel"
+              value={form.customerPhone}
+              onChange={(event) => update("customerPhone", event.target.value)}
+              placeholder="전화번호"
+              className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+            />
           </fieldset>
 
           <fieldset className="space-y-3">
             <legend className="text-sm font-bold text-gray-900">수령 방법</legend>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: "픽업", value: "PICKUP", hint: "매장 방문 수령" },
-                { label: "배달", value: "DELIVERY", hint: "주소로 배달" },
+                { label: "픽업", value: "PICKUP" },
+                { label: "배달", value: "DELIVERY" },
               ].map((option) => (
                 <button
                   key={option.value}
                   type="button"
-                  onClick={() => update("deliveryType", option.value)}
-                  className={`rounded-xl border p-3 text-left transition ${
-                    form.deliveryType === option.value
+                  onClick={() => update("fulfillmentType", option.value)}
+                  className={`rounded-xl border p-3 text-sm font-bold ${
+                    form.fulfillmentType === option.value
                       ? "border-green-500 bg-green-50 text-green-900"
-                      : "border-gray-200 bg-white text-gray-700 hover:border-green-200"
+                      : "border-gray-200 bg-white text-gray-600"
                   }`}
                 >
-                  <strong className="block text-sm">{option.label}</strong>
-                  <small className="text-xs text-gray-500">{option.hint}</small>
+                  {option.label}
                 </button>
               ))}
             </div>
 
             {isDelivery ? (
               <>
-                <label className="block text-sm font-semibold text-gray-700">
-                  배달 주소 *
-                  <input
-                    required
-                    value={form.address}
-                    onChange={(event) => update("address", event.target.value)}
-                    placeholder="주소를 입력해주세요"
-                    className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
-                  />
-                </label>
-                <p className="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                  배달 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상 가능합니다.
-                </p>
+                <input
+                  required
+                  value={form.deliveryAddress}
+                  onChange={(event) => update("deliveryAddress", event.target.value)}
+                  placeholder="배달 주소"
+                  className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+                />
                 {deliveryBlocked && (
                   <p className="text-sm font-semibold text-red-500">
                     배달 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
@@ -269,40 +247,20 @@ export default function OrderModal({ open, onClose }) {
                 )}
               </>
             ) : (
-              <>
-                <label className="block text-sm font-semibold text-gray-700">
-                  픽업 예정 시간 *
-                  <select
-                    required
-                    value={form.pickupTime}
-                    onChange={(event) => update("pickupTime", event.target.value)}
-                    className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
-                  >
-                    {PICKUP_TIMES.map((time) => (
-                      <option key={time} value={time}>
-                        {formatPickupTime(time)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <div className="rounded-xl bg-green-50 px-3 py-3 text-sm text-green-900">
-                  <strong>{STORE.name}</strong>
-                  <p className="mt-1 text-xs text-green-700">{STORE.address}</p>
-                </div>
-              </>
+              <select
+                required
+                value={form.pickupTime}
+                onChange={(event) => update("pickupTime", event.target.value)}
+                className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              >
+                {PICKUP_TIMES.map((time) => (
+                  <option key={time} value={time}>
+                    {pickupLabel(time)}
+                  </option>
+                ))}
+              </select>
             )}
           </fieldset>
-
-          <label className="block text-sm font-semibold text-gray-700">
-            요청사항
-            <textarea
-              rows={3}
-              value={form.note}
-              onChange={(event) => update("note", event.target.value)}
-              placeholder="배달 요청사항이나 대체 상품 요청을 입력해주세요"
-              className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
-            />
-          </label>
 
           <section className="rounded-xl border border-gray-100 bg-gray-50 p-4">
             <h3 className="mb-3 text-sm font-bold text-gray-900">주문 내역</h3>
@@ -319,12 +277,9 @@ export default function OrderModal({ open, onClose }) {
               ))}
             </div>
             <div className="mt-3 flex justify-between border-t pt-3 text-base font-black">
-              <span>총 결제금액</span>
+              <span>총액</span>
               <span className="text-green-700">{formatPrice(totalAmount)}</span>
             </div>
-            <p className="mt-2 text-xs text-gray-500">
-              결제는 상품 수령 시 현장에서 진행됩니다.
-            </p>
           </section>
 
           <button

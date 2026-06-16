@@ -2,42 +2,33 @@
 
 import { FormEvent, useState } from "react";
 import { Header } from "@/components/Header";
-import {
-  FULFILLMENT_TYPE_LABEL,
-  ORDER_STATUS_COLOR,
-  ORDER_STATUS_LABEL,
-  formatPickupTimeLabel,
-  formatPrice,
-  type FulfillmentType,
-  type OrderStatus,
-  type PaymentMethod,
-} from "@/lib/types";
+import { formatPrice } from "@/lib/types";
 
-type CheckedOrderItem = {
+type OrderItem = {
   id: string;
+  productId: string | null;
   productName: string;
+  price: number;
   quantity: number;
-  unitPrice: number;
 };
 
-type CheckedOrder = {
+type Order = {
   id: string;
   orderNumber: string;
   customerName: string;
   customerPhone: string;
-  fulfillmentType: FulfillmentType;
+  fulfillmentType: "DELIVERY" | "PICKUP";
   deliveryAddress: string;
-  pickupTime?: string | null;
-  paymentMethod: PaymentMethod | null;
-  status: OrderStatus;
+  pickupTime: string | null;
+  status: string;
   totalAmount: number;
   createdAt: string;
-  items: CheckedOrderItem[];
+  items: OrderItem[];
 };
 
 export default function OrderCheckPage() {
-  const [phone, setPhone] = useState("");
-  const [orders, setOrders] = useState<CheckedOrder[]>([]);
+  const [query, setQuery] = useState("");
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
@@ -47,30 +38,29 @@ export default function OrderCheckPage() {
     setError("");
     setSearched(false);
 
-    const normalizedPhone = phone.trim();
-    if (!normalizedPhone) {
-      setError("연락처를 입력해주세요.");
+    if (!query.trim()) {
+      setError("주문번호 또는 전화번호를 입력해주세요.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const params = new URLSearchParams({ phone: normalizedPhone });
+      const params = new URLSearchParams({ q: query.trim() });
       const res = await fetch(`/api/orders/check?${params.toString()}`, {
         cache: "no-store",
       });
-      const data = await res.json().catch(() => null);
+      const result = await res.json().catch(() => null);
 
       if (!res.ok) {
-        throw new Error(data?.error || "주문 조회에 실패했습니다.");
+        throw new Error(result?.message || result?.error || "주문 조회 실패");
       }
 
-      setOrders(Array.isArray(data) ? data : []);
+      setOrders(Array.isArray(result?.orders) ? result.orders : []);
       setSearched(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "주문 조회에 실패했습니다.");
       setOrders([]);
+      setError(err instanceof Error ? err.message : "주문 조회 실패");
     } finally {
       setLoading(false);
     }
@@ -79,11 +69,10 @@ export default function OrderCheckPage() {
   return (
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
-
-      <main className="mx-auto max-w-md px-3 py-6 sm:px-4 sm:py-8">
-        <h1 className="mb-2 text-xl font-bold text-green-800">주문 확인</h1>
+      <main className="mx-auto max-w-md px-4 py-8">
+        <h1 className="mb-2 text-2xl font-black text-green-800">주문 조회</h1>
         <p className="mb-5 text-sm text-gray-500">
-          주문 시 입력한 연락처로 최근 주문을 확인할 수 있습니다.
+          주문번호 또는 주문 시 입력한 전화번호로 조회하세요.
         </p>
 
         <form
@@ -91,18 +80,17 @@ export default function OrderCheckPage() {
           className="mb-5 space-y-3 rounded-2xl border bg-white p-4 shadow-sm"
         >
           <input
-            type="tel"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            placeholder="010-1234-5678"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="주문번호 또는 전화번호"
             className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-50"
+            className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white disabled:opacity-50"
           >
-            {loading ? "조회 중..." : "주문 조회"}
+            {loading ? "조회 중..." : "조회하기"}
           </button>
           {error && <p className="text-sm text-red-500">{error}</p>}
         </form>
@@ -117,49 +105,38 @@ export default function OrderCheckPage() {
           {orders.map((order) => (
             <article key={order.id} className="rounded-2xl border bg-white p-4 shadow-sm">
               <div className="mb-3 flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate font-mono text-sm font-black text-gray-900">
+                <div>
+                  <p className="font-mono text-sm font-black text-gray-900">
                     {order.orderNumber}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
                     {new Date(order.createdAt).toLocaleString("ko-KR")}
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-1 text-xs font-bold ${ORDER_STATUS_COLOR[order.status]}`}
-                >
-                  {ORDER_STATUS_LABEL[order.status]}
+                <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-800">
+                  {order.status}
                 </span>
               </div>
-
-              <div className="mb-3 rounded-xl bg-green-50 px-3 py-2 text-sm text-green-900">
-                <p>
-                  {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
-                  {order.fulfillmentType === "PICKUP" && order.pickupTime
-                    ? ` · ${formatPickupTimeLabel(order.pickupTime)}`
-                    : ""}
-                </p>
-                {order.fulfillmentType === "DELIVERY" && (
-                  <p className="mt-1 text-xs text-green-700">{order.deliveryAddress}</p>
-                )}
-              </div>
-
+              <p className="mb-3 rounded-xl bg-green-50 px-3 py-2 text-sm text-green-900">
+                {order.fulfillmentType === "DELIVERY"
+                  ? `배달 · ${order.deliveryAddress}`
+                  : `픽업 · ${order.pickupTime ?? ""}`}
+              </p>
               <div className="space-y-2 text-sm">
                 {order.items.map((item) => (
                   <div key={item.id} className="flex justify-between gap-3">
                     <span className="truncate">
-                      {item.productName || "상품"} x {item.quantity}
+                      {item.productName} x {item.quantity}
                     </span>
-                    <span className="shrink-0 font-semibold">
-                      {formatPrice(Number(item.unitPrice) * item.quantity)}
+                    <span className="font-semibold">
+                      {formatPrice(item.price * item.quantity)}
                     </span>
                   </div>
                 ))}
               </div>
-
               <div className="mt-3 flex justify-between border-t pt-3 font-black">
                 <span>총액</span>
-                <span className="text-green-700">{formatPrice(Number(order.totalAmount))}</span>
+                <span className="text-green-700">{formatPrice(order.totalAmount)}</span>
               </div>
             </article>
           ))}

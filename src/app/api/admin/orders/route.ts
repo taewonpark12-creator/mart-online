@@ -2,22 +2,44 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 
-function toNumber(value: unknown) {
-  if (value == null) return 0;
-  if (typeof value === "number") return value;
-  if (typeof value === "bigint") return Number(value);
-  if (typeof value === "object" && "toString" in value) {
-    const parsed = Number(value.toString());
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function toIsoString(value: unknown) {
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value === "string") return value;
-  return null;
+function serializeOrder(order: {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  customerPhone: string;
+  fulfillmentType: string;
+  deliveryAddress: string;
+  pickupTime: string | null;
+  status: string;
+  totalAmount: number;
+  createdAt: Date;
+  items: Array<{
+    id: string;
+    productId: string | null;
+    productName: string;
+    unitPrice: number;
+    quantity: number;
+  }>;
+}) {
+  return {
+    id: order.id,
+    orderNumber: order.orderNumber,
+    customerName: order.customerName,
+    customerPhone: order.customerPhone,
+    fulfillmentType: order.fulfillmentType,
+    deliveryAddress: order.deliveryAddress,
+    pickupTime: order.pickupTime,
+    status: order.status,
+    totalAmount: Number(order.totalAmount ?? 0),
+    createdAt: order.createdAt.toISOString(),
+    items: order.items.map((item) => ({
+      id: item.id,
+      productId: item.productId,
+      productName: item.productName,
+      price: Number(item.unitPrice ?? 0),
+      quantity: Number(item.quantity ?? 0),
+    })),
+  };
 }
 
 export async function GET(req: NextRequest) {
@@ -29,84 +51,23 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
 
-    const rawOrderCount = await prisma.order.count();
-    const rawOrders = await prisma.order.findMany({
+    const orders = await prisma.order.findMany({
       where: status ? { status: status as never } : undefined,
+      include: { items: true },
       orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        orderNumber: true,
-        customerName: true,
-        customerPhone: true,
-        fulfillmentType: true,
-        deliveryAddress: true,
-        deliveryEntrance: true,
-        pickupTime: true,
-        paymentMethod: true,
-        memo: true,
-        status: true,
-        totalAmount: true,
-        createdAt: true,
-        updatedAt: true,
-        items: {
-          select: {
-            id: true,
-            orderId: true,
-            productId: true,
-            productName: true,
-            quantity: true,
-            unitPrice: true,
-          },
-        },
-      },
     });
 
-    const orders = rawOrders.map((order) => ({
-      ...order,
-      customerName: order.customerName ?? "",
-      customerPhone: order.customerPhone ?? "",
-      fulfillmentType: order.fulfillmentType ?? "DELIVERY",
-      deliveryAddress: order.deliveryAddress ?? "",
-      totalAmount: toNumber(order.totalAmount),
-      createdAt: toIsoString(order.createdAt),
-      updatedAt: toIsoString(order.updatedAt),
-      items: (order.items ?? []).map((item) => ({
-        ...item,
-        productName: item.productName ?? "",
-        quantity: toNumber(item.quantity),
-        unitPrice: toNumber(item.unitPrice),
-      })),
-    }));
+    const serializedOrders = orders.map(serializeOrder);
+    console.log("ADMIN_ORDERS_COUNT", serializedOrders.length);
+    console.log("ADMIN_ORDERS_FIRST", serializedOrders[0]);
 
-    console.log("ADMIN_ORDERS_COUNT", orders.length);
-    console.log("ADMIN_ORDERS_FIRST", orders[0]);
-    console.log("[ADMIN_ORDERS_FETCH]", {
-      source: "prisma.order",
-      statusFilter: status,
-      rawOrderCount,
-      returnedCount: orders.length,
-      latestOrder: orders[0]
-        ? {
-            id: orders[0].id,
-            orderNumber: orders[0].orderNumber,
-            status: orders[0].status,
-            createdAt: orders[0].createdAt,
-          }
-        : null,
-    });
-
-    return NextResponse.json(orders);
+    return NextResponse.json({ orders: serializedOrders });
   } catch (error) {
     console.error("[ADMIN_ORDERS_ERROR]", error);
-
     return NextResponse.json(
       {
         error: "ADMIN_ORDERS_FAILED",
         message: error instanceof Error ? error.message : String(error),
-        stack:
-          process.env.NODE_ENV === "development" && error instanceof Error
-            ? error.stack
-            : undefined,
       },
       { status: 500 },
     );

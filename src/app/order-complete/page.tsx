@@ -3,22 +3,21 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
-import { BANK_ACCOUNT } from "@/lib/types";
 
-function OrderCompletePageContent() {
+function OrderCompleteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const fallbackOrderNumber = searchParams.get("orderNumber") || "";
-  const [orderNumber, setOrderNumber] = useState(fallbackOrderNumber);
+  const [orderNumber, setOrderNumber] = useState(
+    searchParams.get("orderNumber") || "",
+  );
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("completedOrder");
       if (!saved) return;
-
-      const completedOrder = JSON.parse(saved);
-      if (typeof completedOrder?.orderNumber === "string") {
-        setOrderNumber(completedOrder.orderNumber);
+      const parsed = JSON.parse(saved);
+      if (typeof parsed?.orderNumber === "string") {
+        setOrderNumber(parsed.orderNumber);
       }
     } catch {
       /* ignore */
@@ -28,49 +27,46 @@ function OrderCompletePageContent() {
   return (
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
-      <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
-        <div className="bg-white border rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center shadow-sm">
-          <span className="text-5xl sm:text-6xl block mb-4">✅</span>
-          <h1 className="text-xl sm:text-2xl font-bold text-green-800 mb-2">주문이 접수되었습니다!</h1>
-          <p className="text-gray-500 text-sm sm:text-base mb-6">
-            주문번호: <span className="font-mono font-bold text-gray-800">{orderNumber}</span>
+      <main className="mx-auto max-w-md px-4 py-8">
+        <section className="rounded-2xl border bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-2xl font-black text-green-700">
+            ✓
+          </div>
+          <h1 className="mb-2 text-2xl font-black text-green-800">
+            주문이 접수되었습니다
+          </h1>
+          <p className="mb-6 text-sm text-gray-500">
+            주문번호:{" "}
+            <span className="font-mono font-bold text-gray-900">
+              {orderNumber || "확인 중"}
+            </span>
           </p>
-          <p className="text-sm text-gray-600 mb-6">
-            주문이 확인되면 연락드리겠습니다.
-            <br />
-            감사합니다.
-          </p>
-
-          {orderNumber && (
-            <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-left mb-6">
-              <p className="font-semibold text-blue-900 mb-1">입금 계좌</p>
-              <p className="font-mono font-bold text-gray-900">{BANK_ACCOUNT.display}</p>
-            </div>
-          )}
-
-          <div>
-  <button
-    onClick={() => router.replace("/")}
-    className="w-full border text-gray-600 px-6 py-4 rounded-xl font-semibold text-sm sm:text-base min-h-[48px]"
-  >
-    계속 쇼핑하기
-  </button>
-</div>
-        </div>
-      </div>
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => router.push("/order-check")}
+              className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white"
+            >
+              주문 조회하기
+            </button>
+            <button
+              type="button"
+              onClick={() => router.replace("/")}
+              className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-gray-600"
+            >
+              쇼핑 계속하기
+            </button>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
 
 export default function OrderCompletePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#f8faf8] flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600">로딩 중입니다...</p>
-      </div>
-    </div>}>
-      <OrderCompletePageContent />
+    <Suspense fallback={<div className="min-h-screen bg-[#f8faf8]" />}>
+      <OrderCompleteContent />
     </Suspense>
   );
 }
