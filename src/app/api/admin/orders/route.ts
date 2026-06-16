@@ -68,6 +68,7 @@ export async function GET(req: NextRequest) {
       {
         error: "ADMIN_ORDERS_FAILED",
         message: error instanceof Error ? error.message : String(error),
+        name: error instanceof Error ? error.name : undefined,
       },
       { status: 500 },
     );

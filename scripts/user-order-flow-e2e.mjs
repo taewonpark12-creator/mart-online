@@ -159,7 +159,6 @@ function cartTotal(cart) {
 
 function toOrderPayload(cart, overrides = {}) {
   return {
-    clientOrderId: createClientOrderId("user-flow"),
     customerName: "Automated Test",
     customerPhone: "01012345678",
     fulfillmentType: "DELIVERY",
@@ -322,7 +321,7 @@ async function main() {
   }));
   const tamperedOrder = await request("/api/orders", {
     method: "POST",
-    body: JSON.stringify(toOrderPayload(tamperedCart, { clientOrderId: createClientOrderId("price-tamper") })),
+    body: JSON.stringify(toOrderPayload(tamperedCart)),
   });
   const priceTamperRejected = !tamperedOrder.ok && tamperedOrder.body?.code === "PRICE_CHANGED";
 
@@ -342,7 +341,7 @@ async function main() {
     addToCart(oosCart, outOfStockProduct, Math.max(1, Math.ceil(MIN_ORDER_AMOUNT / outOfStockProduct.syncedPrice)));
     const oosOrder = await request("/api/orders", {
       method: "POST",
-      body: JSON.stringify(toOrderPayload(oosCart, { clientOrderId: createClientOrderId("out-of-stock") })),
+      body: JSON.stringify(toOrderPayload(oosCart)),
     });
     const oosRejected = !oosOrder.ok && oosOrder.body?.code === "OUT_OF_STOCK";
 

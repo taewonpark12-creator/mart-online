@@ -318,7 +318,6 @@ function cartTotal(cart) {
 
 function orderPayload(items, overrides = {}) {
   return {
-    clientOrderId: `e2e-${Date.now()}-${Math.random().toString(16).slice(2)}`,
     customerName: "자동테스트",
     customerPhone: "01012345678",
     fulfillmentType: "DELIVERY",

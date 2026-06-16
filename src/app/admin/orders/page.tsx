@@ -63,6 +63,8 @@ export default function AdminOrdersPage() {
       const params = status ? `?status=${status}` : "";
       const res = await fetch(`/api/admin/orders${params}`, { cache: "no-store" });
       const result = await res.json().catch(() => null);
+      console.log("ADMIN_ORDERS_STATUS", res.status);
+      console.log("ADMIN_ORDERS_RESPONSE", result);
 
       if (!res.ok) {
         if (res.status === 401) throw new Error("관리자 인증 필요");
