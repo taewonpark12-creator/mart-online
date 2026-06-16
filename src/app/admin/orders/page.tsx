@@ -33,6 +33,7 @@ type Order = {
   totalAmount: number;
   createdAt: string;
   items?: OrderItem[];
+  memo?: string | null;
 };
 
 function getOrderTime(order: Order) {
@@ -82,12 +83,10 @@ function OrderSummaryCard({
       }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="font-mono text-sm font-black text-gray-900 truncate">{order.orderNumber}</p>
-          <p className="mt-1 text-sm font-semibold text-gray-800 truncate">
-            {order.customerName}
-          </p>
-          <p className="text-xs text-gray-500 truncate">{order.customerPhone}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-bold text-gray-900 truncate">{order.customerName}</p>
+          <p className="text-xs font-semibold text-gray-700 truncate mt-1">{order.customerPhone}</p>
+          <p className="text-xs text-gray-500 truncate mt-1">{FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}</p>
         </div>
         <span className={`shrink-0 text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
           {ORDER_STATUS_LABEL[order.status]}
@@ -95,15 +94,7 @@ function OrderSummaryCard({
       </div>
 
       <div className="mt-3 flex items-end justify-between gap-3">
-        <div className="text-xs text-gray-500">
-          <p>{getOrderTime(order)}</p>
-          <p>
-            {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
-            {order.fulfillmentType === "PICKUP" && order.pickupTime
-              ? ` · ${order.pickupTime}`
-              : ""}
-          </p>
-        </div>
+        <p className="text-xs text-gray-500">{getOrderTime(order)}</p>
         <p className="text-base font-black text-green-700">{formatPrice(order.totalAmount)}</p>
       </div>
     </button>
@@ -114,15 +105,17 @@ function StatusActions({
   order,
   updating,
   onUpdate,
+  onCancel,
 }: {
   order: Order;
   updating: boolean;
   onUpdate: (status: OrderStatus) => void;
+  onCancel: () => void;
 }) {
   return (
     <div className="space-y-3">
       <div className="rounded-xl border border-green-100 bg-green-50 p-4">
-        <p className="text-xs font-bold text-green-800 mb-2">다음 처리</p>
+        <p className="text-xs font-bold text-green-800 mb-2">상태 변경</p>
         <div className="grid grid-cols-3 gap-2">
           {(["PENDING", "APPROVED", "DELIVERED"] as OrderStatus[]).map((status) => (
             <button
@@ -141,6 +134,20 @@ function StatusActions({
           ))}
         </div>
       </div>
+
+      {order.status === "PENDING" && (
+        <div className="rounded-xl border border-red-100 bg-red-50 p-4">
+          <p className="text-xs font-bold text-red-800 mb-2">주문 취소</p>
+          <button
+            type="button"
+            disabled={updating}
+            onClick={onCancel}
+            className="w-full rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
+          >
+            주문 취소
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -149,10 +156,12 @@ function OrderDetailPanel({
   order,
   updating,
   onUpdateStatus,
+  onCancel,
 }: {
   order: Order | null;
   updating: boolean;
   onUpdateStatus: (status: OrderStatus) => void;
+  onCancel: () => void;
 }) {
   if (!order) {
     return (
@@ -168,7 +177,7 @@ function OrderDetailPanel({
       <div className="border-b p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-mono text-lg font-black text-gray-900">{order.orderNumber}</p>
+            <p className="text-xs text-gray-400 font-mono">{order.orderNumber}</p>
             <p className="text-xs text-gray-500 mt-1">{getOrderTime(order)}</p>
           </div>
         </div>
@@ -181,7 +190,7 @@ function OrderDetailPanel({
       </div>
 
       <div className="p-5 space-y-5">
-        <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} />
+        <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} onCancel={onCancel} />
 
         <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-3">고객 정보</h2>
@@ -224,15 +233,12 @@ function OrderDetailPanel({
           </div>
         </section>
 
-        <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
-          <h2 className="text-sm font-bold text-amber-900 mb-3">수령 정보</h2>
-          <div className="space-y-2 text-sm">
-            <p>
-              <span className="text-amber-600 font-semibold mr-2">수령</span>
-              {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
-            </p>
-          </div>
-        </section>
+        {order.memo && (
+          <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
+            <h2 className="text-sm font-bold text-amber-900 mb-3">요청사항</h2>
+            <p className="text-sm text-gray-700">{order.memo}</p>
+          </section>
+        )}
       </div>
     </aside>
   );
@@ -376,6 +382,34 @@ export default function OrdersPage() {
     }
   }
 
+  async function cancelOrder() {
+    if (!selectedOrderId) return;
+    if (!confirm("정말 이 주문을 취소하시겠습니까?")) return;
+    setUpdatingOrderId(selectedOrderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${selectedOrderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CANCELLED" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error ?? "주문 취소에 실패했습니다.");
+        return;
+      }
+
+      setOrders((current) =>
+        current.map((order) => (order.id === selectedOrderId ? { ...order, status: "CANCELLED" } : order))
+      );
+    } catch (error) {
+      console.error("[admin/orders] cancel failed", error);
+      alert("주문 취소 중 오류가 발생했습니다.");
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
@@ -403,22 +437,14 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          <div className="flex items-center gap-3">
-            {notificationPermission === "default" && (
-              <button
-                onClick={requestNotificationPermission}
-                className="text-sm text-gray-600 border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50"
-              >
-                알림 허용
-              </button>
-            )}
+          {notificationPermission === "default" && (
             <button
-              onClick={() => fetchOrders()}
-              className="text-sm text-green-700 border border-green-200 px-3 py-2 rounded-lg hover:bg-green-50"
+              onClick={requestNotificationPermission}
+              className="text-sm text-gray-600 border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50"
             >
-              새로고침
+              알림 허용
             </button>
-          </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
@@ -479,6 +505,7 @@ export default function OrdersPage() {
                 order={selectedOrder}
                 updating={updatingOrderId === selectedOrderId}
                 onUpdateStatus={updateStatus}
+                onCancel={cancelOrder}
               />
             </div>
           </div>

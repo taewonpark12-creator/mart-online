@@ -125,10 +125,10 @@
   ];
 
   export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
-    PENDING: "접수대기",
-    APPROVED: "주문승인",
-    DELIVERED: "배달완료",
-    CANCELLED: "주문취소",
+    PENDING: "신규주문",
+    APPROVED: "확인완료",
+    DELIVERED: "배송완료",
+    CANCELLED: "취소됨",
   };
 
   export const ORDER_STATUS_COLOR: Record<OrderStatus, string> = {
