@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 
+const allowedStatuses = [
+  "PENDING",
+  "CONFIRMED",
+  "COMPLETED",
+  "CANCELLED",
+];
+
 function serializeOrder(order: {
   id: string;
   orderNumber: string;
@@ -51,6 +58,17 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
 
+    if (status && !allowedStatuses.includes(status)) {
+      return NextResponse.json(
+        {
+          error: "INVALID_STATUS_FILTER",
+          message: `허용되지 않은 주문상태 필터입니다: ${status}`,
+          allowedStatuses,
+        },
+        { status: 400 },
+      );
+    }
+
     const orders = await prisma.order.findMany({
       where: status ? { status: status as never } : undefined,
       include: { items: true },
@@ -66,7 +84,7 @@ export async function GET(req: NextRequest) {
     console.error("[ADMIN_ORDERS_ERROR]", error);
     return NextResponse.json(
       {
-        error: "ADMIN_ORDERS_FAILED",
+        error: "ADMIN_ORDERS_ERROR",
         message: error instanceof Error ? error.message : String(error),
         name: error instanceof Error ? error.name : undefined,
       },

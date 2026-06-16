@@ -28,7 +28,7 @@ function jsonWithSecurity(body: unknown, init?: ResponseInit, requestId?: string
 }
 
 function toPaymentStatus(result: PaymentResult): OrderStatus {
-  return result === "SUCCESS" ? "PAID" : "FAILED";
+  return result === "SUCCESS" ? "COMPLETED" : "CANCELLED";
 }
 
 function parsePaymentResult(value: unknown): PaymentResult | null {

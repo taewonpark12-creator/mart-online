@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
     console.error("ORDER_CREATE_ERROR", error);
     return NextResponse.json(
       {
-        error: "ORDER_CREATE_FAILED",
+        error: "ORDER_CREATE_ERROR",
         message: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },

@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         prisma.order.count({
           where: {
             createdAt: { gte: today },
-            status: { not: "CANCELED" },
+            status: { not: "CANCELLED" },
           },
         }),
 
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
             gte: date,
             lt: nextDate,
           },
-          status: "PAID",
+          status: "COMPLETED",
         },
       });
 
@@ -101,7 +101,7 @@ export async function GET(req: NextRequest) {
         where: {
           order: {
             status: {
-              not: "CANCELED",
+              not: "CANCELLED",
             },
           },
         },

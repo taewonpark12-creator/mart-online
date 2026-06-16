@@ -1,4 +1,4 @@
-export type Product = {
+﻿export type Product = {
   id: string;
   name: string;
   description: string | null;
@@ -36,8 +36,8 @@ export const MIN_ORDER_AMOUNT = 40_000;
 export type FulfillmentType = "DELIVERY" | "PICKUP";
 
 export const FULFILLMENT_OPTIONS: { value: FulfillmentType; label: string; hint: string }[] = [
-  { value: "DELIVERY", label: "배송", hint: "입력하신 주소로 배달합니다." },
-  { value: "PICKUP", label: "픽업", hint: "매장에서 직접 수령합니다." },
+  { value: "DELIVERY", label: "諛곗넚", hint: "?낅젰?섏떊 二쇱냼濡?諛곕떖?⑸땲??" },
+  { value: "PICKUP", label: "?쎌뾽", hint: "留ㅼ옣?먯꽌 吏곸젒 ?섎졊?⑸땲??" },
 ];
 
 export const PICKUP_TIME_SLOTS = (() => {
@@ -51,7 +51,7 @@ export const PICKUP_TIME_SLOTS = (() => {
       const mm = String(m).padStart(2, "0");
       const value = `${hh}:${mm}`;
 
-      const ampm = h >= 12 ? "오후" : "오전";
+      const ampm = h >= 12 ? "?ㅽ썑" : "?ㅼ쟾";
       const displayHour = h > 12 ? h - 12 : h;
       const displayHourStr = String(displayHour).padStart(2, "0");
       const label = `${ampm} ${displayHourStr}:${mm}`;
@@ -65,12 +65,11 @@ export const PICKUP_TIME_SLOTS = (() => {
 })();
 
 export const FULFILLMENT_TYPE_LABEL: Record<FulfillmentType, string> = {
-  DELIVERY: "배송",
-  PICKUP: "픽업",
+  DELIVERY: "諛곗넚",
+  PICKUP: "?쎌뾽",
 };
 
 export type PaymentMethod = "ONSITE_CARD" | "ONSITE_CASH" | "BANK_TRANSFER";
-
 export const PAYMENT_METHOD_OPTIONS: { value: PaymentMethod; label: string }[] = [
   { value: "ONSITE_CARD", label: "현장결제(카드)" },
   { value: "ONSITE_CASH", label: "현장결제(현금)" },
@@ -86,34 +85,34 @@ export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
 export const BANK_ACCOUNT = {
   bank: "국민은행",
   number: "654937-01-011941",
-  holder: "주식회사알마트",
-  display: "국민은행 654937-01-011941 주식회사알마트",
+  holder: "주식회사더마켓",
+  display: "국민은행 654937-01-011941 주식회사더마켓",
 };
 
-export type OrderStatus = "PENDING" | "PAID" | "FAILED" | "CANCELED" | "CANCELLED";
+export type OrderStatus = "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
 
-export const ORDER_STATUS_FLOW: OrderStatus[] = ["PENDING", "PAID"];
-
-export const ORDER_STATUS_FILTER: OrderStatus[] = [
-  ...ORDER_STATUS_FLOW,
-  "FAILED",
-  "CANCELED",
-  "CANCELLED",
+export const ORDER_STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
+  { value: "PENDING", label: "주문접수" },
+  { value: "CONFIRMED", label: "주문승인" },
+  { value: "COMPLETED", label: "주문완료" },
+  { value: "CANCELLED", label: "주문취소" },
 ];
 
+export const ORDER_STATUS_FLOW: OrderStatus[] = ["PENDING", "CONFIRMED", "COMPLETED"];
+
+export const ORDER_STATUS_FILTER: OrderStatus[] = ORDER_STATUS_OPTIONS.map((option) => option.value);
+
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
-  PENDING: "접수대기",
-  PAID: "결제완료",
-  FAILED: "결제실패",
-  CANCELED: "주문취소",
+  PENDING: "주문접수",
+  CONFIRMED: "주문승인",
+  COMPLETED: "주문완료",
   CANCELLED: "주문취소",
 };
 
 export const ORDER_STATUS_COLOR: Record<OrderStatus, string> = {
   PENDING: "bg-amber-100 text-amber-800",
-  PAID: "bg-green-100 text-green-800",
-  FAILED: "bg-red-100 text-red-800",
-  CANCELED: "bg-gray-100 text-gray-700",
+  CONFIRMED: "bg-blue-100 text-blue-800",
+  COMPLETED: "bg-green-100 text-green-800",
   CANCELLED: "bg-gray-100 text-gray-700",
 };
 
@@ -121,33 +120,32 @@ export const CATEGORIES = [
   "전체",
   "과일/채소",
   "수산/건어물",
-  "계란",
+  "계육",
   "쌀/잡곡/견과",
-  "유제품",
+  "냉장",
   "두부/콩나물",
-  "햄/어묵",
+  "대용량",
   "단무지",
-  "떡/냉장면",
-  "냉장밀키트",
+  "냉장면",
+  "냉장반찬",
   "생수/음료",
   "냉동식품",
   "간식",
   "빵",
   "라면",
-  "건면/당면",
+  "건면/쫄면",
   "즉석식품",
   "통조림",
-  "장류/소스/양념",
+  "소스/양념",
   "조미료/향신료",
   "식용유/참기름",
-  "밀가루/가루",
+  "빵가루/가루",
   "커피/차",
-  "주방/세탁/청소용품",
-  "세안",
-  "잡화",
+  "주방/위생/청소용품",
+  "문안",
+  "문화",
   "화장지",
-  "기저귀/생리대",
-  "방충",
+  "기타",
   "반려동물",
 ] as const;
 

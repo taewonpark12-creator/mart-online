@@ -6,7 +6,7 @@ import { canTransition, getTransitionError } from "@/lib/order-status";
 
 type Params = { params: Promise<{ id: string }> };
 
-const VALID_STATUSES: OrderStatus[] = ["PENDING", "PAID", "FAILED", "CANCELED"];
+const VALID_STATUSES: OrderStatus[] = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
 
 export async function PATCH(req: NextRequest, { params }: Params) {
   if (!(await isAdminAuthenticated())) {

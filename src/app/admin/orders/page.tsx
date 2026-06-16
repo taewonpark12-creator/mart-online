@@ -2,9 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { formatPrice } from "@/lib/types";
-
-type OrderStatus = "PENDING" | "PAID" | "FAILED" | "CANCELED" | "CANCELLED";
+import {
+  ORDER_STATUS_COLOR,
+  ORDER_STATUS_LABEL,
+  ORDER_STATUS_OPTIONS,
+  formatPrice,
+  type OrderStatus,
+} from "@/lib/types";
 
 type OrderItem = {
   id: string;
@@ -28,21 +32,7 @@ type Order = {
   items: OrderItem[];
 };
 
-const STATUS_LABEL: Record<OrderStatus, string> = {
-  PENDING: "접수 대기",
-  PAID: "처리 완료",
-  FAILED: "실패",
-  CANCELED: "취소",
-  CANCELLED: "취소",
-};
-
-const STATUS_CLASS: Record<OrderStatus, string> = {
-  PENDING: "bg-amber-100 text-amber-800",
-  PAID: "bg-green-100 text-green-800",
-  FAILED: "bg-red-100 text-red-800",
-  CANCELED: "bg-gray-100 text-gray-700",
-  CANCELLED: "bg-gray-100 text-gray-700",
-};
+const STATUS_ACTIONS: OrderStatus[] = ["CONFIRMED", "COMPLETED", "CANCELLED"];
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -65,12 +55,10 @@ export default function AdminOrdersPage() {
       const params = status ? `?status=${status}` : "";
       const res = await fetch(`/api/admin/orders${params}`, { cache: "no-store" });
       const result = await res.json().catch(() => null);
-      console.log("ADMIN_ORDERS_STATUS", res.status);
-      console.log("ADMIN_ORDERS_RESPONSE", result);
 
       if (!res.ok) {
-        if (res.status === 401) throw new Error("관리자 인증 필요");
-        throw new Error(result?.message || result?.error || "주문 조회 오류");
+        if (res.status === 401) throw new Error("관리자 인증이 필요합니다.");
+        throw new Error(result?.message || result?.error || "주문 조회 중 오류가 발생했습니다.");
       }
 
       const nextOrders = Array.isArray(result?.orders) ? result.orders : [];
@@ -82,7 +70,7 @@ export default function AdminOrdersPage() {
       );
     } catch (err) {
       setOrders([]);
-      setError(err instanceof Error ? err.message : "주문 조회 오류");
+      setError(err instanceof Error ? err.message : "주문 조회 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
@@ -104,12 +92,13 @@ export default function AdminOrdersPage() {
       const result = await res.json().catch(() => null);
 
       if (!res.ok) {
-        alert(result?.error || "상태 변경에 실패했습니다.");
+        alert(result?.message || result?.error || "상태 변경에 실패했습니다.");
         return;
       }
 
       await loadOrders();
-    } catch {
+    } catch (err) {
+      console.error("ORDER_STATUS_UPDATE_ERROR", err);
       alert("상태 변경에 실패했습니다.");
     } finally {
       setUpdating(false);
@@ -122,9 +111,9 @@ export default function AdminOrdersPage() {
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-2xl font-black text-gray-900">주문 관리</h1>
+            <h1 className="text-2xl font-black text-gray-900">주문관리</h1>
             <p className="mt-1 text-sm text-gray-500">
-              DB에 저장된 주문 목록을 확인하고 처리 상태를 변경합니다.
+              접수된 주문을 확인하고 처리 상태를 변경합니다.
             </p>
           </div>
           <button
@@ -146,16 +135,16 @@ export default function AdminOrdersPage() {
           >
             전체
           </button>
-          {(["PENDING", "PAID", "FAILED", "CANCELED", "CANCELLED"] as OrderStatus[]).map((item) => (
+          {ORDER_STATUS_OPTIONS.map((option) => (
             <button
-              key={item}
+              key={option.value}
               type="button"
-              onClick={() => setStatus(item)}
+              onClick={() => setStatus(option.value)}
               className={`rounded-full px-3 py-1.5 text-sm font-bold ${
-                status === item ? "bg-green-600 text-white" : "border bg-white text-gray-600"
+                status === option.value ? "bg-green-600 text-white" : "border bg-white text-gray-600"
               }`}
             >
-              {STATUS_LABEL[item]}
+              {option.label}
             </button>
           ))}
         </div>
@@ -170,7 +159,7 @@ export default function AdminOrdersPage() {
           </div>
         ) : orders.length === 0 ? (
           <div className="rounded-2xl border border-dashed bg-white p-10 text-center text-gray-400">
-            DB에 저장된 주문 없음
+            표시할 주문이 없습니다.
           </div>
         ) : (
           <div className="grid gap-6 lg:grid-cols-[390px_minmax(0,1fr)]">
@@ -194,8 +183,8 @@ export default function AdminOrdersPage() {
                       </p>
                       <p className="text-xs text-gray-500">{order.customerPhone}</p>
                     </div>
-                    <span className={`rounded-full px-2 py-1 text-xs font-bold ${STATUS_CLASS[order.status]}`}>
-                      {STATUS_LABEL[order.status]}
+                    <span className={`rounded-full px-2 py-1 text-xs font-bold ${ORDER_STATUS_COLOR[order.status]}`}>
+                      {ORDER_STATUS_LABEL[order.status]}
                     </span>
                   </div>
                   <div className="mt-3 flex items-end justify-between gap-3">
@@ -221,8 +210,8 @@ export default function AdminOrdersPage() {
                       {new Date(selectedOrder.createdAt).toLocaleString("ko-KR")}
                     </p>
                   </div>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_CLASS[selectedOrder.status]}`}>
-                    {STATUS_LABEL[selectedOrder.status]}
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${ORDER_STATUS_COLOR[selectedOrder.status]}`}>
+                    {ORDER_STATUS_LABEL[selectedOrder.status]}
                   </span>
                 </div>
 
@@ -233,8 +222,7 @@ export default function AdminOrdersPage() {
                       <p>고객명: {selectedOrder.customerName}</p>
                       <p>전화번호: {selectedOrder.customerPhone}</p>
                       <p>
-                        수령:{" "}
-                        {selectedOrder.fulfillmentType === "DELIVERY" ? "배달" : "픽업"}
+                        수령 방식: {selectedOrder.fulfillmentType === "DELIVERY" ? "배달" : "픽업"}
                       </p>
                       {selectedOrder.fulfillmentType === "DELIVERY" ? (
                         <p>주소: {selectedOrder.deliveryAddress}</p>
@@ -247,7 +235,7 @@ export default function AdminOrdersPage() {
                   <section className="rounded-xl bg-amber-50 p-4">
                     <h2 className="mb-3 text-sm font-black text-amber-900">처리 상태</h2>
                     <div className="grid grid-cols-2 gap-2">
-                      {(["PENDING", "PAID", "FAILED", "CANCELED", "CANCELLED"] as OrderStatus[]).map((item) => (
+                      {STATUS_ACTIONS.map((item) => (
                         <button
                           key={item}
                           type="button"
@@ -255,7 +243,7 @@ export default function AdminOrdersPage() {
                           onClick={() => updateStatus(selectedOrder, item)}
                           className="rounded-xl border bg-white px-3 py-2 text-xs font-bold text-gray-700 disabled:opacity-40"
                         >
-                          {STATUS_LABEL[item]}
+                          {ORDER_STATUS_LABEL[item]}
                         </button>
                       ))}
                     </div>

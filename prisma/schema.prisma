@@ -82,9 +82,8 @@ enum FulfillmentType {
 
 enum OrderStatus {
   PENDING
-  PAID
-  FAILED
-  CANCELED
+  CONFIRMED
+  COMPLETED
   CANCELLED
 }
 

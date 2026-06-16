@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
     console.error("[ORDER_CHECK_ERROR]", error);
     return NextResponse.json(
       {
-        error: "ORDER_CHECK_FAILED",
+        error: "ORDER_CHECK_ERROR",
         message: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },
