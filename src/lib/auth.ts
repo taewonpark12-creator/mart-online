@@ -9,7 +9,7 @@ export async function isAdminAuthenticated(): Promise<boolean> {
 }
 
 export function verifyAdminPassword(password: string): boolean {
-  return password === (process.env.ADMIN_PASSWORD ?? "admin1234");
+  return password === (process.env.ADMIN_PASSWORD ?? "132546");
 }
 
 export const ADMIN_COOKIE_NAME = ADMIN_COOKIE;

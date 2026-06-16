@@ -6,7 +6,7 @@ import process from "node:process";
 
 const BASE_URL = (process.env.BASE_URL || "http://127.0.0.1:3000").replace(/\/$/, "");
 const DEBUG = String(process.env.DEBUG || "").toLowerCase() === "true";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin1234";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "132546";
 const MIN_ORDER_AMOUNT = 40_000;
 const RETRY_DELAYS_MS = [300, 600, 1200];
 const CRITICAL_RETRY_ENDPOINTS = new Set([

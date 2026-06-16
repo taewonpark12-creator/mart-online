@@ -4,8 +4,8 @@ import { isAdminAuthenticated } from "@/lib/auth";
 
 const allowedStatuses = [
   "PENDING",
-  "APPROVED",
-  "DELIVERED",
+  "CONFIRMED",
+  "COMPLETED",
   "CANCELLED",
 ];
 
@@ -16,7 +16,6 @@ function serializeOrder(order: {
   customerPhone: string;
   fulfillmentType: string;
   deliveryAddress: string;
-  deliveryEntrance: string | null;
   pickupTime: string | null;
   status: string;
   totalAmount: number;
@@ -36,7 +35,6 @@ function serializeOrder(order: {
     customerPhone: order.customerPhone,
     fulfillmentType: order.fulfillmentType,
     deliveryAddress: order.deliveryAddress,
-    deliveryEntrance: order.deliveryEntrance,
     pickupTime: order.pickupTime,
     status: order.status,
     totalAmount: Number(order.totalAmount ?? 0),
@@ -81,7 +79,7 @@ export async function GET(req: NextRequest) {
     console.log("ADMIN_ORDERS_COUNT", serializedOrders.length);
     console.log("ADMIN_ORDERS_FIRST", serializedOrders[0]);
 
-    return NextResponse.json(serializedOrders);
+    return NextResponse.json({ orders: serializedOrders });
   } catch (error) {
     console.error("[ADMIN_ORDERS_ERROR]", error);
     return NextResponse.json(
