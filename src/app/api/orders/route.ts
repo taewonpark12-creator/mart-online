@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { generateOrderNumber, type FulfillmentType } from "@/lib/types";
+import { generateOrderNumber } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
   }
 
-  // ----------------------------
-  // 1. items validation (필수)
-  // ----------------------------
+  // -----------------------------
+  // 1. items 검증 (필수)
+  // -----------------------------
   if (!Array.isArray(body.items) || body.items.length === 0) {
     return NextResponse.json({ error: "INVALID_ITEMS" }, { status: 400 });
   }
@@ -60,20 +60,29 @@ export async function POST(req: NextRequest) {
     0
   );
 
-  // ----------------------------
-  // 2. fulfillmentType
-  // ----------------------------
-  const fulfillmentType =
-    body.fulfillmentType === "PICKUP" ? "PICKUP" : "DELIVERY";
+  // -----------------------------
+  // 2. fulfillmentType (핵심 수정)
+  // -----------------------------
+  if (
+    body.fulfillmentType !== "DELIVERY" &&
+    body.fulfillmentType !== "PICKUP"
+  ) {
+    return NextResponse.json(
+      { error: "INVALID_FULFILLMENT_TYPE" },
+      { status: 400 }
+    );
+  }
 
+  const fulfillmentType = body.fulfillmentType as "DELIVERY" | "PICKUP";
   const isPickup = fulfillmentType === "PICKUP";
 
-  // ----------------------------
-  // 3. 필수 정보 검증 (핵심 복구)
-  // ----------------------------
-
-  const customerName = typeof body.customerName === "string" ? body.customerName.trim() : "";
-  const customerPhone = typeof body.customerPhone === "string" ? body.customerPhone.trim() : "";
+  // -----------------------------
+  // 3. 필수 고객 정보 검증
+  // -----------------------------
+  const customerName =
+    typeof body.customerName === "string" ? body.customerName.trim() : "";
+  const customerPhone =
+    typeof body.customerPhone === "string" ? body.customerPhone.trim() : "";
 
   if (!customerName || !customerPhone) {
     return NextResponse.json(
@@ -82,9 +91,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 배송일 때
+  // -----------------------------
+  // 4. 배송 / 픽업 분기 검증
+  // -----------------------------
+
   if (!isPickup) {
-    const address = typeof body.deliveryAddress === "string" ? body.deliveryAddress.trim() : "";
+    const address =
+      typeof body.deliveryAddress === "string"
+        ? body.deliveryAddress.trim()
+        : "";
 
     if (!address) {
       return NextResponse.json(
@@ -94,9 +109,11 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 픽업일 때
   if (isPickup) {
-    const pickupTime = typeof body.pickupTime === "string" ? body.pickupTime.trim() : "";
+    const pickupTime =
+      typeof body.pickupTime === "string"
+        ? body.pickupTime.trim()
+        : "";
 
     if (!pickupTime) {
       return NextResponse.json(
@@ -106,9 +123,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ----------------------------
-  // 4. DB 저장
-  // ----------------------------
+  // -----------------------------
+  // 5. DB 저장
+  // -----------------------------
   try {
     const order = await prisma.order.create({
       data: {
@@ -117,14 +134,25 @@ export async function POST(req: NextRequest) {
         customerPhone,
         fulfillmentType,
 
-        deliveryAddress: isPickup ? "매장 픽업" : String(body.deliveryAddress),
-        deliveryEntrance: isPickup ? null : (String(body.deliveryEntrance ?? "") || null),
-        pickupTime: isPickup ? String(body.pickupTime) : null,
+        deliveryAddress: isPickup
+          ? "매장 픽업"
+          : (body.deliveryAddress as string),
 
-        memo: typeof body.memo === "string" ? body.memo : null,
+        deliveryEntrance: isPickup
+          ? null
+          : (String(body.deliveryEntrance ?? "") || null),
+
+        pickupTime: isPickup
+          ? (body.pickupTime as string)
+          : null,
+
+        memo:
+          typeof body.memo === "string" ? body.memo : null,
+
         paymentMethod: null,
 
         totalAmount,
+
         items: {
           create: items,
         },
