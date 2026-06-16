@@ -27,7 +27,7 @@ function createClientOrderId() {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, total, clearCart } = useCart();
+  const { items, totalAmount, clearCart } = useCart();
 
   const submitLockRef = useRef(false);
 
@@ -91,10 +91,10 @@ export default function CheckoutPage() {
         paymentMethod: isDelivery ? "ONSITE_CASH" : undefined,
 
         items: items.map((i) => ({
-          productId: i.id,
+          productId: i.productId,
           name: i.name,
           price: i.price,
-          quantity: i.qty,
+          quantity: i.quantity,
         })),
       };
 
@@ -125,7 +125,7 @@ export default function CheckoutPage() {
         deliveryAddress: isDelivery ? address : undefined,
         pickupTime: !isDelivery ? pickupTime : undefined,
         items: [...items],
-        totalAmount: total,
+        totalAmount,
       });
 
       clearCart();
@@ -236,14 +236,14 @@ export default function CheckoutPage() {
           {/* 주문 요약 */}
           <div className="text-sm border-t pt-3">
             {items.map((i) => (
-              <div key={i.id} className="flex justify-between">
-                <span>{i.name} × {i.qty}</span>
-                <span>{formatPrice(i.price * i.qty)}</span>
+              <div key={i.productId} className="flex justify-between">
+                <span>{i.name} × {i.quantity}</span>
+                <span>{formatPrice(i.price * i.quantity)}</span>
               </div>
             ))}
             <div className="flex justify-between font-bold mt-2">
               <span>총액</span>
-              <span>{formatPrice(total)}</span>
+              <span>{formatPrice(totalAmount)}</span>
             </div>
           </div>
 
