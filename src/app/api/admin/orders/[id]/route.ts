@@ -31,11 +31,15 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
   }
 
+  let receivedStatus: unknown;
+
   try {
     const { id } = await params;
     const body = await req.json();
     const { status } = body;
+    receivedStatus = status;
 
+    console.log("ORDER_UPDATE_RECEIVED_STATUS", status);
     console.log(`[PATCH /api/admin/orders/${id}] status=${status}`, body);
 
     if (!status) {
@@ -92,14 +96,15 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     });
 
     console.log(`[PATCH /api/admin/orders/${id}] SUCCESS: ${existing.status} -> ${status}`);
-    return NextResponse.json(order);
+    return NextResponse.json({ order });
   } catch (error) {
-    console.error("[PATCH /api/admin/orders/[id]] ERROR:", error);
+    console.error("[ORDER_UPDATE_ERROR]", error);
     return NextResponse.json(
       {
-        error: "INTERNAL_ERROR",
+        error: "ORDER_UPDATE_FAILED",
         message: "주문 상태 변경 중 오류가 발생했습니다.",
         details: error instanceof Error ? error.message : String(error),
+        receivedStatus,
       },
       { status: 500 },
     );
