@@ -60,7 +60,6 @@ export async function POST(req: NextRequest) {
   const startedAt = Date.now();
   let stage = "request_parse";
   let orderNumber: string | null = null;
-  let clientOrderId: string | null = null;
 
   const elapsedMs = () => Date.now() - startedAt;
   const logStage = (nextStage: string, extra?: unknown) => {
@@ -70,7 +69,6 @@ export async function POST(req: NextRequest) {
       endpoint: "/api/payments",
       stage,
       elapsedMs: elapsedMs(),
-      clientOrderId,
       orderNumber,
       extra,
     });
@@ -89,11 +87,10 @@ export async function POST(req: NextRequest) {
 
     const payload = body as Record<string, unknown>;
     orderNumber = typeof payload.orderNumber === "string" ? payload.orderNumber.trim() : null;
-    clientOrderId = typeof payload.clientOrderId === "string" ? payload.clientOrderId.trim() : null;
     const paymentResult = parsePaymentResult(payload.paymentResult);
 
-    logStage("validation", { hasOrderNumber: Boolean(orderNumber), hasClientOrderId: Boolean(clientOrderId), paymentResult });
-    if (!orderNumber && !clientOrderId) {
+    logStage("validation", { hasOrderNumber: Boolean(orderNumber), paymentResult });
+    if (!orderNumber) {
       return jsonWithSecurity(
         orderErrorBody({ requestId, code: "INVALID_ORDER", error: "주문 식별자가 필요합니다.", stage }),
         { status: 400 },
@@ -108,12 +105,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const targetOrderNumber = orderNumber;
     const nextStatus = toPaymentStatus(paymentResult);
     logStage("payment_status_update", { nextStatus });
     const order = await prisma.$transaction(async (tx) => {
       const existing = await tx.order.findFirst({
-        where: orderNumber ? { orderNumber } : { clientOrderId: clientOrderId || undefined },
-        select: { id: true, orderNumber: true, clientOrderId: true, status: true },
+        where: { orderNumber: targetOrderNumber },
+        select: { id: true, orderNumber: true, status: true },
       });
 
       if (!existing) {
@@ -121,7 +119,6 @@ export async function POST(req: NextRequest) {
       }
 
       orderNumber = existing.orderNumber;
-      clientOrderId = existing.clientOrderId;
 
       if (!canTransition(existing.status as OrderStatus, nextStatus)) {
         throw new PaymentApiError(
@@ -134,7 +131,7 @@ export async function POST(req: NextRequest) {
       return tx.order.update({
         where: { id: existing.id },
         data: { status: nextStatus },
-        select: { orderNumber: true, clientOrderId: true, status: true },
+        select: { orderNumber: true, status: true },
       });
     });
 
@@ -160,7 +157,6 @@ export async function POST(req: NextRequest) {
       elapsedMs: elapsedMs(),
       errorCode: details.code,
       message: details.message,
-      clientOrderId,
       orderNumber,
       error,
     });

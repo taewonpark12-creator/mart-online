@@ -35,7 +35,6 @@ export function logOrderFailure(details: {
   productId?: string | null;
   endpoint: string;
   message?: string;
-  clientOrderId?: string | null;
   orderNumber?: string | null;
   payloadSummary?: unknown;
   error?: unknown;
@@ -48,7 +47,6 @@ export function logOrderEvent(details: {
   stage: string;
   elapsedMs: number;
   endpoint?: string;
-  clientOrderId?: string | null;
   orderNumber?: string | null;
   priceSourceVersion?: string | null;
   productId?: string | null;
