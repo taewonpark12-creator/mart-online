@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import {
   ORDER_STATUS_FILTER,
@@ -362,10 +362,10 @@ export default function OrdersPage() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [freshOrderIds, setFreshOrderIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [notificationInterval, setNotificationInterval] = useState(3000);
-  const router = useRouter();
   const pathname = usePathname();
   const isMounted = useRef(true);
   const isFetching = useRef(false);
@@ -399,30 +399,29 @@ export default function OrdersPage() {
       if (!silent) setLoading(true);
 
       try {
+        setLoadError("");
         const params = filter ? `?status=${filter}` : "";
         const res = await fetch(`/api/admin/orders${params}`, { cache: "no-store" });
 
         if (!res.ok) {
           if (res.status === 401) {
-            console.log("[ADMIN REDIRECT]", {
+            if (isMounted.current) setLoadError("관리자 인증 필요");
+            console.log("[ADMIN_ORDERS_AUTH_REQUIRED]", {
               source: "/admin/orders",
-              target: "/admin",
               reason: "orders_api_unauthorized",
               pathname,
               isAuthenticated: false,
               status: res.status,
               timestamp: Date.now(),
             });
-            console.log("[REDIRECT EXECUTE]", {
-              from: pathname,
-              to: "/admin",
-              timestamp: Date.now(),
-            });
-            router.replace("/admin");
             return;
           }
           const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.error || "주문 데이터를 불러오지 못했습니다.");
+          throw new Error(
+            res.status >= 500
+              ? "주문 조회 오류"
+              : errorData.error || "주문 데이터를 불러오지 못했습니다.",
+          );
         }
 
         const data = (await res.json()) as Order[];
@@ -469,12 +468,15 @@ export default function OrdersPage() {
         }
       } catch (error) {
         console.error("[admin/orders] load failed", error);
+        if (isMounted.current) {
+          setLoadError(error instanceof Error ? error.message : "주문 조회 오류");
+        }
       } finally {
         if (isMounted.current) setLoading(false);
         isFetching.current = false;
       }
     },
-    [filter, pathname, router, selectedOrderId, updatePendingCount],
+    [filter, pathname, selectedOrderId, updatePendingCount],
   );
 
   useEffect(() => {
@@ -702,9 +704,13 @@ export default function OrdersPage() {
               [1, 2, 3].map((index) => (
                 <div key={index} className="bg-white rounded-2xl h-32 animate-pulse border border-gray-100" />
               ))
+            ) : loadError ? (
+              <div className="text-center py-20 bg-white rounded-2xl border border-red-200 text-red-500">
+                {loadError}
+              </div>
             ) : visibleOrders.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-400">
-                주문 내역이 없습니다.
+                {orders.length === 0 ? "DB에 저장된 주문 없음" : "검색 조건에 맞는 주문 없음"}
               </div>
             ) : (
               visibleOrders

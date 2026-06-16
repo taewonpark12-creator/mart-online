@@ -17,6 +17,8 @@ export async function GET(req: NextRequest) {
       include: { items: { include: { product: true } } },
       orderBy: { createdAt: "desc" },
     });
+    console.log("ADMIN_ORDERS_COUNT", orders.length);
+    console.log("ADMIN_ORDERS_FIRST", orders[0]);
     console.log("[ADMIN_ORDERS_FETCH]", {
       source: "prisma.order",
       statusFilter: status,

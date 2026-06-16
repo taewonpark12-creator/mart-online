@@ -123,6 +123,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  console.log("CREATE_ORDER_BODY", body);
+  console.log("CREATE_ORDER_ITEMS", body.items);
+
   // -----------------------------
   // 5. DB 저장
   // -----------------------------
@@ -158,21 +161,24 @@ export async function POST(req: NextRequest) {
         },
       },
       select: {
+        id: true,
         orderNumber: true,
         status: true,
         totalAmount: true,
       },
     });
 
+    console.log("ORDER_CREATED", order);
+
     return NextResponse.json({
       orderNumber: order.orderNumber,
       status: order.status,
       totalAmount: order.totalAmount,
     });
-  } catch (e) {
-    console.error("[ORDER_DB_ERROR]", e);
+  } catch (error) {
+    console.error("ORDER_CREATE_ERROR", error);
     return NextResponse.json(
-      { error: "DB_ERROR" },
+      { error: "ORDER_CREATE_FAILED", detail: String(error) },
       { status: 500 }
     );
   }

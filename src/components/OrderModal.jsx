@@ -139,10 +139,17 @@ export default function OrderModal({ open, onClose }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
-      const result = await res.json().catch(() => ({}));
+      const result = await res.json().catch(() => null);
+      console.log("ORDER_CREATE_STATUS", res.status);
+      console.log("ORDER_CREATE_RESULT", result);
 
-      if (!res.ok || !result.orderNumber) {
-        alert(ORDER_SAVE_ERROR);
+      if (!res.ok) {
+        alert(result?.error || result?.message || "주문 저장 실패");
+        return;
+      }
+
+      if (!result?.orderNumber) {
+        alert(result?.error || result?.message || ORDER_SAVE_ERROR);
         return;
       }
 
