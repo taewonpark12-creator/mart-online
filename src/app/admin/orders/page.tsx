@@ -62,6 +62,182 @@ function matchesSearch(order: Order, query: string) {
   return searchFields.includes(normalized);
 }
 
+function OrderSummaryCard({
+  order,
+  selected,
+  onSelect,
+}: {
+  order: Order;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`w-full text-left rounded-2xl border p-4 transition ${
+        selected
+          ? "border-green-500 bg-green-50 shadow-sm"
+          : "border-gray-200 bg-white hover:border-green-200 hover:shadow-sm"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-mono text-sm font-black text-gray-900 truncate">{order.orderNumber}</p>
+          <p className="mt-1 text-sm font-semibold text-gray-800 truncate">
+            {order.customerName}
+          </p>
+          <p className="text-xs text-gray-500 truncate">{order.customerPhone}</p>
+        </div>
+        <span className={`shrink-0 text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
+          {ORDER_STATUS_LABEL[order.status]}
+        </span>
+      </div>
+
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div className="text-xs text-gray-500">
+          <p>{getOrderTime(order)}</p>
+          <p>
+            {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
+            {order.fulfillmentType === "PICKUP" && order.pickupTime
+              ? ` · ${order.pickupTime}`
+              : ""}
+          </p>
+        </div>
+        <p className="text-base font-black text-green-700">{formatPrice(order.totalAmount)}</p>
+      </div>
+    </button>
+  );
+}
+
+function StatusActions({
+  order,
+  updating,
+  onUpdate,
+}: {
+  order: Order;
+  updating: boolean;
+  onUpdate: (status: OrderStatus) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="rounded-xl border border-green-100 bg-green-50 p-4">
+        <p className="text-xs font-bold text-green-800 mb-2">다음 처리</p>
+        <div className="grid grid-cols-3 gap-2">
+          {(["PENDING", "APPROVED", "DELIVERED"] as OrderStatus[]).map((status) => (
+            <button
+              key={status}
+              type="button"
+              disabled={updating || order.status === status || order.status === "CANCELLED"}
+              onClick={() => onUpdate(status)}
+              className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                order.status === status
+                  ? "border-gray-900 bg-gray-900 text-white"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-green-400 hover:text-green-700 disabled:opacity-40"
+              }`}
+            >
+              {ORDER_STATUS_LABEL[status]}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OrderDetailPanel({
+  order,
+  updating,
+  onUpdateStatus,
+}: {
+  order: Order | null;
+  updating: boolean;
+  onUpdateStatus: (status: OrderStatus) => void;
+}) {
+  if (!order) {
+    return (
+      <aside className="h-full rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-gray-400">
+        <p className="font-semibold">주문을 선택해주세요.</p>
+        <p className="mt-2 text-sm">왼쪽 목록에서 주문을 선택하면 상세 처리 패널이 열립니다.</p>
+      </aside>
+    );
+  }
+
+  return (
+    <aside className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="border-b p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-mono text-lg font-black text-gray-900">{order.orderNumber}</p>
+            <p className="text-xs text-gray-500 mt-1">{getOrderTime(order)}</p>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
+            {ORDER_STATUS_LABEL[order.status]}
+          </span>
+          <p className="text-2xl font-black text-green-700">{formatPrice(order.totalAmount)}</p>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-5">
+        <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} />
+
+        <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
+          <h2 className="text-sm font-bold text-blue-900 mb-3">고객 정보</h2>
+          <div className="space-y-2 text-sm">
+            <p><span className="text-blue-500 font-semibold mr-2">고객</span>{order.customerName}</p>
+            <p><span className="text-blue-500 font-semibold mr-2">연락처</span>{order.customerPhone}</p>
+            {order.fulfillmentType === "PICKUP" ? (
+              <>
+                <p><span className="text-blue-500 font-semibold mr-2">픽업</span>{order.pickupTime || "시간 미지정"}</p>
+              </>
+            ) : (
+              <>
+                <p><span className="text-blue-500 font-semibold mr-2">주소</span>{order.deliveryAddress}</p>
+                {order.deliveryEntrance && (
+                  <p><span className="text-blue-500 font-semibold mr-2">출입</span>{order.deliveryEntrance}</p>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <h2 className="text-sm font-bold text-gray-900 mb-3">주문 상품</h2>
+          <div className="divide-y">
+            {order.items && order.items.length > 0 ? (
+              order.items.map((item) => (
+                <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-800 truncate">{item.productName || "상품명 없음"}</p>
+                    <p className="text-xs text-gray-500">{formatPrice(item.unitPrice || 0)} x {item.quantity || 0}</p>
+                  </div>
+                  <p className="font-semibold text-gray-900 shrink-0">
+                    {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">주문 상품 정보가 없습니다.</p>
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
+          <h2 className="text-sm font-bold text-amber-900 mb-3">수령 정보</h2>
+          <div className="space-y-2 text-sm">
+            <p>
+              <span className="text-amber-600 font-semibold mr-2">수령</span>
+              {FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}
+            </p>
+          </div>
+        </section>
+      </div>
+    </aside>
+  );
+}
+
 export default function OrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -70,7 +246,6 @@ export default function OrdersPage() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
-  const [showDetail, setShowDetail] = useState(false);
 
   const selectedOrder = selectedOrderId 
     ? orders.find((order) => order.id === selectedOrderId) ?? null
@@ -114,10 +289,11 @@ export default function OrdersPage() {
     fetchOrders();
   }, [filter]);
 
-  async function updateStatus(orderId: string, status: OrderStatus) {
-    setUpdatingOrderId(orderId);
+  async function updateStatus(status: OrderStatus) {
+    if (!selectedOrderId) return;
+    setUpdatingOrderId(selectedOrderId);
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}`, {
+      const res = await fetch(`/api/admin/orders/${selectedOrderId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -130,7 +306,7 @@ export default function OrdersPage() {
       }
 
       setOrders((current) =>
-        current.map((order) => (order.id === orderId ? { ...order, status } : order))
+        current.map((order) => (order.id === selectedOrderId ? { ...order, status } : order))
       );
     } catch (error) {
       console.error("[admin/orders] status update failed", error);
@@ -191,151 +367,31 @@ export default function OrdersPage() {
           <div className="bg-white rounded-2xl p-8 text-center text-gray-400">
             로딩 중...
           </div>
-        ) : visibleOrders.length === 0 ? (
-          <div className="bg-white rounded-2xl p-8 text-center text-gray-400 border border-dashed border-gray-300">
-            주문 내역이 없습니다.
-          </div>
         ) : (
-          <div className="bg-white rounded-2xl border overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">주문번호</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">고객명</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">연락처</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">주소</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">총액</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">상태</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">주문시간</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">작업</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {visibleOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-mono font-medium">{order.orderNumber}</td>
-                    <td className="px-4 py-3 text-sm">{order.customerName}</td>
-                    <td className="px-4 py-3 text-sm">{order.customerPhone}</td>
-                    <td className="px-4 py-3 text-sm max-w-xs truncate">{order.deliveryAddress}</td>
-                    <td className="px-4 py-3 text-sm font-semibold">{formatPrice(order.totalAmount)}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
-                        {ORDER_STATUS_LABEL[order.status]}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-gray-500">{getOrderTime(order)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedOrderId(order.id);
-                            setShowDetail(true);
-                          }}
-                          className="text-xs text-blue-600 hover:text-blue-800"
-                        >
-                          상세
-                        </button>
-                        <select
-                          value={order.status}
-                          onChange={(e) => updateStatus(order.id, e.target.value as OrderStatus)}
-                          disabled={updatingOrderId === order.id}
-                          className="text-xs border rounded px-2 py-1 disabled:opacity-50"
-                        >
-                          {(["PENDING", "APPROVED", "DELIVERED", "CANCELLED"] as OrderStatus[]).map((status) => (
-                            <option key={status} value={status}>
-                              {ORDER_STATUS_LABEL[status]}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {showDetail && selectedOrder && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="border-b p-5 flex items-center justify-between">
-                <h2 className="text-lg font-bold">주문 상세</h2>
-                <button
-                  onClick={() => setShowDetail(false)}
-                  className="text-gray-400 hover:text-gray-700"
-                >
-                  닫기
-                </button>
-              </div>
-              <div className="p-5 space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-500 text-xs">주문번호</p>
-                    <p className="font-mono font-medium">{selectedOrder.orderNumber}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">상태</p>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[selectedOrder.status]}`}>
-                      {ORDER_STATUS_LABEL[selectedOrder.status]}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">고객명</p>
-                    <p>{selectedOrder.customerName}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">연락처</p>
-                    <p>{selectedOrder.customerPhone}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-gray-500 text-xs">주소</p>
-                    <p>{selectedOrder.deliveryAddress}</p>
-                    {selectedOrder.deliveryEntrance && (
-                      <p className="text-xs text-gray-400 mt-1">출입: {selectedOrder.deliveryEntrance}</p>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">수령방법</p>
-                    <p>{FULFILLMENT_TYPE_LABEL[selectedOrder.fulfillmentType]}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">픽업시간</p>
-                    <p>{selectedOrder.pickupTime || "-"}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">주문시간</p>
-                    <p>{getOrderTime(selectedOrder)}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-xs">총액</p>
-                    <p className="font-bold text-green-700">{formatPrice(selectedOrder.totalAmount)}</p>
-                  </div>
+          <div className="flex flex-col gap-6 lg:flex-row lg:gap-6">
+            <div className="flex-1 space-y-3">
+              {visibleOrders.length === 0 ? (
+                <div className="bg-white rounded-2xl p-8 text-center text-gray-400 border border-dashed border-gray-300">
+                  주문 내역이 없습니다.
                 </div>
+              ) : (
+                visibleOrders.map((order) => (
+                  <OrderSummaryCard
+                    key={order.id}
+                    order={order}
+                    selected={selectedOrderId === order.id}
+                    onSelect={() => setSelectedOrderId(order.id)}
+                  />
+                ))
+              )}
+            </div>
 
-                <div className="border-t pt-4">
-                  <h3 className="font-bold text-sm mb-3">주문 상품</h3>
-                  <div className="space-y-2">
-                    {selectedOrder.items && selectedOrder.items.length > 0 ? (
-                      selectedOrder.items.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center text-sm py-2 border-b">
-                          <div className="flex-1">
-                            <p className="font-medium">{item.productName || "상품명 없음"}</p>
-                            <p className="text-xs text-gray-500">
-                              {formatPrice(item.unitPrice || 0)} x {item.quantity || 0}
-                            </p>
-                          </div>
-                          <p className="font-semibold">
-                            {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
-                          </p>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-sm text-gray-500">주문 상품 정보가 없습니다.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
+            <div className="w-full lg:w-[450px]">
+              <OrderDetailPanel
+                order={selectedOrder}
+                updating={updatingOrderId === selectedOrderId}
+                onUpdateStatus={updateStatus}
+              />
             </div>
           </div>
         )}
