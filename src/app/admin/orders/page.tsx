@@ -89,10 +89,13 @@ export default function AdminOrdersPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nextStatus }),
       });
-      const result = await res.json().catch(() => null);
+      const data = await res.json().catch(() => null);
+
+      console.log("ORDER_STATUS_UPDATE_STATUS", res.status);
+      console.log("ORDER_STATUS_UPDATE_RESPONSE", data);
 
       if (!res.ok) {
-        alert(result?.message || result?.error || "상태 변경에 실패했습니다.");
+        alert(data?.message || data?.error || "주문상태 변경 중 오류가 발생했습니다.");
         return;
       }
 

@@ -6,7 +6,7 @@ import { canTransition, getTransitionError } from "@/lib/order-status";
 
 type Params = { params: Promise<{ id: string }> };
 
-const allowedStatuses: OrderStatus[] = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
+const allowedStatuses = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"] as const;
 
 export async function GET(_req: NextRequest, { params }: Params) {
   if (!(await isAdminAuthenticated())) {
@@ -26,40 +26,28 @@ export async function GET(_req: NextRequest, { params }: Params) {
   return NextResponse.json(order);
 }
 
-export async function PATCH(req: NextRequest, { params }: Params) {
+export async function PATCH(request: NextRequest, context: Params) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
   }
 
-  let receivedStatus: unknown;
+  let receivedStatus: unknown = null;
 
   try {
-    const { id } = await params;
-    const body = await req.json();
-    const { status } = body;
-    receivedStatus = status;
+    const { id } = await context.params;
+    const body = await request.json();
+    receivedStatus = body.status;
+    const nextStatus = String(receivedStatus) as OrderStatus;
 
-    console.log("ORDER_UPDATE_RECEIVED_STATUS", status);
-    console.log(`[PATCH /api/admin/orders/${id}] status=${status}`, body);
+    console.log("ORDER_STATUS_UPDATE_BODY", body);
+    console.log("ORDER_STATUS_UPDATE_RECEIVED_STATUS", receivedStatus);
 
-    if (!status) {
+    if (!allowedStatuses.includes(String(receivedStatus) as OrderStatus)) {
       return NextResponse.json(
         {
           error: "INVALID_STATUS",
-          message: "주문 상태가 필요합니다.",
-          receivedStatus: status,
-          allowedStatuses,
-        },
-        { status: 400 },
-      );
-    }
-
-    if (!allowedStatuses.includes(status)) {
-      return NextResponse.json(
-        {
-          error: "INVALID_STATUS",
-          message: `허용되지 않은 주문 상태입니다: ${status}`,
-          receivedStatus: status,
+          message: `허용되지 않은 주문상태입니다: ${receivedStatus}`,
+          receivedStatus,
           allowedStatuses,
         },
         { status: 400 },
@@ -78,13 +66,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       );
     }
 
-    if (!canTransition(existing.status as OrderStatus, status)) {
+    if (!canTransition(existing.status as OrderStatus, nextStatus)) {
       return NextResponse.json(
         {
           error: "INVALID_STATUS_TRANSITION",
-          message: getTransitionError(existing.status as OrderStatus, status),
+          message: getTransitionError(existing.status as OrderStatus, nextStatus),
           currentStatus: existing.status,
-          requestedStatus: status,
+          requestedStatus: nextStatus,
         },
         { status: 400 },
       );
@@ -92,18 +80,19 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
     const order = await prisma.order.update({
       where: { id },
-      data: { status },
+      data: { status: nextStatus },
     });
 
-    console.log(`[PATCH /api/admin/orders/${id}] SUCCESS: ${existing.status} -> ${status}`);
+    console.log(`[PATCH /api/admin/orders/${id}] SUCCESS: ${existing.status} -> ${nextStatus}`);
     return NextResponse.json({ order });
   } catch (error) {
-    console.error("[ORDER_UPDATE_ERROR]", error);
+    console.error("[ORDER_STATUS_UPDATE_ERROR]", error);
+
     return NextResponse.json(
       {
-        error: "ORDER_UPDATE_FAILED",
-        message: "주문 상태 변경 중 오류가 발생했습니다.",
-        details: error instanceof Error ? error.message : String(error),
+        error: "ORDER_STATUS_UPDATE_FAILED",
+        message: error instanceof Error ? error.message : String(error),
+        name: error instanceof Error ? error.name : undefined,
         receivedStatus,
       },
       { status: 500 },
