@@ -5,18 +5,13 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
 import {
-  BANK_ACCOUNT,
   FULFILLMENT_OPTIONS,
   MIN_ORDER_AMOUNT,
-  PAYMENT_METHOD_OPTIONS,
-  PICKUP_TIME_SLOTS,
-  formatPrice,
   type CartItem,
   type FulfillmentType,
   type PaymentMethod,
 } from "@/lib/types";
 import { parseJsonResponse } from "@/lib/fetch-json";
-import { STORE } from "@/lib/store";
 
 const SHIPPING_PROFILES_KEY = "shippingProfiles";
 
@@ -51,40 +46,55 @@ function createClientOrderId() {
 function sortProfiles(value: unknown): ShippingProfile[] {
   if (!Array.isArray(value)) return [];
   return value
-    .filter((profile): profile is ShippingProfile =>
-      Boolean(profile && typeof profile === "object" && "id" in profile && "name" in profile),
+    .filter(
+      (profile): profile is ShippingProfile =>
+        Boolean(profile && typeof profile === "object" && "id" in profile),
     )
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    )
     .slice(0, 5);
 }
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalAmount, clearCart, replaceItems } = useCart();
+  const { items, totalAmount, clearCart } = useCart();
+
   const submitLockRef = useRef(false);
 
-  const [fulfillmentType, setFulfillmentType] = useState<FulfillmentType>("DELIVERY");
+  const [fulfillmentType, setFulfillmentType] =
+    useState<FulfillmentType>("DELIVERY");
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [deliveryEntrance, setDeliveryEntrance] = useState("");
   const [pickupTime, setPickupTime] = useState("");
+
   const [memo, setMemo] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("ONSITE_CARD");
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("ONSITE_CARD");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null);
-  const [shippingProfiles, setShippingProfiles] = useState<ShippingProfile[]>([]);
-  const [selectedProfileId, setSelectedProfileId] = useState("");
-  const [profileMessage, setProfileMessage] = useState("");
+  const [completedOrder, setCompletedOrder] =
+    useState<CompletedOrder | null>(null);
+
   const [clientOrderId, setClientOrderId] = useState(createClientOrderId);
 
   const isDelivery = fulfillmentType === "DELIVERY";
-  const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
 
   /**
-   * ✅ 핵심 수정: 안전한 redirect 가드
+   * ✅ 핵심: 주문 가능 조건 (UI 잠금)
    */
+  const canSubmit =
+    !loading &&
+    items.length > 0 &&
+    name.trim().length > 0 &&
+    phone.trim().length > 0 &&
+    (isDelivery ? address.trim().length > 0 : pickupTime.trim().length > 0);
+
   useEffect(() => {
     if (completedOrder) return;
     if (!items || items.length === 0) {
@@ -92,115 +102,44 @@ export default function CheckoutPage() {
     }
   }, [items, completedOrder, router]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem(SHIPPING_PROFILES_KEY);
-    if (!saved) return;
-
-    try {
-      const profiles = sortProfiles(JSON.parse(saved));
-      setShippingProfiles(profiles);
-      if (profiles[0]) applyShippingProfile(profiles[0], "최근 배송 정보를 불러왔습니다.");
-    } catch (err) {
-      console.error("Failed to load shipping profiles:", err);
-    }
-  }, []);
-
-  function applyShippingProfile(profile: ShippingProfile, message = "저장된 배송 정보를 불러왔습니다.") {
-    setSelectedProfileId(profile.id);
-    setName(profile.name);
-    setPhone(profile.phone);
-    setAddress(profile.address);
-    setDeliveryEntrance(profile.entrance || "");
-    setProfileMessage(message);
-  }
-
-  function persistShippingProfiles(profiles: ShippingProfile[]) {
-    const nextProfiles = sortProfiles(profiles);
-    setShippingProfiles(nextProfiles);
-    localStorage.setItem(SHIPPING_PROFILES_KEY, JSON.stringify(nextProfiles));
-  }
-
-  function handleSaveShippingProfile() {
-    if (!name.trim() || !phone.trim() || !address.trim()) {
-      setProfileMessage("이름, 연락처, 주소를 모두 입력해주세요.");
-      return;
-    }
-
-    const profile: ShippingProfile = {
-      id: selectedProfileId || Date.now().toString(),
-      name: name.trim(),
-      phone: phone.trim(),
-      address: address.trim(),
-      entrance: deliveryEntrance.trim() || undefined,
-      updatedAt: new Date().toISOString(),
-    };
-
-    persistShippingProfiles([
-      profile,
-      ...shippingProfiles.filter((savedProfile) => savedProfile.id !== profile.id),
-    ]);
-
-    setSelectedProfileId(profile.id);
-    setProfileMessage("배송 정보가 저장되었습니다.");
-  }
-
-  function handleDeleteShippingProfile(id: string) {
-    persistShippingProfiles(shippingProfiles.filter((profile) => profile.id !== id));
-    if (selectedProfileId === id) setSelectedProfileId("");
-    setProfileMessage("저장된 배송 정보를 삭제했습니다.");
-  }
-
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (loading || submitLockRef.current) return;
+
+    if (!canSubmit || submitLockRef.current) return;
     submitLockRef.current = true;
-
-    if (items.some((item) => !Number.isInteger(item.quantity) || item.quantity <= 0)) {
-      submitLockRef.current = false;
-      setError("장바구니 수량을 다시 확인해주세요.");
-      return;
-    }
-
-    if (!isDelivery && !pickupTime) {
-      submitLockRef.current = false;
-      setError("픽업 예정 시간을 선택해주세요.");
-      return;
-    }
 
     setError("");
     setLoading(true);
 
     try {
-      const cartPayload = {
-        totalAmount,
+      const payload = {
+        clientOrderId,
+        customerName: name.trim(),
+        customerPhone: phone.trim(),
+        fulfillmentType,
+
+        deliveryAddress: isDelivery ? address.trim() : undefined,
+        deliveryEntrance: isDelivery
+          ? deliveryEntrance.trim() || undefined
+          : undefined,
+
+        pickupTime: !isDelivery ? pickupTime : undefined,
+
+        memo: memo.trim() || undefined,
+        paymentMethod: isDelivery ? paymentMethod : undefined,
+
         items: items.map((item) => ({
           productId: item.productId,
-          barcode: item.barcode,
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          normalPrice: item.normalPrice,
-          eventPrice: item.eventPrice,
-          discountRate: item.discountRate,
         })),
       };
 
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clientOrderId,
-          customerName: name,
-          customerPhone: phone,
-          fulfillmentType,
-          deliveryAddress: isDelivery ? address : undefined,
-          deliveryEntrance: isDelivery ? deliveryEntrance.trim() || undefined : undefined,
-          pickupTime: isDelivery ? undefined : pickupTime,
-          memo,
-          paymentMethod: isDelivery ? paymentMethod : undefined,
-          totalAmount,
-          items: cartPayload.items,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await parseJsonResponse<{
@@ -209,11 +148,11 @@ export default function CheckoutPage() {
       }>(res);
 
       if (!res.ok) {
-        throw new Error(data.error ?? "주문에 실패했습니다.");
+        throw new Error(data.error || "주문 실패");
       }
 
       if (!data.orderNumber) {
-        throw new Error("주문번호를 받지 못했습니다.");
+        throw new Error("주문번호 없음");
       }
 
       setCompletedOrder({
@@ -222,10 +161,12 @@ export default function CheckoutPage() {
         customerPhone: phone,
         fulfillmentType,
         deliveryAddress: isDelivery ? address : undefined,
-        deliveryEntrance: isDelivery ? deliveryEntrance.trim() || undefined : undefined,
-        pickupTime: isDelivery ? undefined : pickupTime,
+        deliveryEntrance: isDelivery
+          ? deliveryEntrance.trim() || undefined
+          : undefined,
+        pickupTime: !isDelivery ? pickupTime : undefined,
         paymentMethod: isDelivery ? paymentMethod : undefined,
-        items: items.map((item) => ({ ...item })),
+        items: [...items],
         totalAmount,
       });
 
@@ -255,9 +196,8 @@ export default function CheckoutPage() {
             </p>
 
             <button
-              type="button"
               onClick={() => router.replace("/")}
-              className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold"
+              className="w-full bg-green-600 text-white py-3 rounded-xl"
             >
               계속 쇼핑하기
             </button>
@@ -272,8 +212,9 @@ export default function CheckoutPage() {
       <Header />
 
       <div className="max-w-md mx-auto px-3 py-6">
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded-2xl border">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 border rounded-2xl">
 
+          {/* 수령 방식 */}
           <fieldset>
             <legend className="font-semibold mb-2">수령 방식</legend>
 
@@ -286,16 +227,55 @@ export default function CheckoutPage() {
                     checked={fulfillmentType === option.value}
                     onChange={() => setFulfillmentType(option.value)}
                   />
-                  <div className="text-sm font-semibold">{option.label}</div>
+                  <div className="text-sm font-semibold">
+                    {option.label}
+                  </div>
                 </label>
               ))}
             </div>
           </fieldset>
 
+          {/* 이름 */}
+          <input
+            placeholder="이름"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          {/* 전화 */}
+          <input
+            placeholder="전화번호"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          {/* 배송 */}
+          {isDelivery && (
+            <input
+              placeholder="주소"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          )}
+
+          {/* 픽업 */}
+          {!isDelivery && (
+            <input
+              placeholder="픽업 시간"
+              value={pickupTime}
+              onChange={(e) => setPickupTime(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          )}
+
+          {/* 버튼 */}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-green-600 text-white py-3 rounded-xl"
+            disabled={!canSubmit}
+            className="w-full bg-green-600 text-white py-3 rounded-xl disabled:opacity-50"
           >
             {loading ? "처리 중..." : "주문 확정"}
           </button>
