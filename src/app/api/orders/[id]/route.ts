@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import type { OrderStatus } from "@/lib/types";
@@ -6,7 +6,7 @@ import { canTransition, getTransitionError } from "@/lib/order-status";
 
 type Params = { params: Promise<{ id: string }> };
 
-const VALID_STATUSES: OrderStatus[] = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
+const VALID_STATUSES: OrderStatus[] = ["PENDING", "APPROVED", "DELIVERED", "CANCELLED"];
 
 export async function PATCH(req: NextRequest, { params }: Params) {
   if (!(await isAdminAuthenticated())) {
