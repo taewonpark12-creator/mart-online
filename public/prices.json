@@ -116038,8 +116038,8 @@
   },
   {
     "barcode": "9100000001944",
-    "name": "햇무(1박스)",
-    "normalPrice": 17800,
+    "name": "햇무(1박스)행사",
+    "normalPrice": 13800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117073,8 +117073,8 @@
   },
   {
     "barcode": "9100000215280",
-    "name": "햇무(1개)",
-    "normalPrice": 2480,
+    "name": "햇무(1개)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118171,8 +118171,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)",
-    "normalPrice": 2980,
+    "name": "가지(5개/1봉)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
