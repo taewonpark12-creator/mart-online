@@ -233,12 +233,10 @@ function OrderDetailPanel({
           </div>
         </section>
 
-        {order.memo && (
-          <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
-            <h2 className="text-sm font-bold text-amber-900 mb-3">요청사항</h2>
-            <p className="text-sm text-gray-700">{order.memo}</p>
-          </section>
-        )}
+        <section className="rounded-xl bg-amber-50 border border-amber-100 p-4">
+          <h2 className="text-sm font-bold text-amber-900 mb-3">요청사항</h2>
+          <p className="text-sm text-gray-700">{order.memo || "요청사항 없음"}</p>
+        </section>
       </div>
     </aside>
   );
@@ -256,6 +254,7 @@ export default function OrdersPage() {
   const [previousPendingCount, setPreviousPendingCount] = useState<number>(0);
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
+  const [notificationSupported, setNotificationSupported] = useState(false);
 
   const selectedOrder = selectedOrderId
     ? orders.find((order) => order.id === selectedOrderId) ?? null
@@ -345,6 +344,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
+      setNotificationSupported(true);
       setNotificationPermission(Notification.permission);
     }
   }, []);
@@ -437,13 +437,19 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          {notificationPermission === "default" && (
-            <button
-              onClick={requestNotificationPermission}
-              className="text-sm text-gray-600 border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50"
-            >
-              알림 허용
-            </button>
+          {notificationSupported && notificationPermission !== "granted" && (
+            <div className="flex items-center gap-2">
+              {notificationPermission === "denied" ? (
+                <span className="text-sm text-gray-500">브라우저 설정에서 알림을 허용해주세요.</span>
+              ) : (
+                <button
+                  onClick={requestNotificationPermission}
+                  className="text-sm text-gray-600 border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50"
+                >
+                  알림 허용
+                </button>
+              )}
+            </div>
           )}
         </div>
 
