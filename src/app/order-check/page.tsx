@@ -1,178 +1,266 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
-import { parseJsonResponse } from "@/lib/fetch-json";
+import { useCart } from "@/contexts/CartContext";
 import {
-  ORDER_STATUS_LABEL,
-  ORDER_STATUS_COLOR,
-  FULFILLMENT_TYPE_LABEL,
-  formatPaymentMethodLabel,
-  formatPickupTimeLabel,
-  formatPrice,
-  type OrderStatus,
-  type PaymentMethod,
-  type FulfillmentType,
-} from "@/lib/types";
-import { orderItemName } from "@/lib/order-item";
-import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
+  STORE,
+} from "@/lib/store";
+import { formatPrice } from "@/lib/types";
+import { parseJsonResponse } from "@/lib/fetch-json";
 
-type OrderItem = {
+type FulfillmentType = "DELIVERY" | "PICKUP";
+
+type CartItem = {
   id: string;
-  quantity: number;
-  unitPrice: number;
-  productName: string;
-  product?: { name: string; imageUrl?: string | null } | null;
+  name: string;
+  price: number;
+  qty: number;
 };
 
-type Order = {
-  id: string;
-  orderNumber: string;
-  customerName: string;
-  status: OrderStatus;
-  fulfillmentType: FulfillmentType;
-  pickupTime?: string | null;
-  paymentMethod: PaymentMethod | null;
-  totalAmount: number;
-  createdAt: string;
-  items: OrderItem[];
-};
+function createClientOrderId() {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
 
-function OrderCheckPageContent() {
-  const [phone, setPhone] = useState("");
-  const [orders, setOrders] = useState<Order[]>([]);
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { items, total, clearCart } = useCart();
+
+  const submitLockRef = useRef(false);
+
+  const [fulfillmentType, setFulfillmentType] =
+    useState<FulfillmentType>("DELIVERY");
+
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+
+  const [address, setAddress] = useState("");
+  const [pickupTime, setPickupTime] = useState("09:30");
+  const [note, setNote] = useState("");
+
   const [loading, setLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState("");
+  const [completedOrder, setCompletedOrder] = useState<any>(null);
 
-  async function handleSearch() {
-    const trimmed = phone.trim();
-    if (!trimmed) {
-      setError("연락처를 입력해주세요.");
-      return;
+  const [clientOrderId, setClientOrderId] = useState(createClientOrderId());
+
+  const isDelivery = fulfillmentType === "DELIVERY";
+
+  /**
+   * ✅ 주문 가능 여부
+   */
+  const canSubmit =
+    !loading &&
+    customerName.trim() &&
+    customerPhone.trim() &&
+    items.length > 0 &&
+    (isDelivery ? address.trim() : pickupTime);
+
+  useEffect(() => {
+    if (!items || items.length === 0) {
+      router.replace("/cart");
     }
+  }, [items, router]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!canSubmit || submitLockRef.current) return;
+    submitLockRef.current = true;
 
     setError("");
     setLoading(true);
-    setHasSearched(true);
 
     try {
-      const res = await fetch(`/api/orders/check?phone=${encodeURIComponent(trimmed)}`);
-      const data = await parseJsonResponse<Order[] | { error?: string }>(res);
+      const payload = {
+        clientOrderId,
+
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim(),
+
+        fulfillmentType: isDelivery ? "DELIVERY" : "PICKUP",
+
+        deliveryAddress: isDelivery ? address.trim() : undefined,
+        pickupTime: !isDelivery ? pickupTime : undefined,
+
+        memo: note.trim() || undefined,
+
+        paymentMethod: isDelivery ? "ONSITE_CASH" : undefined,
+
+        items: items.map((i) => ({
+          productId: i.id,
+          name: i.name,
+          price: i.price,
+          quantity: i.qty,
+        })),
+      };
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await parseJsonResponse<{
+        orderNumber?: string;
+        error?: string;
+      }>(res);
 
       if (!res.ok) {
-        throw new Error("error" in data && data.error ? data.error : "조회에 실패했습니다.");
+        throw new Error(data?.error || "주문 실패");
       }
 
-      setOrders(Array.isArray(data) ? data : []);
+      if (!data.orderNumber) {
+        throw new Error("주문번호 없음");
+      }
+
+      setCompletedOrder({
+        orderNumber: data.orderNumber,
+        customerName,
+        customerPhone,
+        fulfillmentType,
+        deliveryAddress: isDelivery ? address : undefined,
+        pickupTime: !isDelivery ? pickupTime : undefined,
+        items: [...items],
+        totalAmount: total,
+      });
+
+      clearCart();
+      setClientOrderId(createClientOrderId());
     } catch (err) {
-      setOrders([]);
-      setError(err instanceof Error ? err.message : "조회 중 오류가 발생했습니다.");
+      setError(err instanceof Error ? err.message : "주문 실패");
     } finally {
       setLoading(false);
+      submitLockRef.current = false;
     }
+  }
+
+  if (completedOrder) {
+    return (
+      <div className="min-h-screen bg-[#f8faf8]">
+        <Header />
+
+        <div className="max-w-md mx-auto p-6">
+          <div className="bg-white border rounded-xl p-6 text-center">
+            <h1 className="text-xl font-bold mb-2">주문 완료</h1>
+
+            <p className="text-sm text-gray-500 mb-4">
+              주문번호: {completedOrder.orderNumber}
+            </p>
+
+            <button
+              onClick={() => router.replace("/")}
+              className="w-full bg-green-600 text-white py-3 rounded-xl"
+            >
+              계속 쇼핑하기
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
-      <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
-        <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2 text-green-800">주문 내역 조회</h1>
-        <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-          주문 시 입력한 연락처로 주문 내역을 조회할 수 있습니다.
-        </p>
 
-        <div className="space-y-2 mb-4">
-          <div className="flex gap-2">
-            <input
-              type="tel"
-              placeholder="010-0000-0000"
-              className="flex-1 border rounded-xl px-3 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-            <button
-              onClick={handleSearch}
-              disabled={loading}
-              className="bg-green-600 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-60 shrink-0 text-sm"
-            >
-              {loading ? "조회중" : "조회"}
-            </button>
+      <div className="max-w-md mx-auto p-4">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded-xl border">
+
+          {/* 수령 방식 */}
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { label: "픽업", value: "PICKUP" },
+              { label: "배달", value: "DELIVERY" },
+            ].map((opt) => (
+              <button
+                type="button"
+                key={opt.value}
+                onClick={() => setFulfillmentType(opt.value as FulfillmentType)}
+                className={`p-3 border rounded-xl ${
+                  fulfillmentType === opt.value ? "bg-green-100" : ""
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
-        </div>
 
-        {error && <p className="text-red-500 text-xs sm:text-sm mb-4">{error}</p>}
+          {/* 이름 */}
+          <input
+            placeholder="이름"
+            value={customerName}
+            onChange={(e) => setCustomerName(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
 
-        <div className="space-y-3 sm:space-y-4">
-          {orders.map((order) => (
-            <div key={order.id} className="bg-white border rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm">
-              <div className="flex justify-between items-start gap-2 mb-2">
-                <span className="font-mono text-xs sm:text-sm font-bold text-gray-800">{order.orderNumber}</span>
-                <span
-                  className={`text-[10px] sm:text-xs font-medium px-2 py-0.5 rounded-full ${
-                    ORDER_STATUS_COLOR[order.status as OrderStatus]
-                  }`}
-                >
-                  {ORDER_STATUS_LABEL[order.status as OrderStatus]}
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-xs text-gray-400 mb-1.5 sm:mb-2">
-                {new Date(order.createdAt).toLocaleString("ko-KR")}
-              </p>
-              <p className="text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
-                {order.customerName} · {FULFILLMENT_TYPE_LABEL[order.fulfillmentType as FulfillmentType]}
-                {order.fulfillmentType === "PICKUP" && order.pickupTime
-                  ? ` ${formatPickupTimeLabel(order.pickupTime)}`
-                  : ""}
-              </p>
-              <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2">
-                {formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType)}
-              </p>
-              <div className="text-xs sm:text-sm text-gray-600 space-y-1 border-t pt-1.5 sm:pt-2">
-                {order.items.map((item: OrderItem) => (
-                  <div key={item.id} className="flex justify-between">
-                    <span>
-                      {orderItemName(item)} x {item.quantity}
-                    </span>
-                    <span>{formatPrice(item.unitPrice * item.quantity)}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="font-bold text-green-700 text-right mt-1.5 sm:mt-2 text-sm sm:text-base">
-                {formatPrice(order.totalAmount)}
-              </p>
-            </div>
-          ))}
+          {/* 전화 */}
+          <input
+            placeholder="전화번호"
+            value={customerPhone}
+            onChange={(e) => setCustomerPhone(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
 
-          {hasSearched && !loading && orders.length === 0 && !error && (
-            <p className="text-center text-gray-400 py-10 sm:py-12 text-xs sm:text-sm">
-              해당 연락처로 등록된 주문 내역이 없습니다.
-            </p>
+          {/* 배송 */}
+          {isDelivery && (
+            <input
+              placeholder="주소"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
           )}
-        </div>
 
-        <div className="flex justify-center mt-6 sm:mt-8">
-          <GoBackToShoppingButton />
-        </div>
+          {/* 픽업 */}
+          {!isDelivery && (
+            <input
+              type="time"
+              value={pickupTime}
+              onChange={(e) => setPickupTime(e.target.value)}
+              className="w-full border p-2 rounded"
+            />
+          )}
+
+          {/* 요청사항 */}
+          <textarea
+            placeholder="요청사항"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+
+          {/* 주문 요약 */}
+          <div className="text-sm border-t pt-3">
+            {items.map((i) => (
+              <div key={i.id} className="flex justify-between">
+                <span>{i.name} × {i.qty}</span>
+                <span>{formatPrice(i.price * i.qty)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between font-bold mt-2">
+              <span>총액</span>
+              <span>{formatPrice(total)}</span>
+            </div>
+          </div>
+
+          {/* 버튼 */}
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="w-full bg-green-600 text-white py-3 rounded-xl disabled:opacity-50"
+          >
+            {loading ? "처리 중..." : "주문하기"}
+          </button>
+
+          {error && (
+            <p className="text-red-500 text-sm">{error}</p>
+          )}
+        </form>
       </div>
     </div>
-  );
-}
-
-export default function OrderCheckPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#f8faf8] flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">로딩 중입니다...</p>
-          </div>
-        </div>
-      }
-    >
-      <OrderCheckPageContent />
-    </Suspense>
   );
 }
