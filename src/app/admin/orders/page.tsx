@@ -301,8 +301,9 @@ export default function OrdersPage() {
       const data = await res.json();
       const newPendingCount = data.pendingCount ?? 0;
       setPendingCount(newPendingCount);
-      
+
       if (newPendingCount > previousPendingCount && previousPendingCount > 0) {
+        console.log("[notification] new pending order detected", previousPendingCount, newPendingCount);
         setShowNewOrderAlert(true);
         if (notificationPermission === "granted") {
           showBrowserNotification(newPendingCount);
@@ -317,9 +318,9 @@ export default function OrdersPage() {
   const showBrowserNotification = (count: number) => {
     try {
       if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-        new Notification("신규 주문", {
+        new Notification("한사랑마트 신규 주문", {
           body: `대기 중인 주문이 ${count}건 있습니다.`,
-          icon: "/favicon.ico",
+          tag: "new-order-notification",
         });
       }
     } catch (error) {
@@ -328,12 +329,19 @@ export default function OrdersPage() {
   };
 
   const sendTestNotification = () => {
+    console.log("[notification] test clicked");
     try {
-      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-        new Notification("테스트 알림", {
-          body: "알림이 정상 작동합니다.",
-          icon: "/favicon.ico",
-        });
+      if (typeof window !== "undefined" && "Notification" in window) {
+        console.log("[notification] Notification.permission:", Notification.permission);
+        console.log("[notification] document.visibilityState:", document.visibilityState);
+        console.log("[notification] location.protocol:", location.protocol);
+        
+        if (Notification.permission === "granted") {
+          new Notification("한사랑마트 테스트 알림", {
+            body: "주문 알림이 정상 작동합니다.",
+            tag: "test-order-notification",
+          });
+        }
       }
     } catch (error) {
       console.error("[admin/orders] test notification failed", error);
@@ -458,6 +466,7 @@ export default function OrdersPage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-green-600 font-medium">알림 켜짐</span>
                 <button
+                  type="button"
                   onClick={sendTestNotification}
                   className="text-xs text-gray-600 border border-gray-300 px-2 py-1 rounded hover:bg-gray-50"
                 >
