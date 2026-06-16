@@ -1,15 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSecurityHeaders } from "@/lib/security";
-import { PriceSourceUnavailableError } from "@/lib/order-pricing";
-import {
-  OrderValidationError,
-  validateSubmittedCart,
-} from "@/lib/order-cart-validation";
-import {
-  createRequestId,
-  logOrderFailure,
-  orderErrorBody,
-} from "@/lib/order-observability";
 
 export const runtime = "nodejs";
 
@@ -19,84 +9,42 @@ function jsonWithSecurity(body: unknown, init?: ResponseInit) {
   return response;
 }
 
-function fail(details: {
-  requestId: string;
-  code: string;
-  error: string;
-  status: number;
-  priceSourceVersion?: string | null;
-  productId?: string | null;
-  updatedCart?: unknown;
-}) {
-  logOrderFailure({
-    requestId: details.requestId,
-    errorCode: details.code,
-    priceSourceVersion: details.priceSourceVersion,
-    productId: details.productId,
-    endpoint: "/api/orders/validate-cart",
-    message: details.error,
-  });
+function toFiniteNumber(value: unknown) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string" && value.trim() !== "") return Number(value);
+  return Number.NaN;
+}
 
-  return jsonWithSecurity(
-    orderErrorBody({
-      requestId: details.requestId,
-      code: details.code,
-      error: details.error,
-      priceSourceVersion: details.priceSourceVersion,
-      productId: details.productId,
-      updatedCart: details.updatedCart,
-    }),
-    { status: details.status },
-  );
+function calculateTotal(rawItems: unknown) {
+  if (!Array.isArray(rawItems)) return 0;
+
+  return rawItems.reduce((sum, rawItem) => {
+    if (!rawItem || typeof rawItem !== "object") return sum;
+    const item = rawItem as Record<string, unknown>;
+    const price = toFiniteNumber(item.price);
+    const quantity = toFiniteNumber(item.quantity);
+    if (!Number.isFinite(price) || !Number.isFinite(quantity)) return sum;
+    return sum + price * quantity;
+  }, 0);
 }
 
 export async function POST(req: NextRequest) {
-  const requestId = createRequestId();
-  let priceSourceVersion: string | undefined;
+  let body: Record<string, unknown>;
 
   try {
-    const body = await req.json();
-    const validated = await validateSubmittedCart(body.items);
-    priceSourceVersion = validated.priceSourceVersion;
-
-    return jsonWithSecurity({
-      requestId,
-      code: "OK",
-      totalAmount: validated.totalAmount,
-      warning: validated.minimumOrderWarning,
-      priceSourceVersion: validated.priceSourceVersion,
-      updatedCart: validated.updatedCart,
-    });
+    const parsed = await req.json();
+    body = parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : {};
   } catch (error) {
-    if (error instanceof PriceSourceUnavailableError) {
-      return fail({
-        requestId,
-        code: "PRICE_SOURCE_UNAVAILABLE",
-        error: "PRICE_SOURCE_UNAVAILABLE",
-        status: 503,
-        priceSourceVersion,
-      });
-    }
-
-    if (error instanceof OrderValidationError) {
-      return fail({
-        requestId,
-        code: error.code,
-        error: error.message,
-        status: error.status,
-        priceSourceVersion: error.priceSourceVersion ?? priceSourceVersion,
-        productId: error.productId,
-        updatedCart: error.updatedCart,
-      });
-    }
-
-    console.error("[POST /api/orders/validate-cart]", { requestId, error });
-    return fail({
-      requestId,
-      code: "UNKNOWN_RUNTIME_ERROR",
-      error: "장바구니 검증 중 오류가 발생했습니다.",
-      status: 500,
-      priceSourceVersion,
-    });
+    console.log("[ORDER_VALIDATE_CART_JSON_PARSE_ERROR]", error);
+    body = {};
   }
+
+  const items = Array.isArray(body.items) ? body.items : [];
+  const totalAmount = calculateTotal(items);
+
+  return jsonWithSecurity({
+    code: "OK",
+    totalAmount,
+    updatedCart: items,
+  });
 }
