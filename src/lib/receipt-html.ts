@@ -12,19 +12,19 @@ import { orderItemBarcode, orderItemName } from "@/lib/order-item";
 export type { ReceiptOrder };
 
 export const RECEIPT_FONT = {
-  base: 15,
-  itemName: 15,
-  barcode: 9,
-  row: 15,
-  total: 15,
-  footer: 9,
+  base: 18,
+  itemName: 18,
+  barcode: 11,
+  row: 18,
+  total: 20,
+  footer: 11,
 };
 
 export const RECEIPT_LAYOUT = {
   paperWidthMm: 76,
-  colQty: 40,
-  colUnit: 70,
-  colAmount: 75,
+  colQty: 35,
+  colUnit: 65,
+  colAmount: 70,
 };
 
 function esc(text: string) {
@@ -74,8 +74,8 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   const fulfillmentBlock = isPickup
     ? `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.PICKUP), true)}
-  ${infoLine("픽업 매장", esc(`${STORE.name} / ${STORE.address}`), true)}
-  ${infoLine("픽업 예정", esc(order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"), true)}`
+  ${infoLine("", esc(`${STORE.name} / ${STORE.address}`), true)}
+  ${infoLine("픽업 시간", esc(order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"), true)}`
     : `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.DELIVERY), true)}
   ${infoLine("배달지", esc(order.deliveryAddress), true)}

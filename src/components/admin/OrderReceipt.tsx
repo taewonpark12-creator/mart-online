@@ -77,11 +77,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
       </InfoRow>
       {isPickup ? (
         <>
-          <InfoRow label="픽업 매장">
-            <b>{STORE.name}</b>
-            <span className="block text-[10px] font-normal mt-0.5">{STORE.address}</span>
-          </InfoRow>
-          <InfoRow label="픽업 예정">
+          <InfoRow label="픽업 시간">
             <b>{order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"}</b>
           </InfoRow>
         </>
