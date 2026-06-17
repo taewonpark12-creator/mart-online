@@ -23,6 +23,7 @@ function serializeOrder(order: {
   totalAmount: number;
   createdAt: Date;
   memo?: string | null;
+  paymentMethod?: string | null;
   items?: Array<{
     id: string;
     productId: string | null;
@@ -31,6 +32,10 @@ function serializeOrder(order: {
     unitPrice?: number;
     price?: number;
     quantity?: number;
+    product?: {
+      name?: string;
+      barcode?: string | null;
+    } | null;
   }>;
 }) {
   return {
@@ -46,12 +51,19 @@ function serializeOrder(order: {
     totalAmount: Number(order.totalAmount ?? 0),
     createdAt: order.createdAt.toISOString(),
     memo: order.memo ?? null,
+    paymentMethod: order.paymentMethod ?? null,
     items: (order.items || []).map((item) => ({
       id: item.id,
       productId: item.productId,
       productName: item.productName || item.name || "상품명 없음",
       unitPrice: Number(item.unitPrice ?? item.price ?? 0),
       quantity: Number(item.quantity ?? 0),
+      product: item.product
+        ? {
+            name: item.product.name,
+            barcode: item.product.barcode,
+          }
+        : undefined,
     })),
   };
 }
@@ -95,7 +107,7 @@ export async function GET(req: NextRequest) {
 
     const orders = await prisma.order.findMany({
       where: Object.keys(where).length > 0 ? where : undefined,
-      include: { items: true },
+      include: { items: { include: { product: true } } },
       orderBy: { createdAt: "desc" },
     });
 

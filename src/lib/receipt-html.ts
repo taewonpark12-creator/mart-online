@@ -99,9 +99,9 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   const itemsHtml = order.items
     .map((item, index) => {
       const lineTotal = item.unitPrice * item.quantity;
-      const barcode = orderItemBarcode(item);
+      const barcode = orderItemBarcode(item) || item.product?.barcode || "";
       const barcodeRow = barcode
-        ? `<tr class="item-barcode"><td colspan="4" style="padding-left:10px;"><b>${esc(barcode)}</b></td></tr>`
+        ? `<tr class="item-barcode"><td colspan="4" style="padding-left:4px;"><b>${esc(barcode)}</b></td></tr>`
         : "";
 
       return `
