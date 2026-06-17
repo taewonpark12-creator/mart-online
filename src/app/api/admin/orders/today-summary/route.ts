@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { OrderStatus } from "@/lib/types";
+import { getKoreaTodayString, getKoreaDateRangeUtc } from "@/lib/korea-date";
 
 export async function GET() {
   try {
@@ -9,22 +10,20 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const now = new Date();
-    const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
-    const koreaTime = new Date(now.getTime() + koreaOffset);
-    const koreaToday = new Date(koreaTime);
-    koreaToday.setUTCHours(0, 0, 0, 0);
-    const koreaTomorrow = new Date(koreaToday);
-    koreaTomorrow.setUTCDate(koreaTomorrow.getUTCDate() + 1);
+    const todayString = getKoreaTodayString();
+    console.log("[today-summary-api] korea today", todayString);
+    const { startUtc, endUtc } = getKoreaDateRangeUtc(todayString, todayString);
+    console.log("[today-summary-api] date range", startUtc, endUtc);
 
-    const today = new Date(koreaToday.getTime() - koreaOffset);
-    const tomorrow = new Date(koreaTomorrow.getTime() - koreaOffset);
+    if (!startUtc || !endUtc) {
+      return NextResponse.json({ total: 0, pending: 0, approved: 0, delivered: 0, cancelled: 0 });
+    }
 
     const orders = await prisma.order.findMany({
       where: {
         createdAt: {
-          gte: today,
-          lt: tomorrow,
+          gte: startUtc,
+          lte: endUtc,
         },
       },
       select: {

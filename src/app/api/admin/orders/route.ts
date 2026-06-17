@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { getKoreaDateRangeUtc } from "@/lib/korea-date";
 
 const allowedStatuses = [
   "PENDING",
@@ -82,20 +83,14 @@ export async function GET(req: NextRequest) {
       where.status = status;
     }
     if (startDate || endDate) {
+      const { startUtc, endUtc } = getKoreaDateRangeUtc(startDate, endDate);
+      console.log("[orders-api] date range", startUtc, endUtc);
       where.createdAt = {};
-      if (startDate) {
-        const startDateTime = new Date(startDate);
-        startDateTime.setHours(0, 0, 0, 0);
-        const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
-        const koreaStart = new Date(startDateTime.getTime() - koreaOffset);
-        where.createdAt.gte = koreaStart;
+      if (startUtc) {
+        where.createdAt.gte = startUtc;
       }
-      if (endDate) {
-        const endDateTime = new Date(endDate);
-        endDateTime.setHours(23, 59, 59, 999);
-        const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
-        const koreaEnd = new Date(endDateTime.getTime() - koreaOffset);
-        where.createdAt.lte = koreaEnd;
+      if (endUtc) {
+        where.createdAt.lte = endUtc;
       }
     }
 

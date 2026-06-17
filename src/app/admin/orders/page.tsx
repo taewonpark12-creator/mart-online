@@ -11,6 +11,7 @@ import {
   type OrderStatus,
   type FulfillmentType,
 } from "@/lib/types";
+import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString, getKoreaDaysAgoString } from "@/lib/korea-date";
 
 type OrderItem = {
   id: string;
@@ -269,40 +270,25 @@ export default function OrdersPage() {
   }>({ type: "all", startDate: null, endDate: null });
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
-    const now = new Date();
-    const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
-    const koreaTime = new Date(now.getTime() + koreaOffset);
-    const today = new Date(koreaTime);
-    today.setUTCHours(0, 0, 0, 0);
-    const todayLocal = new Date(today.getTime() - koreaOffset);
-
     let newStartDate: string | null = null;
     let newEndDate: string | null = null;
 
     switch (type) {
       case "today":
-        newStartDate = todayLocal.toISOString().split("T")[0];
-        newEndDate = todayLocal.toISOString().split("T")[0];
+        newStartDate = getKoreaTodayString();
+        newEndDate = getKoreaTodayString();
         break;
       case "yesterday":
-        const yesterday = new Date(today);
-        yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-        const yesterdayLocal = new Date(yesterday.getTime() - koreaOffset);
-        newStartDate = yesterdayLocal.toISOString().split("T")[0];
-        newEndDate = yesterdayLocal.toISOString().split("T")[0];
+        newStartDate = getKoreaYesterdayString();
+        newEndDate = getKoreaYesterdayString();
         break;
       case "last7days":
-        const sevenDaysAgo = new Date(today);
-        sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 6);
-        const sevenDaysAgoLocal = new Date(sevenDaysAgo.getTime() - koreaOffset);
-        newStartDate = sevenDaysAgoLocal.toISOString().split("T")[0];
-        newEndDate = todayLocal.toISOString().split("T")[0];
+        newStartDate = getKoreaDaysAgoString(6);
+        newEndDate = getKoreaTodayString();
         break;
       case "thismonth":
-        const firstDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
-        const firstDayLocal = new Date(firstDay.getTime() - koreaOffset);
-        newStartDate = firstDayLocal.toISOString().split("T")[0];
-        newEndDate = todayLocal.toISOString().split("T")[0];
+        newStartDate = getKoreaMonthStartString();
+        newEndDate = getKoreaTodayString();
         break;
       case "custom":
         newStartDate = startDate || null;
@@ -314,6 +300,8 @@ export default function OrdersPage() {
         break;
     }
 
+    console.log("[date-filter] korea today", getKoreaTodayString());
+    console.log("[date-filter] startDate", newStartDate, "endDate", newEndDate);
     setDateFilter({ type, startDate: newStartDate, endDate: newEndDate });
   };
 
