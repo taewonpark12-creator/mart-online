@@ -84,12 +84,18 @@ export async function GET(req: NextRequest) {
     if (startDate || endDate) {
       where.createdAt = {};
       if (startDate) {
-        where.createdAt.gte = new Date(startDate);
+        const startDateTime = new Date(startDate);
+        startDateTime.setHours(0, 0, 0, 0);
+        const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
+        const koreaStart = new Date(startDateTime.getTime() - koreaOffset);
+        where.createdAt.gte = koreaStart;
       }
       if (endDate) {
         const endDateTime = new Date(endDate);
         endDateTime.setHours(23, 59, 59, 999);
-        where.createdAt.lte = endDateTime;
+        const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
+        const koreaEnd = new Date(endDateTime.getTime() - koreaOffset);
+        where.createdAt.lte = koreaEnd;
       }
     }
 

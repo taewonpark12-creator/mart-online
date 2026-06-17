@@ -9,10 +9,16 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const now = new Date();
+    const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
+    const koreaTime = new Date(now.getTime() + koreaOffset);
+    const koreaToday = new Date(koreaTime);
+    koreaToday.setUTCHours(0, 0, 0, 0);
+    const koreaTomorrow = new Date(koreaToday);
+    koreaTomorrow.setUTCDate(koreaTomorrow.getUTCDate() + 1);
+
+    const today = new Date(koreaToday.getTime() - koreaOffset);
+    const tomorrow = new Date(koreaTomorrow.getTime() - koreaOffset);
 
     const orders = await prisma.order.findMany({
       where: {

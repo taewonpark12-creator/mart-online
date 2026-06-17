@@ -269,33 +269,40 @@ export default function OrdersPage() {
   }>({ type: "all", startDate: null, endDate: null });
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const koreaOffset = 9 * 60 * 60 * 1000; // UTC+9 in milliseconds
+    const koreaTime = new Date(now.getTime() + koreaOffset);
+    const today = new Date(koreaTime);
+    today.setUTCHours(0, 0, 0, 0);
+    const todayLocal = new Date(today.getTime() - koreaOffset);
 
     let newStartDate: string | null = null;
     let newEndDate: string | null = null;
 
     switch (type) {
       case "today":
-        newStartDate = today.toISOString().split("T")[0];
-        newEndDate = today.toISOString().split("T")[0];
+        newStartDate = todayLocal.toISOString().split("T")[0];
+        newEndDate = todayLocal.toISOString().split("T")[0];
         break;
       case "yesterday":
         const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        newStartDate = yesterday.toISOString().split("T")[0];
-        newEndDate = yesterday.toISOString().split("T")[0];
+        yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+        const yesterdayLocal = new Date(yesterday.getTime() - koreaOffset);
+        newStartDate = yesterdayLocal.toISOString().split("T")[0];
+        newEndDate = yesterdayLocal.toISOString().split("T")[0];
         break;
       case "last7days":
         const sevenDaysAgo = new Date(today);
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-        newStartDate = sevenDaysAgo.toISOString().split("T")[0];
-        newEndDate = today.toISOString().split("T")[0];
+        sevenDaysAgo.setUTCDate(sevenDaysAgo.getUTCDate() - 6);
+        const sevenDaysAgoLocal = new Date(sevenDaysAgo.getTime() - koreaOffset);
+        newStartDate = sevenDaysAgoLocal.toISOString().split("T")[0];
+        newEndDate = todayLocal.toISOString().split("T")[0];
         break;
       case "thismonth":
-        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-        newStartDate = firstDay.toISOString().split("T")[0];
-        newEndDate = today.toISOString().split("T")[0];
+        const firstDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+        const firstDayLocal = new Date(firstDay.getTime() - koreaOffset);
+        newStartDate = firstDayLocal.toISOString().split("T")[0];
+        newEndDate = todayLocal.toISOString().split("T")[0];
         break;
       case "custom":
         newStartDate = startDate || null;
