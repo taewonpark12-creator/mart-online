@@ -226,11 +226,13 @@ function OrderDetailPanel({
   updating,
   onUpdateStatus,
   onCancel,
+  onClose,
 }: {
   order: Order | null;
   updating: boolean;
   onUpdateStatus: (status: OrderStatus) => void;
   onCancel: () => void;
+  onClose?: () => void;
 }) {
   const handlePrintReceipt = () => {
     if (!order) return;
@@ -263,6 +265,17 @@ function OrderDetailPanel({
             )}
             <p className="text-xs text-gray-500 mt-1">{getOrderTime(order)}</p>
           </div>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
         <div className="mt-3 flex items-center justify-between gap-3">
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
@@ -786,23 +799,37 @@ export default function OrdersPage() {
                 </div>
               ) : (
                 visibleOrders.map((order) => (
-                  <OrderSummaryCard
-                    key={order.id}
-                    order={order}
-                    selected={selectedOrderId === order.id}
-                    onSelect={() => setSelectedOrderId(order.id)}
-                  />
+                  <div key={order.id}>
+                    <OrderSummaryCard
+                      order={order}
+                      selected={selectedOrderId === order.id}
+                      onSelect={() => setSelectedOrderId(order.id)}
+                    />
+                    {selectedOrderId === order.id && (
+                      <div className="lg:hidden mt-3">
+                        <OrderDetailPanel
+                          order={selectedOrder}
+                          updating={updatingOrderId === selectedOrderId}
+                          onUpdateStatus={updateStatus}
+                          onCancel={cancelOrder}
+                          onClose={() => setSelectedOrderId(null)}
+                        />
+                      </div>
+                    )}
+                  </div>
                 ))
               )}
             </div>
 
-            <div className="w-full lg:w-[450px]">
-              <OrderDetailPanel
-                order={selectedOrder}
-                updating={updatingOrderId === selectedOrderId}
-                onUpdateStatus={updateStatus}
-                onCancel={cancelOrder}
-              />
+            <div className="hidden lg:block w-full lg:w-[450px]">
+              <div className="sticky top-6 max-h-[calc(100vh-120px)] overflow-y-auto">
+                <OrderDetailPanel
+                  order={selectedOrder}
+                  updating={updatingOrderId === selectedOrderId}
+                  onUpdateStatus={updateStatus}
+                  onCancel={cancelOrder}
+                />
+              </div>
             </div>
           </div>
         )}

@@ -80,7 +80,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
     : `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.DELIVERY), true)}
   ${infoLine("주소", esc(order.deliveryAddress), true)}
-  ${infoLine("공동현관 출입정보", entrance)}`;
+  ${infoLine("공동현관 출입정보", entrance, true)}`;
 
   const paymentLabel = esc(formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType));
   const bankExtra =
