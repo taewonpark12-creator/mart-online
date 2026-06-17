@@ -46,6 +46,28 @@ function getOrderTime(order: Order) {
   return new Date(order.createdAt).toLocaleString("ko-KR");
 }
 
+function getElapsedTime(createdAt: string): { text: string; minutes: number } {
+  const now = new Date();
+  const created = new Date(createdAt);
+  const diffMs = now.getTime() - created.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+  if (diffMinutes < 1) {
+    return { text: "방금 접수", minutes: diffMinutes };
+  }
+
+  if (diffMinutes < 60) {
+    return { text: `접수 후 ${diffMinutes}분`, minutes: diffMinutes };
+  }
+
+  const hours = Math.floor(diffMinutes / 60);
+  const minutes = diffMinutes % 60;
+  if (minutes === 0) {
+    return { text: `접수 후 ${hours}시간`, minutes: diffMinutes };
+  }
+  return { text: `접수 후 ${hours}시간 ${minutes}분`, minutes: diffMinutes };
+}
+
 function toReceiptOrder(order: Order): ReceiptOrder {
   return {
     orderNumber: order.orderNumber,
@@ -101,15 +123,27 @@ function OrderSummaryCard({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const isPending = order.status === "PENDING";
+  const elapsedTime = isPending ? getElapsedTime(order.createdAt) : null;
+  const isDelayed = elapsedTime && elapsedTime.minutes >= 30;
+  const isWarning = elapsedTime && elapsedTime.minutes >= 20 && elapsedTime.minutes < 30;
+
+  let cardClass = "border-gray-200 bg-white hover:border-green-200 hover:shadow-sm";
+  if (isDelayed) {
+    cardClass = "border-red-300 bg-red-50 hover:border-red-400 hover:shadow-sm";
+  } else if (isWarning) {
+    cardClass = "border-orange-300 bg-orange-50 hover:border-orange-400 hover:shadow-sm";
+  }
+
+  if (selected) {
+    cardClass = "border-green-500 bg-green-50 shadow-sm";
+  }
+
   return (
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full text-left rounded-2xl border p-4 transition ${
-        selected
-          ? "border-green-500 bg-green-50 shadow-sm"
-          : "border-gray-200 bg-white hover:border-green-200 hover:shadow-sm"
-      }`}
+      className={`w-full text-left rounded-2xl border p-4 transition ${cardClass}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -117,13 +151,19 @@ function OrderSummaryCard({
           <p className="text-xs font-semibold text-gray-700 truncate mt-1">{order.customerPhone}</p>
           <p className="text-xs text-gray-500 truncate mt-1">{FULFILLMENT_TYPE_LABEL[order.fulfillmentType]}</p>
         </div>
-        <span className={`shrink-0 text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
-          {ORDER_STATUS_LABEL[order.status]}
-        </span>
+        <div className="flex items-center gap-2">
+          {isDelayed && <span className="shrink-0 text-xs font-bold px-2 py-1 rounded-full bg-red-600 text-white">⚠️ 지연</span>}
+          <span className={`shrink-0 text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
+            {ORDER_STATUS_LABEL[order.status]}
+          </span>
+        </div>
       </div>
 
       <div className="mt-3 flex items-end justify-between gap-3">
-        <p className="text-xs text-gray-500">{getOrderTime(order)}</p>
+        <div className="flex flex-col gap-1">
+          {elapsedTime && <p className="text-xs font-semibold text-gray-600">{elapsedTime.text}</p>}
+          <p className="text-xs text-gray-500">{getOrderTime(order)}</p>
+        </div>
         <p className="text-base font-black text-green-700">{formatPrice(order.totalAmount)}</p>
       </div>
     </button>
@@ -218,6 +258,9 @@ function OrderDetailPanel({
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs text-gray-400 font-mono">{order.orderNumber}</p>
+            {order.status === "PENDING" && (
+              <p className="text-xs font-semibold text-gray-600 mt-1">{getElapsedTime(order.createdAt).text}</p>
+            )}
             <p className="text-xs text-gray-500 mt-1">{getOrderTime(order)}</p>
           </div>
         </div>
@@ -319,6 +362,7 @@ export default function OrdersPage() {
     startDate: string | null;
     endDate: string | null;
   }>({ type: "all", startDate: null, endDate: null });
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -488,6 +532,11 @@ export default function OrdersPage() {
     const interval = setInterval(fetchPendingCount, 15000);
     return () => clearInterval(interval);
   }, [previousPendingCount, notificationPermission]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   async function updateStatus(status: OrderStatus) {
     if (!selectedOrderId) return;

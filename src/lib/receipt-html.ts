@@ -21,7 +21,8 @@ export const RECEIPT_FONT = {
 };
 
 export const RECEIPT_LAYOUT = {
-  paperWidthMm: 76,
+  paperWidthMm: 78
+  ,
   colQty: 35,
   colUnit: 65,
   colAmount: 70,
@@ -149,7 +150,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       white-space:normal;
       line-height:1.4;
     }
-    .info-label { font-weight:700; white-space:nowrap; }
+    .info-label { font-weight:400; white-space:nowrap; }
     .items-table { ${colStyle} margin-right:35px; width:calc(100% - 35px); }
     .items-table thead th {
       font-weight:700;
@@ -207,8 +208,8 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
 
   ${infoLine("주문자", esc(order.customerName), true)}
   ${fulfillmentBlock}
-  ${infoLine("연락처", esc(maskPhone(order.customerPhone)))}
-  ${infoLine(isPickup ? "요청사항" : "요청사항", deliveryMemo)}
+  ${infoLine("연락처", esc(maskPhone(order.customerPhone)),true)}
+  ${infoLine(isPickup ? "요청사항" : "요청사항", deliveryMemo, true)}
   <hr class="hr" />
 
   <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>
