@@ -41,15 +41,30 @@ export function printReceiptNow(order: ReceiptOrder) {
     printed = true;
     try {
       win.focus();
-      win.print();
+      setTimeout(() => {
+        try {
+          win.print();
+        } catch (e) {
+          console.error("[print-receipt] print() failed", e);
+          alert("인쇄를 시작할 수 없습니다. 다시 시도해주세요.");
+        }
+        finish();
+      }, 600);
     } catch (e) {
-      console.error(e);
-      alert("인쇄를 시작할 수 없습니다.");
+      console.error("[print-receipt] focus() failed", e);
+      alert("인쇄를 시작할 수 없습니다. 다시 시도해주세요.");
       finish();
     }
   };
 
-  iframe.onload = () => setTimeout(doPrint, 300);
-  setTimeout(doPrint, 500);
+  // Use requestAnimationFrame to ensure rendering is complete
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      iframe.onload = () => setTimeout(doPrint, 100);
+      setTimeout(doPrint, 300);
+    });
+  });
+
+  // Fallback timeout to ensure isPrinting is always released
   setTimeout(finish, 10000);
 }

@@ -234,14 +234,19 @@ function OrderDetailPanel({
   onCancel: () => void;
   onClose?: () => void;
 }) {
+  const [isPrinting, setIsPrinting] = useState(false);
+
   const handlePrintReceipt = () => {
     if (!order) return;
+    setIsPrinting(true);
     try {
       const printableOrder = toReceiptOrder(order);
       printReceiptNow(printableOrder);
+      setTimeout(() => setIsPrinting(false), 3000);
     } catch (error) {
       console.error("[admin/orders] print receipt failed", error);
-      alert("영수증 인쇄 중 오류가 발생했습니다.");
+      alert("인쇄를 시작할 수 없습니다. 다시 시도해주세요.");
+      setIsPrinting(false);
     }
   };
 
@@ -289,9 +294,10 @@ function OrderDetailPanel({
         <button
           type="button"
           onClick={handlePrintReceipt}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+          disabled={isPrinting}
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          영수증 인쇄
+          {isPrinting ? "인쇄 준비 중..." : "영수증 인쇄"}
         </button>
 
         <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} onCancel={onCancel} />
@@ -822,7 +828,7 @@ export default function OrdersPage() {
             </div>
 
             <div className="hidden lg:block w-full lg:w-[450px]">
-              <div className="sticky top-6 max-h-[calc(100vh-120px)] overflow-y-auto">
+              <div className="sticky top-6">
                 <OrderDetailPanel
                   order={selectedOrder}
                   updating={updatingOrderId === selectedOrderId}
