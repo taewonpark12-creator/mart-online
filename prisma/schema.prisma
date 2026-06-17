@@ -49,6 +49,7 @@ model Order {
   pickupTime       String?
   memo             String?
   paymentMethod    PaymentMethod?
+  outOfStockPolicy OutOfStockPolicy? @default(CONTACT)
   status           OrderStatus      @default(PENDING)
   totalAmount      Int
   createdAt        DateTime         @default(now())
@@ -91,6 +92,12 @@ enum PaymentMethod {
   ONSITE_CARD
   ONSITE_CASH
   BANK_TRANSFER
+}
+
+enum OutOfStockPolicy {
+  SUBSTITUTE
+  CANCEL_ONLY
+  CONTACT
 }
 
 model AuditLog {

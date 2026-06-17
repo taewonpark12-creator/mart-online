@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
-import { MIN_ORDER_AMOUNT, formatPrice, PICKUP_TIME_SLOTS } from "@/lib/types";
+import {
+  MIN_ORDER_AMOUNT,
+  formatPrice,
+  PICKUP_TIME_SLOTS,
+  PAYMENT_METHOD_OPTIONS,
+  OUT_OF_STOCK_POLICY_OPTIONS,
+} from "@/lib/types";
 
 const PICKUP_TIMES = [
   "09:30",
@@ -39,10 +45,13 @@ const PICKUP_TIMES = [
 const INITIAL_FORM = {
   customerName: "",
   customerPhone: "",
-  fulfillmentType: "PICKUP",
+  fulfillmentType: "DELIVERY",
   deliveryAddress: "",
   pickupTime: "09:30",
   memo: "",
+  outOfStockPolicy: "CONTACT",
+  paymentMethod: "ONSITE_CARD",
+  saveInfo: false,
 };
 
 const SAVE_ERROR = "주문 저장에 실패했습니다. 다시 시도해주세요.";
@@ -87,6 +96,24 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // Load saved delivery info from localStorage
+  useEffect(() => {
+    try {
+      const savedInfo = localStorage.getItem("deliveryInfo");
+      if (savedInfo) {
+        const parsed = JSON.parse(savedInfo);
+        setForm((current) => ({
+          ...current,
+          customerName: parsed.customerName || "",
+          customerPhone: parsed.customerPhone || "",
+          deliveryAddress: parsed.deliveryAddress || "",
+        }));
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const isDelivery = form.fulfillmentType === "DELIVERY";
   const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
   const canSubmit =
@@ -111,6 +138,22 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Save delivery info if requested
+    if (isDelivery && form.saveInfo) {
+      try {
+        localStorage.setItem(
+          "deliveryInfo",
+          JSON.stringify({
+            customerName: form.customerName.trim(),
+            customerPhone: form.customerPhone.trim(),
+            deliveryAddress: form.deliveryAddress.trim(),
+          }),
+        );
+      } catch {
+        /* ignore */
+      }
+    }
+
     const payload = {
       customerName: form.customerName.trim(),
       customerPhone: form.customerPhone.trim(),
@@ -118,6 +161,7 @@ export default function CheckoutPage() {
       deliveryAddress: isDelivery ? form.deliveryAddress.trim() : undefined,
       pickupTime: !isDelivery ? form.pickupTime : undefined,
       memo: form.memo.trim() || undefined,
+      paymentMethod: isDelivery ? form.paymentMethod : undefined,
       items: orderItems,
     };
 
@@ -186,6 +230,29 @@ export default function CheckoutPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <fieldset className="space-y-3">
+            <legend className="text-sm font-bold text-gray-900">수령 방법</legend>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: "배송", value: "DELIVERY" },
+                { label: "픽업", value: "PICKUP" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => update("fulfillmentType", option.value)}
+                  className={`rounded-xl border p-3 text-sm font-bold ${
+                    form.fulfillmentType === option.value
+                      ? "border-green-500 bg-green-50 text-green-900"
+                      : "border-gray-200 bg-white text-gray-600"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-3">
             <legend className="text-sm font-bold text-gray-900">고객 정보</legend>
             <input
               required
@@ -204,44 +271,34 @@ export default function CheckoutPage() {
             />
           </fieldset>
 
-          <fieldset className="space-y-3">
-            <legend className="text-sm font-bold text-gray-900">수령 방법</legend>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: "픽업", value: "PICKUP" },
-                { label: "배달", value: "DELIVERY" },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => update("fulfillmentType", option.value)}
-                  className={`rounded-xl border p-3 text-sm font-bold ${
-                    form.fulfillmentType === option.value
-                      ? "border-green-500 bg-green-50 text-green-900"
-                      : "border-gray-200 bg-white text-gray-600"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-
-            {isDelivery ? (
-              <>
+          {isDelivery ? (
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-bold text-gray-900">배송 정보</legend>
+              <input
+                required
+                value={form.deliveryAddress}
+                onChange={(event) => update("deliveryAddress", event.target.value)}
+                placeholder="배송 주소"
+                className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              />
+              {deliveryBlocked && (
+                <p className="text-sm font-semibold text-red-500">
+                  배송 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
+                </p>
+              )}
+              <label className="flex items-center gap-2">
                 <input
-                  required
-                  value={form.deliveryAddress}
-                  onChange={(event) => update("deliveryAddress", event.target.value)}
-                  placeholder="배달 주소"
-                  className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+                  type="checkbox"
+                  checked={form.saveInfo}
+                  onChange={(event) => update("saveInfo", event.target.checked ? "true" : "false")}
+                  className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-400"
                 />
-                {deliveryBlocked && (
-                  <p className="text-sm font-semibold text-red-500">
-                    배달 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
-                  </p>
-                )}
-              </>
-            ) : (
+                <span className="text-sm text-gray-700">기본정보 저장</span>
+              </label>
+            </fieldset>
+          ) : (
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-bold text-gray-900">픽업 정보</legend>
               <select
                 required
                 value={form.pickupTime}
@@ -254,8 +311,52 @@ export default function CheckoutPage() {
                   </option>
                 ))}
               </select>
-            )}
+              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
+                <p className="text-xs text-blue-800 font-semibold mb-1">계좌번호</p>
+                <p className="text-sm text-blue-900 font-bold">국민은행 654937-01-011941 한사랑마트</p>
+              </div>
+            </fieldset>
+          )}
+
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-bold text-gray-900">품절 시 처리방법</legend>
+            <div className="space-y-2">
+              {OUT_OF_STOCK_POLICY_OPTIONS.map((option) => (
+                <label key={option.value} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="outOfStockPolicy"
+                    value={option.value}
+                    checked={form.outOfStockPolicy === option.value}
+                    onChange={(event) => update("outOfStockPolicy", event.target.value)}
+                    className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-400"
+                  />
+                  <span className="text-sm text-gray-700">{option.label}</span>
+                </label>
+              ))}
+            </div>
           </fieldset>
+
+          {isDelivery && (
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-bold text-gray-900">결제 방법</legend>
+              <div className="space-y-2">
+                {PAYMENT_METHOD_OPTIONS.map((option) => (
+                  <label key={option.value} className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value={option.value}
+                      checked={form.paymentMethod === option.value}
+                      onChange={(event) => update("paymentMethod", event.target.value)}
+                      className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-400"
+                    />
+                    <span className="text-sm text-gray-700">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
 
           <fieldset className="space-y-3">
             <legend className="text-sm font-bold text-gray-900">요청사항</legend>

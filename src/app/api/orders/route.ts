@@ -5,6 +5,7 @@ import { generateOrderNumber } from "@/lib/types";
 export const runtime = "nodejs";
 
 type FulfillmentType = "DELIVERY" | "PICKUP";
+type PaymentMethod = "ONSITE_CARD" | "ONSITE_CASH" | "BANK_TRANSFER";
 
 function asString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     const deliveryAddress = asString(body.deliveryAddress);
     const pickupTime = asString(body.pickupTime);
     const memo = asString(body.memo);
+    const paymentMethod = (body.paymentMethod as PaymentMethod) || "ONSITE_CASH";
 
     if (!customerName || !customerPhone) {
       return NextResponse.json({ error: "MISSING_CUSTOMER_INFO" }, { status: 400 });
@@ -112,7 +114,7 @@ export async function POST(req: NextRequest) {
           fulfillmentType === "DELIVERY" ? deliveryAddress : "매장 픽업",
         pickupTime: fulfillmentType === "PICKUP" ? pickupTime : null,
         memo: memo || null,
-        paymentMethod: fulfillmentType === "DELIVERY" ? "ONSITE_CASH" : null,
+        paymentMethod: fulfillmentType === "DELIVERY" ? paymentMethod : null,
         totalAmount,
         items: {
           create: orderItems.map((item) => ({
