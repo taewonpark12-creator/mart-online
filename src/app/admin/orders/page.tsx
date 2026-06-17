@@ -300,8 +300,6 @@ export default function OrdersPage() {
         break;
     }
 
-    console.log("[date-filter] korea today", getKoreaTodayString());
-    console.log("[date-filter] startDate", newStartDate, "endDate", newEndDate);
     setDateFilter({ type, startDate: newStartDate, endDate: newEndDate });
   };
 
@@ -356,7 +354,6 @@ export default function OrdersPage() {
       setPendingCount(newPendingCount);
 
       if (newPendingCount > previousPendingCount && previousPendingCount > 0) {
-        console.log("[notification] new pending order detected", previousPendingCount, newPendingCount);
         setShowNewOrderAlert(true);
         if (notificationPermission === "granted") {
           showBrowserNotification(newPendingCount);
@@ -393,13 +390,8 @@ export default function OrdersPage() {
   };
 
   const sendTestNotification = () => {
-    console.log("[notification] test clicked");
     try {
       if (typeof window !== "undefined" && "Notification" in window) {
-        console.log("[notification] Notification.permission:", Notification.permission);
-        console.log("[notification] document.visibilityState:", document.visibilityState);
-        console.log("[notification] location.protocol:", location.protocol);
-        
         if (Notification.permission === "granted") {
           new Notification("한사랑마트 테스트 알림", {
             body: "주문 알림이 정상 작동합니다.",

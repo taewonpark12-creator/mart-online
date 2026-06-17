@@ -11,9 +11,7 @@ export async function GET() {
     }
 
     const todayString = getKoreaTodayString();
-    console.log("[today-summary-api] korea today", todayString);
     const { startUtc, endUtc } = getKoreaDateRangeUtc(todayString, todayString);
-    console.log("[today-summary-api] date range", startUtc, endUtc);
 
     if (!startUtc || !endUtc) {
       return NextResponse.json({ total: 0, pending: 0, approved: 0, delivered: 0, cancelled: 0 });

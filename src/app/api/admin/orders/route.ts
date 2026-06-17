@@ -84,7 +84,6 @@ export async function GET(req: NextRequest) {
     }
     if (startDate || endDate) {
       const { startUtc, endUtc } = getKoreaDateRangeUtc(startDate, endDate);
-      console.log("[orders-api] date range", startUtc, endUtc);
       where.createdAt = {};
       if (startUtc) {
         where.createdAt.gte = startUtc;
