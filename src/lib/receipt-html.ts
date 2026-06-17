@@ -138,12 +138,12 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       color:#000;
       background:#fff;
     }
-    body { padding: 2mm 4mm 4mm 2mm; }
+    body { padding: 2mm 2mm 4mm 2mm; }
     .hr { border:none; border-top:1px dashed #000; margin:7px 0; }
     .info {
       margin:3px 0;
-      margin-right:15px;
-      width:calc(100% - 15px);
+      margin-right:5px;
+      width:calc(100% - 5px);
       font-size:${F.base}px;
       overflow-wrap:break-word;
       word-break:break-all;
@@ -151,7 +151,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       line-height:1.4;
     }
     .info-label { font-weight:400; white-space:nowrap; }
-    .items-table { ${colStyle} margin-right:35px; width:calc(100% - 35px); }
+    .items-table { ${colStyle} margin-right:5px; width:calc(100% - 5px); }
     .items-table thead th {
       font-weight:700;
       font-size:13px;
