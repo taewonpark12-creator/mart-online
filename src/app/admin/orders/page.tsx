@@ -10,8 +10,11 @@ import {
   formatPrice,
   type OrderStatus,
   type FulfillmentType,
+  type PaymentMethod,
 } from "@/lib/types";
 import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString, getKoreaDaysAgoString } from "@/lib/korea-date";
+import { printReceiptNow } from "@/lib/print-receipt";
+import type { ReceiptOrder } from "@/lib/receipt-html";
 
 type OrderItem = {
   id: string;
@@ -19,6 +22,7 @@ type OrderItem = {
   unitPrice: number;
   productName: string;
   productId: string | null;
+  product?: { name: string; barcode?: string | null } | null;
 };
 
 type Order = {
@@ -35,10 +39,34 @@ type Order = {
   createdAt: string;
   items?: OrderItem[];
   memo?: string | null;
+  paymentMethod: PaymentMethod | null;
 };
 
 function getOrderTime(order: Order) {
   return new Date(order.createdAt).toLocaleString("ko-KR");
+}
+
+function toReceiptOrder(order: Order): ReceiptOrder {
+  return {
+    orderNumber: order.orderNumber,
+    customerName: order.customerName,
+    customerPhone: order.customerPhone,
+    fulfillmentType: order.fulfillmentType,
+    deliveryAddress: order.deliveryAddress,
+    deliveryEntrance: order.deliveryEntrance,
+    pickupTime: order.pickupTime,
+    paymentMethod: order.paymentMethod,
+    memo: order.memo || null,
+    status: order.status,
+    totalAmount: Number(order.totalAmount),
+    createdAt: order.createdAt,
+    items: (order.items || []).map((item) => ({
+      quantity: item.quantity,
+      unitPrice: Number(item.unitPrice),
+      productName: item.productName,
+      product: item.product || undefined,
+    })),
+  };
 }
 
 function getStatusPriority(status: OrderStatus): number {
@@ -164,6 +192,17 @@ function OrderDetailPanel({
   onUpdateStatus: (status: OrderStatus) => void;
   onCancel: () => void;
 }) {
+  const handlePrintReceipt = () => {
+    if (!order) return;
+    try {
+      const printableOrder = toReceiptOrder(order);
+      printReceiptNow(printableOrder);
+    } catch (error) {
+      console.error("[admin/orders] print receipt failed", error);
+      alert("영수증 인쇄 중 오류가 발생했습니다.");
+    }
+  };
+
   if (!order) {
     return (
       <aside className="h-full rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-gray-400">
@@ -191,6 +230,14 @@ function OrderDetailPanel({
       </div>
 
       <div className="p-5 space-y-5">
+        <button
+          type="button"
+          onClick={handlePrintReceipt}
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+        >
+          영수증 인쇄
+        </button>
+
         <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} onCancel={onCancel} />
 
         <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
