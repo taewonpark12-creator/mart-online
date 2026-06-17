@@ -264,17 +264,21 @@ function OrderDetailPanel({
           <h2 className="text-sm font-bold text-gray-900 mb-3">주문 상품</h2>
           <div className="divide-y">
             {order.items && order.items.length > 0 ? (
-              order.items.map((item) => (
-                <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
-                  <div className="min-w-0">
-                    <p className="font-medium text-gray-800 truncate">{item.productName || "상품명 없음"}</p>
-                    <p className="text-xs text-gray-500">{formatPrice(item.unitPrice || 0)} x {item.quantity || 0}</p>
+              order.items.map((item) => {
+                const barcode = item.product?.barcode || "";
+                return (
+                  <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-800 truncate">{item.productName || "상품명 없음"}</p>
+                      {barcode && <p className="text-xs text-gray-500">바코드: {barcode}</p>}
+                      <p className="text-xs text-gray-500">{formatPrice(item.unitPrice || 0)} x {item.quantity || 0}</p>
+                    </div>
+                    <p className="font-semibold text-gray-900 shrink-0">
+                      {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
+                    </p>
                   </div>
-                  <p className="font-semibold text-gray-900 shrink-0">
-                    {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
-                  </p>
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="text-sm text-gray-500">주문 상품 정보가 없습니다.</p>
             )}
