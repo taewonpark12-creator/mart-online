@@ -92,7 +92,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
         </>
       )}
       <InfoRow label="연락처">{maskPhone(order.customerPhone)}</InfoRow>
-      <InfoRow label={isPickup ? "요청사항" : "배달 요청사항"}>
+      <InfoRow label={isPickup ? "요청사항" : "요청사항"}>
         {order.memo?.trim() || "없음"}
       </InfoRow>
       <hr className="border-dashed border-black my-2" />

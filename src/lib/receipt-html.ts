@@ -78,7 +78,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${infoLine("픽업 시간", esc(order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"), true)}`
     : `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.DELIVERY), true)}
-  ${infoLine("배달지", esc(order.deliveryAddress), true)}
+  ${infoLine("주소", esc(order.deliveryAddress), true)}
   ${infoLine("공동현관 출입정보", entrance)}`;
 
   const paymentLabel = esc(formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType));
@@ -208,7 +208,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${infoLine("주문자", esc(order.customerName), true)}
   ${fulfillmentBlock}
   ${infoLine("연락처", esc(maskPhone(order.customerPhone)))}
-  ${infoLine(isPickup ? "요청사항" : "배달 요청사항", deliveryMemo)}
+  ${infoLine(isPickup ? "요청사항" : "요청사항", deliveryMemo)}
   <hr class="hr" />
 
   <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>
