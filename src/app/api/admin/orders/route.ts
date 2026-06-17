@@ -63,6 +63,8 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
 
     if (status && !allowedStatuses.includes(status)) {
       return NextResponse.json(
@@ -75,8 +77,24 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const where: any = {};
+    if (status) {
+      where.status = status;
+    }
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) {
+        where.createdAt.gte = new Date(startDate);
+      }
+      if (endDate) {
+        const endDateTime = new Date(endDate);
+        endDateTime.setHours(23, 59, 59, 999);
+        where.createdAt.lte = endDateTime;
+      }
+    }
+
     const orders = await prisma.order.findMany({
-      where: status ? { status: status as never } : undefined,
+      where: Object.keys(where).length > 0 ? where : undefined,
       include: { items: true },
       orderBy: { createdAt: "desc" },
     });

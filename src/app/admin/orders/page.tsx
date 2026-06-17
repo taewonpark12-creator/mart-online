@@ -262,6 +262,53 @@ export default function OrdersPage() {
     delivered: number;
     cancelled: number;
   } | null>(null);
+  const [dateFilter, setDateFilter] = useState<{
+    type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom";
+    startDate: string | null;
+    endDate: string | null;
+  }>({ type: "all", startDate: null, endDate: null });
+
+  const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let newStartDate: string | null = null;
+    let newEndDate: string | null = null;
+
+    switch (type) {
+      case "today":
+        newStartDate = today.toISOString().split("T")[0];
+        newEndDate = today.toISOString().split("T")[0];
+        break;
+      case "yesterday":
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        newStartDate = yesterday.toISOString().split("T")[0];
+        newEndDate = yesterday.toISOString().split("T")[0];
+        break;
+      case "last7days":
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+        newStartDate = sevenDaysAgo.toISOString().split("T")[0];
+        newEndDate = today.toISOString().split("T")[0];
+        break;
+      case "thismonth":
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        newStartDate = firstDay.toISOString().split("T")[0];
+        newEndDate = today.toISOString().split("T")[0];
+        break;
+      case "custom":
+        newStartDate = startDate || null;
+        newEndDate = endDate || null;
+        break;
+      case "all":
+        newStartDate = null;
+        newEndDate = null;
+        break;
+    }
+
+    setDateFilter({ type, startDate: newStartDate, endDate: newEndDate });
+  };
 
   const selectedOrder = selectedOrderId
     ? orders.find((order) => order.id === selectedOrderId) ?? null
@@ -278,8 +325,12 @@ export default function OrdersPage() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const params = filter ? `?status=${filter}` : "";
-      const res = await fetch(`/api/admin/orders${params}`, { cache: "no-store" });
+      const params = new URLSearchParams();
+      if (filter) params.append("status", filter);
+      if (dateFilter.startDate) params.append("startDate", dateFilter.startDate);
+      if (dateFilter.endDate) params.append("endDate", dateFilter.endDate);
+      const queryString = params.toString();
+      const res = await fetch(`/api/admin/orders${queryString ? `?${queryString}` : ""}`, { cache: "no-store" });
 
       if (!res.ok) {
         if (res.status === 401) {
@@ -379,7 +430,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, [filter]);
+  }, [filter, dateFilter]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
@@ -419,6 +470,7 @@ export default function OrdersPage() {
       setOrders((current) =>
         current.map((order) => (order.id === selectedOrderId ? { ...order, status } : order))
       );
+      fetchTodaySummary();
     } catch (error) {
       console.error("[admin/orders] status update failed", error);
       alert("상태 변경 중 오류가 발생했습니다.");
@@ -447,6 +499,7 @@ export default function OrdersPage() {
       setOrders((current) =>
         current.map((order) => (order.id === selectedOrderId ? { ...order, status: "CANCELLED" } : order))
       );
+      fetchTodaySummary();
     } catch (error) {
       console.error("[admin/orders] cancel failed", error);
       alert("주문 취소 중 오류가 발생했습니다.");
@@ -469,6 +522,7 @@ export default function OrdersPage() {
               onClick={() => {
                 setShowNewOrderAlert(false);
                 fetchOrders();
+                fetchTodaySummary();
               }}
               className="text-sm text-red-700 hover:text-red-900 font-medium"
             >
@@ -540,6 +594,67 @@ export default function OrdersPage() {
             </div>
           </div>
         )}
+
+        <div className="mb-6 rounded-xl bg-white border border-gray-200 p-4">
+          <h2 className="text-sm font-bold text-gray-900 mb-3">날짜 필터</h2>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleDateFilterChange("all")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "all" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              전체
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("today")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "today" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              오늘
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("yesterday")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "yesterday" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              어제
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("last7days")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "last7days" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              최근 7일
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("thismonth")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "thismonth" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              이번 달
+            </button>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={dateFilter.startDate || ""}
+                onChange={(e) => handleDateFilterChange("custom", e.target.value, dateFilter.endDate || undefined)}
+                className="px-3 py-1.5 rounded-lg border text-sm focus:ring-2 focus:ring-green-400 outline-none"
+              />
+              <span className="text-gray-500">~</span>
+              <input
+                type="date"
+                value={dateFilter.endDate || ""}
+                onChange={(e) => handleDateFilterChange("custom", dateFilter.startDate || undefined, e.target.value)}
+                className="px-3 py-1.5 rounded-lg border text-sm focus:ring-2 focus:ring-green-400 outline-none"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex gap-2 flex-wrap">
