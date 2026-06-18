@@ -327,7 +327,7 @@ function OrderDetailPanel({
               </>
             )}
             {order.outOfStockPolicy && (
-              <p><span className="text-blue-500 font-semibold mr-2">품절처리</span>{OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy}</p>
+              <p><span className="text-blue-500 font-semibold mr-2">품절 시 처리</span>{OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy}</p>
             )}
           </div>
         </section>

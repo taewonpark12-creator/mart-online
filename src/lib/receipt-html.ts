@@ -216,7 +216,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${fulfillmentBlock}
   ${infoLine("연락처", esc(maskPhone(order.customerPhone)),true)}
   ${infoLine(isPickup ? "요청사항" : "요청사항", deliveryMemo, true)}
-  ${order.outOfStockPolicy ? infoLine("품절처리", esc(OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy), true) : ""}
+  ${order.outOfStockPolicy ? infoLine("품절 시 처리", esc(OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy), true) : ""}
   <hr class="hr" />
 
   <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>
