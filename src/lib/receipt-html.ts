@@ -11,6 +11,12 @@ import { orderItemBarcode, orderItemName } from "@/lib/order-item";
 
 export type { ReceiptOrder };
 
+const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
+  SUBSTITUTE: "대체상품으로 받기",
+  CANCEL_ONLY: "품절된 상품만 취소",
+  CONTACT: "연락바람",
+};
+
 export const RECEIPT_FONT = {
   base: 18,
   itemName: 18,
@@ -210,6 +216,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${fulfillmentBlock}
   ${infoLine("연락처", esc(maskPhone(order.customerPhone)),true)}
   ${infoLine(isPickup ? "요청사항" : "요청사항", deliveryMemo, true)}
+  ${order.outOfStockPolicy ? infoLine("품절처리", esc(OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy), true) : ""}
   <hr class="hr" />
 
   <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>

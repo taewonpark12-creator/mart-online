@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 
 type FulfillmentType = "DELIVERY" | "PICKUP";
 type PaymentMethod = "ONSITE_CARD" | "ONSITE_CASH" | "BANK_TRANSFER";
+type OutOfStockPolicy = "SUBSTITUTE" | "CANCEL_ONLY" | "CONTACT";
 
 function asString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -37,6 +38,7 @@ export async function POST(req: NextRequest) {
     const deliveryAddress = asString(body.deliveryAddress);
     const pickupTime = asString(body.pickupTime);
     const memo = asString(body.memo);
+    const outOfStockPolicy = (body.outOfStockPolicy as OutOfStockPolicy) || "CONTACT";
     const paymentMethod = (body.paymentMethod as PaymentMethod) || "ONSITE_CASH";
 
     if (!customerName || !customerPhone) {
@@ -115,6 +117,7 @@ export async function POST(req: NextRequest) {
         pickupTime: fulfillmentType === "PICKUP" ? pickupTime : null,
         memo: memo || null,
         paymentMethod: fulfillmentType === "DELIVERY" ? paymentMethod : null,
+        outOfStockPolicy,
         totalAmount,
         items: {
           create: orderItems.map((item) => ({

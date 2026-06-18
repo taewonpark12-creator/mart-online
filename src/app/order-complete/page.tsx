@@ -188,6 +188,16 @@ function OrderCompleteContent() {
             )}
           </div>
         </section>
+
+        {order.fulfillmentType === "DELIVERY" && order.paymentMethod === "BANK_TRANSFER" && (
+          <section className="rounded-2xl border bg-blue-50 p-6 shadow-sm mb-6">
+            <h2 className="text-lg font-bold text-blue-900 mb-4">계좌이체 정보</h2>
+            <div className="space-y-2 text-sm">
+              <p><span className="font-semibold text-blue-800">계좌번호:</span> <span className="font-bold text-blue-900">국민은행 654937-01-011941 한사랑마트</span></p>
+              <p className="text-blue-700 mt-2">품절 상품이 있을 수 있으니 매장에서 연락드린 후 계좌이체해주세요.</p>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

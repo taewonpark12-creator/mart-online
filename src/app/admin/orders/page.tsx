@@ -12,6 +12,12 @@ import {
   type FulfillmentType,
   type PaymentMethod,
 } from "@/lib/types";
+
+const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
+  SUBSTITUTE: "대체상품으로 받기",
+  CANCEL_ONLY: "품절된 상품만 취소",
+  CONTACT: "연락바람",
+};
 import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString, getKoreaDaysAgoString } from "@/lib/korea-date";
 import { printReceiptNow } from "@/lib/print-receipt";
 import type { ReceiptOrder } from "@/lib/receipt-html";
@@ -40,6 +46,7 @@ type Order = {
   items?: OrderItem[];
   memo?: string | null;
   paymentMethod: PaymentMethod | null;
+  outOfStockPolicy?: string | null;
 };
 
 function getOrderTime(order: Order) {
@@ -318,6 +325,9 @@ function OrderDetailPanel({
                   <p><span className="text-blue-500 font-semibold mr-2">출입</span>{order.deliveryEntrance}</p>
                 )}
               </>
+            )}
+            {order.outOfStockPolicy && (
+              <p><span className="text-blue-500 font-semibold mr-2">품절처리</span>{OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy}</p>
             )}
           </div>
         </section>

@@ -161,6 +161,7 @@ export default function CheckoutPage() {
       deliveryAddress: isDelivery ? form.deliveryAddress.trim() : undefined,
       pickupTime: !isDelivery ? form.pickupTime : undefined,
       memo: form.memo.trim() || undefined,
+      outOfStockPolicy: form.outOfStockPolicy,
       paymentMethod: isDelivery ? form.paymentMethod : undefined,
       items: orderItems,
     };
@@ -311,10 +312,6 @@ export default function CheckoutPage() {
                   </option>
                 ))}
               </select>
-              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
-                <p className="text-xs text-blue-800 font-semibold mb-1">계좌번호</p>
-                <p className="text-sm text-blue-900 font-bold">국민은행 654937-01-011941 한사랑마트</p>
-              </div>
             </fieldset>
           )}
 
@@ -355,6 +352,13 @@ export default function CheckoutPage() {
                   </label>
                 ))}
               </div>
+              {form.paymentMethod === "BANK_TRANSFER" && (
+                <div className="rounded-xl bg-blue-50 border border-blue-100 p-3 space-y-2">
+                  <p className="text-xs text-blue-800 font-semibold">계좌번호</p>
+                  <p className="text-sm text-blue-900 font-bold">국민은행 654937-01-011941 한사랑마트</p>
+                  <p className="text-xs text-blue-700 mt-2">품절 상품이 있을 수 있으니 매장에서 연락드린 후 계좌이체해주세요.</p>
+                </div>
+              )}
             </fieldset>
           )}
 

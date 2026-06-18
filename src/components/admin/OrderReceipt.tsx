@@ -22,6 +22,7 @@ export type ReceiptOrder = {
   pickupTime?: string | null;
   paymentMethod: PaymentMethod | null;
   memo: string | null;
+  outOfStockPolicy?: string | null;
   status: OrderStatus;
   totalAmount: number;
   createdAt: string;
