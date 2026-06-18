@@ -185,14 +185,13 @@ export default function CheckoutPage() {
 
       try {
         sessionStorage.setItem(
-          "completedOrder",
+          "lovemart:lastOrder",
           JSON.stringify({ orderNumber: result.orderNumber }),
         );
       } catch {
         /* ignore */
       }
 
-      clearCart();
       setForm(INITIAL_FORM);
       router.replace("/order-complete");
     } catch (error) {
