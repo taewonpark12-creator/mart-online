@@ -24,6 +24,7 @@ function serializeOrder(order: {
   createdAt: Date;
   memo?: string | null;
   paymentMethod?: string | null;
+  outOfStockPolicy?: string | null;
   items?: Array<{
     id: string;
     productId: string | null;
@@ -52,6 +53,7 @@ function serializeOrder(order: {
     createdAt: order.createdAt.toISOString(),
     memo: order.memo ?? null,
     paymentMethod: order.paymentMethod ?? null,
+    outOfStockPolicy: order.outOfStockPolicy ?? null,
     items: (order.items || []).map((item) => ({
       id: item.id,
       productId: item.productId,

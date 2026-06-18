@@ -96,6 +96,11 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
       <InfoRow label={isPickup ? "요청사항" : "요청사항"}>
         {order.memo?.trim() || "없음"}
       </InfoRow>
+      {order.outOfStockPolicy && (
+        <InfoRow label="품절 시 처리">
+          {order.outOfStockPolicy === "CONTACT" ? "연락바람" : order.outOfStockPolicy === "CANCEL_ONLY" ? "품절된 상품만 취소" : order.outOfStockPolicy === "SUBSTITUTE" ? "대체상품으로 받기" : order.outOfStockPolicy}
+        </InfoRow>
+      )}
       <hr className="border-dashed border-black my-2" />
 
       <InfoRow label="결제 수단">

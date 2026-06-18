@@ -86,6 +86,7 @@ function toReceiptOrder(order: Order): ReceiptOrder {
     pickupTime: order.pickupTime,
     paymentMethod: order.paymentMethod,
     memo: order.memo || null,
+    outOfStockPolicy: order.outOfStockPolicy || null,
     status: order.status,
     totalAmount: Number(order.totalAmount),
     createdAt: order.createdAt,
