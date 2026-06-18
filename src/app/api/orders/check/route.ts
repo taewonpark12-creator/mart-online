@@ -13,12 +13,18 @@ function serializeOrder(order: {
   status: string;
   totalAmount: number;
   createdAt: Date;
+  memo: string | null;
+  paymentMethod: string | null;
+  outOfStockPolicy: string | null;
   items: Array<{
     id: string;
     productId: string | null;
     productName: string;
     unitPrice: number;
     quantity: number;
+    product: {
+      barcode: string | null;
+    } | null;
   }>;
 }) {
   return {
@@ -32,12 +38,16 @@ function serializeOrder(order: {
     status: order.status,
     totalAmount: Number(order.totalAmount ?? 0),
     createdAt: order.createdAt.toISOString(),
+    memo: order.memo ?? null,
+    paymentMethod: order.paymentMethod ?? null,
+    outOfStockPolicy: order.outOfStockPolicy ?? null,
     items: order.items.map((item) => ({
       id: item.id,
       productId: item.productId,
       productName: item.productName,
       price: Number(item.unitPrice ?? 0),
       quantity: Number(item.quantity ?? 0),
+      barcode: item.product?.barcode ?? null,
     })),
   };
 }
@@ -69,7 +79,17 @@ export async function GET(req: NextRequest) {
             : []),
         ],
       },
-      include: { items: true },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                barcode: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 

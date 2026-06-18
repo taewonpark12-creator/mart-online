@@ -6,6 +6,13 @@ import { Header } from "@/components/Header";
 import { formatPrice } from "@/lib/types";
 import { FULFILLMENT_TYPE_LABEL, PAYMENT_METHOD_LABEL } from "@/lib/types";
 
+const ORDER_STATUS_LABEL: Record<string, string> = {
+  PENDING: "신규주문",
+  APPROVED: "확인완료",
+  DELIVERED: "배송완료",
+  CANCELLED: "취소됨",
+};
+
 const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
   SUBSTITUTE: "대체상품 받기",
   CANCEL_ONLY: "품절된 상품만 취소",
@@ -86,15 +93,8 @@ function OrderCompleteContent() {
             <div className="space-y-2">
               <button
                 type="button"
-                onClick={() => router.push("/order-check")}
-                className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white"
-              >
-                주문 조회하기
-              </button>
-              <button
-                type="button"
                 onClick={() => router.replace("/")}
-                className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-gray-600"
+                className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white"
               >
                 홈으로 이동
               </button>
@@ -125,15 +125,8 @@ function OrderCompleteContent() {
           <div className="space-y-2">
             <button
               type="button"
-              onClick={() => router.push("/order-check")}
-              className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white"
-            >
-              주문 조회하기
-            </button>
-            <button
-              type="button"
               onClick={() => router.replace("/")}
-              className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-gray-600"
+              className="w-full rounded-xl bg-green-600 px-4 py-3 text-sm font-bold text-white"
             >
               쇼핑 계속하기
             </button>
@@ -146,11 +139,14 @@ function OrderCompleteContent() {
             {Array.isArray(order.items) && order.items.length > 0 ? (
               order.items.map((item: any) => (
                 <div key={item.id} className="flex justify-between gap-3 text-sm">
-                  <span className="min-w-0">
-                    {item.productName || "상품명 없음"} x {item.quantity || 0}
-                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate">{item.productName || "상품명 없음"}</p>
+                    <p className="text-xs text-gray-500">
+                      {item.barcode || "-"} · {item.quantity || 0}개 · {formatPrice(item.price || item.unitPrice || 0)}원
+                    </p>
+                  </div>
                   <span className="shrink-0 font-semibold">
-                    {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
+                    {formatPrice((item.price || item.unitPrice || 0) * (item.quantity || 0))}
                   </span>
                 </div>
               ))
@@ -161,6 +157,15 @@ function OrderCompleteContent() {
           <div className="mt-4 pt-4 border-t flex justify-between text-base font-black">
             <span>총액</span>
             <span className="text-green-700">{formatPrice(order.totalAmount || 0)}</span>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border bg-white p-6 shadow-sm mb-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">주문 정보</h2>
+          <div className="space-y-2 text-sm">
+            <p><span className="font-semibold text-gray-600">주문번호:</span> {order.orderNumber}</p>
+            <p><span className="font-semibold text-gray-600">주문상태:</span> {ORDER_STATUS_LABEL[order.status] || order.status}</p>
+            <p><span className="font-semibold text-gray-600">주문일시:</span> {new Date(order.createdAt).toLocaleString("ko-KR")}</p>
           </div>
         </section>
 

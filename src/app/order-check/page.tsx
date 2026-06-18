@@ -4,12 +4,54 @@ import { FormEvent, useState } from "react";
 import { Header } from "@/components/Header";
 import { formatPrice } from "@/lib/types";
 
+const ORDER_STATUS_LABEL: Record<string, string> = {
+  PENDING: "신규주문",
+  APPROVED: "확인완료",
+  DELIVERED: "배송완료",
+  CANCELLED: "취소됨",
+};
+
+const FULFILLMENT_TYPE_LABEL: Record<string, string> = {
+  DELIVERY: "배송",
+  PICKUP: "픽업",
+};
+
+const PAYMENT_METHOD_LABEL: Record<string, string> = {
+  ONSITE_CARD: "매장 카드결제",
+  ONSITE_CASH: "매장 현금결제",
+  BANK_TRANSFER: "계좌이체",
+};
+
+const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
+  SUBSTITUTE: "대체상품 받기",
+  CANCEL_ONLY: "품절된 상품만 취소",
+  CONTACT: "연락바람",
+};
+
+function maskName(name: string): string {
+  if (!name || name.length === 0) return "";
+  if (name.length === 1) return name;
+  if (name.length === 2) return name[0] + "*";
+  return name[0] + "*".repeat(name.length - 2) + name[name.length - 1];
+}
+
+function maskPhone(phone: string): string {
+  if (!phone) return "";
+  const cleaned = phone.replace(/[^0-9]/g, "");
+  if (cleaned.length < 10) return phone;
+  if (cleaned.length === 10) {
+    return `${cleaned.slice(0, 3)}-****-${cleaned.slice(6)}`;
+  }
+  return `${cleaned.slice(0, 3)}-****-${cleaned.slice(7)}`;
+}
+
 type OrderItem = {
   id: string;
   productId: string | null;
   productName: string;
   price: number;
   quantity: number;
+  barcode: string | null;
 };
 
 type Order = {
@@ -23,6 +65,9 @@ type Order = {
   status: string;
   totalAmount: number;
   createdAt: string;
+  memo: string | null;
+  paymentMethod: string | null;
+  outOfStockPolicy: string | null;
   items: OrderItem[];
 };
 
@@ -114,27 +159,49 @@ export default function OrderCheckPage() {
                   </p>
                 </div>
                 <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-800">
-                  {order.status}
+                  {ORDER_STATUS_LABEL[order.status] || order.status}
                 </span>
               </div>
-              <p className="mb-3 rounded-xl bg-green-50 px-3 py-2 text-sm text-green-900">
-                {order.fulfillmentType === "DELIVERY"
-                  ? `배달 · ${order.deliveryAddress}`
-                  : `픽업 · ${order.pickupTime ?? ""}`}
-              </p>
-              <div className="space-y-2 text-sm">
+
+              <div className="mb-3 space-y-1 text-sm">
+                <p><span className="font-semibold text-gray-600">고객명:</span> {maskName(order.customerName)}</p>
+                <p><span className="font-semibold text-gray-600">연락처:</span> {maskPhone(order.customerPhone)}</p>
+                <p><span className="font-semibold text-gray-600">수령 방법:</span> {FULFILLMENT_TYPE_LABEL[order.fulfillmentType] || order.fulfillmentType}</p>
+                {order.fulfillmentType === "DELIVERY" && (
+                  <p><span className="font-semibold text-gray-600">배달주소:</span> {order.deliveryAddress}</p>
+                )}
+                {order.fulfillmentType === "PICKUP" && (
+                  <p><span className="font-semibold text-gray-600">픽업시간:</span> {order.pickupTime || "-"}</p>
+                )}
+                {order.paymentMethod && (
+                  <p><span className="font-semibold text-gray-600">결제방법:</span> {PAYMENT_METHOD_LABEL[order.paymentMethod] || order.paymentMethod}</p>
+                )}
+                {order.outOfStockPolicy && (
+                  <p><span className="font-semibold text-gray-600">품절 시 처리:</span> {OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy}</p>
+                )}
+                {order.memo && (
+                  <p><span className="font-semibold text-gray-600">요청사항:</span> {order.memo}</p>
+                )}
+              </div>
+
+              <div className="mb-3 space-y-2 text-sm">
+                <h3 className="font-semibold text-gray-900">주문상품</h3>
                 {order.items.map((item) => (
                   <div key={item.id} className="flex justify-between gap-3">
-                    <span className="truncate">
-                      {item.productName} x {item.quantity}
-                    </span>
-                    <span className="font-semibold">
+                    <div className="min-w-0">
+                      <p className="truncate">{item.productName}</p>
+                      <p className="text-xs text-gray-500">
+                        {item.barcode || "-"} · {item.quantity}개 · {formatPrice(item.price)}원
+                      </p>
+                    </div>
+                    <span className="shrink-0 font-semibold">
                       {formatPrice(item.price * item.quantity)}
                     </span>
                   </div>
                 ))}
               </div>
-              <div className="mt-3 flex justify-between border-t pt-3 font-black">
+
+              <div className="flex justify-between border-t pt-3 font-black">
                 <span>총액</span>
                 <span className="text-green-700">{formatPrice(order.totalAmount)}</span>
               </div>
