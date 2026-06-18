@@ -81,7 +81,6 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   const fulfillmentBlock = isPickup
     ? `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.PICKUP), true)}
-  ${infoLine("", esc(`${STORE.name} / ${STORE.address}`), true)}
   ${infoLine("픽업 시간", esc(order.pickupTime ? formatPickupTimeLabel(order.pickupTime) : "미정"), true)}`
     : `
   ${infoLine("수령 방식", esc(FULFILLMENT_TYPE_LABEL.DELIVERY), true)}
@@ -216,7 +215,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${fulfillmentBlock}
   ${infoLine("연락처", esc(maskPhone(order.customerPhone)),true)}
   ${infoLine(isPickup ? "요청사항" : "요청사항", deliveryMemo, true)}
-  ${order.outOfStockPolicy ? infoLine("품절 시 처리", esc(OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy), true) : ""}
+  ${infoLine("품절 시 처리", esc(OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy || "CONTACT"] || "연락바람"), true)}
   <hr class="hr" />
 
   <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>
