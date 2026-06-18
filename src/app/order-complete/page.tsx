@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
-import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/types";
 import { FULFILLMENT_TYPE_LABEL, PAYMENT_METHOD_LABEL } from "@/lib/types";
 
@@ -16,27 +15,10 @@ const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
 function OrderCompleteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { clearCart } = useCart();
-  const [orderNumber, setOrderNumber] = useState(
-    searchParams.get("orderNumber") || "",
-  );
+  const orderNumber = searchParams.get("orderNumber");
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [cartCleared, setCartCleared] = useState(false);
-
-  useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem("lovemart:lastOrder");
-      if (!saved) return;
-      const parsed = JSON.parse(saved);
-      if (typeof parsed?.orderNumber === "string") {
-        setOrderNumber(parsed.orderNumber);
-      }
-    } catch {
-      /* ignore */
-    }
-  }, []);
 
   useEffect(() => {
     if (!orderNumber) {
@@ -48,15 +30,19 @@ function OrderCompleteContent() {
   }, [orderNumber]);
 
   async function fetchOrder() {
+    if (!orderNumber) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
     try {
-      const res = await fetch(`/api/orders/check?orderNumber=${orderNumber}`);
+      const res = await fetch(`/api/orders/check?orderNumber=${encodeURIComponent(orderNumber)}`);
       if (res.ok) {
         const data = await res.json();
-        setOrder(data);
-        // Clear cart after successfully loading order data
-        if (!cartCleared) {
-          clearCart();
-          setCartCleared(true);
+        if (data.orders && Array.isArray(data.orders) && data.orders.length > 0) {
+          setOrder(data.orders[0]);
+        } else {
+          setError(true);
         }
       } else {
         setError(true);

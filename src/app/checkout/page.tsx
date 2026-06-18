@@ -183,17 +183,11 @@ export default function CheckoutPage() {
         return;
       }
 
-      try {
-        sessionStorage.setItem(
-          "lovemart:lastOrder",
-          JSON.stringify({ orderNumber: result.orderNumber }),
-        );
-      } catch {
-        /* ignore */
-      }
+      const orderNumber = result.orderNumber;
 
+      clearCart();
       setForm(INITIAL_FORM);
-      router.replace("/order-complete");
+      router.replace(`/order-complete?orderNumber=${encodeURIComponent(orderNumber)}`);
     } catch (error) {
       console.error("[CHECKOUT_SUBMIT_ERROR]", error);
       setError(SAVE_ERROR);
