@@ -184,7 +184,7 @@ export default function CheckoutPage() {
       }
 
       try {
-        localStorage.setItem(
+        sessionStorage.setItem(
           "completedOrder",
           JSON.stringify({ orderNumber: result.orderNumber }),
         );
@@ -194,7 +194,7 @@ export default function CheckoutPage() {
 
       clearCart();
       setForm(INITIAL_FORM);
-      router.push("/order-complete");
+      router.replace("/order-complete");
     } catch (error) {
       console.error("[CHECKOUT_SUBMIT_ERROR]", error);
       setError(SAVE_ERROR);
