@@ -1,6 +1,7 @@
 ﻿import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { getKoreaDateRangeUtc } from "@/lib/korea-date";
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,20 +14,25 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const period = searchParams.get("period") || "daily";
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const { startUtc, endUtc } = getKoreaDateRangeUtc(startDate, endDate);
+
+    const orderDateFilter = startUtc && endUtc
+      ? { createdAt: { gte: startUtc, lte: endUtc } }
+      : {};
 
     const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders, todaySales] =
       await Promise.all([
         prisma.order.count({
-          where: { status: "PENDING" },
+          where: { status: "PENDING", ...orderDateFilter },
         }),
 
         prisma.order.count({
           where: {
-            createdAt: { gte: today },
             status: { not: "CANCELLED" },
+            ...orderDateFilter,
           },
         }),
 
@@ -42,21 +48,21 @@ export async function GET(req: NextRequest) {
         }),
 
         prisma.order.count({
-          where: { status: "APPROVED" },
+          where: { status: "APPROVED", ...orderDateFilter },
         }),
 
         prisma.order.count({
-          where: { status: "DELIVERED" },
+          where: { status: "DELIVERED", ...orderDateFilter },
         }),
 
         prisma.order.count({
-          where: { status: "CANCELLED" },
+          where: { status: "CANCELLED", ...orderDateFilter },
         }),
 
         prisma.order.aggregate({
           where: {
-            createdAt: { gte: today },
             status: { not: "CANCELLED" },
+            ...orderDateFilter,
           },
           _sum: {
             totalAmount: true,
@@ -87,6 +93,7 @@ export async function GET(req: NextRequest) {
             lt: nextDate,
           },
           status: "DELIVERED",
+          ...(startUtc && endUtc ? { createdAt: { gte: startUtc, lte: endUtc } } : {}),
         },
       });
 

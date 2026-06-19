@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString, getKoreaDaysAgoString } from "@/lib/korea-date";
 
 type Stats = {
   pendingOrders: number;
@@ -24,9 +25,44 @@ export default function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [statsError, setStatsError] = useState("");
   const [period, setPeriod] = useState<"daily" | "monthly">("daily");
+  const [dateFilter, setDateFilter] = useState<{
+    type: "today" | "yesterday" | "last7days" | "thismonth" | "custom";
+    startDate: string | null;
+    endDate: string | null;
+  }>({ type: "today", startDate: getKoreaTodayString(), endDate: getKoreaTodayString() });
 
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleDateFilterChange = (type: "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
+    let newStartDate: string | null = null;
+    let newEndDate: string | null = null;
+
+    switch (type) {
+      case "today":
+        newStartDate = getKoreaTodayString();
+        newEndDate = getKoreaTodayString();
+        break;
+      case "yesterday":
+        newStartDate = getKoreaYesterdayString();
+        newEndDate = getKoreaYesterdayString();
+        break;
+      case "last7days":
+        newStartDate = getKoreaDaysAgoString(6);
+        newEndDate = getKoreaTodayString();
+        break;
+      case "thismonth":
+        newStartDate = getKoreaMonthStartString();
+        newEndDate = getKoreaTodayString();
+        break;
+      case "custom":
+        newStartDate = startDate || null;
+        newEndDate = endDate || null;
+        break;
+    }
+
+    setDateFilter({ type, startDate: newStartDate, endDate: newEndDate });
+  };
 
   const redirectToAdminLogin = useCallback((details?: {
     reason?: string;
@@ -114,7 +150,11 @@ export default function DashboardPage() {
     setStatsError("");
 
     try {
-      const res = await fetch(`/api/admin/stats?period=${period}`);
+      const params = new URLSearchParams();
+      params.append("period", period);
+      if (dateFilter.startDate) params.append("startDate", dateFilter.startDate);
+      if (dateFilter.endDate) params.append("endDate", dateFilter.endDate);
+      const res = await fetch(`/api/admin/stats?${params.toString()}`);
 
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
@@ -149,7 +189,7 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [checkingAuth, isAuthenticated, period, redirectToAdminLogin]);
+  }, [checkingAuth, isAuthenticated, period, dateFilter, redirectToAdminLogin]);
 
   useEffect(() => {
     fetchStats();
@@ -213,6 +253,59 @@ export default function DashboardPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">대시보드</h1>
+
+        <div className="mb-6 bg-white rounded-xl border p-4">
+          <h2 className="text-sm font-bold text-gray-900 mb-3">날짜 필터</h2>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleDateFilterChange("today")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "today" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              오늘
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("yesterday")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "yesterday" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              어제
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("last7days")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "last7days" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              최근 7일
+            </button>
+            <button
+              onClick={() => handleDateFilterChange("thismonth")}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                dateFilter.type === "thismonth" ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              이번 달
+            </button>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={dateFilter.startDate || ""}
+                onChange={(e) => handleDateFilterChange("custom", e.target.value, dateFilter.endDate || undefined)}
+                className="px-3 py-1.5 rounded-lg border text-sm focus:ring-2 focus:ring-green-400 outline-none"
+              />
+              <span className="text-gray-500">~</span>
+              <input
+                type="date"
+                value={dateFilter.endDate || ""}
+                onChange={(e) => handleDateFilterChange("custom", dateFilter.startDate || undefined, e.target.value)}
+                className="px-3 py-1.5 rounded-lg border text-sm focus:ring-2 focus:ring-green-400 outline-none"
+              />
+            </div>
+          </div>
+        </div>
 
         {statsError && (
           <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
