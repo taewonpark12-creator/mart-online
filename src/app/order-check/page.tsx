@@ -151,9 +151,6 @@ export default function OrderCheckPage() {
             <article key={order.id} className="rounded-2xl border bg-white p-4 shadow-sm">
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-mono text-sm font-black text-gray-900">
-                    {order.orderNumber}
-                  </p>
                   <p className="mt-1 text-xs text-gray-500">
                     {new Date(order.createdAt).toLocaleString("ko-KR")}
                   </p>

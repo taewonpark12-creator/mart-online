@@ -116,12 +116,6 @@ function OrderCompleteContent() {
           <h1 className="mb-2 text-2xl font-black text-green-800">
             주문이 접수되었습니다
           </h1>
-          <p className="mb-6 text-sm text-gray-500">
-            주문번호:{" "}
-            <span className="font-mono font-bold text-gray-900">
-              {order.orderNumber}
-            </span>
-          </p>
           <div className="space-y-2">
             <button
               type="button"
@@ -157,15 +151,6 @@ function OrderCompleteContent() {
           <div className="mt-4 pt-4 border-t flex justify-between text-base font-black">
             <span>총액</span>
             <span className="text-green-700">{formatPrice(order.totalAmount || 0)}</span>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border bg-white p-6 shadow-sm mb-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">주문 정보</h2>
-          <div className="space-y-2 text-sm">
-            <p><span className="font-semibold text-gray-600">주문번호:</span> {order.orderNumber}</p>
-            <p><span className="font-semibold text-gray-600">주문상태:</span> {ORDER_STATUS_LABEL[order.status] || order.status}</p>
-            <p><span className="font-semibold text-gray-600">주문일시:</span> {new Date(order.createdAt).toLocaleString("ko-KR")}</p>
           </div>
         </section>
 
