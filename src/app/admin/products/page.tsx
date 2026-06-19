@@ -4,6 +4,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { PRODUCT_CATEGORIES, formatPrice } from "@/lib/types";
+import { PriceProvider, usePriceData } from "@/contexts/PriceContext";
 
 type Product = {
   id: string;
@@ -189,6 +190,10 @@ const ProductListItem = memo(function ProductListItem({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const { priceData } = usePriceData(product.barcode);
+  const displayName = priceData?.name || product.name;
+  const displayPrice = priceData?.eventPrice && priceData.eventPrice > 0 ? priceData.eventPrice : priceData?.normalPrice || Number(product.price) || 0;
+
   return (
     <div
       className={`grid grid-cols-[auto_56px_minmax(0,1fr)_96px_auto] items-center gap-3 border-b px-3 py-3 transition last:border-b-0 ${
@@ -200,24 +205,24 @@ const ProductListItem = memo(function ProductListItem({
         checked={checked}
         onChange={(event) => onToggleSelect(event.target.checked)}
         className="h-4 w-4 rounded text-green-600 focus:ring-green-500"
-        aria-label={`${product.name} 선택`}
+        aria-label={`${displayName} 선택`}
       />
       <button type="button" onClick={onSelect} className="h-12 w-12 overflow-hidden rounded-lg bg-gray-100 text-xs text-gray-400">
         {product.imageUrl ? (
-          <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
+          <img src={product.imageUrl} alt={displayName} className="h-full w-full object-cover" loading="lazy" />
         ) : (
           <span className="flex h-full w-full items-center justify-center">이미지 없음</span>
         )}
       </button>
       <button type="button" onClick={onSelect} className="min-w-0 text-left">
         <ProductTags product={product} />
-        <p className="mt-1 truncate font-semibold text-gray-900" title={product.name}>
-          {highlightText(product.name, searchQuery)}
+        <p className="mt-1 truncate font-semibold text-gray-900" title={displayName}>
+          {highlightText(displayName, searchQuery)}
         </p>
         <p className="truncate text-xs text-gray-500">{highlightText(product.barcode || "-", searchQuery)} · {product.category}</p>
       </button>
       <div className="text-right">
-        <p className="text-sm font-black text-green-700">{formatPrice(Number(product.price) || 0)}</p>
+        <p className="text-sm font-black text-green-700">{formatPrice(displayPrice)}</p>
         <p className="text-xs text-gray-500">재고 {product.stock ?? 0}</p>
       </div>
       <div className="flex gap-1">
@@ -298,6 +303,8 @@ function ProductStatusController({
   onToggle: (product: Product, flag: ProductFlag) => void;
   onEdit: (product: Product) => void;
 }) {
+  const { priceData } = usePriceData(product?.barcode ?? null);
+
   if (!product) {
     return (
       <aside className="rounded-2xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-400">
@@ -307,13 +314,16 @@ function ProductStatusController({
     );
   }
 
+  const displayName = priceData?.name || product.name;
+  const displayPrice = priceData?.eventPrice && priceData.eventPrice > 0 ? priceData.eventPrice : priceData?.normalPrice || Number(product.price) || 0;
+
   return (
     <aside className="sticky top-6 rounded-2xl border bg-white shadow-sm">
       <div className="border-b p-5">
         <ProductTags product={product} />
-        <h2 className="mt-2 text-lg font-black text-gray-900">{product.name}</h2>
+        <h2 className="mt-2 text-lg font-black text-gray-900">{displayName}</h2>
         <p className="text-sm text-gray-500">{product.barcode || "바코드 없음"} · {product.category}</p>
-        <p className="mt-3 text-2xl font-black text-green-700">{formatPrice(Number(product.price) || 0)}</p>
+        <p className="mt-3 text-2xl font-black text-green-700">{formatPrice(displayPrice)}</p>
       </div>
 
       <div className="space-y-5 p-5">
@@ -1012,46 +1022,47 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminNav />
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">상품 운영 콘솔</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              상품 상태, 노출 태그, 품절 여부를 빠르게 제어하는 실시간 운영 화면입니다.
-            </p>
+    <PriceProvider>
+      <div className="min-h-screen bg-gray-50">
+        <AdminNav />
+        <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">상품 운영 콘솔</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                상품 상태, 노출 태그, 품절 여부를 빠르게 제어하는 실시간 운영 화면입니다.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <input
+                type="text"
+                placeholder="상품명, 바코드, 설명 검색"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                className="w-full rounded-xl border px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500 sm:w-80"
+              />
+              <button
+                type="button"
+                onClick={startCreate}
+                className="rounded-xl bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700"
+              >
+                + 상품 추가
+              </button>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <input
-              type="text"
-              placeholder="상품명, 바코드, 설명 검색"
-              value={searchInput}
-              onChange={(event) => setSearchInput(event.target.value)}
-              className="w-full rounded-xl border px-4 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500 sm:w-80"
-            />
-            <button
-              type="button"
-              onClick={startCreate}
-              className="rounded-xl bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700"
-            >
-              + 상품 추가
-            </button>
-          </div>
-        </div>
 
-        <ProductFilterBar
-          statusFilter={statusFilter}
-          categoryFilter={categoryFilter}
-          onStatusChange={setStatusFilter}
-          onCategoryChange={(category) => {
-            setCategoryFilter(category);
-            setSearchInput("");
-            setSearchQuery("");
-          }}
-        />
+          <ProductFilterBar
+            statusFilter={statusFilter}
+            categoryFilter={categoryFilter}
+            onStatusChange={setStatusFilter}
+            onCategoryChange={(category) => {
+              setCategoryFilter(category);
+              setSearchInput("");
+              setSearchQuery("");
+            }}
+          />
 
-        <section className="mt-4 rounded-2xl border bg-white p-4 shadow-sm">
+          <section className="mt-4 rounded-2xl border bg-white p-4 shadow-sm">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
             <div className="flex-1">
               <label className="mb-2 block text-sm font-bold text-gray-800">
@@ -1190,5 +1201,6 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
-  );
+  </PriceProvider>
+);
 }
