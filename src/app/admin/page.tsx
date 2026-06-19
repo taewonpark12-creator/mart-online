@@ -92,7 +92,7 @@ export default function AdminLoginPage() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [lastLoginAt, setLastLoginAt] = useState<string | null>(null);
   const [sessionCheckedAt] = useState(() => new Date().toISOString());
-  const dashboardPath = "/admin/dashboard";
+  const dashboardPath = "/admin/orders";
 
   const redirectToDashboard = useCallback(() => {
     console.log("[ADMIN REDIRECT]", {

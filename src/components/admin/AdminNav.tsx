@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const NAV = [
-  { href: "/admin/dashboard", label: "대시보드", icon: "📊" },
-  { href: "/admin/orders", label: "주문 관리", icon: "📋" },
-  { href: "/admin/products", label: "상품 관리", icon: "📦" },
+  { href: "/admin/orders", label: "주문 관리", icon: "�" },
+  { href: "/admin/products", label: "상품 관리", icon: "�" },
+  { href: "/admin/dashboard", label: "대시보드", icon: "�" },
   { href: "/admin/flyers", label: "전단지 관리", icon: "📄" },
 ];
 

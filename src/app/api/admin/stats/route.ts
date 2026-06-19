@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const [pendingOrders, todayOrders, totalProducts, lowStock] =
+    const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders, todaySales] =
       await Promise.all([
         prisma.order.count({
           where: { status: "PENDING" },
@@ -38,6 +38,28 @@ export async function GET(req: NextRequest) {
           where: {
             isActive: true,
             stock: { lte: 10 },
+          },
+        }),
+
+        prisma.order.count({
+          where: { status: "APPROVED" },
+        }),
+
+        prisma.order.count({
+          where: { status: "DELIVERED" },
+        }),
+
+        prisma.order.count({
+          where: { status: "CANCELLED" },
+        }),
+
+        prisma.order.aggregate({
+          where: {
+            createdAt: { gte: today },
+            status: { not: "CANCELLED" },
+          },
+          _sum: {
+            totalAmount: true,
           },
         }),
       ]);
@@ -134,6 +156,10 @@ export async function GET(req: NextRequest) {
       todayOrders,
       totalProducts,
       lowStock,
+      approvedOrders,
+      deliveredOrders,
+      cancelledOrders,
+      todaySales: todaySales._sum.totalAmount ?? 0,
       salesData,
       popularProducts: popularProductDetails,
     });

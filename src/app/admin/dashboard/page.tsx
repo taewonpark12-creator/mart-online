@@ -9,6 +9,10 @@ type Stats = {
   todayOrders: number;
   totalProducts: number;
   lowStock: number;
+  approvedOrders: number;
+  deliveredOrders: number;
+  cancelledOrders: number;
+  todaySales: number;
   salesData: Array<{ date: string; sales: number; orderCount: number }>;
   popularProducts: Array<{ id: string; name: string; quantity: number }>;
 };
@@ -154,22 +158,40 @@ export default function DashboardPage() {
   const cards = stats
     ? [
         {
-          label: "접수 대기 주문",
-          value: stats.pendingOrders,
-          icon: "🔔",
-          color: "bg-amber-50 border-amber-200 text-amber-800",
-        },
-        {
           label: "오늘 주문",
           value: stats.todayOrders,
           icon: "📅",
           color: "bg-blue-50 border-blue-200 text-blue-800",
         },
         {
-          label: "판매 중 상품",
-          value: stats.totalProducts,
-          icon: "📦",
+          label: "오늘 매출",
+          value: `${(stats.todaySales / 10000).toFixed(1)}만원`,
+          icon: "💰",
           color: "bg-green-50 border-green-200 text-green-800",
+        },
+        {
+          label: "신규 주문",
+          value: stats.pendingOrders,
+          icon: "🔔",
+          color: "bg-amber-50 border-amber-200 text-amber-800",
+        },
+        {
+          label: "확인완료",
+          value: stats.approvedOrders,
+          icon: "✅",
+          color: "bg-emerald-50 border-emerald-200 text-emerald-800",
+        },
+        {
+          label: "배송완료",
+          value: stats.deliveredOrders,
+          icon: "🚚",
+          color: "bg-indigo-50 border-indigo-200 text-indigo-800",
+        },
+        {
+          label: "취소",
+          value: stats.cancelledOrders,
+          icon: "❌",
+          color: "bg-red-50 border-red-200 text-red-800",
         },
       ]
     : [];
@@ -199,8 +221,8 @@ export default function DashboardPage() {
         )}
 
         {checkingAuth || (!stats && !statsError) ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
                 className="bg-white rounded-2xl h-28 animate-pulse"
@@ -208,7 +230,7 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {cards.map((card) => (
               <div
                 key={card.label}
