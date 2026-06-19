@@ -95,6 +95,7 @@ export default function CheckoutPage() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [skipEmptyCartCheck, setSkipEmptyCartCheck] = useState(false);
 
   // Load saved delivery info from localStorage
   useEffect(() => {
@@ -185,6 +186,7 @@ export default function CheckoutPage() {
 
       const orderNumber = result.orderNumber;
 
+      setSkipEmptyCartCheck(true);
       clearCart();
       setForm(INITIAL_FORM);
       router.replace(`/order-complete?orderNumber=${encodeURIComponent(orderNumber)}`);
@@ -197,7 +199,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && !skipEmptyCartCheck) {
     return (
       <div className="min-h-screen bg-[#f8faf8]">
         <Header />
