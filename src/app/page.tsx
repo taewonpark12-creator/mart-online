@@ -39,10 +39,16 @@ export default function HomePage() {
   const categoryProducts =
     category === CATEGORIES[0]
       ? allProducts
-      : allProducts.filter((product) => product.category === category);
+      : (() => {
+          const filtered = allProducts.filter((product) => product.category === category);
+          const popular = filtered.filter((p) => p.isPopular === true);
+          const regular = filtered.filter((p) => p.isPopular !== true);
+          popular.sort((a, b) => (a.popularOrder ?? Infinity) - (b.popularOrder ?? Infinity));
+          return [...popular, ...regular];
+        })();
   const visibleSearchResults = searchResults.slice(0, visibleSearchCount);
   const hasMoreSearchResults = visibleSearchCount < searchResults.length;
-  const visibleCategories = CATEGORIES as readonly string[];
+  const visibleCategories = ["홈", ...CATEGORIES] as readonly string[];
   const isHomeView = !hasCategorySelection;
 
   useEffect(() => {
@@ -152,10 +158,17 @@ export default function HomePage() {
   }, [addItem]);
 
   const handleCategoryChange = useCallback((nextCategory: string) => {
-    setCategory(nextCategory);
-    setHasCategorySelection(true);
-    setSearch("");
-    setDebouncedSearch("");
+    if (nextCategory === "홈") {
+      setCategory(CATEGORIES[0]);
+      setHasCategorySelection(false);
+      setSearch("");
+      setDebouncedSearch("");
+    } else {
+      setCategory(nextCategory);
+      setHasCategorySelection(true);
+      setSearch("");
+      setDebouncedSearch("");
+    }
   }, []);
 
   console.log({
@@ -315,9 +328,13 @@ export default function HomePage() {
                   type="button"
                   onClick={() => handleCategoryChange(item)}
                   className={`shrink-0 rounded-full border px-3 py-2 text-xs sm:text-sm font-semibold transition ${
-                    hasCategorySelection && category === item
-                      ? "border-emerald-600 bg-emerald-600 text-white"
-                      : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
+                    item === "홈"
+                      ? !hasCategorySelection
+                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
+                      : hasCategorySelection && category === item
+                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
                   }`}
                 >
                   {item}
