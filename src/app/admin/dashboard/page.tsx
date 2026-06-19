@@ -171,12 +171,6 @@ export default function DashboardPage() {
           icon: "📦",
           color: "bg-green-50 border-green-200 text-green-800",
         },
-        {
-          label: "재고 부족 (10개 이하)",
-          value: stats.lowStock,
-          icon: "⚠️",
-          color: "bg-red-50 border-red-200 text-red-700",
-        },
       ]
     : [];
 
@@ -360,7 +354,7 @@ export default function DashboardPage() {
               • 주문 상태: 접수대기 → 주문승인 → 배달완료
             </li>
             <li>
-              • <strong>상품 관리</strong>에서 재고와 가격을
+              • <strong>상품 관리</strong>에서 가격을
               업데이트하세요.
             </li>
           </ul>

@@ -223,7 +223,6 @@ const ProductListItem = memo(function ProductListItem({
       </button>
       <div className="text-right">
         <p className="text-sm font-black text-green-700">{formatPrice(displayPrice)}</p>
-        <p className="text-xs text-gray-500">재고 {product.stock ?? 0}</p>
       </div>
       <div className="flex gap-1">
         <button type="button" onClick={onEdit} className="rounded-lg bg-gray-100 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-200">
@@ -353,10 +352,6 @@ function ProductStatusController({
         <section className="rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
           <p className="font-semibold text-gray-900">운영 정보</p>
           <div className="mt-3 grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-xs text-gray-500">재고</p>
-              <p className="font-bold">{product.stock ?? 0}</p>
-            </div>
             <div>
               <p className="text-xs text-gray-500">최대 주문</p>
               <p className="font-bold">{product.maxOrderQuantity || "제한 없음"}</p>
@@ -540,16 +535,6 @@ function ProductEditDrawer({
                     </option>
                   ))}
                 </select>
-              </label>
-              <label className="block text-sm">
-                <span className="mb-1 block font-semibold text-gray-700">재고</span>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.stock}
-                  onChange={(event) => onChange({ ...formData, stock: event.target.value })}
-                  className="w-full rounded-lg border px-3 py-2 focus:border-green-500 focus:ring-2 focus:ring-green-500"
-                />
               </label>
               <label className="block text-sm">
                 <span className="mb-1 block font-semibold text-gray-700">최대 주문 수량</span>
