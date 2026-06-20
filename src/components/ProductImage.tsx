@@ -11,6 +11,14 @@ interface Props {
   priority?: boolean;
 }
 
+function isCloudinaryUrl(src: string) {
+  try {
+    return new URL(src).hostname.toLowerCase() === "res.cloudinary.com";
+  } catch {
+    return false;
+  }
+}
+
 export function ProductImage({
   src,
   alt,
@@ -21,6 +29,7 @@ export function ProductImage({
   const [failedSrc, setFailedSrc] = useState("");
   const imageSrc = typeof src === "string" ? src.trim() : "";
   const failed = Boolean(imageSrc) && failedSrc === imageSrc;
+  const unoptimized = isCloudinaryUrl(imageSrc);
   const valid =
     imageSrc.startsWith("/") ||
     imageSrc.startsWith("http://") ||
@@ -63,6 +72,7 @@ export function ProductImage({
         fill
         sizes={sizes ?? "100vw"}
         quality={75}
+        unoptimized={unoptimized}
         loading={priority ? "eager" : "lazy"}
         priority={priority}
         decoding="async"
@@ -80,6 +90,7 @@ export function ProductImage({
       height={320}
       sizes={sizes ?? "(max-width: 640px) 160px, 240px"}
       quality={75}
+      unoptimized={unoptimized}
       loading={priority ? "eager" : "lazy"}
       priority={priority}
       decoding="async"
