@@ -51,6 +51,15 @@ type BulkBarcodeResult = {
   error?: string;
 };
 
+type BulkImageResult = {
+  total: number;
+  target: number;
+  success: number;
+  skipped: number;
+  failed: number;
+  errors: string[];
+};
+
 const STATUS_FILTERS: { value: StatusFilter; label: string }[] = [
   { value: "ALL", label: "전체" },
   { value: "POPULAR", label: "인기상품" },
@@ -450,6 +459,205 @@ function ProductBulkActionBar({
   );
 }
 
+function ProductImagePicker({
+  productName,
+  imageUrl,
+  disabled,
+  onSelect,
+}: {
+  productName: string;
+  imageUrl: string;
+  disabled: boolean;
+  onSelect: (imageUrl: string) => Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState(productName);
+  const [candidates, setCandidates] = useState<string[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadFile(file: File) {
+    setUploading(true);
+    try {
+      const uploadForm = new FormData();
+      uploadForm.append("file", file);
+      const uploadRes = await fetch("/api/admin/upload", { method: "POST", body: uploadForm });
+      const uploadData = await uploadRes.json().catch(() => ({}));
+      if (!uploadRes.ok || !uploadData.url) {
+        throw new Error(uploadData.error ?? "이미지 업로드에 실패했습니다.");
+      }
+      await onSelect(uploadData.url);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function uploadDirectImage(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    try {
+      await uploadFile(file);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "사진 업로드 중 오류가 발생했습니다.");
+    }
+  }
+
+  async function removeImage() {
+    if (!confirm("이 상품의 이미지를 제거하시겠습니까?")) return;
+    setUploading(true);
+    try {
+      await onSelect("");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "이미지 제거에 실패했습니다.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function searchImages() {
+    if (!query.trim()) return;
+    setSearching(true);
+    setCandidates([]);
+    try {
+      const res = await fetch(`/api/search-image?query=${encodeURIComponent(query.trim())}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "이미지 검색에 실패했습니다.");
+      setCandidates(Array.isArray(data.images) ? data.images : []);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "이미지 검색 중 오류가 발생했습니다.");
+    } finally {
+      setSearching(false);
+    }
+  }
+
+  async function selectCandidate(candidateUrl: string) {
+    setUploading(true);
+    try {
+      const downloadRes = await fetch("/api/download-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: candidateUrl }),
+      });
+      if (!downloadRes.ok) {
+        const data = await downloadRes.json().catch(() => ({}));
+        throw new Error(data.error ?? "이미지 다운로드에 실패했습니다.");
+      }
+
+      const blob = await downloadRes.blob();
+      await uploadFile(new File([blob], "product-image", { type: blob.type }));
+      setCandidates([]);
+      setOpen(false);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "이미지 변경 중 오류가 발생했습니다.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <section className="rounded-2xl border bg-gray-50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-bold text-gray-900">상품 이미지</p>
+          <p className="text-xs text-gray-500">후보 미리보기는 외부 URL을 사용하며, 선택한 이미지 한 장만 업로드됩니다.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <label className={`rounded-lg bg-green-600 px-3 py-2 text-sm font-bold text-white hover:bg-green-700 ${disabled || uploading ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
+            사진 업로드
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) => void uploadDirectImage(event)}
+              disabled={disabled || uploading}
+              className="sr-only"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+            disabled={disabled || uploading}
+            className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {open ? "후보 닫기" : "이미지 후보 보기"}
+          </button>
+          <button
+            type="button"
+            onClick={() => void removeImage()}
+            disabled={disabled || uploading || !imageUrl}
+            className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
+          >
+            이미지 제거
+          </button>
+        </div>
+      </div>
+
+      {imageUrl && (
+        <img src={imageUrl} alt="현재 상품 이미지" className="mt-3 h-28 w-28 rounded-xl border bg-white object-contain" />
+      )}
+
+      {open && (
+        <div className="mt-4 border-t pt-4">
+          <div className="flex gap-2">
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  void searchImages();
+                }
+              }}
+              placeholder="네이버 이미지 검색어"
+              disabled={searching || uploading}
+              className="min-w-0 flex-1 rounded-lg border bg-white px-3 py-2 text-sm"
+            />
+            <button
+              type="button"
+              onClick={() => void searchImages()}
+              disabled={searching || uploading || !query.trim()}
+              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+            >
+              {searching ? "검색 중..." : "검색"}
+            </button>
+          </div>
+
+          {uploading && <p className="mt-3 text-sm font-semibold text-blue-700">선택한 이미지 업로드 중...</p>}
+          {!searching && candidates.length === 0 && (
+            <p className="mt-3 text-xs text-gray-500">검색하면 최대 5개의 이미지 후보가 표시됩니다.</p>
+          )}
+          {candidates.length > 0 && (
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+              {candidates.slice(0, 5).map((candidate, index) => (
+                <div
+                  key={`${candidate}-${index}`}
+                  className="overflow-hidden rounded-lg border bg-white p-1"
+                >
+                  <img
+                    src={candidate}
+                    alt={`이미지 후보 ${index + 1}`}
+                    referrerPolicy="no-referrer"
+                    className="h-20 w-full object-contain"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => void selectCandidate(candidate)}
+                    disabled={uploading}
+                    className="mt-1 w-full rounded-md bg-blue-600 px-2 py-1.5 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    이 이미지 사용
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function ProductEditDrawer({
   open,
   mode,
@@ -457,6 +665,7 @@ function ProductEditDrawer({
   dirty,
   saving,
   onChange,
+  onImageSelect,
   onSubmit,
   onClose,
 }: {
@@ -466,6 +675,7 @@ function ProductEditDrawer({
   dirty: boolean;
   saving: boolean;
   onChange: (form: ProductForm) => void;
+  onImageSelect: (imageUrl: string) => Promise<void>;
   onSubmit: (event?: React.FormEvent) => void;
   onClose: () => void;
 }) {
@@ -557,6 +767,13 @@ function ProductEditDrawer({
               />
             </label>
 
+            <ProductImagePicker
+              productName={formData.name}
+              imageUrl={formData.imageUrl}
+              disabled={saving}
+              onSelect={onImageSelect}
+            />
+
             <label className="block text-sm">
               <span className="mb-1 block font-semibold text-gray-700">설명</span>
               <textarea
@@ -625,6 +842,8 @@ export default function ProductsPage() {
   const [bulkBarcodeText, setBulkBarcodeText] = useState("");
   const [bulkBarcodeLoading, setBulkBarcodeLoading] = useState(false);
   const [bulkBarcodeResult, setBulkBarcodeResult] = useState<BulkBarcodeResult | null>(null);
+  const [bulkImageLoading, setBulkImageLoading] = useState(false);
+  const [bulkImageResult, setBulkImageResult] = useState<BulkImageResult | null>(null);
 
   const activeProduct = useMemo(
     () => products.find((product) => product.id === activeProductId) ?? products[0] ?? null,
@@ -811,6 +1030,30 @@ export default function ProductsPage() {
     }
   }
 
+  async function saveSelectedImage(imageUrl: string) {
+    if (!editingProduct) {
+      setFormData((current) => ({ ...current, imageUrl }));
+      return;
+    }
+
+    setSavingProductId(editingProduct.id);
+    try {
+      const res = await fetch(`/api/products/${editingProduct.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "상품 이미지 저장에 실패했습니다.");
+
+      updateProductInState(normalizeProduct(data));
+      setFormData((current) => ({ ...current, imageUrl: data.imageUrl ?? imageUrl }));
+      setToast("선택한 상품 이미지가 저장되었습니다.");
+    } finally {
+      setSavingProductId(null);
+    }
+  }
+
   async function toggleFlag(product: Product, flag: ProductFlag) {
     const previousProduct = product;
     const nextValue = !product[flag];
@@ -974,6 +1217,79 @@ export default function ProductsPage() {
     }
   }
 
+  async function registerMissingImages() {
+    setBulkImageLoading(true);
+    setBulkImageResult(null);
+
+    try {
+      const productsRes = await fetch("/api/products?activeOnly=false&includeOutOfStock=true");
+      const allProductsData = await productsRes.json().catch(() => ({}));
+      if (!productsRes.ok || !Array.isArray(allProductsData)) {
+        throw new Error(allProductsData.error ?? "전체 상품 목록을 불러오지 못했습니다.");
+      }
+
+      const allProducts = allProductsData as Product[];
+      const targets = allProducts.filter((product) => !product.imageUrl?.trim());
+      const result: BulkImageResult = {
+        total: allProducts.length,
+        target: targets.length,
+        success: 0,
+        skipped: allProducts.length - targets.length,
+        failed: 0,
+        errors: [],
+      };
+      setBulkImageResult({ ...result });
+
+      if (targets.length === 0) return;
+      if (!confirm(`이미지가 없는 상품 ${targets.length}개에 이미지를 일괄 등록하시겠습니까?\n\n기존 이미지가 있는 ${result.skipped}개 상품은 건너뜁니다.`)) {
+        return;
+      }
+
+      let nextIndex = 0;
+      async function worker() {
+        while (nextIndex < targets.length) {
+          const product = targets[nextIndex++];
+          try {
+            const res = await fetch("/api/admin/products/images", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: product.id }),
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+              throw new Error(data.error ?? "이미지 등록 실패");
+            }
+            if (data.status === "success") result.success += 1;
+            else result.skipped += 1;
+          } catch (error) {
+            result.failed += 1;
+            result.errors.push(
+              `${product.name}: ${error instanceof Error ? error.message : "이미지 등록 실패"}`,
+            );
+          }
+          setBulkImageResult({ ...result, errors: [...result.errors] });
+        }
+      }
+
+      await Promise.all(Array.from({ length: Math.min(3, targets.length) }, () => worker()));
+      setToast("이미지 일괄등록이 완료되었습니다.");
+      await fetchProducts();
+    } catch (error) {
+      console.error("[admin/products] bulk image registration failed", error);
+      setBulkImageResult({
+        total: 0,
+        target: 0,
+        success: 0,
+        skipped: 0,
+        failed: 1,
+        errors: [error instanceof Error ? error.message : "이미지 일괄등록 중 오류가 발생했습니다."],
+      });
+    } finally {
+      setBulkImageLoading(false);
+    }
+  }
+
   function guardDirtyChange(next: () => void) {
     if (isDirty && !confirm("저장되지 않은 변경사항이 있습니다. 계속하시겠습니까?")) return;
     next();
@@ -1028,6 +1344,14 @@ export default function ProductsPage() {
               />
               <button
                 type="button"
+                onClick={() => void registerMissingImages()}
+                disabled={bulkImageLoading}
+                className="rounded-xl bg-purple-600 px-4 py-2 font-bold text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {bulkImageLoading ? "이미지 등록 중..." : "이미지 일괄등록"}
+              </button>
+              <button
+                type="button"
                 onClick={startCreate}
                 className="rounded-xl bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700"
               >
@@ -1035,6 +1359,27 @@ export default function ProductsPage() {
               </button>
             </div>
           </div>
+
+          {bulkImageResult && (
+            <section className="mb-4 rounded-2xl border border-purple-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="font-black text-gray-900">이미지 일괄등록 로그</h2>
+                {bulkImageLoading && <span className="text-sm font-semibold text-purple-700">처리 중...</span>}
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
+                <p className="rounded-lg bg-gray-50 p-3">전체 상품 <strong>{bulkImageResult.total}개</strong></p>
+                <p className="rounded-lg bg-gray-50 p-3">처리 대상 <strong>{bulkImageResult.target}개</strong></p>
+                <p className="rounded-lg bg-green-50 p-3 text-green-800">성공 <strong>{bulkImageResult.success}개</strong></p>
+                <p className="rounded-lg bg-blue-50 p-3 text-blue-800">기존 이미지 건너뜀 <strong>{bulkImageResult.skipped}개</strong></p>
+                <p className="rounded-lg bg-red-50 p-3 text-red-800">실패 <strong>{bulkImageResult.failed}개</strong></p>
+              </div>
+              {bulkImageResult.errors.length > 0 && (
+                <div className="mt-3 max-h-40 overflow-y-auto rounded-lg bg-red-50 p-3 text-xs text-red-800">
+                  {bulkImageResult.errors.map((error, index) => <p key={`${error}-${index}`}>{error}</p>)}
+                </div>
+              )}
+            </section>
+          )}
 
           <ProductFilterBar
             statusFilter={statusFilter}
@@ -1176,6 +1521,7 @@ export default function ProductsPage() {
         dirty={isDirty}
         saving={Boolean(savingProductId)}
         onChange={setFormData}
+        onImageSelect={saveSelectedImage}
         onSubmit={saveProduct}
         onClose={closeEditor}
       />
