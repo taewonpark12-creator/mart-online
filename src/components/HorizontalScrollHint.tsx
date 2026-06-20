@@ -47,42 +47,55 @@ export function HorizontalScrollHint({ children, className }: Props) {
   }, [updateScrollState, children]);
 
   return (
-    <div className="group relative">
-      <div
-        ref={scrollRef}
-        onScroll={updateScrollState}
-        className={`${className} pr-8 scrollbar-thin`}
-      >
-        {children}
+    <div>
+      {canScrollNext && (
+        <div className="mb-2 flex justify-end">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-bold text-emerald-800 sm:text-base">
+            상품을 옆으로 밀어보세요
+            <span className="text-lg leading-none" aria-hidden>
+              →
+            </span>
+          </span>
+        </div>
+      )}
+
+      <div className="group relative">
+        <div
+          ref={scrollRef}
+          onScroll={updateScrollState}
+          className={`${className} pr-8 scrollbar-thin`}
+        >
+          {children}
+        </div>
+
+        {canScrollPrev && (
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white via-white/85 to-transparent" />
+        )}
+        {canScrollNext && (
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-white via-white/90 to-transparent" />
+        )}
+
+        {canScrollPrev && (
+          <button
+            type="button"
+            onClick={() => scrollByPage(-1)}
+            className="hidden sm:flex absolute left-1 top-1/2 z-10 h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-gray-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700"
+            aria-label="이전 상품 보기"
+          >
+            &lt;
+          </button>
+        )}
+        {canScrollNext && (
+          <button
+            type="button"
+            onClick={() => scrollByPage(1)}
+            className="hidden sm:flex absolute right-1 top-1/2 z-10 h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-gray-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700"
+            aria-label="다음 상품 보기"
+          >
+            &gt;
+          </button>
+        )}
       </div>
-
-      {canScrollPrev && (
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white via-white/85 to-transparent" />
-      )}
-      {canScrollNext && (
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-white via-white/90 to-transparent" />
-      )}
-
-      {canScrollPrev && (
-        <button
-          type="button"
-          onClick={() => scrollByPage(-1)}
-          className="hidden sm:flex absolute left-1 top-1/2 z-10 h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-gray-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700"
-          aria-label="이전 상품 보기"
-        >
-          &lt;
-        </button>
-      )}
-      {canScrollNext && (
-        <button
-          type="button"
-          onClick={() => scrollByPage(1)}
-          className="hidden sm:flex absolute right-1 top-1/2 z-10 h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-gray-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700"
-          aria-label="다음 상품 보기"
-        >
-          &gt;
-        </button>
-      )}
 
       <div className="mt-2 flex items-center gap-2">
         <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-100">
@@ -91,9 +104,6 @@ export function HorizontalScrollHint({ children, className }: Props) {
             style={{ width: `${canScrollNext || canScrollPrev ? Math.max(progress, 8) : 100}%` }}
           />
         </div>
-        <span className="shrink-0 text-[10px] font-semibold text-gray-400 sm:hidden">
-          &larr; swipe &rarr;
-        </span>
       </div>
     </div>
   );
