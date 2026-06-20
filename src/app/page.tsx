@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { OnlineExclusiveProducts } from "@/components/OnlineExclusiveProducts";
+import { ProductImageNotice } from "@/components/ProductImageNotice";
 import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { PopularProducts } from "@/components/PopularProducts";
 import { OrderBar } from "@/components/OrderBar";
@@ -225,6 +226,8 @@ export default function HomePage() {
     if (isHomeView) {
       return (
         <>
+          <ProductImageNotice />
+
           <div className="mb-8">
             <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
           </div>

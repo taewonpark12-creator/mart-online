@@ -18,8 +18,9 @@ export function ProductImage({
   sizes,
   priority = false,
 }: Props) {
-  const [failed, setFailed] = useState(false);
+  const [failedSrc, setFailedSrc] = useState("");
   const imageSrc = typeof src === "string" ? src.trim() : "";
+  const failed = Boolean(imageSrc) && failedSrc === imageSrc;
   const valid =
     imageSrc.startsWith("/") ||
     imageSrc.startsWith("http://") ||
@@ -35,7 +36,11 @@ export function ProductImage({
       aria-label={alt}
       role="img"
     >
-      이미지 없음
+      <span className="px-3 text-center font-semibold leading-relaxed">
+        상품 이미지
+        <br />
+        준비중
+      </span>
     </div>
   );
 
@@ -61,7 +66,7 @@ export function ProductImage({
         loading={priority ? "eager" : "lazy"}
         priority={priority}
         decoding="async"
-        onError={() => setFailed(true)}
+        onError={() => setFailedSrc(imageSrc)}
         style={{ objectFit: "cover" }}
       />
     );
@@ -78,7 +83,7 @@ export function ProductImage({
       loading={priority ? "eager" : "lazy"}
       priority={priority}
       decoding="async"
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(imageSrc)}
     />
   );
 }
