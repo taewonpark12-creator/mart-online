@@ -56,3 +56,32 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "주문 상태 변경 중 오류가 발생했습니다." }, { status: 500 });
   }
 }
+
+export async function DELETE(_req: NextRequest, { params }: Params) {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+
+    console.log(`[DELETE /api/admin/orders/${id}] Deleting order`);
+
+    const existing = await prisma.order.findUnique({ where: { id } });
+    if (!existing) {
+      return NextResponse.json({ error: "주문을 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    // Delete the order - OrderItems will be cascade deleted automatically due to the schema
+    await prisma.order.delete({
+      where: { id },
+    });
+
+    console.log(`[DELETE /api/admin/orders/${id}] Order deleted successfully`);
+
+    return NextResponse.json({ message: "주문이 삭제되었습니다." });
+  } catch (error) {
+    console.error("[DELETE /api/admin/orders/[id]]", error);
+    return NextResponse.json({ error: "주문 삭제 중 오류가 발생했습니다." }, { status: 500 });
+  }
+}

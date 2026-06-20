@@ -234,12 +234,14 @@ function OrderDetailPanel({
   updating,
   onUpdateStatus,
   onCancel,
+  onDelete,
   onClose,
 }: {
   order: Order | null;
   updating: boolean;
   onUpdateStatus: (status: OrderStatus) => void;
   onCancel: () => void;
+  onDelete: () => void;
   onClose?: () => void;
 }) {
   const [isPrinting, setIsPrinting] = useState(false);
@@ -255,6 +257,13 @@ function OrderDetailPanel({
       console.error("[admin/orders] print receipt failed", error);
       alert("인쇄를 시작할 수 없습니다. 다시 시도해주세요.");
       setIsPrinting(false);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!order) return;
+    if (confirm("정말 이 주문을 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.")) {
+      onDelete();
     }
   };
 
@@ -306,6 +315,15 @@ function OrderDetailPanel({
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPrinting ? "인쇄 준비 중..." : "영수증 인쇄"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={updating}
+          className="w-full rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          주문 삭제
         </button>
 
         <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} onCancel={onCancel} />
@@ -651,6 +669,33 @@ export default function OrdersPage() {
     }
   }
 
+  async function deleteOrder() {
+    if (!selectedOrderId) return;
+    setUpdatingOrderId(selectedOrderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${selectedOrderId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error ?? "주문 삭제에 실패했습니다.");
+        return;
+      }
+
+      // Remove the deleted order from the list
+      setOrders((current) => current.filter((order) => order.id !== selectedOrderId));
+      setSelectedOrderId(null);
+      fetchTodaySummary();
+      fetchPendingCount();
+    } catch (error) {
+      console.error("[admin/orders] delete failed", error);
+      alert("주문 삭제 중 오류가 발생했습니다.");
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
@@ -874,6 +919,7 @@ export default function OrdersPage() {
                           updating={updatingOrderId === selectedOrderId}
                           onUpdateStatus={updateStatus}
                           onCancel={cancelOrder}
+                          onDelete={deleteOrder}
                           onClose={() => setSelectedOrderId(null)}
                         />
                       </div>
@@ -890,6 +936,7 @@ export default function OrdersPage() {
                   updating={updatingOrderId === selectedOrderId}
                   onUpdateStatus={updateStatus}
                   onCancel={cancelOrder}
+                  onDelete={deleteOrder}
                 />
               </div>
             </div>

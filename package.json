@@ -12,6 +12,7 @@
     "db:sync": "prisma db push --accept-data-loss && prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "db:backfill-order-items": "tsx prisma/backfill-order-items.ts",
+    "db:delete-orders": "tsx scripts/delete-orders.ts",
     "test:order-workflow": "node scripts/order-workflow-test.mjs",
     "test:user-order-flow": "node scripts/user-order-flow-e2e.mjs",
     "postinstall": "prisma generate"
