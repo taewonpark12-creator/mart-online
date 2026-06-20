@@ -393,6 +393,7 @@ export default function OrdersPage() {
     endDate: string | null;
   }>({ type: "all", startDate: null, endDate: null });
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [soundEnabled, setSoundEnabled] = useState(false);
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -564,6 +565,31 @@ export default function OrdersPage() {
   }, [previousPendingCount, notificationPermission]);
 
   useEffect(() => {
+    if (!soundEnabled) return;
+
+    const audio = new Audio("/sounds/new-order.mp3");
+    let soundInterval: NodeJS.Timeout | null = null;
+
+    const playSound = () => {
+      if (pendingCount > 0) {
+        audio.currentTime = 0;
+        audio.play().catch((err) => console.error("Sound play failed:", err));
+      }
+    };
+
+    if (pendingCount > 0) {
+      playSound();
+      soundInterval = setInterval(playSound, 15000);
+    }
+
+    return () => {
+      if (soundInterval) clearInterval(soundInterval);
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [soundEnabled, pendingCount]);
+
+  useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(interval);
   }, []);
@@ -680,6 +706,25 @@ export default function OrdersPage() {
               </div>
             ) : (
               <span className="text-sm text-gray-500">알림이 차단되어 있습니다. 브라우저 설정에서 알림을 허용해주세요.</span>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">알림음</span>
+            {soundEnabled ? (
+              <button
+                onClick={() => setSoundEnabled(false)}
+                className="text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
+              >
+                알림음 끄기
+              </button>
+            ) : (
+              <button
+                onClick={() => setSoundEnabled(true)}
+                className="text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
+              >
+                알림음 켜기
+              </button>
             )}
           </div>
         </div>
