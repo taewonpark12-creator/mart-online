@@ -55,6 +55,7 @@ type BulkImageResult = {
   total: number;
   target: number;
   success: number;
+  cloudinaryReplaced: number;
   skipped: number;
   failed: number;
   errors: string[];
@@ -1180,11 +1181,17 @@ export default function ProductsPage() {
       }
 
       const allProducts = allProductsData as Product[];
-      const targets = allProducts.filter((product) => !product.imageUrl?.trim());
+      const isCloudinaryImage = (product: Product) =>
+        product.imageUrl?.toLowerCase().includes("res.cloudinary.com") ?? false;
+      const cloudinaryTargets = allProducts.filter(isCloudinaryImage);
+      const targets = allProducts.filter(
+        (product) => !product.imageUrl?.trim() || isCloudinaryImage(product),
+      );
       const result: BulkImageResult = {
         total: allProducts.length,
         target: targets.length,
         success: 0,
+        cloudinaryReplaced: 0,
         skipped: allProducts.length - targets.length,
         failed: 0,
         errors: [],
@@ -1192,7 +1199,7 @@ export default function ProductsPage() {
       setBulkImageResult({ ...result });
 
       if (targets.length === 0) return;
-      if (!confirm(`이미지가 없는 상품 ${targets.length}개에 이미지를 일괄 등록하시겠습니까?\n\n기존 이미지가 있는 ${result.skipped}개 상품은 건너뜁니다.`)) {
+      if (!confirm(`이미지가 없거나 Cloudinary 이미지를 사용하는 상품 ${targets.length}개를 처리하시겠습니까?\n\nCloudinary 교체 대상: ${cloudinaryTargets.length}개\n기존 외부 이미지가 있는 ${result.skipped}개 상품은 건너뜁니다.`)) {
         return;
       }
 
@@ -1211,8 +1218,10 @@ export default function ProductsPage() {
             if (!res.ok) {
               throw new Error(data.error ?? "이미지 등록 실패");
             }
-            if (data.status === "success") result.success += 1;
-            else result.skipped += 1;
+            if (data.status === "success") {
+              result.success += 1;
+              if (data.replacedCloudinary) result.cloudinaryReplaced += 1;
+            } else result.skipped += 1;
           } catch (error) {
             result.failed += 1;
             result.errors.push(
@@ -1232,6 +1241,7 @@ export default function ProductsPage() {
         total: 0,
         target: 0,
         success: 0,
+        cloudinaryReplaced: 0,
         skipped: 0,
         failed: 1,
         errors: [error instanceof Error ? error.message : "이미지 일괄등록 중 오류가 발생했습니다."],
@@ -1317,10 +1327,11 @@ export default function ProductsPage() {
                 <h2 className="font-black text-gray-900">이미지 일괄등록 로그</h2>
                 {bulkImageLoading && <span className="text-sm font-semibold text-purple-700">처리 중...</span>}
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-5">
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-3 xl:grid-cols-6">
                 <p className="rounded-lg bg-gray-50 p-3">전체 상품 <strong>{bulkImageResult.total}개</strong></p>
                 <p className="rounded-lg bg-gray-50 p-3">처리 대상 <strong>{bulkImageResult.target}개</strong></p>
                 <p className="rounded-lg bg-green-50 p-3 text-green-800">성공 <strong>{bulkImageResult.success}개</strong></p>
+                <p className="rounded-lg bg-purple-50 p-3 text-purple-800">Cloudinary 교체 <strong>{bulkImageResult.cloudinaryReplaced}개</strong></p>
                 <p className="rounded-lg bg-blue-50 p-3 text-blue-800">기존 이미지 건너뜀 <strong>{bulkImageResult.skipped}개</strong></p>
                 <p className="rounded-lg bg-red-50 p-3 text-red-800">실패 <strong>{bulkImageResult.failed}개</strong></p>
               </div>

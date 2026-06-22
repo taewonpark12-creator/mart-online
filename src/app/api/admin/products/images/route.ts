@@ -28,7 +28,9 @@ async function searchProductImages(query: string): Promise<string[]> {
     data?.items
       ?.map((item: { image?: unknown }) => item.image)
       .filter((image: unknown): image is string =>
-        typeof image === "string" && /^https?:\/\//.test(image),
+        typeof image === "string" &&
+        /^https?:\/\//.test(image) &&
+        !image.toLowerCase().includes("res.cloudinary.com"),
       )
       .slice(0, 5) ?? []
   );
@@ -56,7 +58,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "상품을 찾을 수 없습니다." }, { status: 404 });
     }
 
-    if (product.imageUrl?.trim()) {
+    const currentImageUrl = product.imageUrl?.trim() ?? "";
+    const replacingCloudinary = currentImageUrl.toLowerCase().includes("res.cloudinary.com");
+
+    if (currentImageUrl && !replacingCloudinary) {
       return NextResponse.json({ status: "skipped", reason: "existing_image" });
     }
 
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
     const updated = await prisma.product.updateMany({
       where: {
         id: product.id,
-        OR: [{ imageUrl: null }, { imageUrl: "" }],
+        imageUrl: product.imageUrl,
       },
       data: { imageUrl },
     });
@@ -83,12 +88,17 @@ export async function POST(req: NextRequest) {
       action: "UPDATE",
       entity: "Product",
       entityId: product.id,
-      changes: { imageUrl, source: "naver_bulk_image_registration" },
+      changes: {
+        imageUrl,
+        source: replacingCloudinary
+          ? "naver_cloudinary_image_replacement"
+          : "naver_bulk_image_registration",
+      },
       ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || undefined,
       userAgent: req.headers.get("user-agent") || undefined,
     });
 
-    return NextResponse.json({ status: "success", imageUrl });
+    return NextResponse.json({ status: "success", imageUrl, replacedCloudinary: replacingCloudinary });
   } catch (error) {
     console.error("[POST /api/admin/products/images]", error);
     return NextResponse.json(
