@@ -49197,10 +49197,10 @@
     "barcode": "8801068941432",
     "name": "삼립)포켓몬이상해꽃솔티카라멜롤",
     "normalPrice": 1800,
-    "eventPrice": 1000,
-    "discountRate": 44,
-    "saleStartDate": "2026-06-20",
-    "saleEndDate": "2026-06-21"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801068941456",
@@ -49223,6 +49223,24 @@
   {
     "barcode": "8801068941654",
     "name": "삼립)포켓몬알통몬롱스틱파이70g",
+    "normalPrice": 2100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068941883",
+    "name": "삼립)포켓몬나오하애플데니쉬",
+    "normalPrice": 2100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068941890",
+    "name": "삼립)포켓몬에몽가미니초코롤팡",
     "normalPrice": 2100,
     "eventPrice": null,
     "discountRate": null,
@@ -50043,6 +50061,15 @@
     "barcode": "8801069423173",
     "name": "남양)불가리스사과골드키위4입",
     "normalPrice": 6100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801069423197",
+    "name": "남양)단팥에몽190ml",
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -101872,8 +101899,8 @@
   },
   {
     "barcode": "8809280980215",
-    "name": "사과(10개/1봉)",
-    "normalPrice": 15800,
+    "name": "사과(10개/1봉)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -109182,8 +109209,8 @@
     "barcode": "8809560522364",
     "name": "두바이쫀득볼6입",
     "normalPrice": 5500,
-    "eventPrice": 2980,
-    "discountRate": 46,
+    "eventPrice": 1980,
+    "discountRate": 64,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -115443,15 +115470,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8809990063239",
-    "name": "토닉워터시그너스300ml",
-    "normalPrice": 1200,
-    "eventPrice": 500,
-    "discountRate": 58,
-    "saleStartDate": "2023-12-24",
-    "saleEndDate": "2026-12-31"
-  },
-  {
     "barcode": "8809990213825",
     "name": "한마음KF94마스크",
     "normalPrice": 500,
@@ -116209,8 +116227,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)",
-    "normalPrice": 2480,
+    "name": "햇양파(소)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116264,7 +116282,7 @@
   {
     "barcode": "9100000001913",
     "name": "매실(10kg/1망)행사",
-    "normalPrice": 29800,
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116461,8 +116479,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)행사",
-    "normalPrice": 980,
+    "name": "새송이버섯(1봉)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116875,8 +116893,8 @@
   },
   {
     "barcode": "9100000113159",
-    "name": "깐마늘(800g/1봉)",
-    "normalPrice": 8900,
+    "name": "깐마늘(800g/1봉)행사",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117091,8 +117109,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)",
-    "normalPrice": 4980,
+    "name": "표고버섯(500g/1봉)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117172,8 +117190,8 @@
   },
   {
     "barcode": "9100000214702",
-    "name": "홍매실(5kg/1망)",
-    "normalPrice": 19800,
+    "name": "홍매실(10kg/1망)행사",
+    "normalPrice": 29800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117199,8 +117217,8 @@
   },
   {
     "barcode": "9100000214757",
-    "name": "왕매실(5kg/1망)행사",
-    "normalPrice": 14800,
+    "name": "왕매실(5kg/1망)",
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117335,7 +117353,7 @@
   {
     "barcode": "9100000215433",
     "name": "한입마늘(800g/1봉)행사",
-    "normalPrice": 7980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117379,7 +117397,7 @@
   },
   {
     "barcode": "9100000215914",
-    "name": "참외(5~6개/1봉)",
+    "name": "참외(6개/1봉)",
     "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
@@ -117478,8 +117496,8 @@
   },
   {
     "barcode": "9100000216553",
-    "name": "대학찰옥수수(1포)",
-    "normalPrice": 15800,
+    "name": "대학찰옥수수(1포)행사",
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117550,8 +117568,8 @@
   },
   {
     "barcode": "9100000216652",
-    "name": "둥근호박(1개)",
-    "normalPrice": 980,
+    "name": "둥근호박(2개)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117668,7 +117686,7 @@
   {
     "barcode": "9100000217086",
     "name": "경북사과(18개/1봉)행사",
-    "normalPrice": 9800,
+    "normalPrice": 7800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117811,8 +117829,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
-    "normalPrice": 2480,
+    "name": "바나나(1송이)",
+    "normalPrice": 3480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117928,8 +117946,8 @@
   },
   {
     "barcode": "9100000218564",
-    "name": "오이지오이(25개/1봉)행사",
-    "normalPrice": 6980,
+    "name": "임진강오이지오이(50개/1포)",
+    "normalPrice": 13000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118036,8 +118054,8 @@
   },
   {
     "barcode": "9100000218809",
-    "name": "파프리카(2개/1봉)행사",
-    "normalPrice": 1980,
+    "name": "파프리카(6개/1봉)행사",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118081,8 +118099,8 @@
   },
   {
     "barcode": "9100000218922",
-    "name": "양배추(3통/1망)",
-    "normalPrice": 7980,
+    "name": "양배추(5통/1박스)",
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118405,8 +118423,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)",
-    "normalPrice": 2480,
+    "name": "가지(5개/1봉)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118460,7 +118478,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 1480,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
