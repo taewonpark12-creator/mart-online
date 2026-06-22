@@ -476,34 +476,6 @@ function ProductImagePicker({
   const [searching, setSearching] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  async function uploadFile(file: File) {
-    setUploading(true);
-    try {
-      const uploadForm = new FormData();
-      uploadForm.append("file", file);
-      const uploadRes = await fetch("/api/admin/upload", { method: "POST", body: uploadForm });
-      const uploadData = await uploadRes.json().catch(() => ({}));
-      if (!uploadRes.ok || !uploadData.url) {
-        throw new Error(uploadData.error ?? "이미지 업로드에 실패했습니다.");
-      }
-      await onSelect(uploadData.url);
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function uploadDirectImage(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-
-    try {
-      await uploadFile(file);
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "사진 업로드 중 오류가 발생했습니다.");
-    }
-  }
-
   async function removeImage() {
     if (!confirm("이 상품의 이미지를 제거하시겠습니까?")) return;
     setUploading(true);
@@ -535,18 +507,7 @@ function ProductImagePicker({
   async function selectCandidate(candidateUrl: string) {
     setUploading(true);
     try {
-      const downloadRes = await fetch("/api/download-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: candidateUrl }),
-      });
-      if (!downloadRes.ok) {
-        const data = await downloadRes.json().catch(() => ({}));
-        throw new Error(data.error ?? "이미지 다운로드에 실패했습니다.");
-      }
-
-      const blob = await downloadRes.blob();
-      await uploadFile(new File([blob], "product-image", { type: blob.type }));
+      await onSelect(candidateUrl);
       setCandidates([]);
       setOpen(false);
     } catch (error) {
@@ -561,19 +522,9 @@ function ProductImagePicker({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm font-bold text-gray-900">상품 이미지</p>
-          <p className="text-xs text-gray-500">후보 미리보기는 외부 URL을 사용하며, 선택한 이미지 한 장만 업로드됩니다.</p>
+          <p className="text-xs text-gray-500">후보 이미지의 외부 URL을 상품에 직접 저장합니다.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <label className={`rounded-lg bg-green-600 px-3 py-2 text-sm font-bold text-white hover:bg-green-700 ${disabled || uploading ? "pointer-events-none opacity-50" : "cursor-pointer"}`}>
-            사진 업로드
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(event) => void uploadDirectImage(event)}
-              disabled={disabled || uploading}
-              className="sr-only"
-            />
-          </label>
           <button
             type="button"
             onClick={() => setOpen((current) => !current)}
@@ -623,7 +574,7 @@ function ProductImagePicker({
             </button>
           </div>
 
-          {uploading && <p className="mt-3 text-sm font-semibold text-blue-700">선택한 이미지 업로드 중...</p>}
+          {uploading && <p className="mt-3 text-sm font-semibold text-blue-700">선택한 이미지 저장 중...</p>}
           {!searching && candidates.length === 0 && (
             <p className="mt-3 text-xs text-gray-500">검색하면 최대 5개의 이미지 후보가 표시됩니다.</p>
           )}

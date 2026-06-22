@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
     const nextImageUrl =
       body.imageUrl !== undefined
-        ? sanitizeInput(String(body.imageUrl ?? "")).slice(0, 500) || null
+        ? sanitizeInput(String(body.imageUrl ?? "")).slice(0, 2000) || null
         : existing.imageUrl;
     const nextName =
       body.name !== undefined ? sanitizeInput(String(body.name ?? "")).slice(0, 100) : undefined;

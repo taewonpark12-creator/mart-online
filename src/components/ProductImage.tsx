@@ -11,14 +11,6 @@ interface Props {
   priority?: boolean;
 }
 
-function isCloudinaryUrl(src: string) {
-  try {
-    return new URL(src).hostname.toLowerCase() === "res.cloudinary.com";
-  } catch {
-    return false;
-  }
-}
-
 export function ProductImage({
   src,
   alt,
@@ -29,11 +21,8 @@ export function ProductImage({
   const [failedSrc, setFailedSrc] = useState("");
   const imageSrc = typeof src === "string" ? src.trim() : "";
   const failed = Boolean(imageSrc) && failedSrc === imageSrc;
-  const unoptimized = isCloudinaryUrl(imageSrc);
-  const valid =
-    imageSrc.startsWith("/") ||
-    imageSrc.startsWith("http://") ||
-    imageSrc.startsWith("https://");
+  const external = imageSrc.startsWith("http://") || imageSrc.startsWith("https://");
+  const valid = imageSrc.startsWith("/") || external;
 
   const fallback = (
     <div
@@ -64,6 +53,22 @@ export function ProductImage({
     return fallback;
   }
 
+  if (external) {
+    return (
+      <img
+        src={imageSrc}
+        alt={alt}
+        width={fill ? undefined : 320}
+        height={fill ? undefined : 320}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        onError={() => setFailedSrc(imageSrc)}
+        className={fill ? "absolute inset-0 h-full w-full object-cover" : "h-auto w-full object-cover"}
+      />
+    );
+  }
+
   if (fill) {
     return (
       <Image
@@ -72,7 +77,6 @@ export function ProductImage({
         fill
         sizes={sizes ?? "100vw"}
         quality={75}
-        unoptimized={unoptimized}
         loading={priority ? "eager" : "lazy"}
         priority={priority}
         decoding="async"
@@ -90,7 +94,6 @@ export function ProductImage({
       height={320}
       sizes={sizes ?? "(max-width: 640px) 160px, 240px"}
       quality={75}
-      unoptimized={unoptimized}
       loading={priority ? "eager" : "lazy"}
       priority={priority}
       decoding="async"

@@ -1,4 +1,3 @@
-import { v2 as cloudinary } from "cloudinary";
 import { NextRequest, NextResponse } from "next/server";
 import { createAuditLog } from "@/lib/audit";
 import { isAdminAuthenticated } from "@/lib/auth";
@@ -7,10 +6,6 @@ import { sanitizeInput } from "@/lib/security";
 
 const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID ?? "5CTXJMXh6ZfTnjgxw5og";
 const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET ?? "Pmg86kSmBd";
-
-cloudinary.config({
-  url: process.env.CLOUDINARY_URL,
-});
 
 async function searchProductImages(query: string): Promise<string[]> {
   const url = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
@@ -70,33 +65,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "이미지 검색 결과가 없습니다." }, { status: 422 });
     }
 
-    let uploaded: { secure_url: string; public_id: string } | null = null;
-    for (const candidate of candidates) {
-      try {
-        const result = await cloudinary.uploader.upload(candidate, {
-          folder: "mart-online",
-        });
-        uploaded = { secure_url: result.secure_url, public_id: result.public_id };
-        break;
-      } catch (error) {
-        console.warn(`[bulk product image] candidate upload failed: ${product.id}`, error);
-      }
-    }
-
-    if (!uploaded) {
-      return NextResponse.json({ error: "검색된 이미지를 업로드하지 못했습니다." }, { status: 502 });
-    }
+    const imageUrl = candidates[0];
 
     const updated = await prisma.product.updateMany({
       where: {
         id: product.id,
         OR: [{ imageUrl: null }, { imageUrl: "" }],
       },
-      data: { imageUrl: uploaded.secure_url },
+      data: { imageUrl },
     });
 
     if (updated.count === 0) {
-      await cloudinary.uploader.destroy(uploaded.public_id).catch(() => undefined);
       return NextResponse.json({ status: "skipped", reason: "existing_image" });
     }
 
@@ -104,12 +83,12 @@ export async function POST(req: NextRequest) {
       action: "UPDATE",
       entity: "Product",
       entityId: product.id,
-      changes: { imageUrl: uploaded.secure_url, source: "bulk_image_registration" },
+      changes: { imageUrl, source: "naver_bulk_image_registration" },
       ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || undefined,
       userAgent: req.headers.get("user-agent") || undefined,
     });
 
-    return NextResponse.json({ status: "success", imageUrl: uploaded.secure_url });
+    return NextResponse.json({ status: "success", imageUrl });
   } catch (error) {
     console.error("[POST /api/admin/products/images]", error);
     return NextResponse.json(
