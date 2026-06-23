@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import {
@@ -21,6 +21,8 @@ const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
 import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString, getKoreaDaysAgoString } from "@/lib/korea-date";
 import { printReceiptNow } from "@/lib/print-receipt";
 import type { ReceiptOrder } from "@/lib/receipt-html";
+
+const ORDERS_AUTO_REFRESH_MS = 12000;
 
 type OrderItem = {
   id: string;
@@ -459,8 +461,10 @@ export default function OrdersPage() {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-  const fetchOrders = async () => {
-    setLoading(true);
+  const fetchOrders = useCallback(async ({ silent = false }: { silent?: boolean } = {}) => {
+    if (!silent) {
+      setLoading(true);
+    }
     try {
       const params = new URLSearchParams();
       if (filter) params.append("status", filter);
@@ -477,17 +481,22 @@ export default function OrdersPage() {
         throw new Error("주문 데이터를 불러오지 못했습니다.");
       }
 
-      const data = await res.json();
+      const data: Order[] = await res.json();
       setOrders(data);
-      if (!selectedOrderId && data[0]) {
-        setSelectedOrderId(data[0].id);
-      }
+      setSelectedOrderId((currentSelectedId) => {
+        if (currentSelectedId && data.some((order) => order.id === currentSelectedId)) {
+          return currentSelectedId;
+        }
+        return data[0]?.id ?? null;
+      });
     } catch (error) {
       console.error("[admin/orders] load failed", error);
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
-  };
+  }, [dateFilter.endDate, dateFilter.startDate, filter, router]);
 
   const fetchPendingCount = async () => {
     try {
@@ -561,7 +570,14 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, [filter, dateFilter]);
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchOrders({ silent: true });
+    }, ORDERS_AUTO_REFRESH_MS);
+    return () => clearInterval(interval);
+  }, [fetchOrders]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window) {
@@ -724,33 +740,34 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-600">주문 알림:</span>
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
             {!notificationSupported ? (
-              <span className="text-sm text-gray-500">이 브라우저는 알림을 지원하지 않습니다.</span>
+              <span className="text-sm font-semibold text-gray-600">이 브라우저는 알림을 지원하지 않습니다.</span>
             ) : notificationPermission === "granted" ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-green-600 font-medium">알림 켜짐</span>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <span className="rounded-full bg-green-600 px-4 py-2 text-sm font-bold text-white">🔔 알림 켜짐</span>
                 <button
                   type="button"
                   onClick={sendTestNotification}
-                  className="text-xs text-gray-600 border border-gray-300 px-2 py-1 rounded hover:bg-gray-50"
+                  className="rounded-full border border-green-200 bg-white px-3 py-2 text-xs font-semibold text-green-700 hover:bg-green-50"
                 >
-                  테스트
+                  테스트 알림
                 </button>
               </div>
             ) : notificationPermission === "default" ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">알림이 꺼져 있습니다.</span>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <button
                   onClick={requestNotificationPermission}
-                  className="text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
+                  className="rounded-full bg-red-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-700"
                 >
-                  알림 허용
+                  🔔 신규주문 알림 켜기
                 </button>
+                <span className="text-sm font-semibold text-amber-900">알림이 꺼져 있습니다.</span>
               </div>
             ) : (
-              <span className="text-sm text-gray-500">알림이 차단되어 있습니다. 브라우저 설정에서 알림을 허용해주세요.</span>
+              <div className="max-w-md text-sm font-semibold text-red-700">
+                브라우저 알림이 차단되어 있습니다. 주소창 왼쪽 설정에서 허용해주세요.
+              </div>
             )}
           </div>
 
