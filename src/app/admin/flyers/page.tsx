@@ -266,7 +266,7 @@ export default function FlyerManagementPage() {
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Cloudinary 또는 외부 이미지 호스팅 서비스의 URL을 입력하세요.
+                  외부 이미지 호스팅 서비스의 URL을 입력하세요.
                 </p>
               </div>
             ) : (
@@ -276,13 +276,13 @@ export default function FlyerManagementPage() {
                 </label>
                 <input
                   type="file"
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                  accept="image/jpeg,image/jpg,image/png"
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
                   className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  JPG, PNG, WEBP, GIF 형식 (최대 5MB)
+                  JPG, PNG 형식 (최대 5MB)
                 </p>
               </div>
             )}
@@ -386,7 +386,7 @@ export default function FlyerManagementPage() {
           <h3 className="font-semibold text-blue-900 mb-2">사용 방법</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• URL 입력 또는 파일 업로드 방식 중 하나를 선택하세요.</li>
-            <li>• 파일 업로드는 JPG, PNG, WEBP, GIF 형식 (최대 5MB)을 지원합니다.</li>
+            <li>• 파일 업로드는 JPG, PNG 형식 (최대 5MB)을 지원합니다.</li>
             <li>• ↑↓ 버튼으로 전단지 순서를 변경할 수 있습니다.</li>
             <li>• 표시/숨김 버튼으로 전단지 노출 여부를 제어할 수 있습니다.</li>
             <li>• 삭제 버튼으로 전단지를 삭제할 수 있습니다.</li>

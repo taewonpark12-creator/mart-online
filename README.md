@@ -51,6 +51,17 @@ npm run dev
 
 `.env` 파일의 `ADMIN_PASSWORD` 값을 변경하세요.
 
+## Flyer uploads
+
+Admin flyer file uploads commit JPG/PNG files to `public/flyers/` through the GitHub Contents API.
+Set these environment variables in Vercel:
+
+- `GITHUB_TOKEN`: GitHub token with contents write access to this repository.
+- `FLYER_UPLOAD_REPO`: Optional, defaults to `taewonpark12-creator/mart-online`.
+- `FLYER_UPLOAD_BRANCH`: Optional, defaults to `main`.
+
+Uploaded flyer records store `/flyers/<filename>` in the database.
+
 ## 기술 스택
 
 - Next.js 15 (App Router)
