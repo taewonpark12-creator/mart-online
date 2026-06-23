@@ -6950,27 +6950,27 @@
   {
     "barcode": "4902430311625",
     "name": "다우니)베리바닐라1L",
-    "normalPrice": 8000,
-    "eventPrice": 6980,
-    "discountRate": 13,
+    "normalPrice": 9000,
+    "eventPrice": 7980,
+    "discountRate": 11,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "4902430311670",
     "name": "다우니)화이트릴리1L",
-    "normalPrice": 8000,
-    "eventPrice": 6980,
-    "discountRate": 13,
+    "normalPrice": 9000,
+    "eventPrice": 7980,
+    "discountRate": 11,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "4902430311724",
     "name": "다우니)라일락1L",
-    "normalPrice": 8000,
-    "eventPrice": 6980,
-    "discountRate": 13,
+    "normalPrice": 9000,
+    "eventPrice": 7980,
+    "discountRate": 11,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
