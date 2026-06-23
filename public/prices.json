@@ -8172,6 +8172,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "5430",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "5706386102028",
     "name": "원티드)핫살사소스260g",
     "normalPrice": 5000,
