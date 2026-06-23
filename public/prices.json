@@ -7067,7 +7067,7 @@
   {
     "barcode": "4902430507332",
     "name": "다우니)퍼퓸블랙미스티크1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7274,7 +7274,7 @@
   {
     "barcode": "4902430814065",
     "name": "다우니)코튼퓨어러브1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7283,7 +7283,7 @@
   {
     "barcode": "4902430850322",
     "name": "다우니)엑스퍼트실내건조1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7391,7 +7391,7 @@
   {
     "barcode": "4902430905916",
     "name": "다우니)미스티크1.05L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7409,7 +7409,7 @@
   {
     "barcode": "4902430924771",
     "name": "다우니)스프링가든러브1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7526,7 +7526,7 @@
   {
     "barcode": "4987176067234",
     "name": "다우니)항균파워플러스1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7616,7 +7616,7 @@
   {
     "barcode": "4987176099501",
     "name": "다우니)프리지아앤페어1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7625,7 +7625,7 @@
   {
     "barcode": "4987176116895",
     "name": "다우니)실내건조플로럴1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -7679,7 +7679,7 @@
   {
     "barcode": "4987176157140",
     "name": "다우니)시트러스버베나1L",
-    "normalPrice": 9900,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -30747,6 +30747,15 @@
     "barcode": "8801046446898",
     "name": "트리오500g",
     "normalPrice": 2800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801046450901",
+    "name": "케라)울트라손상케어샴푸1L",
+    "normalPrice": 7800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74270,7 +74279,7 @@
   {
     "barcode": "8801353005269",
     "name": "산도깨비)에어컨세정제330ml",
-    "normalPrice": 4800,
+    "normalPrice": 5200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74459,7 +74468,7 @@
   {
     "barcode": "8801353006907",
     "name": "산도깨비)에어컨탈취제300ml",
-    "normalPrice": 4800,
+    "normalPrice": 5200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
