@@ -116227,8 +116227,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)행사",
-    "normalPrice": 1480,
+    "name": "햇양파(소)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116254,7 +116254,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(3봉)",
+    "name": "팽이버섯(4봉)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -116893,8 +116893,8 @@
   },
   {
     "barcode": "9100000113159",
-    "name": "깐마늘(800g/1봉)행사",
-    "normalPrice": 6980,
+    "name": "깐마늘(800g/1봉)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117109,8 +117109,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)행사",
-    "normalPrice": 3980,
+    "name": "표고버섯(500g/1봉)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117155,7 +117155,7 @@
   {
     "barcode": "9100000214528",
     "name": "양주오이지오이(50개/1포)행사",
-    "normalPrice": 7980,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117353,7 +117353,7 @@
   {
     "barcode": "9100000215433",
     "name": "한입마늘(800g/1봉)행사",
-    "normalPrice": 6980,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118478,7 +118478,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 980,
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
