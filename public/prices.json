@@ -19476,6 +19476,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037004427",
+    "name": "포스트)콘후레이크220g",
+    "normalPrice": 2800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801037004854",
     "name": "카누라이트미니10T",
     "normalPrice": 3500,
@@ -19856,7 +19865,7 @@
   {
     "barcode": "8801037028713",
     "name": "맥심디카페인170g",
-    "normalPrice": 13800,
+    "normalPrice": 14500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -20196,6 +20205,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037047998",
+    "name": "맥심모카골드210T",
+    "normalPrice": 39800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801037049534",
     "name": "카누다크아메리카노10T",
     "normalPrice": 5200,
@@ -20397,6 +20415,15 @@
     "barcode": "8801037055122",
     "name": "맥심아이스믹스20T",
     "normalPrice": 6800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801037056204",
+    "name": "맥심화이트골드210T",
+    "normalPrice": 39800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
