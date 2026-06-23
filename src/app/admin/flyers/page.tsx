@@ -20,8 +20,6 @@ export default function FlyerManagementPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [uploadMethod, setUploadMethod] = useState<"url" | "file">("url");
-  const [file, setFile] = useState<File | null>(null);
 
   const fetchFlyers = async () => {
     try {
@@ -64,73 +62,29 @@ export default function FlyerManagementPage() {
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (uploadMethod === "url") {
-      if (!imageUrl) return;
+    if (!imageUrl) return;
 
-      setUploading(true);
-      try {
-        const res = await fetch("/api/admin/flyers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageUrl }),
-        });
+    setUploading(true);
+    try {
+      const res = await fetch("/api/admin/flyers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl }),
+      });
 
-        if (!res.ok) {
-          const data = await res.json();
-          alert(data.error || "업로드 실패");
-          return;
-        }
-
-        setImageUrl("");
-        fetchFlyers();
-      } catch (error) {
-        console.error("전단지 업로드 오류:", error);
-        alert("업로드 실패");
-      } finally {
-        setUploading(false);
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "업로드 실패");
+        return;
       }
-    } else {
-      if (!file) return;
 
-      setUploading(true);
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const uploadRes = await fetch("/api/admin/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!uploadRes.ok) {
-          const data = await uploadRes.json();
-          alert(data.error || "파일 업로드 실패");
-          return;
-        }
-
-        const uploadData = await uploadRes.json();
-        const uploadedUrl = uploadData.url;
-
-        const res = await fetch("/api/admin/flyers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageUrl: uploadedUrl }),
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          alert(data.error || "전단지 등록 실패");
-          return;
-        }
-
-        setFile(null);
-        fetchFlyers();
-      } catch (error) {
-        console.error("파일 업로드 오류:", error);
-        alert("업로드 실패");
-      } finally {
-        setUploading(false);
-      }
+      setImageUrl("");
+      fetchFlyers();
+    } catch (error) {
+      console.error("전단지 업로드 오류:", error);
+      alert("업로드 실패");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -229,63 +183,37 @@ export default function FlyerManagementPage() {
           <div className="flex gap-2 mb-4">
             <button
               type="button"
-              onClick={() => setUploadMethod("url")}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition ${
-                uploadMethod === "url"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
+              className="flex-1 py-2 px-4 rounded-lg bg-green-600 text-sm font-medium text-white"
             >
               URL 입력
             </button>
             <button
               type="button"
-              onClick={() => setUploadMethod("file")}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition ${
-                uploadMethod === "file"
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
+              disabled
+              title="파일 업로드는 현재 준비 중입니다."
+              className="flex-1 py-2 px-4 rounded-lg bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed"
             >
-              파일 업로드
+              파일 업로드 준비 중
             </button>
           </div>
 
           <form onSubmit={handleUpload} className="space-y-4">
-            {uploadMethod === "url" ? (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  이미지 URL
-                </label>
-                <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/flyer.jpg"
-                  className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  외부 이미지 호스팅 서비스의 URL을 입력하세요.
-                </p>
-              </div>
-            ) : (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  이미지 파일
-                </label>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/jpg,image/png"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  JPG, PNG 형식 (최대 5MB)
-                </p>
-              </div>
-            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                이미지 URL
+              </label>
+              <input
+                type="url"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://example.com/flyer.jpg"
+                className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                외부 이미지 호스팅 서비스의 URL을 입력하세요.
+              </p>
+            </div>
             <button
               type="submit"
               disabled={uploading}
@@ -322,6 +250,10 @@ export default function FlyerManagementPage() {
                       src={flyer.imageUrl}
                       alt={`전단지 ${index + 1}`}
                       className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      onError={() => {
+                        console.error("[/admin/flyers] Failed to load flyer image:", flyer.imageUrl);
+                      }}
                     />
                   </div>
 
@@ -385,8 +317,8 @@ export default function FlyerManagementPage() {
         <div className="mt-6 bg-blue-50 rounded-2xl border border-blue-200 p-4">
           <h3 className="font-semibold text-blue-900 mb-2">사용 방법</h3>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• URL 입력 또는 파일 업로드 방식 중 하나를 선택하세요.</li>
-            <li>• 파일 업로드는 JPG, PNG 형식 (최대 5MB)을 지원합니다.</li>
+            <li>• 이미지 URL을 입력해 전단지를 등록하세요.</li>
+            <li>• 파일 업로드는 현재 준비 중입니다.</li>
             <li>• ↑↓ 버튼으로 전단지 순서를 변경할 수 있습니다.</li>
             <li>• 표시/숨김 버튼으로 전단지 노출 여부를 제어할 수 있습니다.</li>
             <li>• 삭제 버튼으로 전단지를 삭제할 수 있습니다.</li>

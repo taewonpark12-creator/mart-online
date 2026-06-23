@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { sanitizeInput } from "@/lib/security";
 
 function isSafeImageUrl(imageUrl: string): boolean {
   return (
@@ -35,7 +34,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const imageUrl = sanitizeInput(String(body?.imageUrl ?? "")).slice(0, 500);
+    const imageUrl = String(body?.imageUrl ?? "")
+      .trim()
+      .replace(/[\u0000-\u001F\u007F]/g, "")
+      .slice(0, 2000);
 
     if (!imageUrl || !isSafeImageUrl(imageUrl)) {
       return NextResponse.json({ error: "올바른 이미지 URL이 필요합니다." }, { status: 400 });

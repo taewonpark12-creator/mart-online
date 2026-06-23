@@ -14,13 +14,14 @@ export default function FlyersPage() {
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
     fetch("/api/flyers")
       .then((res) => res.json())
       .then((data) => {
-        setFlyers(data);
+        setFlyers(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch((error) => {
@@ -29,11 +30,21 @@ export default function FlyersPage() {
       });
   }, []);
 
+  useEffect(() => {
+    setCurrentIndex(0);
+    setFailedImageUrl(null);
+  }, [flyers]);
+
+  const currentFlyer = flyers[currentIndex];
+  const currentImageUrl = currentFlyer?.imageUrl ?? "";
+
   const handlePrev = () => {
+    setFailedImageUrl(null);
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : flyers.length - 1));
   };
 
   const handleNext = () => {
+    setFailedImageUrl(null);
     setCurrentIndex((prev) => (prev < flyers.length - 1 ? prev + 1 : 0));
   };
 
@@ -85,9 +96,13 @@ export default function FlyersPage() {
               <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
               </div>
-            ) : flyers.length === 0 ? (
+            ) : flyers.length === 0 || !currentImageUrl ? (
               <div className="flex items-center justify-center h-full text-gray-500">
                 <p>등록된 전단지가 없습니다.</p>
+              </div>
+            ) : failedImageUrl === currentImageUrl ? (
+              <div className="flex h-full items-center justify-center px-4 text-center text-gray-600">
+                <p>전단지 이미지를 불러올 수 없습니다</p>
               </div>
             ) : (
               <>
@@ -97,9 +112,15 @@ export default function FlyersPage() {
                   onMouseDown={handleSwipeStart}
                 >
                   <img
-                    src={flyers[currentIndex].imageUrl}
+                    key={currentImageUrl}
+                    src={currentImageUrl}
                     alt={`전단지 ${currentIndex + 1}`}
                     className="max-w-full max-h-full object-contain"
+                    referrerPolicy="no-referrer"
+                    onError={() => {
+                      console.error("[/flyers] Failed to load flyer image:", currentImageUrl);
+                      setFailedImageUrl(currentImageUrl);
+                    }}
                   />
                 </div>
 
@@ -131,7 +152,10 @@ export default function FlyersPage() {
                     {flyers.map((_, index) => (
                       <button
                         key={index}
-                        onClick={() => setCurrentIndex(index)}
+                        onClick={() => {
+                          setFailedImageUrl(null);
+                          setCurrentIndex(index);
+                        }}
                         className={`w-2 h-2 rounded-full transition ${
                           index === currentIndex ? "bg-green-600" : "bg-white/60"
                         }`}
