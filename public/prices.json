@@ -84807,15 +84807,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8803700071224",
-    "name": "깐들깨가루(국산)200g",
-    "normalPrice": 19000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8803712121559",
     "name": "목우촌)두툼프랑크450g",
     "normalPrice": 8500,
@@ -92676,6 +92667,15 @@
     "barcode": "8808330222510",
     "name": "댓골연두부",
     "normalPrice": 700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8808370007122",
+    "name": "깐들깨가루(국산)200g",
+    "normalPrice": 19000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
