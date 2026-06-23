@@ -102025,8 +102025,8 @@
   },
   {
     "barcode": "8809280980215",
-    "name": "사과(10개/1봉)행사",
-    "normalPrice": 14800,
+    "name": "사과(10개/1봉)",
+    "normalPrice": 15800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116389,7 +116389,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(4봉)행사",
+    "name": "팽이버섯(2봉)",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
