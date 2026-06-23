@@ -10110,10 +10110,10 @@
     "barcode": "8801005105088",
     "name": "샘표)진간장S1.7L",
     "normalPrice": 8500,
-    "eventPrice": 4980,
-    "discountRate": 41,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5980,
+    "discountRate": 30,
+    "saleStartDate": "2020-01-03",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801005105132",
@@ -11703,10 +11703,10 @@
     "barcode": "8801007052854",
     "name": "해찬들)사계절쌈장500g",
     "normalPrice": 3500,
-    "eventPrice": 2480,
-    "discountRate": 29,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2980,
+    "discountRate": 15,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007052946",
@@ -11739,10 +11739,10 @@
     "barcode": "8801007053042",
     "name": "해찬들)새콤초고추장1050g",
     "normalPrice": 6500,
-    "eventPrice": 3980,
-    "discountRate": 39,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4750,
+    "discountRate": 27,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007053059",
@@ -11811,10 +11811,10 @@
     "barcode": "8801007053455",
     "name": "해찬들)재래식된장2kg+300g",
     "normalPrice": 19800,
-    "eventPrice": 7980,
-    "discountRate": 60,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 9900,
+    "discountRate": 50,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007053509",
@@ -12162,19 +12162,19 @@
     "barcode": "8801007112480",
     "name": "CJ)찌개두부300g",
     "normalPrice": 1500,
-    "eventPrice": 1150,
-    "discountRate": 23,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1350,
+    "discountRate": 10,
+    "saleStartDate": "2019-09-30",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007112497",
     "name": "CJ)부침두부300g",
     "normalPrice": 1500,
-    "eventPrice": 1150,
-    "discountRate": 23,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1350,
+    "discountRate": 10,
+    "saleStartDate": "2019-09-30",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007117126",
@@ -13629,10 +13629,10 @@
     "barcode": "8801007402345",
     "name": "백설)콩기름1.8L",
     "normalPrice": 10800,
-    "eventPrice": 5500,
-    "discountRate": 49,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 7980,
+    "discountRate": 26,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007403168",
@@ -14763,10 +14763,10 @@
     "barcode": "8801007769745",
     "name": "백설)고소함가득참기름450ml",
     "normalPrice": 8500,
-    "eventPrice": 5980,
-    "discountRate": 30,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 18,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007769868",
@@ -17319,10 +17319,10 @@
     "barcode": "8801019514470",
     "name": "해태)고향만두300g*2입",
     "normalPrice": 7500,
-    "eventPrice": 4980,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 7,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801019514753",
@@ -18282,10 +18282,10 @@
     "barcode": "8801024053063",
     "name": "청정원)스모크햄1kg",
     "normalPrice": 7500,
-    "eventPrice": 5980,
-    "discountRate": 20,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6480,
+    "discountRate": 14,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801024053995",
@@ -18570,10 +18570,10 @@
     "barcode": "8801024944590",
     "name": "청정원)찰진생칼국수450g",
     "normalPrice": 2950,
-    "eventPrice": 2480,
-    "discountRate": 16,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2750,
+    "discountRate": 7,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801024944620",
@@ -18723,10 +18723,10 @@
     "barcode": "8801024957132",
     "name": "종가)포기김치1.3kg",
     "normalPrice": 18900,
-    "eventPrice": 13900,
-    "discountRate": 26,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 16500,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801027162045",
@@ -21810,10 +21810,10 @@
     "barcode": "8801039202388",
     "name": "해표)식용유1.5L",
     "normalPrice": 11000,
-    "eventPrice": 4980,
-    "discountRate": 55,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 37,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801039202395",
@@ -21873,10 +21873,10 @@
     "barcode": "8801039203910",
     "name": "해표)올리브유900ml",
     "normalPrice": 26500,
-    "eventPrice": 12900,
-    "discountRate": 51,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 19800,
+    "discountRate": 25,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801039203927",
@@ -22746,10 +22746,10 @@
     "barcode": "8801043014830",
     "name": "농심)신라면5입",
     "normalPrice": 5000,
-    "eventPrice": 3980,
-    "discountRate": 20,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4700,
+    "discountRate": 6,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043014847",
@@ -24582,10 +24582,10 @@
     "barcode": "8801043060158",
     "name": "농심)배홍동막국수4입",
     "normalPrice": 6200,
-    "eventPrice": 4500,
-    "discountRate": 27,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5800,
+    "discountRate": 6,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043060363",
@@ -24600,10 +24600,10 @@
     "barcode": "8801043060370",
     "name": "농심)배홍동비빔면4입",
     "normalPrice": 4700,
-    "eventPrice": 2980,
-    "discountRate": 37,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3980,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043062435",
@@ -31512,10 +31512,10 @@
     "barcode": "8801047169598",
     "name": "양반)진국사골곰탕500g",
     "normalPrice": 1800,
-    "eventPrice": 990,
-    "discountRate": 45,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1480,
+    "discountRate": 18,
+    "saleStartDate": "2023-08-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047169703",
@@ -32178,19 +32178,19 @@
     "barcode": "8801047511588",
     "name": "동원)더킹크랩스오리지널70g",
     "normalPrice": 1550,
-    "eventPrice": 990,
-    "discountRate": 36,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1150,
+    "discountRate": 26,
+    "saleStartDate": "2023-08-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047511595",
     "name": "동원)더킹랍스터맛70g",
     "normalPrice": 1550,
-    "eventPrice": 990,
-    "discountRate": 36,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1150,
+    "discountRate": 26,
+    "saleStartDate": "2023-08-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047511779",
@@ -35652,19 +35652,19 @@
     "barcode": "8801051229882",
     "name": "테크)딥클린엑스퍼트일반4L",
     "normalPrice": 12000,
-    "eventPrice": 9900,
-    "discountRate": 18,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 11000,
+    "discountRate": 8,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801051229899",
     "name": "테크)딥클린엑스퍼트드럼4L",
     "normalPrice": 12000,
-    "eventPrice": 9900,
-    "discountRate": 18,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 11000,
+    "discountRate": 8,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801051230260",
@@ -37236,19 +37236,19 @@
     "barcode": "8801052023779",
     "name": "청정원)김치왕만두770g",
     "normalPrice": 8800,
-    "eventPrice": 6980,
-    "discountRate": 21,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 7980,
+    "discountRate": 9,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052023885",
     "name": "청정원)고소한들기름350ml",
     "normalPrice": 16000,
-    "eventPrice": 9900,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 12900,
+    "discountRate": 19,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052024646",
@@ -37614,10 +37614,10 @@
     "barcode": "8801052039992",
     "name": "청정원)남도추어탕450g",
     "normalPrice": 6000,
-    "eventPrice": 4980,
-    "discountRate": 17,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5500,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052040011",
@@ -37884,10 +37884,10 @@
     "barcode": "8801052048451",
     "name": "청정원)홍초풋사과900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052048741",
@@ -38271,28 +38271,28 @@
     "barcode": "8801052065410",
     "name": "청정원)새우볶음밥400g",
     "normalPrice": 3800,
-    "eventPrice": 2980,
-    "discountRate": 22,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052065427",
     "name": "청정원)랍스터볶음밥400g",
     "normalPrice": 3800,
-    "eventPrice": 2980,
-    "discountRate": 22,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052065434",
     "name": "청정원)햄야채볶음밥400g",
     "normalPrice": 3800,
-    "eventPrice": 2980,
-    "discountRate": 22,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052066349",
@@ -38316,10 +38316,10 @@
     "barcode": "8801052067704",
     "name": "청정원)단단한큰두부800g",
     "normalPrice": 3100,
-    "eventPrice": 1980,
-    "discountRate": 36,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2650,
+    "discountRate": 15,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052068695",
@@ -38372,8 +38372,8 @@
     "normalPrice": 9900,
     "eventPrice": 6980,
     "discountRate": 29,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052069623",
@@ -38433,10 +38433,10 @@
     "barcode": "8801052071299",
     "name": "청정원)고추장제육볶음밥400g",
     "normalPrice": 3800,
-    "eventPrice": 2980,
-    "discountRate": 22,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052071404",
@@ -38514,10 +38514,10 @@
     "barcode": "8801052076249",
     "name": "청정원)장어탕450g",
     "normalPrice": 6800,
-    "eventPrice": 4980,
-    "discountRate": 27,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5500,
+    "discountRate": 19,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052076256",
@@ -38631,10 +38631,10 @@
     "barcode": "8801052080598",
     "name": "청정원)도가니탕450g",
     "normalPrice": 6000,
-    "eventPrice": 4980,
-    "discountRate": 17,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5500,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052080611",
@@ -38685,10 +38685,10 @@
     "barcode": "8801052082585",
     "name": "청정원)중화풍잡채볶음밥400g",
     "normalPrice": 3800,
-    "eventPrice": 2980,
-    "discountRate": 22,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052082592",
@@ -38703,28 +38703,28 @@
     "barcode": "8801052083384",
     "name": "청정원)홍초자몽900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052083414",
     "name": "청정원)홍초타트체리900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052083520",
     "name": "청정원)한입비엔나272g*2입",
     "normalPrice": 7300,
-    "eventPrice": 5980,
-    "discountRate": 18,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6480,
+    "discountRate": 11,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052083544",
@@ -39072,10 +39072,10 @@
     "barcode": "8801052100555",
     "name": "청정원)촉촉한고기물만두350g*2입",
     "normalPrice": 10800,
-    "eventPrice": 7980,
-    "discountRate": 26,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 9900,
+    "discountRate": 8,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052100791",
@@ -39189,10 +39189,10 @@
     "barcode": "8801052102771",
     "name": "청정원)장아찌간장소스1.7L",
     "normalPrice": 7500,
-    "eventPrice": 5980,
-    "discountRate": 20,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 7,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052102832",
@@ -39342,19 +39342,19 @@
     "barcode": "8801052105178",
     "name": "청정원)홍초푸룬900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052105192",
     "name": "청정원)홍초레몬&라임900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052105475",
@@ -39765,10 +39765,10 @@
     "barcode": "8801052127163",
     "name": "청정원)저당홍초레드애플900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052127231",
@@ -40035,19 +40035,19 @@
     "barcode": "8801052134116",
     "name": "청정원)ALL비엔나200g",
     "normalPrice": 5000,
-    "eventPrice": 3300,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4300,
+    "discountRate": 14,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052134130",
     "name": "청정원)ALL프랑크200g",
     "normalPrice": 5000,
-    "eventPrice": 3300,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4300,
+    "discountRate": 14,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052134291",
@@ -40386,10 +40386,10 @@
     "barcode": "8801052431499",
     "name": "청정원)홍초석류900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052433233",
@@ -40737,10 +40737,10 @@
     "barcode": "8801052723457",
     "name": "청정원)홍초복분자900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052723518",
@@ -40782,10 +40782,10 @@
     "barcode": "8801052725154",
     "name": "청정원)홍초블루베리900ml",
     "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 13,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052726496",
@@ -40845,10 +40845,10 @@
     "barcode": "8801052727752",
     "name": "청정원)프리미엄굴소스500g",
     "normalPrice": 9200,
-    "eventPrice": 4980,
-    "discountRate": 46,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5980,
+    "discountRate": 35,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052728056",
@@ -42402,19 +42402,19 @@
     "barcode": "8801056018900",
     "name": "칸타타아아메리카노275ml",
     "normalPrice": 1600,
-    "eventPrice": 990,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1300,
+    "discountRate": 19,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056018948",
     "name": "칸타타프리미엄라떼275ml",
     "normalPrice": 1600,
-    "eventPrice": 990,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1300,
+    "discountRate": 19,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056019952",
@@ -42492,19 +42492,19 @@
     "barcode": "8801056030667",
     "name": "칠성사이다+펩시콜라1.5L*2입",
     "normalPrice": 5500,
-    "eventPrice": 3980,
-    "discountRate": 28,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4980,
+    "discountRate": 9,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056032159",
     "name": "칸타타더치블랙275ml",
     "normalPrice": 1600,
-    "eventPrice": 990,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1300,
+    "discountRate": 19,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056038861",
@@ -42618,19 +42618,19 @@
     "barcode": "8801056051921",
     "name": "칸타타카라멜마키아토275ml",
     "normalPrice": 1600,
-    "eventPrice": 990,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1300,
+    "discountRate": 19,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056056018",
     "name": "칠성사이다+밀키스1.5L*2입",
     "normalPrice": 5500,
-    "eventPrice": 3980,
-    "discountRate": 28,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4980,
+    "discountRate": 9,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056059842",
@@ -42780,10 +42780,10 @@
     "barcode": "8801056090227",
     "name": "칸타타콜드브루라떼275ml",
     "normalPrice": 1800,
-    "eventPrice": 990,
-    "discountRate": 45,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1300,
+    "discountRate": 28,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056091231",
@@ -45858,10 +45858,10 @@
     "barcode": "8801066020542",
     "name": "대림)하우스그릴부어스트310g",
     "normalPrice": 5200,
-    "eventPrice": 3980,
-    "discountRate": 23,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4980,
+    "discountRate": 4,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801066021501",
@@ -46443,10 +46443,10 @@
     "barcode": "8801066064911",
     "name": "대림)애니쿡착한비엔나1kg",
     "normalPrice": 8000,
-    "eventPrice": 4980,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 5980,
+    "discountRate": 25,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801066065147",
@@ -46461,10 +46461,10 @@
     "barcode": "8801066065161",
     "name": "대림)크라비아160g+80g",
     "normalPrice": 4950,
-    "eventPrice": 2980,
-    "discountRate": 40,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3980,
+    "discountRate": 20,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801066065178",
@@ -46533,19 +46533,19 @@
     "barcode": "8801066100022",
     "name": "대림)진종합어묵205g",
     "normalPrice": 3800,
-    "eventPrice": 2480,
-    "discountRate": 35,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2750,
+    "discountRate": 28,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801066101746",
     "name": "대림)어묵전골350g",
     "normalPrice": 5900,
-    "eventPrice": 2980,
-    "discountRate": 49,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3980,
+    "discountRate": 33,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801066102033",
@@ -47343,10 +47343,10 @@
     "barcode": "8801068392760",
     "name": "삼립)육즙부어스트스모크550g",
     "normalPrice": 8500,
-    "eventPrice": 6980,
-    "discountRate": 18,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 7980,
+    "discountRate": 6,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801068393019",
@@ -50691,10 +50691,10 @@
     "barcode": "8801074603881",
     "name": "한성)속찬만두700g",
     "normalPrice": 5500,
-    "eventPrice": 3980,
-    "discountRate": 28,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4980,
+    "discountRate": 9,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801074604345",
@@ -51168,10 +51168,10 @@
     "barcode": "8801075015614",
     "name": "해표)태양초골드고추장1.8kg+450g",
     "normalPrice": 15000,
-    "eventPrice": 9900,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 11900,
+    "discountRate": 21,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801075016536",
@@ -51870,10 +51870,10 @@
     "barcode": "8801088392191",
     "name": "오양)치킨너겟1kg",
     "normalPrice": 9200,
-    "eventPrice": 6980,
-    "discountRate": 24,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 7980,
+    "discountRate": 13,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801088392207",
@@ -52167,10 +52167,10 @@
     "barcode": "8801094082581",
     "name": "코카콜라제로2L",
     "normalPrice": 4000,
-    "eventPrice": 2980,
-    "discountRate": 26,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 13,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094082604",
@@ -52790,8 +52790,8 @@
     "normalPrice": 1700,
     "eventPrice": 990,
     "discountRate": 42,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094562601",
@@ -52817,8 +52817,8 @@
     "normalPrice": 1700,
     "eventPrice": 990,
     "discountRate": 42,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094582616",
@@ -52853,8 +52853,8 @@
     "normalPrice": 1700,
     "eventPrice": 990,
     "discountRate": 42,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094593025",
@@ -53931,19 +53931,19 @@
     "barcode": "8801101889028",
     "name": "퓨어)뽀드득주방세제레몬1.2L",
     "normalPrice": 3000,
-    "eventPrice": 1980,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2480,
+    "discountRate": 17,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101889035",
     "name": "퓨어)뽀드득주방세제자몽1.2L",
     "normalPrice": 3000,
-    "eventPrice": 1980,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2480,
+    "discountRate": 17,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101889271",
@@ -54399,10 +54399,10 @@
     "barcode": "8801104301183",
     "name": "빙그레)요플레플레인화이트430g",
     "normalPrice": 4200,
-    "eventPrice": 2980,
-    "discountRate": 29,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 17,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801104301756",
@@ -64173,10 +64173,10 @@
     "barcode": "8801117569310",
     "name": "오리온)초코파이30입",
     "normalPrice": 11500,
-    "eventPrice": 7980,
-    "discountRate": 31,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 8980,
+    "discountRate": 22,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801117569419",
@@ -65334,10 +65334,10 @@
     "barcode": "8801119248237",
     "name": "필라이트클리어500ml*4입",
     "normalPrice": 6000,
-    "eventPrice": 3980,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4500,
+    "discountRate": 25,
+    "saleStartDate": "2023-12-24",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801119248251",
@@ -74478,10 +74478,10 @@
     "barcode": "8801353007270",
     "name": "물도깨비)습기제거제라벤더8입",
     "normalPrice": 11500,
-    "eventPrice": 7980,
-    "discountRate": 31,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 9900,
+    "discountRate": 14,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801354400308",
@@ -74703,10 +74703,10 @@
     "barcode": "8801382149699",
     "name": "웅진)초록매실1.35L",
     "normalPrice": 3300,
-    "eventPrice": 1980,
-    "discountRate": 40,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2480,
+    "discountRate": 25,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801382150183",
@@ -74721,10 +74721,10 @@
     "barcode": "8801382150190",
     "name": "가야)토마토농장1.35L",
     "normalPrice": 3300,
-    "eventPrice": 1980,
-    "discountRate": 40,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2480,
+    "discountRate": 25,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801382150497",
@@ -75200,8 +75200,8 @@
     "normalPrice": 1200,
     "eventPrice": 990,
     "discountRate": 18,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2019-09-30",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801392025815",
@@ -78591,10 +78591,10 @@
     "barcode": "8801759012267",
     "name": "칠갑)쫄면2kg",
     "normalPrice": 7400,
-    "eventPrice": 5980,
-    "discountRate": 19,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 6,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759012359",
@@ -78609,10 +78609,10 @@
     "barcode": "8801759012373",
     "name": "칠갑)냉면2kg",
     "normalPrice": 7400,
-    "eventPrice": 5980,
-    "discountRate": 19,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 6,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759012397",
@@ -78933,10 +78933,10 @@
     "barcode": "8801759018184",
     "name": "칠갑)냉면육수소고기300g",
     "normalPrice": 800,
-    "eventPrice": 500,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 650,
+    "discountRate": 19,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759018320",
@@ -78969,10 +78969,10 @@
     "barcode": "8801759018467",
     "name": "칠갑)냉면육수동치미300g",
     "normalPrice": 800,
-    "eventPrice": 500,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 650,
+    "discountRate": 19,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759018634",
@@ -79050,10 +79050,10 @@
     "barcode": "8801759020507",
     "name": "칠갑)매콤달콤찰꼬마떡볶이360g",
     "normalPrice": 2400,
-    "eventPrice": 990,
-    "discountRate": 59,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 1150,
+    "discountRate": 52,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759020743",
@@ -79088,8 +79088,8 @@
     "normalPrice": 9000,
     "eventPrice": 7980,
     "discountRate": 11,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759020804",
@@ -79097,8 +79097,8 @@
     "normalPrice": 9000,
     "eventPrice": 7980,
     "discountRate": 11,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759020811",
@@ -79113,10 +79113,10 @@
     "barcode": "8801759020859",
     "name": "칠갑)구포국수소면900g",
     "normalPrice": 3000,
-    "eventPrice": 1980,
-    "discountRate": 34,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 2480,
+    "discountRate": 17,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801759021238",
@@ -91013,8 +91013,8 @@
     "normalPrice": 4500,
     "eventPrice": 3980,
     "discountRate": 12,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8806371307715",
@@ -93216,10 +93216,10 @@
     "barcode": "8809004772638",
     "name": "홈키파)엘비이알파에어졸500ml",
     "normalPrice": 4000,
-    "eventPrice": 2980,
-    "discountRate": 26,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 3480,
+    "discountRate": 13,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809004773000",
@@ -106428,10 +106428,10 @@
     "barcode": "8809461571539",
     "name": "들깨삼계탕800g",
     "normalPrice": 10000,
-    "eventPrice": 5980,
-    "discountRate": 40,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 30,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809463390008",
@@ -107616,10 +107616,10 @@
     "barcode": "8809536243781",
     "name": "지리멸치(볶음)240g",
     "normalPrice": 7800,
-    "eventPrice": 5980,
-    "discountRate": 23,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 6980,
+    "discountRate": 11,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809536243842",
@@ -108066,10 +108066,10 @@
     "barcode": "8809536245068",
     "name": "다시멸치(국물)180g",
     "normalPrice": 5200,
-    "eventPrice": 3980,
-    "discountRate": 23,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4500,
+    "discountRate": 13,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809536245075",
@@ -108507,10 +108507,10 @@
     "barcode": "8809536245723",
     "name": "볶음땅콩400g",
     "normalPrice": 5200,
-    "eventPrice": 3980,
-    "discountRate": 23,
-    "saleStartDate": "2026-06-09",
-    "saleEndDate": "2026-06-23"
+    "eventPrice": 4300,
+    "discountRate": 17,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809536245730",
