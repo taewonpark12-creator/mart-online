@@ -62523,6 +62523,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801117131319",
+    "name": "오리온)다이제씬252g",
+    "normalPrice": 3700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801117132200",
     "name": "오리온)예감짜장불닭마요276g",
     "normalPrice": 6000,
@@ -117290,7 +117299,7 @@
   {
     "barcode": "9100000214702",
     "name": "홍매실(10kg/1망)행사",
-    "normalPrice": 29800,
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117316,8 +117325,8 @@
   },
   {
     "barcode": "9100000214757",
-    "name": "왕매실(5kg/1망)",
-    "normalPrice": 19800,
+    "name": "왕매실(5kg/1망)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
