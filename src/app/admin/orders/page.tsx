@@ -542,21 +542,6 @@ export default function OrdersPage() {
     }
   };
 
-  const sendTestNotification = () => {
-    try {
-      if (typeof window !== "undefined" && "Notification" in window) {
-        if (Notification.permission === "granted") {
-          new Notification("한사랑마트 테스트 알림", {
-            body: "주문 알림이 정상 작동합니다.",
-            tag: "test-order-notification",
-          });
-        }
-      }
-    } catch (error) {
-      console.error("[admin/orders] test notification failed", error);
-    }
-  };
-
   const requestNotificationPermission = async () => {
     try {
       if (typeof window !== "undefined" && "Notification" in window) {
@@ -740,53 +725,43 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
-            {!notificationSupported ? (
-              <span className="text-sm font-semibold text-gray-600">이 브라우저는 알림을 지원하지 않습니다.</span>
-            ) : notificationPermission === "granted" ? (
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <span className="rounded-full bg-green-600 px-4 py-2 text-sm font-bold text-white">🔔 알림 켜짐</span>
-                <button
-                  type="button"
-                  onClick={sendTestNotification}
-                  className="rounded-full border border-green-200 bg-white px-3 py-2 text-xs font-semibold text-green-700 hover:bg-green-50"
-                >
-                  테스트 알림
-                </button>
-              </div>
-            ) : notificationPermission === "default" ? (
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <button
-                  onClick={requestNotificationPermission}
-                  className="rounded-full bg-red-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-700"
-                >
-                  🔔 신규주문 알림 켜기
-                </button>
-                <span className="text-sm font-semibold text-amber-900">알림이 꺼져 있습니다.</span>
-              </div>
-            ) : (
-              <div className="max-w-md text-sm font-semibold text-red-700">
-                브라우저 알림이 차단되어 있습니다. 주소창 왼쪽 설정에서 허용해주세요.
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">알림음</span>
+          <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm sm:items-end">
             {soundEnabled ? (
               <button
+                type="button"
                 onClick={() => setSoundEnabled(false)}
-                className="text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
+                className="rounded-full bg-green-600 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-green-700"
               >
-                알림음 끄기
+                🔔 신규주문 알림 켜짐
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => setSoundEnabled(true)}
-                className="text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
+                className="rounded-full bg-red-600 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-700"
               >
-                알림음 켜기
+                🔕 신규주문 알림 꺼짐
               </button>
+            )}
+
+            {!notificationSupported ? (
+              <span className="text-xs font-medium text-gray-500">이 브라우저는 알림 권한 안내를 지원하지 않습니다.</span>
+            ) : notificationPermission === "default" ? (
+              <div className="flex flex-col gap-1 text-xs text-amber-900 sm:items-end">
+                <span className="font-medium">브라우저 알림 권한도 켜면 화면 밖에서도 신규주문을 확인할 수 있습니다.</span>
+                <button
+                  onClick={requestNotificationPermission}
+                  className="self-start rounded-full border border-amber-300 bg-white px-3 py-1 font-semibold text-amber-900 hover:bg-amber-100 sm:self-end"
+                >
+                  브라우저 알림 허용
+                </button>
+              </div>
+            ) : notificationPermission === "granted" ? (
+              <span className="text-xs font-medium text-green-700">브라우저 신규주문 알림 허용됨</span>
+            ) : (
+              <div className="max-w-md text-xs font-semibold text-red-700 sm:text-right">
+                브라우저 알림이 차단되어 있습니다. 주소창 왼쪽 설정에서 허용해주세요.
+              </div>
             )}
           </div>
         </div>
