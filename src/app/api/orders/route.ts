@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isAfterCutoffTime } from "@/lib/delivery-schedule";
 import { generateOrderNumber } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -106,6 +107,9 @@ export async function POST(req: NextRequest) {
     console.log("CREATE_ORDER_BODY", body);
     console.log("CREATE_ORDER_ITEMS", orderItems);
 
+    const acceptedAt = new Date();
+    const acceptedAfterCutoff = isAfterCutoffTime(acceptedAt);
+
     const order = await prisma.order.create({
       data: {
         orderNumber: generateOrderNumber(),
@@ -119,6 +123,7 @@ export async function POST(req: NextRequest) {
         paymentMethod: fulfillmentType === "DELIVERY" ? paymentMethod : null,
         outOfStockPolicy,
         totalAmount,
+        createdAt: acceptedAt,
         items: {
           create: orderItems.map((item) => ({
             productId: item.productId,
@@ -133,6 +138,7 @@ export async function POST(req: NextRequest) {
         orderNumber: true,
         status: true,
         totalAmount: true,
+        createdAt: true,
       },
     });
 
@@ -142,6 +148,7 @@ export async function POST(req: NextRequest) {
       orderNumber: order.orderNumber,
       status: order.status,
       totalAmount: Number(order.totalAmount),
+      acceptedAfterCutoff,
     });
   } catch (error) {
     console.error("ORDER_CREATE_ERROR", error);

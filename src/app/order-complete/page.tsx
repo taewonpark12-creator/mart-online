@@ -3,6 +3,10 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
+import {
+  ORDER_COMPLETE_CUTOFF_NOTICE,
+  isAfterCutoffTime,
+} from "@/lib/delivery-schedule";
 import { formatPrice } from "@/lib/types";
 import { FULFILLMENT_TYPE_LABEL, PAYMENT_METHOD_LABEL } from "@/lib/types";
 
@@ -105,6 +109,10 @@ function OrderCompleteContent() {
     );
   }
 
+  const showCutoffNotice = order.createdAt
+    ? isAfterCutoffTime(new Date(order.createdAt))
+    : false;
+
   return (
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
@@ -116,6 +124,11 @@ function OrderCompleteContent() {
           <h1 className="mb-2 text-2xl font-black text-green-800">
             주문이 접수되었습니다
           </h1>
+          {showCutoffNotice && (
+            <p className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-sm font-semibold leading-6 text-amber-900">
+              {ORDER_COMPLETE_CUTOFF_NOTICE}
+            </p>
+          )}
           <div className="space-y-2">
             <button
               type="button"

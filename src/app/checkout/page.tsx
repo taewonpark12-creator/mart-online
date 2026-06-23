@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
+import { CHECKOUT_CUTOFF_NOTICE } from "@/lib/delivery-schedule";
 import {
   MIN_ORDER_AMOUNT,
   formatPrice,
@@ -96,6 +97,7 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [skipEmptyCartCheck, setSkipEmptyCartCheck] = useState(false);
+  const [showCutoffNotice, setShowCutoffNotice] = useState(false);
 
   // Load saved delivery info from localStorage
   useEffect(() => {
@@ -113,6 +115,25 @@ export default function CheckoutPage() {
     } catch {
       /* ignore */
     }
+  }, []);
+
+  useEffect(() => {
+    let ignore = false;
+
+    fetch("/api/orders/cutoff")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!ignore) {
+          setShowCutoffNotice(Boolean(data?.afterCutoff));
+        }
+      })
+      .catch((error) => {
+        console.error("[CHECKOUT_CUTOFF_NOTICE_ERROR]", error);
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const isDelivery = form.fulfillmentType === "DELIVERY";
@@ -223,6 +244,12 @@ export default function CheckoutPage() {
       <Header />
       <main className="mx-auto max-w-md px-4 py-8">
         <h1 className="text-2xl font-bold text-green-800 mb-6">주문하기</h1>
+
+        {showCutoffNotice && (
+          <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold leading-6 text-amber-900 shadow-sm">
+            {CHECKOUT_CUTOFF_NOTICE}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <fieldset className="space-y-3">
