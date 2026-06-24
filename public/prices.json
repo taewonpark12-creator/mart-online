@@ -116534,7 +116534,7 @@
   {
     "barcode": "9100000002477",
     "name": "체리(1팩)행사",
-    "normalPrice": 6980,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116695,8 +116695,8 @@
   },
   {
     "barcode": "9100000003474",
-    "name": "햇장아찌양파(1망)",
-    "normalPrice": 4980,
+    "name": "햇장아찌양파(1망)행사",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116831,7 +116831,7 @@
   {
     "barcode": "910000000665",
     "name": "자두(1팩)행사",
-    "normalPrice": 5980,
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117379,8 +117379,8 @@
   },
   {
     "barcode": "9100000214801",
-    "name": "햇양파(15kg/1망)",
-    "normalPrice": 16800,
+    "name": "햇양파(15kg/1망)행사",
+    "normalPrice": 15800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117704,7 +117704,7 @@
   {
     "barcode": "9100000216652",
     "name": "둥근호박(2개)행사",
-    "normalPrice": 1480,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117901,8 +117901,8 @@
   },
   {
     "barcode": "9100000217444",
-    "name": "하우스귤(3kg/1박스)",
-    "normalPrice": 34800,
+    "name": "하우스귤(3kg/1박스)행사",
+    "normalPrice": 24800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
