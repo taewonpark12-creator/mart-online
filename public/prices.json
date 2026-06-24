@@ -56721,10 +56721,10 @@
     "barcode": "8801111184755",
     "name": "크라운)신짱4번들",
     "normalPrice": 3800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 22,
+    "saleStartDate": "2026-06-23",
+    "saleEndDate": "2026-07-07"
   },
   {
     "barcode": "8801111185066",
@@ -57657,10 +57657,10 @@
     "barcode": "8801111954532",
     "name": "크라운)크크스낵4번들",
     "normalPrice": 3800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 22,
+    "saleStartDate": "2026-06-23",
+    "saleEndDate": "2026-07-07"
   },
   {
     "barcode": "8801111954587",
