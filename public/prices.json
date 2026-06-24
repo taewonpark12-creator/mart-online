@@ -116830,8 +116830,8 @@
   },
   {
     "barcode": "9100000003757",
-    "name": "스테비아토마토(3팩)행사",
-    "normalPrice": 9800,
+    "name": "스테비아토마토(2팩)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117640,8 +117640,8 @@
   },
   {
     "barcode": "9100000216249",
-    "name": "오이(10개/1봉)",
-    "normalPrice": 1980,
+    "name": "오이(10개/1봉)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
