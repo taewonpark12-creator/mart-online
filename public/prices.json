@@ -56079,6 +56079,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801104953719",
+    "name": "저당붕어싸만코",
+    "normalPrice": 1400,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801105000535",
     "name": "해태)갈아만든배238ml",
     "normalPrice": 1000,
@@ -112052,7 +112061,7 @@
   {
     "barcode": "8809695257476",
     "name": "팔도비빔장310g",
-    "normalPrice": 0,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
