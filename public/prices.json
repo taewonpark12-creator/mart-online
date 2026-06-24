@@ -57485,11 +57485,11 @@
   {
     "barcode": "8801111945196",
     "name": "크라운)산도2번들",
-    "normalPrice": 8000,
-    "eventPrice": 5980,
-    "discountRate": 25,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "normalPrice": 6980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801111946612",
