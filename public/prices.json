@@ -5501,7 +5501,7 @@
   {
     "barcode": "2318342102015",
     "name": "몽땅비(플라스틱)",
-    "normalPrice": 2200,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -70715,7 +70715,7 @@
   {
     "barcode": "8801179000073",
     "name": "태화)고무장갑M선밴",
-    "normalPrice": 3200,
+    "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -71237,7 +71237,7 @@
   {
     "barcode": "8801230100513",
     "name": "3M철수세미",
-    "normalPrice": 1600,
+    "normalPrice": 1800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -71336,7 +71336,7 @@
   {
     "barcode": "8801230104252",
     "name": "3M후라이팬전용수세미",
-    "normalPrice": 1900,
+    "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73118,7 +73118,7 @@
   {
     "barcode": "8801252700838",
     "name": "크린백25*35*300매(중)",
-    "normalPrice": 5300,
+    "normalPrice": 6800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74189,7 +74189,7 @@
   {
     "barcode": "8801329690109",
     "name": "WD윤활유360ml",
-    "normalPrice": 12500,
+    "normalPrice": 13500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -84836,7 +84836,7 @@
   {
     "barcode": "8803664300026",
     "name": "양품자루솔1호",
-    "normalPrice": 2800,
+    "normalPrice": 3300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -84872,7 +84872,7 @@
   {
     "barcode": "8803664300194",
     "name": "양품멀티코너솔/일조",
-    "normalPrice": 2800,
+    "normalPrice": 3300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -89507,7 +89507,7 @@
   {
     "barcode": "8806080000884",
     "name": "3M제로향균스폰지수세미",
-    "normalPrice": 2100,
+    "normalPrice": 2300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -95537,7 +95537,7 @@
   {
     "barcode": "8809049330749",
     "name": "쿨쉐이커600ml",
-    "normalPrice": 2300,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -95834,7 +95834,7 @@
   {
     "barcode": "8809056231367",
     "name": "싱그린지퍼백25*30(대)20매",
-    "normalPrice": 3600,
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -96284,7 +96284,7 @@
   {
     "barcode": "8809068460175",
     "name": "그린녹말요지",
-    "normalPrice": 1500,
+    "normalPrice": 1800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -98048,7 +98048,7 @@
   {
     "barcode": "8809105111121",
     "name": "효자손",
-    "normalPrice": 850,
+    "normalPrice": 1000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -104258,7 +104258,7 @@
   {
     "barcode": "8809371410850",
     "name": "미르욕실화막힘",
-    "normalPrice": 6250,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -111845,7 +111845,7 @@
   {
     "barcode": "8809690880006",
     "name": "메이그린친환경접시100ml",
-    "normalPrice": 500,
+    "normalPrice": 600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -111916,8 +111916,8 @@
   },
   {
     "barcode": "8809690881300",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "메이그린)내열강화유리용기550ml",
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -111925,8 +111925,8 @@
   },
   {
     "barcode": "8809690881331",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "메이그린)내열강화유리용기600ml",
+    "normalPrice": 5900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
