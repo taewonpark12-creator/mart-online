@@ -116749,8 +116749,8 @@
   },
   {
     "barcode": "9100000003474",
-    "name": "햇장아찌양파(1망)행사",
-    "normalPrice": 2980,
+    "name": "햇장아찌양파(1망)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116839,8 +116839,8 @@
   },
   {
     "barcode": "9100000003757",
-    "name": "스테비아토마토(2팩)행사",
-    "normalPrice": 3980,
+    "name": "스테비아토마토(3팩)행사",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117280,8 +117280,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)",
-    "normalPrice": 2480,
+    "name": "대파(1단)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117757,7 +117757,7 @@
   },
   {
     "barcode": "9100000216652",
-    "name": "둥근호박(2개)행사",
+    "name": "둥근호박(1개)",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -118613,7 +118613,7 @@
   {
     "barcode": "910000055",
     "name": "가지(5개/1봉)행사",
-    "normalPrice": 1980,
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118667,7 +118667,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 1480,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
