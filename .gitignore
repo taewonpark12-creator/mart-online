@@ -8,3 +8,4 @@ node_modules
 # 업로드된 상품 이미지 (폴더 구조만 유지)
 public/uploads/products/*
 !public/uploads/products/.gitkeep
+.vs/
