@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 const BASE_URL = (process.env.BASE_URL || "http://127.0.0.1:3000").replace(/\/$/, "");
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "132546";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "940326@@";
 const MIN_ORDER_AMOUNT = 40_000;
 
 function log(title, payload) {
