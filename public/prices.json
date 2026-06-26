@@ -49332,10 +49332,10 @@
     "barcode": "8801069135137",
     "name": "남양)써핑쿨복숭아930ml",
     "normalPrice": 1250,
-    "eventPrice": 650,
-    "discountRate": 48,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801069170114",
