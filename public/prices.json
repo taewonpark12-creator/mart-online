@@ -2873,7 +2873,7 @@
   {
     "barcode": "200318",
     "name": "천도복숭아",
-    "normalPrice": 6980,
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117353,7 +117353,7 @@
   {
     "barcode": "9100000214528",
     "name": "양주오이지오이(50개/1포)행사",
-    "normalPrice": 9800,
+    "normalPrice": 9999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
