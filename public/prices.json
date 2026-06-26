@@ -117785,7 +117785,7 @@
   {
     "barcode": "9100000216720",
     "name": "인큐호박(1개)",
-    "normalPrice": 980,
+    "normalPrice": 1280,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118126,8 +118126,8 @@
   },
   {
     "barcode": "9100000218472",
-    "name": "황기(1봉)",
-    "normalPrice": 1980,
+    "name": "야생황기(1봉)",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
