@@ -116515,8 +116515,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)",
-    "normalPrice": 17800,
+    "name": "수박(5kg/1통)행사",
+    "normalPrice": 15900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117380,7 +117380,7 @@
   {
     "barcode": "9100000214702",
     "name": "홍매실(10kg/1망)",
-    "normalPrice": 29800,
+    "normalPrice": 24800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117406,8 +117406,8 @@
   },
   {
     "barcode": "9100000214757",
-    "name": "왕매실(5kg/1망)행사",
-    "normalPrice": 14800,
+    "name": "왕매실(5kg/1망)",
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117604,8 +117604,8 @@
   },
   {
     "barcode": "9100000216027",
-    "name": "미니단호박(1망)행사",
-    "normalPrice": 13800,
+    "name": "미니단호박(1박스)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
