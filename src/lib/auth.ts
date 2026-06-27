@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 const ADMIN_COOKIE = "mart_admin_session";
 const ADMIN_LAST_LOGIN_COOKIE = "mart_admin_last_login";
 const ADMIN_PASSWORD = "940326@@";
+export const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 export async function isAdminAuthenticated(): Promise<boolean> {
   const cookieStore = await cookies();

@@ -3,6 +3,7 @@ import {
   verifyAdminPassword,
   ADMIN_COOKIE_NAME,
   ADMIN_LAST_LOGIN_COOKIE_NAME,
+  ADMIN_SESSION_MAX_AGE_SECONDS,
 } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax" as const,
-      maxAge: 60 * 60 * 24,
+      maxAge: ADMIN_SESSION_MAX_AGE_SECONDS,
       path: "/",
     };
 
