@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "clean": "node -e \"const fs=require('fs');['.next','node_modules/.cache'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true})}catch(e){}})\"",
-    "build": "node scripts/vercel-build.mjs",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
@@ -22,13 +22,11 @@
     "@cloudinary/react": "^1.14.4",
     "@cloudinary/url-gen": "^1.22.0",
     "@prisma/client": "^6.19.3",
-    "@types/web-push": "^3.6.4",
     "better-sqlite3": "^12.10.0",
     "cloudinary": "^2.10.0",
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "web-push": "^3.6.7",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
