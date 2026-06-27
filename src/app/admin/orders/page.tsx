@@ -413,7 +413,9 @@ export default function OrdersPage() {
     endDate: string | null;
   }>({ type: "all", startDate: null, endDate: null });
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [soundAutoplayBlocked, setSoundAutoplayBlocked] = useState(false);
+  const [soundReady, setSoundReady] = useState(false);
+  const [soundActivationTick, setSoundActivationTick] = useState(0);
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -508,6 +510,8 @@ export default function OrdersPage() {
 
       if (newPendingCount > previousPendingCount && previousPendingCount > 0) {
         setShowNewOrderAlert(true);
+        fetchOrders({ silent: true });
+        fetchTodaySummary();
         if (notificationPermission === "granted") {
           showBrowserNotification(newPendingCount);
         }
@@ -542,17 +546,6 @@ export default function OrdersPage() {
     }
   };
 
-  const requestNotificationPermission = async () => {
-    try {
-      if (typeof window !== "undefined" && "Notification" in window) {
-        const permission = await Notification.requestPermission();
-        setNotificationPermission(permission);
-      }
-    } catch (error) {
-      console.error("[admin/orders] notification permission request failed", error);
-    }
-  };
-
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
@@ -584,15 +577,24 @@ export default function OrdersPage() {
   }, [previousPendingCount, notificationPermission]);
 
   useEffect(() => {
-    if (!soundEnabled) return;
-
     const audio = new Audio("/sounds/new-order.mp3");
     let soundInterval: NodeJS.Timeout | null = null;
 
     const playSound = () => {
       if (pendingCount > 0) {
         audio.currentTime = 0;
-        audio.play().catch((err) => console.error("Sound play failed:", err));
+        audio.play()
+          .then(() => {
+            setSoundReady(true);
+            setSoundAutoplayBlocked(false);
+          })
+          .catch((error) => {
+            console.error("Sound play failed:", error);
+            if (error instanceof DOMException && error.name === "NotAllowedError") {
+              setSoundReady(false);
+              setSoundAutoplayBlocked(true);
+            }
+          });
       }
     };
 
@@ -606,7 +608,25 @@ export default function OrdersPage() {
       audio.pause();
       audio.currentTime = 0;
     };
-  }, [soundEnabled, pendingCount]);
+  }, [pendingCount, soundActivationTick]);
+
+  useEffect(() => {
+    const activateSound = () => {
+      setSoundReady(true);
+      setSoundAutoplayBlocked(false);
+      setSoundActivationTick((current) => current + 1);
+    };
+
+    window.addEventListener("click", activateSound);
+    window.addEventListener("keydown", activateSound);
+    window.addEventListener("touchstart", activateSound);
+
+    return () => {
+      window.removeEventListener("click", activateSound);
+      window.removeEventListener("keydown", activateSound);
+      window.removeEventListener("touchstart", activateSound);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -697,6 +717,34 @@ export default function OrdersPage() {
     }
   }
 
+  const notificationStatus =
+    !notificationSupported || notificationPermission !== "granted"
+      ? {
+          tone: "red",
+          title: "🔴 브라우저 알림 권한 필요",
+          description: notificationSupported
+            ? "주소창 왼쪽 아이콘에서 알림을 허용해주세요."
+            : "이 브라우저는 알림 권한 안내를 지원하지 않습니다.",
+        }
+      : soundAutoplayBlocked || !soundReady
+        ? {
+            tone: "yellow",
+            title: "🟡 알림음 활성화 필요",
+            description: "화면을 한 번 클릭하면 알림음이 활성화됩니다.",
+          }
+        : {
+            tone: "green",
+            title: "🟢 신규주문 알림 정상",
+            description: "브라우저 알림과 알림음이 활성화되어 있습니다.",
+          };
+
+  const notificationStatusClass =
+    notificationStatus.tone === "green"
+      ? "border-green-200 bg-green-50 text-green-900"
+      : notificationStatus.tone === "yellow"
+        ? "border-amber-200 bg-amber-50 text-amber-900"
+        : "border-red-200 bg-red-50 text-red-900";
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
@@ -725,44 +773,9 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold text-gray-900">주문 관리</h1>
             <p className="text-sm text-gray-500 mt-1">주문 목록을 조회하고 상태를 변경합니다.</p>
           </div>
-          <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm sm:items-end">
-            {soundEnabled ? (
-              <button
-                type="button"
-                onClick={() => setSoundEnabled(false)}
-                className="rounded-full bg-green-600 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-green-700"
-              >
-                🔔 신규주문 알림 켜짐
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setSoundEnabled(true)}
-                className="rounded-full bg-red-600 px-5 py-2 text-sm font-bold text-white shadow-sm hover:bg-red-700"
-              >
-                🔕 신규주문 알림 꺼짐
-              </button>
-            )}
-
-            {!notificationSupported ? (
-              <span className="text-xs font-medium text-gray-500">이 브라우저는 알림 권한 안내를 지원하지 않습니다.</span>
-            ) : notificationPermission === "default" ? (
-              <div className="flex flex-col gap-1 text-xs text-amber-900 sm:items-end">
-                <span className="font-medium">브라우저 알림 권한도 켜면 화면 밖에서도 신규주문을 확인할 수 있습니다.</span>
-                <button
-                  onClick={requestNotificationPermission}
-                  className="self-start rounded-full border border-amber-300 bg-white px-3 py-1 font-semibold text-amber-900 hover:bg-amber-100 sm:self-end"
-                >
-                  브라우저 알림 허용
-                </button>
-              </div>
-            ) : notificationPermission === "granted" ? (
-              <span className="text-xs font-medium text-green-700">브라우저 신규주문 알림 허용됨</span>
-            ) : (
-              <div className="max-w-md text-xs font-semibold text-red-700 sm:text-right">
-                브라우저 알림이 차단되어 있습니다. 주소창 왼쪽 설정에서 허용해주세요.
-              </div>
-            )}
+          <div className={`rounded-2xl border px-4 py-3 shadow-sm ${notificationStatusClass}`}>
+            <p className="text-sm font-bold">{notificationStatus.title}</p>
+            <p className="mt-1 max-w-sm text-xs font-medium leading-5">{notificationStatus.description}</p>
           </div>
         </div>
 
