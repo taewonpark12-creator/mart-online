@@ -24,6 +24,19 @@ import type { ReceiptOrder } from "@/lib/receipt-html";
 
 const ORDERS_AUTO_REFRESH_MS = 12000;
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = `${base64String}${padding}`.replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; i += 1) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
 type OrderItem = {
   id: string;
   quantity: number;
@@ -416,6 +429,10 @@ export default function OrdersPage() {
   const [soundAutoplayBlocked, setSoundAutoplayBlocked] = useState(false);
   const [soundReady, setSoundReady] = useState(false);
   const [soundActivationTick, setSoundActivationTick] = useState(0);
+  const [pushSupported, setPushSupported] = useState(false);
+  const [pushRegistered, setPushRegistered] = useState(false);
+  const [pushRegistering, setPushRegistering] = useState(false);
+  const [pushMessage, setPushMessage] = useState("");
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -562,7 +579,29 @@ export default function OrdersPage() {
       setNotificationSupported(true);
       setNotificationPermission(Notification.permission);
     }
+
+    setPushSupported(
+      typeof window !== "undefined" &&
+        "serviceWorker" in navigator &&
+        "PushManager" in window &&
+        "Notification" in window &&
+        Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY),
+    );
   }, []);
+
+  useEffect(() => {
+    if (!pushSupported) return;
+
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => navigator.serviceWorker.ready)
+      .then((registration) => registration.pushManager.getSubscription())
+      .then((subscription) => {
+        setPushRegistered(Boolean(subscription));
+      })
+      .catch((error) => {
+        console.error("[admin/orders] push subscription check failed", error);
+      });
+  }, [pushSupported]);
 
   useEffect(() => {
     fetchTodaySummary();
@@ -717,6 +756,53 @@ export default function OrdersPage() {
     }
   }
 
+  async function registerMobilePush() {
+    if (!pushSupported) {
+      setPushMessage("이 브라우저는 Web Push를 지원하지 않거나 VAPID 공개키가 설정되지 않았습니다.");
+      return;
+    }
+
+    setPushRegistering(true);
+    setPushMessage("");
+
+    try {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+
+      if (permission !== "granted") {
+        setPushMessage("알림 권한이 차단되었습니다. 주소창/브라우저 설정에서 알림을 허용해주세요.");
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      const existingSubscription = await registration.pushManager.getSubscription();
+      const subscription =
+        existingSubscription ??
+        (await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+        }));
+
+      const res = await fetch("/api/admin/push/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(subscription),
+      });
+
+      if (!res.ok) {
+        throw new Error("PUSH_SUBSCRIBE_API_FAILED");
+      }
+
+      setPushRegistered(true);
+      setPushMessage("모바일/PC 푸시 알림이 등록되었습니다.");
+    } catch (error) {
+      console.error("[admin/orders] push registration failed", error);
+      setPushMessage("푸시 알림 등록에 실패했습니다. 브라우저 알림 권한과 HTTPS 접속 여부를 확인해주세요.");
+    } finally {
+      setPushRegistering(false);
+    }
+  }
+
   const notificationStatus =
     !notificationSupported || notificationPermission !== "granted"
       ? {
@@ -776,6 +862,21 @@ export default function OrdersPage() {
           <div className={`rounded-2xl border px-4 py-3 shadow-sm ${notificationStatusClass}`}>
             <p className="text-sm font-bold">{notificationStatus.title}</p>
             <p className="mt-1 max-w-sm text-xs font-medium leading-5">{notificationStatus.description}</p>
+            <div className="mt-3 flex flex-col gap-2 sm:items-end">
+              <button
+                type="button"
+                onClick={registerMobilePush}
+                disabled={!pushSupported || pushRegistering}
+                className="rounded-full bg-gray-900 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500"
+              >
+                {pushRegistering ? "등록 중..." : pushRegistered ? "📱 모바일 알림 등록됨" : "📱 모바일 알림 등록"}
+              </button>
+              <p className="max-w-sm text-xs leading-5 text-gray-600">
+                iPhone은 Safari에서 홈 화면에 추가한 웹앱에서만 푸시 알림이 동작할 수 있습니다.
+                권한이 차단된 경우 주소창/브라우저 설정에서 알림을 허용해주세요.
+              </p>
+              {pushMessage && <p className="max-w-sm text-xs font-semibold leading-5">{pushMessage}</p>}
+            </div>
           </div>
         </div>
 

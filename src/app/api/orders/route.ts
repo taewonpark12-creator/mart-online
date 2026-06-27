@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendNewOrderPush } from "@/lib/admin-push";
 import { isAfterCutoffTime } from "@/lib/delivery-schedule";
 import { generateOrderNumber } from "@/lib/types";
 
@@ -143,6 +144,14 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("ORDER_CREATED", order);
+
+    void sendNewOrderPush({
+      customerName,
+      totalAmount,
+      fulfillmentType,
+    }).catch((error) => {
+      console.error("[ORDER_CREATE_PUSH_ERROR]", error);
+    });
 
     return NextResponse.json({
       orderNumber: order.orderNumber,
