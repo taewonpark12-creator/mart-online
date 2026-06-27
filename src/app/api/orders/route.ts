@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAfterCutoffTime } from "@/lib/delivery-schedule";
+import { sendNewOrderTelegramAlert } from "@/lib/telegram";
 import { generateOrderNumber } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -143,6 +144,19 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("ORDER_CREATED", order);
+
+    console.info("[ORDER_TELEGRAM_ALERT_CALL]", {
+      orderNumber: order.orderNumber,
+      hasBotToken: Boolean(process.env.TELEGRAM_BOT_TOKEN),
+      hasChatId: Boolean(process.env.TELEGRAM_CHAT_ID),
+      chatIdLength: process.env.TELEGRAM_CHAT_ID?.length ?? 0,
+    });
+
+    try {
+      await sendNewOrderTelegramAlert();
+    } catch (error) {
+      console.error("[ORDER_TELEGRAM_ALERT_ERROR]", error);
+    }
 
     return NextResponse.json({
       orderNumber: order.orderNumber,
