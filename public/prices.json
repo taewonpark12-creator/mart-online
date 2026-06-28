@@ -9774,6 +9774,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8800346460030",
+    "name": "종이스퀴시세트",
+    "normalPrice": 3500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8800346460412",
     "name": "아이스크림스퀴시",
     "normalPrice": 3500,
