@@ -102330,15 +102330,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8809287507545",
-    "name": "산천)고춧가루김치2.5kg",
-    "normalPrice": 35000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8809287507613",
     "name": "산천)고춧가루양념1kg",
     "normalPrice": 14000,
@@ -104448,24 +104439,6 @@
     "barcode": "8809376530065",
     "name": "고급건조대A형",
     "normalPrice": 15500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8809376740112",
-    "name": "산천)고춧가루양념국산1kg",
-    "normalPrice": 41000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8809376740679",
-    "name": "산천)고춧가루김치국산1kg",
-    "normalPrice": 41000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
