@@ -59,6 +59,7 @@ export async function GET(req: NextRequest) {
     const orderNumber = String(searchParams.get("orderNumber") ?? query).trim();
     const phone = String(searchParams.get("phone") ?? query).trim();
     const normalizedPhone = normalizePhone(phone);
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     if (!orderNumber && !normalizedPhone) {
       return NextResponse.json({ error: "QUERY_REQUIRED" }, { status: 400 });
@@ -66,6 +67,9 @@ export async function GET(req: NextRequest) {
 
     const orders = await prisma.order.findMany({
       where: {
+        createdAt: {
+          gte: twentyFourHoursAgo,
+        },
         OR: [
           ...(orderNumber ? [{ orderNumber }] : []),
           ...(normalizedPhone
