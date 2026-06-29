@@ -50790,10 +50790,10 @@
     "barcode": "8801074603881",
     "name": "한성)속찬만두700g",
     "normalPrice": 5500,
-    "eventPrice": 3980,
-    "discountRate": 28,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801074604345",
