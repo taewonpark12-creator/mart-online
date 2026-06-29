@@ -3,7 +3,7 @@ const TELEGRAM_MESSAGE = [
   "한사랑마트 관리자에서 확인해주세요.",
 ].join("\n");
 
-export async function sendNewOrderTelegramAlert() {
+function getTelegramConfig() {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -12,6 +12,12 @@ export async function sendNewOrderTelegramAlert() {
     hasChatId: Boolean(chatId),
     chatIdLength: chatId?.length ?? 0,
   });
+
+  return { token, chatId };
+}
+
+async function sendTelegramMessage(text: string) {
+  const { token, chatId } = getTelegramConfig();
 
   if (!token || !chatId) {
     console.info("[telegram] skipped: missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID");
@@ -32,7 +38,7 @@ export async function sendNewOrderTelegramAlert() {
       },
       body: JSON.stringify({
         chat_id: chatId,
-        text: TELEGRAM_MESSAGE,
+        text,
         disable_web_page_preview: true,
       }),
       signal: controller.signal,
@@ -52,4 +58,18 @@ export async function sendNewOrderTelegramAlert() {
   if (!response.ok) {
     throw new Error(`Telegram sendMessage failed: ${response.status} ${responseBody.slice(0, 200)}`);
   }
+}
+
+export async function sendNewOrderTelegramAlert() {
+  await sendTelegramMessage(TELEGRAM_MESSAGE);
+}
+
+export async function sendPendingOrderReminderTelegramAlert(pendingCount: number) {
+  const message = [
+    "🚨 미확인 신규주문 알림",
+    `현재 주문접수 상태 주문이 ${pendingCount}건 있습니다.`,
+    "관리자 주문관리 페이지에서 확인해주세요.",
+  ].join("\n");
+
+  await sendTelegramMessage(message);
 }
