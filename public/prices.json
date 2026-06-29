@@ -9648,6 +9648,33 @@
     "saleEndDate": "2026-07-07"
   },
   {
+    "barcode": "8800335701434",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800335701441",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800335701458",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8800335701694",
     "name": "생활의품격D호",
     "normalPrice": 28000,
@@ -9732,6 +9759,42 @@
     "barcode": "8800335704442",
     "name": "ES이브닝로맨스샴푸915ml",
     "normalPrice": 15000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800335704459",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800335704497",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800335705371",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800335705777",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -104718,10 +104781,10 @@
     "barcode": "8809384591683",
     "name": "한양)삼계오리백숙재료100g",
     "normalPrice": 2200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1800,
+    "discountRate": 18,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809384591706",
@@ -115554,6 +115617,15 @@
     "barcode": "8809949564268",
     "name": "생활의품격S3호",
     "normalPrice": 33000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809949567269",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
