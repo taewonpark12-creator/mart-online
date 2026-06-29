@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { PRODUCT_CATEGORIES, formatPrice } from "@/lib/types";
@@ -91,6 +91,11 @@ const STATUS_META: Record<ProductFlag, { label: string; activeClass: string; ina
     inactiveClass: "bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-800",
   },
 };
+
+const CLIENT_PRODUCT_IMAGE_MAX_BYTES = 10 * 1024 * 1024;
+const CLIENT_PRODUCT_IMAGE_ACCEPT = ".jpg,.jpeg,.png,.webp";
+const CLIENT_PRODUCT_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const CLIENT_PRODUCT_IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
 
 const emptyForm = (): ProductForm => ({
   name: "",
@@ -471,11 +476,17 @@ function ProductImagePicker({
   disabled: boolean;
   onSelect: (imageUrl: string) => Promise<void>;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(productName);
   const [candidates, setCandidates] = useState<string[]>([]);
   const [searching, setSearching] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  function getLocalFileExtension(filename: string) {
+    return filename.split(".").pop()?.toLowerCase() ?? "";
+  }
 
   async function removeImage() {
     if (!confirm("이 상품의 이미지를 제거하시겠습니까?")) return;
@@ -491,6 +502,7 @@ function ProductImagePicker({
 
   async function searchImages() {
     if (!query.trim()) return;
+    setUploadError("");
     setSearching(true);
     setCandidates([]);
     try {
@@ -506,6 +518,7 @@ function ProductImagePicker({
   }
 
   async function selectCandidate(candidateUrl: string) {
+    setUploadError("");
     setUploading(true);
     try {
       await onSelect(candidateUrl);
@@ -518,6 +531,48 @@ function ProductImagePicker({
     }
   }
 
+  async function uploadLocalImage(file: File | undefined) {
+    if (!file) return;
+
+    setUploadError("");
+
+    const extension = getLocalFileExtension(file.name);
+    if (file.size > CLIENT_PRODUCT_IMAGE_MAX_BYTES) {
+      setUploadError("상품 이미지는 10MB 이하만 업로드할 수 있습니다.");
+      return;
+    }
+
+    if (!CLIENT_PRODUCT_IMAGE_EXTENSIONS.has(extension) || !CLIENT_PRODUCT_IMAGE_TYPES.has(file.type)) {
+      setUploadError("jpg, jpeg, png, webp 이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
+
+    setUploading(true);
+    try {
+      const res = await fetch("/api/admin/upload/product-image", {
+        method: "POST",
+        body: uploadFormData,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "상품 이미지 업로드에 실패했습니다.");
+      if (typeof data.url !== "string" || !data.url) {
+        throw new Error("업로드된 이미지 URL을 확인할 수 없습니다.");
+      }
+
+      await onSelect(data.url);
+      setCandidates([]);
+      setOpen(false);
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "상품 이미지 업로드에 실패했습니다.");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
   return (
     <section className="rounded-2xl border bg-gray-50 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -526,6 +581,21 @@ function ProductImagePicker({
           <p className="text-xs text-gray-500">후보 이미지의 외부 URL을 상품에 직접 저장합니다.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={CLIENT_PRODUCT_IMAGE_ACCEPT}
+            className="hidden"
+            onChange={(event) => void uploadLocalImage(event.target.files?.[0])}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={disabled || uploading}
+            className="rounded-lg bg-green-600 px-3 py-2 text-sm font-bold text-white hover:bg-green-700 disabled:opacity-50"
+          >
+            {uploading ? "업로드 중..." : "내 사진 업로드"}
+          </button>
           <button
             type="button"
             onClick={() => setOpen((current) => !current)}
@@ -547,6 +617,12 @@ function ProductImagePicker({
 
       {imageUrl && (
         <img src={imageUrl} alt="현재 상품 이미지" className="mt-3 h-28 w-28 rounded-xl border bg-white object-contain" />
+      )}
+
+      {uploadError && (
+        <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">
+          {uploadError}
+        </p>
       )}
 
       {open && (

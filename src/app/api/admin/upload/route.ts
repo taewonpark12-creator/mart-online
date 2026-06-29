@@ -1,13 +1,13 @@
 import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { MAX_PRODUCT_IMAGE_BYTES } from "@/lib/upload";
 
 export const runtime = "nodejs";
 
 const FLYER_UPLOAD_REPO = process.env.FLYER_UPLOAD_REPO ?? "taewonpark12-creator/mart-online";
 const FLYER_UPLOAD_BRANCH = process.env.FLYER_UPLOAD_BRANCH ?? "main";
 const FLYER_UPLOAD_DIR = "public/flyers";
+const MAX_FLYER_IMAGE_BYTES = 5 * 1024 * 1024;
 
 const ALLOWED_FLYER_IMAGE_TYPES: Record<string, string> = {
   "image/jpeg": ".jpg",
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please select an image file." }, { status: 400 });
     }
 
-    if (file.size > MAX_PRODUCT_IMAGE_BYTES) {
+    if (file.size > MAX_FLYER_IMAGE_BYTES) {
       return NextResponse.json({ error: "Images must be 5MB or smaller." }, { status: 400 });
     }
 
