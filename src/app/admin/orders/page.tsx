@@ -23,7 +23,9 @@ import { printReceiptNow } from "@/lib/print-receipt";
 import type { ReceiptOrder } from "@/lib/receipt-html";
 
 const ORDERS_AUTO_REFRESH_MS = 12000;
-const ORDER_NOTIFICATION_STARTED_STORAGE_KEY = "adminOrderNotificationStarted";
+const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
+const ORDER_NOTIFICATION_POLL_MS = 15000;
+const ORDER_NOTIFICATION_REPEAT_MS = 10000;
 
 type OrderItem = {
   id: string;
@@ -397,10 +399,8 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
   const [pendingCount, setPendingCount] = useState<number>(0);
-  const [previousPendingCount, setPreviousPendingCount] = useState<number>(0);
+  const [hasPendingOrders, setHasPendingOrders] = useState(false);
   const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
-  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
-  const [notificationSupported, setNotificationSupported] = useState(false);
   const [todaySummary, setTodaySummary] = useState<{
     total: number;
     pending: number;
@@ -414,12 +414,13 @@ export default function OrdersPage() {
     endDate: string | null;
   }>({ type: "all", startDate: null, endDate: null });
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [soundAutoplayBlocked, setSoundAutoplayBlocked] = useState(false);
-  const [soundReady, setSoundReady] = useState(false);
-  const [notificationStarted, setNotificationStarted] = useState(false);
-  const [notificationChecking, setNotificationChecking] = useState(true);
-  const [notificationMessage, setNotificationMessage] = useState("");
+  const [soundBlocked, setSoundBlocked] = useState(false);
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [notificationRepeatActive, setNotificationRepeatActive] = useState(false);
   const orderNotificationAudioRef = useRef<HTMLAudioElement | null>(null);
+  const notificationRepeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const notificationEnabledRef = useRef(false);
+  const hasPendingOrdersRef = useRef(false);
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -524,67 +525,82 @@ export default function OrdersPage() {
       audio.pause();
       audio.currentTime = 0;
       await audio.play();
-      setSoundReady(true);
-      setSoundAutoplayBlocked(false);
-      setNotificationMessage("");
+      setSoundBlocked(false);
+      console.log("[ORDER_NOTIFICATION_AUDIO_PLAY_SUCCESS]");
       return true;
     } catch (error) {
-      console.error("[admin/orders] notification sound play failed", error);
-      setSoundReady(false);
-      setSoundAutoplayBlocked(true);
-      setNotificationMessage("브라우저가 소리 재생을 차단했습니다. 주문 알림 시작 버튼을 다시 눌러주세요.");
+      console.error("[ORDER_NOTIFICATION_AUDIO_PLAY_FAILED]", error);
+      setSoundBlocked(true);
       return false;
     }
   }, [getOrderNotificationAudio]);
 
+  const stopNotificationRepeat = useCallback(() => {
+    if (!notificationRepeatIntervalRef.current) return;
+
+    clearInterval(notificationRepeatIntervalRef.current);
+    notificationRepeatIntervalRef.current = null;
+    setNotificationRepeatActive(false);
+    console.log("[ORDER_NOTIFICATION_REPEAT_STOP]");
+  }, []);
+
+  const startNotificationRepeat = useCallback(() => {
+    if (notificationRepeatIntervalRef.current) return;
+    if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) return;
+
+    setNotificationRepeatActive(true);
+    console.log("[ORDER_NOTIFICATION_REPEAT_START]");
+    void playOrderNotificationSound();
+
+    notificationRepeatIntervalRef.current = setInterval(() => {
+      if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) {
+        stopNotificationRepeat();
+        return;
+      }
+
+      void playOrderNotificationSound();
+    }, ORDER_NOTIFICATION_REPEAT_MS);
+  }, [playOrderNotificationSound, stopNotificationRepeat]);
+
   const startOrderNotifications = useCallback(async () => {
-    setNotificationChecking(true);
-    setNotificationMessage("");
-
-    try {
-      if (typeof window !== "undefined" && "Notification" in window) {
-        setNotificationSupported(true);
-        const permission = await Notification.requestPermission();
-        setNotificationPermission(permission);
-      }
-
-      const soundAllowed = await playOrderNotificationSound();
-      if (soundAllowed) {
-        setNotificationStarted(true);
-        window.localStorage.setItem(ORDER_NOTIFICATION_STARTED_STORAGE_KEY, "true");
-      } else {
-        setNotificationStarted(false);
-        window.localStorage.removeItem(ORDER_NOTIFICATION_STARTED_STORAGE_KEY);
-      }
-    } finally {
-      setNotificationChecking(false);
+    const soundAllowed = await playOrderNotificationSound();
+    if (soundAllowed) {
+      notificationEnabledRef.current = true;
+      setNotificationEnabled(true);
+      window.localStorage.setItem(ORDER_NOTIFICATION_ENABLED_STORAGE_KEY, "true");
+      console.log("[ORDER_NOTIFICATION_ENABLED]");
     }
   }, [playOrderNotificationSound]);
 
-  const fetchPendingCount = async () => {
-    try {
-      const res = await fetch("/api/admin/orders/pending-count", { cache: "no-store" });
-      if (!res.ok) return;
-      const data = await res.json();
-      const newPendingCount = data.pendingCount ?? 0;
-      setPendingCount(newPendingCount);
+  const testOrderNotification = useCallback(async () => {
+    await playOrderNotificationSound();
+  }, [playOrderNotificationSound]);
 
-      if (newPendingCount > previousPendingCount && previousPendingCount > 0) {
-        setShowNewOrderAlert(true);
-        fetchOrders({ silent: true });
-        fetchTodaySummary();
-        if (notificationStarted) {
-          void playOrderNotificationSound();
-        }
-        if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-          showBrowserNotification(newPendingCount);
-        }
+  const pollPendingOrders = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/orders?status=PENDING", { cache: "no-store" });
+      if (!res.ok) {
+        if (res.status === 401) router.replace("/admin");
+        return;
       }
-      setPreviousPendingCount(newPendingCount);
+
+      const pendingOrders: Order[] = await res.json();
+      const nextPendingCount = Array.isArray(pendingOrders) ? pendingOrders.length : 0;
+      const nextHasPendingOrders = nextPendingCount > 0;
+      const hadPendingOrders = hasPendingOrdersRef.current;
+
+      console.log("[ORDER_NOTIFICATION_POLL_SUCCESS]", nextPendingCount);
+      setPendingCount(nextPendingCount);
+      setHasPendingOrders(nextHasPendingOrders);
+      hasPendingOrdersRef.current = nextHasPendingOrders;
+
+      if (nextHasPendingOrders && !hadPendingOrders) {
+        setShowNewOrderAlert(true);
+      }
     } catch (error) {
-      console.error("[admin/orders] pending-count fetch failed", error);
+      console.error("[admin/orders] pending orders poll failed", error);
     }
-  };
+  }, [router]);
 
   const fetchTodaySummary = async () => {
     try {
@@ -594,19 +610,6 @@ export default function OrdersPage() {
       setTodaySummary(data);
     } catch (error) {
       console.error("[admin/orders] today-summary fetch failed", error);
-    }
-  };
-
-  const showBrowserNotification = (count: number) => {
-    try {
-      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-        new Notification("한사랑마트 신규 주문", {
-          body: `대기 중인 주문이 ${count}건 있습니다.`,
-          tag: "new-order-notification",
-        });
-      }
-    } catch (error) {
-      console.error("[admin/orders] browser notification failed", error);
     }
   };
 
@@ -622,25 +625,23 @@ export default function OrdersPage() {
   }, [fetchOrders]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "Notification" in window) {
-      setNotificationSupported(true);
-      setNotificationPermission(Notification.permission);
-    }
     if (typeof window !== "undefined") {
-      setNotificationStarted(window.localStorage.getItem(ORDER_NOTIFICATION_STARTED_STORAGE_KEY) === "true");
+      const savedEnabled = window.localStorage.getItem(ORDER_NOTIFICATION_ENABLED_STORAGE_KEY) === "true";
+      notificationEnabledRef.current = savedEnabled;
+      setNotificationEnabled(savedEnabled);
     }
-    setNotificationChecking(false);
   }, []);
 
   useEffect(() => {
     return () => {
+      stopNotificationRepeat();
       const audio = orderNotificationAudioRef.current;
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
       }
     };
-  }, []);
+  }, [stopNotificationRepeat]);
 
   useEffect(() => {
     fetchTodaySummary();
@@ -649,10 +650,35 @@ export default function OrdersPage() {
   }, []);
 
   useEffect(() => {
-    fetchPendingCount();
-    const interval = setInterval(fetchPendingCount, 15000);
+    void pollPendingOrders();
+    const interval = setInterval(() => {
+      void pollPendingOrders();
+    }, ORDER_NOTIFICATION_POLL_MS);
     return () => clearInterval(interval);
-  }, [previousPendingCount, notificationStarted, playOrderNotificationSound]);
+  }, [pollPendingOrders]);
+
+  useEffect(() => {
+    notificationEnabledRef.current = notificationEnabled;
+    hasPendingOrdersRef.current = hasPendingOrders;
+
+    if (notificationEnabled && hasPendingOrders) {
+      startNotificationRepeat();
+    } else {
+      stopNotificationRepeat();
+    }
+  }, [hasPendingOrders, notificationEnabled, startNotificationRepeat, stopNotificationRepeat]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && notificationEnabledRef.current && hasPendingOrdersRef.current) {
+        void playOrderNotificationSound();
+        startNotificationRepeat();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [playOrderNotificationSound, startNotificationRepeat]);
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -679,6 +705,7 @@ export default function OrdersPage() {
         current.map((order) => (order.id === selectedOrderId ? { ...order, status } : order))
       );
       fetchTodaySummary();
+      void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] status update failed", error);
       alert("상태 변경 중 오류가 발생했습니다.");
@@ -708,6 +735,7 @@ export default function OrdersPage() {
         current.map((order) => (order.id === selectedOrderId ? { ...order, status: "CANCELLED" } : order))
       );
       fetchTodaySummary();
+      void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] cancel failed", error);
       alert("주문 취소 중 오류가 발생했습니다.");
@@ -734,7 +762,7 @@ export default function OrdersPage() {
       setOrders((current) => current.filter((order) => order.id !== selectedOrderId));
       setSelectedOrderId(null);
       fetchTodaySummary();
-      fetchPendingCount();
+      void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] delete failed", error);
       alert("주문 삭제 중 오류가 발생했습니다.");
@@ -743,38 +771,29 @@ export default function OrdersPage() {
     }
   }
 
-  const notificationStatus =
-    notificationChecking
+  const notificationStatus = soundBlocked
+    ? {
+        tone: "red",
+        title: "소리 차단됨",
+        description: "브라우저가 소리 재생을 차단했습니다. 주문 알림 시작 버튼을 다시 눌러주세요.",
+      }
+    : !notificationEnabled
       ? {
           tone: "gray",
-          title: "연결 확인 중",
-          description: "주문 알림 상태를 확인하고 있습니다.",
+          title: "알림 꺼짐",
+          description: "주문 알림 시작 버튼을 눌러 알림음을 준비해주세요.",
         }
-      : soundAutoplayBlocked
+      : hasPendingOrders && notificationRepeatActive
         ? {
-            tone: "red",
-            title: "소리 재생 차단됨",
-            description: notificationMessage || "브라우저가 소리 재생을 차단했습니다. 주문 알림 시작 버튼을 다시 눌러주세요.",
+            tone: "yellow",
+            title: "신규주문 알림 중",
+            description: `주문접수 ${pendingCount}건이 남아 있어 10초마다 알림음을 재생합니다.`,
           }
-        : !notificationStarted || !soundReady
-          ? {
-              tone: "yellow",
-              title: "알림 권한 필요",
-              description: "주문 알림 시작 버튼을 눌러 테스트 알림음을 재생해주세요.",
-            }
-          : !notificationSupported || notificationPermission !== "granted"
-            ? {
-                tone: "red",
-                title: "알림 권한 필요",
-                description: notificationSupported
-                  ? "브라우저 알림 권한을 허용해주세요."
-                  : "이 브라우저는 알림 권한 요청을 지원하지 않습니다.",
-              }
-            : {
-                tone: "green",
-                title: "알림 준비됨",
-                description: "새 주문이 들어오면 알림음과 브라우저 알림을 보냅니다.",
-              };
+        : {
+            tone: "green",
+            title: "알림 준비됨",
+            description: "주문접수 건이 생기면 알림음을 반복 재생합니다.",
+          };
 
   const notificationStatusClass =
     notificationStatus.tone === "green"
@@ -817,10 +836,16 @@ export default function OrdersPage() {
             <button
               type="button"
               onClick={() => void startOrderNotifications()}
-              disabled={notificationChecking}
               className="rounded-2xl bg-gray-900 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {notificationChecking ? "연결 확인 중..." : "🔔 주문 알림 시작"}
+              🔔 주문 알림 시작
+            </button>
+            <button
+              type="button"
+              onClick={() => void testOrderNotification()}
+              className="rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-800 shadow-sm transition hover:bg-gray-50"
+            >
+              🔊 알림 테스트
             </button>
             <div className={`rounded-2xl border px-4 py-3 shadow-sm ${notificationStatusClass}`}>
               <p className="text-sm font-bold">{notificationStatus.title}</p>
