@@ -101970,6 +101970,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809275380020",
+    "name": "소문난광천김재래15g",
+    "normalPrice": 1500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809275380075",
     "name": "소문난광천김재래16입",
     "normalPrice": 6900,
@@ -102036,6 +102045,15 @@
     "barcode": "8809275380945",
     "name": "달인광천김재래9입",
     "normalPrice": 4500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809275380969",
+    "name": "달인광천김파래전장3입",
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
