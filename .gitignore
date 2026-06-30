@@ -9,3 +9,5 @@ node_modules
 public/uploads/products/*
 !public/uploads/products/.gitkeep
 .vs/
+.vercel
+.env*
