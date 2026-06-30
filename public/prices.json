@@ -53894,7 +53894,7 @@
   {
     "barcode": "8801101882838",
     "name": "액츠)퍼펙트베이킹소다3L+200ml",
-    "normalPrice": 13000,
+    "normalPrice": 15000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -53903,7 +53903,7 @@
   {
     "barcode": "8801101882845",
     "name": "액츠)퍼펙트딥클린3L+200ml",
-    "normalPrice": 13000,
+    "normalPrice": 15000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -54110,7 +54110,7 @@
   {
     "barcode": "8801101888496",
     "name": "액츠)퍼펙트실내건조3L",
-    "normalPrice": 13000,
+    "normalPrice": 15000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -62544,6 +62544,15 @@
     "barcode": "8801117001216",
     "name": "오리온)참붕어빵우유슈크림348g",
     "normalPrice": 6500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801117001254",
+    "name": "오리온)스윙칩까르보나라불닭100g",
+    "normalPrice": 2900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91064,7 +91073,7 @@
   {
     "barcode": "8806325629054",
     "name": "비트)아로마시트러스3L",
-    "normalPrice": 16000,
+    "normalPrice": 18000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91091,7 +91100,7 @@
   {
     "barcode": "8806325629252",
     "name": "비트)아로마카모마일3L",
-    "normalPrice": 16000,
+    "normalPrice": 18000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
