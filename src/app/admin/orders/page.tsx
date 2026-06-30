@@ -26,7 +26,7 @@ const ORDERS_AUTO_REFRESH_MS = 12000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY = "adminOrderNotificationKnownPendingIds";
 const ORDER_NOTIFICATION_POLL_MS = 3000;
-const ORDER_NOTIFICATION_REPEAT_MS = 60000;
+const ORDER_NOTIFICATION_REPEAT_MS = 10000;
 
 type OrderItem = {
   id: string;
@@ -512,7 +512,7 @@ export default function OrdersPage() {
     if (typeof window === "undefined") return null;
 
     if (!orderNotificationAudioRef.current) {
-      const audio = new Audio("/sounds/new-order.mp3");
+      const audio = new Audio("/notification.mp3");
       audio.preload = "auto";
       orderNotificationAudioRef.current = audio;
     }
@@ -575,12 +575,18 @@ export default function OrdersPage() {
     }
   }, [stopNotificationRepeat]);
 
-  const startNotificationRepeat = useCallback(() => {
-    if (notificationRepeatIntervalRef.current) return;
+  const startNotificationRepeat = useCallback((restart = false) => {
     if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) return;
+
+    if (notificationRepeatIntervalRef.current) {
+      if (!restart) return;
+      clearInterval(notificationRepeatIntervalRef.current);
+      notificationRepeatIntervalRef.current = null;
+    }
 
     setNotificationRepeatActive(true);
     console.log("[ORDER_NOTIFICATION_REPEAT_START]");
+    void playOrderNotificationSound();
 
     notificationRepeatIntervalRef.current = setInterval(() => {
       if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) {
@@ -642,24 +648,25 @@ export default function OrdersPage() {
         stopNotificationRepeat();
       }
 
-      const shouldNotifyNewPending =
+      const hasNewPending =
         newPendingOrders.length > 0 &&
         (pendingPollInitializedRef.current ||
           previousPendingIds.size > 0 ||
           notificationEnabledRef.current);
 
-      if (shouldNotifyNewPending) {
+      if (hasNewPending) {
         setShowNewOrderAlert(true);
-        if (notificationEnabledRef.current) {
-          void playOrderNotificationSound();
-        }
+      }
+
+      if (nextHasPendingOrders && notificationEnabledRef.current) {
+        startNotificationRepeat(hasNewPending);
       }
 
       pendingPollInitializedRef.current = true;
     } catch (error) {
       console.error("[admin/orders] pending orders poll failed", error);
     }
-  }, [playOrderNotificationSound, router, stopNotificationRepeat]);
+  }, [router, startNotificationRepeat, stopNotificationRepeat]);
 
   const fetchTodaySummary = async () => {
     try {
@@ -868,7 +875,7 @@ export default function OrdersPage() {
         ? {
             tone: "yellow",
             title: "신규주문 알림 중",
-            description: `주문접수 ${pendingCount}건이 남아 있어 1분마다 알림음을 재생합니다.`,
+            description: `주문접수 ${pendingCount}건이 남아 있어 10초마다 알림음을 재생합니다.`,
           }
         : {
             tone: "green",
@@ -895,7 +902,7 @@ export default function OrdersPage() {
               <div>
                 <p className="text-base font-black text-red-900">브라우저가 주문 알림음 재생을 차단했습니다.</p>
                 <p className="mt-1 text-sm font-semibold text-red-700">
-                  아래 버튼을 눌러 소리를 허용해야 신규주문 알림음과 1분 반복 알림이 들립니다.
+                  아래 버튼을 눌러 소리를 허용해야 신규주문 알림음과 10초 반복 알림이 들립니다.
                 </p>
               </div>
               <button
