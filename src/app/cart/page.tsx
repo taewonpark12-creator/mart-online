@@ -73,7 +73,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
-      <div className="max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <div className={`max-w-md mx-auto px-3 sm:px-4 py-6 sm:py-8 ${items.length > 0 ? "pb-44 sm:pb-8" : ""}`}>
         <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2 text-green-800">장바구니</h1>
         <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
           담은 상품을 확인하고 주문을 진행하세요.
@@ -139,19 +139,23 @@ export default function CartPage() {
                     </div>
                   </div>
                   <div className="flex items-center justify-between mt-3 sm:mt-4">
-                    <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
                         disabled={item.quantity <= 1 || item.isOutOfStock}
-                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
+                        className="w-12 h-12 sm:w-11 sm:h-11 rounded-lg bg-white border text-xl font-bold leading-none disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100"
+                        aria-label={`${item.name} 수량 줄이기`}
                       >
                         -
                       </button>
-                      <span className="w-8 sm:w-6 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
+                      <span className="w-10 text-center text-base font-bold">{item.quantity}</span>
                       <button
+                        type="button"
                         onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
                         disabled={item.isOutOfStock || !!(item.maxOrderQuantity && item.maxOrderQuantity > 0 && item.quantity >= item.maxOrderQuantity)}
-                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-white border text-sm sm:text-base font-bold disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100 min-h-[44px]"
+                        className="w-12 h-12 sm:w-11 sm:h-11 rounded-lg bg-white border text-xl font-bold leading-none disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100"
+                        aria-label={`${item.name} 수량 늘리기`}
                       >
                         +
                       </button>
@@ -191,7 +195,8 @@ export default function CartPage() {
               })}
             </div>
 
-            <div className="bg-white border rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] sm:static sm:rounded-2xl sm:border sm:p-5 sm:shadow-sm">
+              <div className="mx-auto max-w-md space-y-3 sm:space-y-4">
               <div className="flex justify-between font-bold text-base sm:text-lg">
                 <span>합계</span>
                 <span className="text-green-700">{formatPrice(totalAmount)}</span>
@@ -208,14 +213,17 @@ export default function CartPage() {
               {error && <p className="text-red-500 text-xs sm:text-sm">{error}</p>}
 
               <button
+                type="button"
                 onClick={handleCheckout}
                 disabled={!meetsMinimum}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-4 sm:py-5 rounded-xl transition text-sm sm:text-base min-h-[48px]"
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-4 sm:py-5 rounded-xl transition text-base min-h-[52px]"
               >
                 주문하기
               </button>
-              <div className="flex justify-center mt-4">
+              <div className="hidden sm:flex justify-center mt-4">
                 <GoBackToShoppingButton />
+              </div>
+              <div className="h-[env(safe-area-inset-bottom)] sm:hidden" />
               </div>
             </div>
           </>

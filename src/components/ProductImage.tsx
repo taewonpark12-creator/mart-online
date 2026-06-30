@@ -64,7 +64,7 @@ export function ProductImage({
         fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         onError={() => setFailedSrc(imageSrc)}
-        className={fill ? "absolute inset-0 h-full w-full object-cover" : "h-auto w-full object-cover"}
+        className={fill ? "absolute inset-0 h-full w-full object-contain p-1" : "h-auto w-full object-contain"}
       />
     );
   }
@@ -81,7 +81,7 @@ export function ProductImage({
         priority={priority}
         decoding="async"
         onError={() => setFailedSrc(imageSrc)}
-        style={{ objectFit: "cover" }}
+        style={{ objectFit: "contain", padding: "0.25rem" }}
       />
     );
   }

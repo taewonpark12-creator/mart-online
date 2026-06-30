@@ -1,6 +1,6 @@
 "use client";
 
-import { formatPrice } from "@/lib/types";
+import { MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
 
 type Props = {
   itemCount: number;
@@ -11,9 +11,16 @@ type Props = {
 export function OrderBar({ itemCount, totalAmount, onOrderClick }: Props) {
   if (itemCount === 0) return null;
 
+  const amountShort = Math.max(MIN_ORDER_AMOUNT - totalAmount, 0);
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-green-600 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+        {amountShort > 0 && (
+          <p className="mb-2 rounded-lg bg-white/15 px-3 py-1.5 text-sm font-bold text-white">
+            최소 주문까지 {formatPrice(amountShort)} 남았습니다.
+          </p>
+        )}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="text-white text-xl sm:text-2xl">🛒</span>

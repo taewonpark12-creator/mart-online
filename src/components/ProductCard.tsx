@@ -75,13 +75,13 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full">
-      <div className={`relative bg-gray-50 w-full ${compact ? "h-24 sm:h-28" : "h-32 sm:h-36"}`}>
+    <div className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col h-full">
+      <div className={`relative bg-gray-50 w-full overflow-hidden ${compact ? "aspect-square" : "aspect-[4/3]"}`}>
         <ProductImage
           src={product.imageUrl}
           alt={displayName}
           fill
-          sizes={compact ? "(max-width: 640px) 33vw, 160px" : "(max-width: 640px) 50vw, 240px"}
+          sizes={compact ? "(max-width: 640px) 33vw, 160px" : "(max-width: 640px) 50vw, 260px"}
         />
         {badges.length > 0 && (
           <div className={`absolute left-2 top-2 z-10 flex flex-wrap gap-1 ${compact ? "pr-8" : "pr-12"}`}>
@@ -98,18 +98,18 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
         <button
           onClick={() => onAdd(cartProduct)}
           disabled={product.isOutOfStock || loadingPrice}
-          className={`absolute bottom-2 right-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition shadow-lg ${compact ? "min-h-[34px] px-2.5 py-1.5 text-[11px]" : "min-h-[40px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
+          className={`absolute bottom-2 right-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold rounded-lg transition shadow-lg ${compact ? "min-h-[38px] px-3 py-2 text-xs" : "min-h-[44px] px-3.5 py-2.5 text-sm sm:px-4 sm:text-sm"}`}
         >
           {product.isOutOfStock ? "품절" : loadingPrice ? "확인중" : "+ 담기"}
         </button>
       </div>
 
-      <div className={`${compact ? "p-2 gap-1" : "p-3 sm:p-4 gap-1.5 sm:gap-2"} flex flex-col flex-1`}>
+      <div className={`${compact ? "p-2.5 gap-1" : "p-3 sm:p-4 gap-1.5 sm:gap-2"} flex flex-col flex-1`}>
         <div className="flex-1 min-w-0">
           <span className={`text-green-600 font-medium bg-green-50 px-1.5 py-0.5 rounded-full inline-block ${compact ? "text-[9px]" : "text-[10px] sm:text-xs sm:px-2"}`}>
             {product.category}
           </span>
-          <h3 className={`font-semibold text-gray-900 mt-1 leading-snug line-clamp-2 ${compact ? "text-xs" : "text-sm sm:text-base"}`}>
+          <h3 className={`font-semibold text-gray-900 mt-1 leading-snug line-clamp-2 min-h-[2.5em] ${compact ? "text-xs" : "text-sm sm:text-base"}`}>
             {displayName}
           </h3>
           {product.description && !compact && (
@@ -121,7 +121,7 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
 
         <div className="mt-auto">
           {loadingPrice ? (
-            <p className={`font-bold text-green-700 ${compact ? "text-sm" : "text-base sm:text-lg"}`}>...</p>
+            <p className={`font-bold text-green-700 ${compact ? "text-base" : "text-lg sm:text-xl"}`}>...</p>
           ) : hasEvent ? (
             <div className="space-y-1">
               <div className={`flex items-center ${compact ? "gap-1" : "gap-2"}`}>
@@ -132,12 +132,12 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
                   {discountRate}% 할인
                 </span>
               </div>
-              <p className={`font-bold text-green-700 ${compact ? "text-sm" : "text-base sm:text-lg"}`}>
+              <p className={`font-black text-green-700 tracking-normal ${compact ? "text-base" : "text-lg sm:text-xl"}`}>
                 {formatPrice(eventPrice)}
               </p>
             </div>
           ) : (
-            <p className={`font-bold text-green-700 ${compact ? "text-sm" : "text-base sm:text-lg"}`}>
+            <p className={`font-black text-green-700 tracking-normal ${compact ? "text-base" : "text-lg sm:text-xl"}`}>
               {formatPrice(normalPrice)}
             </p>
           )}

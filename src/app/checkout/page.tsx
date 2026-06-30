@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
@@ -8,7 +8,6 @@ import { CHECKOUT_CUTOFF_NOTICE } from "@/lib/delivery-schedule";
 import {
   MIN_ORDER_AMOUNT,
   formatPrice,
-  PICKUP_TIME_SLOTS,
   PAYMENT_METHOD_OPTIONS,
   OUT_OF_STOCK_POLICY_OPTIONS,
 } from "@/lib/types";
@@ -55,6 +54,8 @@ const INITIAL_FORM = {
   saveInfo: false,
 };
 
+type CheckoutForm = typeof INITIAL_FORM;
+
 const SAVE_ERROR = "주문 저장에 실패했습니다. 다시 시도해주세요.";
 
 function pickupLabel(value: string) {
@@ -98,6 +99,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
   const [skipEmptyCartCheck, setSkipEmptyCartCheck] = useState(false);
   const [showCutoffNotice, setShowCutoffNotice] = useState(false);
+  const submitLockRef = useRef(false);
 
   // Load saved delivery info from localStorage
   useEffect(() => {
@@ -138,27 +140,30 @@ export default function CheckoutPage() {
 
   const isDelivery = form.fulfillmentType === "DELIVERY";
   const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
-  const canSubmit =
+  const canSubmit = Boolean(
     !submitting &&
     !deliveryBlocked &&
     items.length > 0 &&
     form.customerName.trim() &&
     form.customerPhone.trim() &&
-    (isDelivery ? form.deliveryAddress.trim() : form.pickupTime);
+    (isDelivery ? form.deliveryAddress.trim() : form.pickupTime)
+  );
 
-  const update = (key: string, value: string) => {
+  const update = <K extends keyof CheckoutForm>(key: K, value: CheckoutForm[K]) => {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || submitLockRef.current) return;
 
     const orderItems = items.map(toOrderItem);
     if (orderItems.some((item) => item === null)) {
       alert(SAVE_ERROR);
       return;
     }
+
+    submitLockRef.current = true;
 
     // Save delivery info if requested
     if (isDelivery && form.saveInfo) {
@@ -217,6 +222,7 @@ export default function CheckoutPage() {
       alert("주문 접수에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setSubmitting(false);
+      submitLockRef.current = false;
     }
   }
 
@@ -242,7 +248,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#f8faf8]">
       <Header />
-      <main className="mx-auto max-w-md px-4 py-8">
+      <main className="mx-auto max-w-md px-4 py-6 pb-44 sm:py-8 sm:pb-8">
         <h1 className="text-2xl font-bold text-green-800 mb-6">주문하기</h1>
 
         {showCutoffNotice && (
@@ -253,7 +259,7 @@ export default function CheckoutPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <fieldset className="space-y-3">
-            <legend className="text-sm font-bold text-gray-900">수령 방법</legend>
+            <legend className="text-base font-bold text-gray-900">수령 방법</legend>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { label: "배송", value: "DELIVERY" },
@@ -263,7 +269,7 @@ export default function CheckoutPage() {
                   key={option.value}
                   type="button"
                   onClick={() => update("fulfillmentType", option.value)}
-                  className={`rounded-xl border p-3 text-sm font-bold ${
+                  className={`min-h-[52px] rounded-xl border p-3 text-base font-bold ${
                     form.fulfillmentType === option.value
                       ? "border-green-500 bg-green-50 text-green-900"
                       : "border-gray-200 bg-white text-gray-600"
@@ -276,57 +282,61 @@ export default function CheckoutPage() {
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="text-sm font-bold text-gray-900">고객 정보</legend>
+            <legend className="text-base font-bold text-gray-900">고객 정보</legend>
             <input
               required
               value={form.customerName}
               onChange={(event) => update("customerName", event.target.value)}
               placeholder="고객명"
-              className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              autoComplete="name"
+              className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
             />
             <input
               required
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               value={form.customerPhone}
               onChange={(event) => update("customerPhone", event.target.value)}
               placeholder="전화번호"
-              className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
             />
           </fieldset>
 
           {isDelivery ? (
             <fieldset className="space-y-3">
-              <legend className="text-sm font-bold text-gray-900">배송 정보</legend>
+              <legend className="text-base font-bold text-gray-900">배송 정보</legend>
               <input
                 required
                 value={form.deliveryAddress}
                 onChange={(event) => update("deliveryAddress", event.target.value)}
                 placeholder="배송 주소"
-                className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+                autoComplete="street-address"
+                className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
               />
               {deliveryBlocked && (
                 <p className="text-sm font-semibold text-red-500">
                   배송 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
                 </p>
               )}
-              <label className="flex items-center gap-2">
+              <label className="flex min-h-[48px] items-center gap-3 text-base">
                 <input
                   type="checkbox"
                   checked={form.saveInfo}
-                  onChange={(event) => update("saveInfo", event.target.checked ? "true" : "false")}
-                  className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-400"
+                  onChange={(event) => update("saveInfo", event.target.checked)}
+                  className="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-400"
                 />
-                <span className="text-sm text-gray-700">기본정보 저장</span>
+                <span className="text-gray-700">기본정보 저장</span>
               </label>
             </fieldset>
           ) : (
             <fieldset className="space-y-3">
-              <legend className="text-sm font-bold text-gray-900">픽업 정보</legend>
+              <legend className="text-base font-bold text-gray-900">픽업 정보</legend>
               <select
                 required
                 value={form.pickupTime}
                 onChange={(event) => update("pickupTime", event.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
               >
                 {PICKUP_TIMES.map((time) => (
                   <option key={time} value={time}>
@@ -338,19 +348,26 @@ export default function CheckoutPage() {
           )}
 
           <fieldset className="space-y-3">
-            <legend className="text-sm font-bold text-gray-900">품절 시 처리방법</legend>
-            <div className="space-y-2">
+            <legend className="text-base font-bold text-gray-900">품절 시 처리방법</legend>
+            <div className="grid gap-2">
               {OUT_OF_STOCK_POLICY_OPTIONS.map((option) => (
-                <label key={option.value} className="flex items-center gap-2">
+                <label
+                  key={option.value}
+                  className={`flex min-h-[54px] cursor-pointer items-center rounded-xl border px-4 py-3 text-base font-bold transition ${
+                    form.outOfStockPolicy === option.value
+                      ? "border-green-500 bg-green-50 text-green-900"
+                      : "border-gray-200 bg-white text-gray-700"
+                  }`}
+                >
                   <input
                     type="radio"
                     name="outOfStockPolicy"
                     value={option.value}
                     checked={form.outOfStockPolicy === option.value}
                     onChange={(event) => update("outOfStockPolicy", event.target.value)}
-                    className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-400"
+                    className="sr-only"
                   />
-                  <span className="text-sm text-gray-700">{option.label}</span>
+                  <span>{option.label}</span>
                 </label>
               ))}
             </div>
@@ -358,19 +375,26 @@ export default function CheckoutPage() {
 
           {isDelivery && (
             <fieldset className="space-y-3">
-              <legend className="text-sm font-bold text-gray-900">결제 방법</legend>
-              <div className="space-y-2">
+              <legend className="text-base font-bold text-gray-900">결제 방법</legend>
+              <div className="grid gap-2">
                 {PAYMENT_METHOD_OPTIONS.map((option) => (
-                  <label key={option.value} className="flex items-center gap-2">
+                  <label
+                    key={option.value}
+                    className={`flex min-h-[54px] cursor-pointer items-center rounded-xl border px-4 py-3 text-base font-bold transition ${
+                      form.paymentMethod === option.value
+                        ? "border-green-500 bg-green-50 text-green-900"
+                        : "border-gray-200 bg-white text-gray-700"
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="paymentMethod"
                       value={option.value}
                       checked={form.paymentMethod === option.value}
                       onChange={(event) => update("paymentMethod", event.target.value)}
-                      className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-400"
+                      className="sr-only"
                     />
-                    <span className="text-sm text-gray-700">{option.label}</span>
+                    <span>{option.label}</span>
                   </label>
                 ))}
               </div>
@@ -385,21 +409,21 @@ export default function CheckoutPage() {
           )}
 
           <fieldset className="space-y-3">
-            <legend className="text-sm font-bold text-gray-900">요청사항</legend>
+            <legend className="text-base font-bold text-gray-900">요청사항</legend>
             <textarea
               value={form.memo}
               onChange={(event) => update("memo", event.target.value)}
               placeholder="요청사항을 입력하세요 (선택)"
               rows={3}
-              className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
+              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
             />
           </fieldset>
 
           <section className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-            <h3 className="mb-3 text-sm font-bold text-gray-900">주문 내역</h3>
+            <h3 className="mb-3 text-base font-bold text-gray-900">주문 내역</h3>
             <div className="space-y-2">
               {items.map((item) => (
-                <div key={item.productId} className="flex justify-between gap-3 text-sm">
+                <div key={item.productId} className="flex justify-between gap-3 text-sm sm:text-base">
                   <span className="min-w-0 truncate">
                     {item.name} x {item.quantity}
                   </span>
@@ -415,23 +439,36 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="w-full rounded-xl bg-green-600 px-4 py-4 text-sm font-bold text-white hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {submitting ? "주문 접수 중..." : "주문하기"}
-          </button>
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] sm:static sm:rounded-xl sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+            <div className="mx-auto max-w-md space-y-2">
+              {deliveryBlocked && (
+                <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm font-bold text-amber-800">
+                  {formatPrice(MIN_ORDER_AMOUNT)} 이상 배송 주문 가능합니다.
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={!canSubmit}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-4 text-base font-bold text-white hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:opacity-60 disabled:cursor-not-allowed min-h-[54px]"
+              >
+                {submitting && (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                )}
+                {submitting ? "주문 접수 중..." : "주문하기"}
+              </button>
 
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="w-full rounded-xl border px-4 py-4 text-sm font-bold text-gray-600 hover:bg-gray-50"
-          >
-            뒤로 가기
-          </button>
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="hidden w-full rounded-xl border px-4 py-4 text-sm font-bold text-gray-600 hover:bg-gray-50 sm:block"
+              >
+                뒤로 가기
+              </button>
+              <div className="h-[env(safe-area-inset-bottom)] sm:hidden" />
+            </div>
+          </div>
         </form>
       </main>
     </div>

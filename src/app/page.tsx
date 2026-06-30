@@ -172,18 +172,12 @@ export default function HomePage() {
     }
   }, []);
 
-  console.log({
-    category,
-    hasCategorySelection,
-    isSearchMode,
-  });
-
   const renderProductView = () => {
     if (loading) {
       return (
         <div className="space-y-4">
           <div className="h-32 bg-gray-50 rounded-3xl animate-pulse" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="h-48 bg-gray-50 rounded-3xl animate-pulse" />
             ))}
@@ -203,7 +197,7 @@ export default function HomePage() {
             <span className="w-8 h-1 bg-gray-200 rounded-full" />
             <h2 className="text-lg font-bold text-gray-900">검색 결과</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
             {visibleSearchResults.map((product) => (
               <ProductCard key={product.id} product={product} onAdd={handleAdd} />
             ))}
@@ -253,7 +247,7 @@ export default function HomePage() {
         </div>
 
         {categoryProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
             {categoryProducts.map((product) => (
               <ProductCard key={product.id} product={product} onAdd={handleAdd} />
             ))}
@@ -323,14 +317,14 @@ export default function HomePage() {
             )}
           </div>
 
-          <div className="mb-4 sm:mb-6 overflow-x-auto">
+          <div className="sticky top-14 sm:top-16 z-30 -mx-3 sm:-mx-4 mb-4 sm:mb-6 overflow-x-auto bg-white/95 px-3 sm:px-4 py-2 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
             <div className="flex gap-2 pb-1">
               {visibleCategories.map((item) => (
                 <button
                   key={item}
                   type="button"
                   onClick={() => handleCategoryChange(item)}
-                  className={`shrink-0 rounded-full border px-3 py-2 text-xs sm:text-sm font-semibold transition ${
+                  className={`shrink-0 rounded-full border px-4 py-2.5 text-sm font-bold transition min-h-[44px] ${
                     item === "홈"
                       ? !hasCategorySelection
                         ? "border-emerald-600 bg-emerald-600 text-white"
@@ -363,8 +357,8 @@ export default function HomePage() {
         </main>
 
         {toast.show && (
-          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
-            <div className="bg-gray-900 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium">
+          <div className="fixed bottom-24 left-3 right-3 z-50 animate-slide-up sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
+            <div className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg text-base font-bold text-center">
               {toast.message}
             </div>
           </div>
