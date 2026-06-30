@@ -23268,10 +23268,10 @@
     "barcode": "8801043015929",
     "name": "농심)김치큰사발",
     "normalPrice": 1500,
-    "eventPrice": 1350,
-    "discountRate": 10,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801043015936",
