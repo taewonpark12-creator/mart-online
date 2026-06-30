@@ -56,7 +56,6 @@ type OrderItem = {
 
 type Order = {
   id: string;
-  orderNumber: string;
   customerName: string;
   customerPhone: string;
   fulfillmentType: "DELIVERY" | "PICKUP";
@@ -84,7 +83,7 @@ export default function OrderCheckPage() {
     setSearched(false);
 
     if (!query.trim()) {
-      setError("주문번호 또는 전화번호를 입력해주세요.");
+      setError("주문 시 입력한 전화번호를 입력해주세요.");
       return;
     }
 
@@ -98,6 +97,9 @@ export default function OrderCheckPage() {
       const result = await res.json().catch(() => null);
 
       if (!res.ok) {
+        if (res.status === 429) {
+          throw new Error("조회 요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+        }
         throw new Error(result?.message || result?.error || "주문 조회 실패");
       }
 
@@ -117,7 +119,7 @@ export default function OrderCheckPage() {
       <main className="mx-auto max-w-md px-4 py-8">
         <h1 className="mb-2 text-2xl font-black text-green-800">주문 조회</h1>
         <p className="mb-5 text-sm text-gray-500">
-          주문번호 또는 주문 시 입력한 전화번호로 조회하세요.
+          최근 24시간 이내 주문을 전화번호로 조회하세요.
         </p>
 
         <form
@@ -127,7 +129,10 @@ export default function OrderCheckPage() {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="주문번호 또는 전화번호"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="전화번호"
             className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-green-400"
           />
           <button

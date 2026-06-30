@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/pending-order-reminder",
-      "schedule": "*/5 * * * *"
+      "schedule": "* * * * *"
     }
   ]
 }

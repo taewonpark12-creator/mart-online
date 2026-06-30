@@ -82,3 +82,58 @@ export function orderErrorBody(details: {
     ...(details.updatedCart !== undefined ? { updatedCart: details.updatedCart } : {}),
   };
 }
+
+type SafeOrderLogLevel = "info" | "warn" | "error";
+
+function safeErrorSummary(error: unknown) {
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+    };
+  }
+
+  return {
+    message: String(error),
+  };
+}
+
+export function logSafeOrderEvent(
+  event: string,
+  details: Record<string, unknown> = {},
+  level: SafeOrderLogLevel = "info",
+) {
+  const payload = {
+    event,
+    at: new Date().toISOString(),
+    ...details,
+  };
+
+  const line = JSON.stringify(payload);
+  if (level === "error") {
+    console.error("[order-log]", line);
+    return;
+  }
+
+  if (level === "warn") {
+    console.warn("[order-log]", line);
+    return;
+  }
+
+  console.info("[order-log]", line);
+}
+
+export function logSafeOrderError(
+  event: string,
+  details: Record<string, unknown> = {},
+  error?: unknown,
+) {
+  logSafeOrderEvent(
+    event,
+    {
+      ...details,
+      ...(error !== undefined ? { error: safeErrorSummary(error) } : {}),
+    },
+    "error",
+  );
+}

@@ -56,7 +56,74 @@ const INITIAL_FORM = {
 
 type CheckoutForm = typeof INITIAL_FORM;
 
-const SAVE_ERROR = "주문 저장에 실패했습니다. 다시 시도해주세요.";
+const NETWORK_ERROR_MESSAGE =
+  "인터넷 연결이 불안정해 주문을 접수하지 못했습니다. 장바구니는 그대로 보관되어 있으니 잠시 후 다시 눌러주세요.";
+const SERVER_ERROR_MESSAGE =
+  "주문 접수 중 문제가 발생했습니다. 장바구니는 그대로 보관되어 있으니 잠시 후 다시 시도해주세요.";
+
+function getOrderErrorMessage(status: number, result: any) {
+  const code = typeof result?.error === "string" ? result.error : "";
+  const changedItems = Array.isArray(result?.changedItems) ? result.changedItems : [];
+  const unavailableItems = Array.isArray(result?.unavailableItems) ? result.unavailableItems : [];
+
+  if (code === "PRICE_CHANGED" && changedItems.length > 0) {
+    const itemMessages = changedItems
+      .slice(0, 3)
+      .map((item: any) => {
+        const name = String(item?.productName || "상품");
+        const previousPrice = Number(item?.previousPrice);
+        const currentPrice = Number(item?.currentPrice);
+        if (Number.isFinite(previousPrice) && Number.isFinite(currentPrice)) {
+          return `${name}: ${formatPrice(previousPrice)} → ${formatPrice(currentPrice)}`;
+        }
+        return name;
+      })
+      .join("\n");
+    const extraCount = changedItems.length > 3 ? `\n외 ${changedItems.length - 3}개 상품` : "";
+
+    return `상품 가격이 변경되어 주문을 접수하지 않았습니다.\n${itemMessages}${extraCount}\n장바구니에서 가격을 확인한 뒤 다시 주문해주세요.`;
+  }
+
+  if (code === "UNAVAILABLE_ORDER_ITEMS" && unavailableItems.length > 0) {
+    const itemMessages = unavailableItems
+      .slice(0, 3)
+      .map((item: any) => {
+        const name = String(item?.productName || "상품");
+        const reason = String(item?.reason || "주문할 수 없습니다.");
+        return `${name}: ${reason}`;
+      })
+      .join("\n");
+    const extraCount = unavailableItems.length > 3 ? `\n외 ${unavailableItems.length - 3}개 상품` : "";
+
+    return `주문할 수 없는 상품이 포함되어 주문을 접수하지 않았습니다.\n${itemMessages}${extraCount}\n장바구니를 확인해주세요.`;
+  }
+
+  if (code === "PRICE_SOURCE_UNAVAILABLE") {
+    return "상품 가격 정보를 확인할 수 없어 주문을 접수하지 않았습니다. 장바구니는 그대로 보관되어 있으니 잠시 후 다시 시도해주세요.";
+  }
+
+  if (status >= 500) {
+    return SERVER_ERROR_MESSAGE;
+  }
+
+  if (code === "MISSING_CUSTOMER_INFO") {
+    return "고객명과 전화번호를 입력해주세요.";
+  }
+
+  if (code === "MISSING_DELIVERY_ADDRESS") {
+    return "배송 주소를 입력해주세요.";
+  }
+
+  if (code === "MISSING_PICKUP_TIME") {
+    return "픽업 시간을 선택해주세요.";
+  }
+
+  if (code === "INVALID_ITEMS") {
+    return "장바구니 상품 정보를 확인할 수 없습니다. 상품을 다시 담아주세요.";
+  }
+
+  return SERVER_ERROR_MESSAGE;
+}
 
 function pickupLabel(value: string) {
   const [hourText, minute] = value.split(":");
@@ -159,11 +226,13 @@ export default function CheckoutPage() {
 
     const orderItems = items.map(toOrderItem);
     if (orderItems.some((item) => item === null)) {
-      alert(SAVE_ERROR);
+      setError("장바구니 상품 정보를 확인할 수 없습니다. 상품을 다시 담아주세요.");
       return;
     }
 
     submitLockRef.current = true;
+    setSubmitting(true);
+    setError("");
 
     // Save delivery info if requested
     if (isDelivery && form.saveInfo) {
@@ -193,9 +262,6 @@ export default function CheckoutPage() {
       items: orderItems,
     };
 
-    setSubmitting(true);
-    setError("");
-
     try {
       const res = await fetch("/api/orders", {
         method: "POST",
@@ -205,8 +271,7 @@ export default function CheckoutPage() {
       const result = await res.json().catch(() => null);
 
       if (!res.ok || !result?.orderNumber) {
-        setError(result?.error || result?.message || SAVE_ERROR);
-        alert("주문 접수에 실패했습니다. 다시 시도해주세요.");
+        setError(getOrderErrorMessage(res.status, result));
         return;
       }
 
@@ -218,8 +283,7 @@ export default function CheckoutPage() {
       router.replace(`/order-complete?orderNumber=${encodeURIComponent(orderNumber)}`);
     } catch (error) {
       console.error("[CHECKOUT_SUBMIT_ERROR]", error);
-      setError(SAVE_ERROR);
-      alert("주문 접수에 실패했습니다. 다시 시도해주세요.");
+      setError(NETWORK_ERROR_MESSAGE);
     } finally {
       setSubmitting(false);
       submitLockRef.current = false;
@@ -439,10 +503,13 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
-
           <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] sm:static sm:rounded-xl sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
             <div className="mx-auto max-w-md space-y-2">
+              {error && (
+                <p className="whitespace-pre-line rounded-xl bg-red-50 px-3 py-2 text-sm font-bold leading-5 text-red-700">
+                  {error}
+                </p>
+              )}
               {deliveryBlocked && (
                 <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm font-bold text-amber-800">
                   {formatPrice(MIN_ORDER_AMOUNT)} 이상 배송 주문 가능합니다.

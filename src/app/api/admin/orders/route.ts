@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { getKoreaDateRangeUtc } from "@/lib/korea-date";
+import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/order-observability";
 
 const allowedStatuses = [
   "PENDING",
@@ -71,8 +72,16 @@ function serializeOrder(order: {
 }
 
 export async function GET(req: NextRequest) {
+  const requestId = createRequestId();
+  const startedAt = Date.now();
+
   try {
     if (!(await isAdminAuthenticated())) {
+      logSafeOrderEvent("admin.orders.list.failed", {
+        requestId,
+        reason: "AUTH_REQUIRED",
+        elapsedMs: Date.now() - startedAt,
+      }, "warn");
       return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
     }
 
@@ -82,6 +91,12 @@ export async function GET(req: NextRequest) {
     const endDate = searchParams.get("endDate");
 
     if (status && !allowedStatuses.includes(status)) {
+      logSafeOrderEvent("admin.orders.list.failed", {
+        requestId,
+        reason: "INVALID_STATUS_FILTER",
+        status,
+        elapsedMs: Date.now() - startedAt,
+      }, "warn");
       return NextResponse.json(
         {
           error: "INVALID_STATUS_FILTER",
@@ -114,12 +129,21 @@ export async function GET(req: NextRequest) {
     });
 
     const serializedOrders = orders.map(serializeOrder);
-    console.log("ADMIN_ORDERS_COUNT", serializedOrders.length);
-    console.log("ADMIN_ORDERS_FIRST", serializedOrders[0]);
+    logSafeOrderEvent("admin.orders.list.succeeded", {
+      requestId,
+      count: serializedOrders.length,
+      statusFilter: status || null,
+      hasDateFilter: Boolean(startDate || endDate),
+      elapsedMs: Date.now() - startedAt,
+    });
 
     return NextResponse.json(serializedOrders);
   } catch (error) {
-    console.error("[ADMIN_ORDERS_ERROR]", error);
+    logSafeOrderError("admin.orders.list.failed", {
+      requestId,
+      reason: "ADMIN_ORDERS_ERROR",
+      elapsedMs: Date.now() - startedAt,
+    }, error);
     return NextResponse.json(
       {
         error: "ADMIN_ORDERS_ERROR",

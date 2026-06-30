@@ -24,8 +24,9 @@ import type { ReceiptOrder } from "@/lib/receipt-html";
 
 const ORDERS_AUTO_REFRESH_MS = 12000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
-const ORDER_NOTIFICATION_POLL_MS = 15000;
-const ORDER_NOTIFICATION_REPEAT_MS = 10000;
+const ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY = "adminOrderNotificationKnownPendingIds";
+const ORDER_NOTIFICATION_POLL_MS = 3000;
+const ORDER_NOTIFICATION_REPEAT_MS = 60000;
 
 type OrderItem = {
   id: string;
@@ -421,6 +422,8 @@ export default function OrdersPage() {
   const notificationRepeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const notificationEnabledRef = useRef(false);
   const hasPendingOrdersRef = useRef(false);
+  const knownPendingOrderIdsRef = useRef<Set<string>>(new Set());
+  const pendingPollInitializedRef = useRef(false);
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -536,13 +539,41 @@ export default function OrdersPage() {
   }, [getOrderNotificationAudio]);
 
   const stopNotificationRepeat = useCallback(() => {
-    if (!notificationRepeatIntervalRef.current) return;
-
-    clearInterval(notificationRepeatIntervalRef.current);
-    notificationRepeatIntervalRef.current = null;
+    if (notificationRepeatIntervalRef.current) {
+      clearInterval(notificationRepeatIntervalRef.current);
+      notificationRepeatIntervalRef.current = null;
+    }
     setNotificationRepeatActive(false);
     console.log("[ORDER_NOTIFICATION_REPEAT_STOP]");
   }, []);
+
+  const syncPendingNotificationState = useCallback((nextOrders: Order[]) => {
+    const nextPendingIds = new Set(
+      nextOrders.filter((order) => order.status === "PENDING").map((order) => order.id),
+    );
+    const nextPendingCount = nextPendingIds.size;
+    const nextHasPendingOrders = nextPendingCount > 0;
+
+    setPendingCount(nextPendingCount);
+    setHasPendingOrders(nextHasPendingOrders);
+    hasPendingOrdersRef.current = nextHasPendingOrders;
+    knownPendingOrderIdsRef.current = nextPendingIds;
+
+    if (typeof window !== "undefined") {
+      if (nextHasPendingOrders) {
+        window.localStorage.setItem(
+          ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY,
+          JSON.stringify([...nextPendingIds]),
+        );
+      } else {
+        window.localStorage.removeItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY);
+      }
+    }
+
+    if (!nextHasPendingOrders) {
+      stopNotificationRepeat();
+    }
+  }, [stopNotificationRepeat]);
 
   const startNotificationRepeat = useCallback(() => {
     if (notificationRepeatIntervalRef.current) return;
@@ -550,7 +581,6 @@ export default function OrdersPage() {
 
     setNotificationRepeatActive(true);
     console.log("[ORDER_NOTIFICATION_REPEAT_START]");
-    void playOrderNotificationSound();
 
     notificationRepeatIntervalRef.current = setInterval(() => {
       if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) {
@@ -587,20 +617,49 @@ export default function OrdersPage() {
       const pendingOrders: Order[] = await res.json();
       const nextPendingCount = Array.isArray(pendingOrders) ? pendingOrders.length : 0;
       const nextHasPendingOrders = nextPendingCount > 0;
-      const hadPendingOrders = hasPendingOrdersRef.current;
+      const nextPendingIds = new Set(pendingOrders.map((order) => order.id));
+      const previousPendingIds = knownPendingOrderIdsRef.current;
+      const newPendingOrders = pendingOrders.filter((order) => !previousPendingIds.has(order.id));
 
       console.log("[ORDER_NOTIFICATION_POLL_SUCCESS]", nextPendingCount);
       setPendingCount(nextPendingCount);
       setHasPendingOrders(nextHasPendingOrders);
       hasPendingOrdersRef.current = nextHasPendingOrders;
+      knownPendingOrderIdsRef.current = nextPendingIds;
 
-      if (nextHasPendingOrders && !hadPendingOrders) {
-        setShowNewOrderAlert(true);
+      if (typeof window !== "undefined") {
+        if (nextHasPendingOrders) {
+          window.localStorage.setItem(
+            ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY,
+            JSON.stringify([...nextPendingIds]),
+          );
+        } else {
+          window.localStorage.removeItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY);
+        }
       }
+
+      if (!nextHasPendingOrders) {
+        stopNotificationRepeat();
+      }
+
+      const shouldNotifyNewPending =
+        newPendingOrders.length > 0 &&
+        (pendingPollInitializedRef.current ||
+          previousPendingIds.size > 0 ||
+          notificationEnabledRef.current);
+
+      if (shouldNotifyNewPending) {
+        setShowNewOrderAlert(true);
+        if (notificationEnabledRef.current) {
+          void playOrderNotificationSound();
+        }
+      }
+
+      pendingPollInitializedRef.current = true;
     } catch (error) {
       console.error("[admin/orders] pending orders poll failed", error);
     }
-  }, [router]);
+  }, [playOrderNotificationSound, router, stopNotificationRepeat]);
 
   const fetchTodaySummary = async () => {
     try {
@@ -629,6 +688,19 @@ export default function OrdersPage() {
       const savedEnabled = window.localStorage.getItem(ORDER_NOTIFICATION_ENABLED_STORAGE_KEY) === "true";
       notificationEnabledRef.current = savedEnabled;
       setNotificationEnabled(savedEnabled);
+
+      try {
+        const savedPendingIds = JSON.parse(
+          window.localStorage.getItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY) || "[]",
+        );
+        if (Array.isArray(savedPendingIds)) {
+          knownPendingOrderIdsRef.current = new Set(
+            savedPendingIds.filter((id): id is string => typeof id === "string" && id.length > 0),
+          );
+        }
+      } catch {
+        window.localStorage.removeItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY);
+      }
     }
   }, []);
 
@@ -701,9 +773,11 @@ export default function OrdersPage() {
         return;
       }
 
-      setOrders((current) =>
-        current.map((order) => (order.id === selectedOrderId ? { ...order, status } : order))
-      );
+      setOrders((current) => {
+        const nextOrders = current.map((order) => (order.id === selectedOrderId ? { ...order, status } : order));
+        syncPendingNotificationState(nextOrders);
+        return nextOrders;
+      });
       fetchTodaySummary();
       void pollPendingOrders();
     } catch (error) {
@@ -731,9 +805,13 @@ export default function OrdersPage() {
         return;
       }
 
-      setOrders((current) =>
-        current.map((order) => (order.id === selectedOrderId ? { ...order, status: "CANCELLED" } : order))
-      );
+      setOrders((current) => {
+        const nextOrders: Order[] = current.map((order) =>
+          order.id === selectedOrderId ? { ...order, status: "CANCELLED" } : order,
+        );
+        syncPendingNotificationState(nextOrders);
+        return nextOrders;
+      });
       fetchTodaySummary();
       void pollPendingOrders();
     } catch (error) {
@@ -758,8 +836,11 @@ export default function OrdersPage() {
         return;
       }
 
-      // Remove the deleted order from the list
-      setOrders((current) => current.filter((order) => order.id !== selectedOrderId));
+      setOrders((current) => {
+        const nextOrders = current.filter((order) => order.id !== selectedOrderId);
+        syncPendingNotificationState(nextOrders);
+        return nextOrders;
+      });
       setSelectedOrderId(null);
       fetchTodaySummary();
       void pollPendingOrders();
@@ -787,7 +868,7 @@ export default function OrdersPage() {
         ? {
             tone: "yellow",
             title: "신규주문 알림 중",
-            description: `주문접수 ${pendingCount}건이 남아 있어 10초마다 알림음을 재생합니다.`,
+            description: `주문접수 ${pendingCount}건이 남아 있어 1분마다 알림음을 재생합니다.`,
           }
         : {
             tone: "green",
@@ -808,6 +889,26 @@ export default function OrdersPage() {
     <div className="min-h-screen bg-gray-50">
       <AdminNav />
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {soundBlocked && (
+          <div className="mb-4 rounded-2xl border-2 border-red-300 bg-red-50 p-5 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-base font-black text-red-900">브라우저가 주문 알림음 재생을 차단했습니다.</p>
+                <p className="mt-1 text-sm font-semibold text-red-700">
+                  아래 버튼을 눌러 소리를 허용해야 신규주문 알림음과 1분 반복 알림이 들립니다.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void startOrderNotifications()}
+                className="rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700"
+              >
+                알림음 다시 허용
+              </button>
+            </div>
+          </div>
+        )}
+
         {showNewOrderAlert && (
           <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
