@@ -7,6 +7,7 @@ import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/ord
 type Params = { params: Promise<{ id: string }> };
 
 const VALID_STATUSES: OrderStatus[] = ["PENDING", "APPROVED", "DELIVERED", "CANCELLED"];
+const DELETABLE_STATUSES: OrderStatus[] = ["PENDING", "CANCELLED"];
 
 export async function GET(_req: NextRequest, { params }: Params) {
   if (!(await isAdminAuthenticated())) {
@@ -115,6 +116,20 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
         elapsedMs: Date.now() - startedAt,
       }, "warn");
       return NextResponse.json({ error: "주문을 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    if (!DELETABLE_STATUSES.includes(existing.status as OrderStatus)) {
+      logSafeOrderEvent("admin.order.delete.failed", {
+        requestId,
+        orderId: id,
+        reason: "ORDER_STATUS_NOT_DELETABLE",
+        currentStatus: existing.status,
+        elapsedMs: Date.now() - startedAt,
+      }, "warn");
+      return NextResponse.json(
+        { error: "주문삭제는 신규주문 또는 취소된 주문만 가능합니다." },
+        { status: 409 },
+      );
     }
 
     // Delete the order - OrderItems will be cascade deleted automatically due to the schema

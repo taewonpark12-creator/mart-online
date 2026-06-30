@@ -234,16 +234,19 @@ function StatusActions({
         </div>
       </div>
 
-      {order.status === "PENDING" && (
-        <div className="rounded-xl border border-red-100 bg-red-50 p-4">
-          <p className="text-xs font-bold text-red-800 mb-2">주문 취소</p>
+      {order.status !== "CANCELLED" && (
+        <div className="rounded-xl border border-red-100 bg-white p-3">
+          <div className="mb-2">
+            <p className="text-xs font-bold text-red-800">주문 전체 취소</p>
+            <p className="mt-1 text-[11px] text-gray-500">주문 기록은 남기고 매출 합계에서 제외합니다.</p>
+          </div>
           <button
             type="button"
             disabled={updating}
             onClick={onCancel}
-            className="w-full rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
+            className="inline-flex rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50 disabled:opacity-50"
           >
-            주문 취소
+            주문 전체 취소
           </button>
         </div>
       )}
@@ -269,6 +272,14 @@ function OrderDetailPanel({
   onClose?: () => void;
 }) {
   const [isPrinting, setIsPrinting] = useState(false);
+  const [showDangerActions, setShowDangerActions] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const canDeleteOrder = order?.status === "PENDING" || order?.status === "CANCELLED";
+
+  useEffect(() => {
+    setShowDangerActions(false);
+    setDeleteConfirmText("");
+  }, [order?.id]);
 
   const handlePrintReceipt = () => {
     if (!order) return;
@@ -286,9 +297,15 @@ function OrderDetailPanel({
 
   const handleDelete = () => {
     if (!order) return;
-    if (confirm("정말 이 주문을 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.")) {
-      onDelete();
+    if (!canDeleteOrder) {
+      alert("주문삭제는 신규주문 또는 취소된 주문만 가능합니다.");
+      return;
     }
+    if (deleteConfirmText.trim() !== "주문삭제") {
+      alert('"주문삭제"를 정확히 입력해야 삭제할 수 있습니다.');
+      return;
+    }
+    onDelete();
   };
 
   if (!order) {
@@ -346,16 +363,47 @@ function OrderDetailPanel({
           {isPrinting ? "인쇄 준비 중..." : "영수증 인쇄"}
         </button>
 
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={updating}
-          className="w-full rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          주문 삭제
-        </button>
-
         <StatusActions order={order} updating={updating} onUpdate={onUpdateStatus} onCancel={onCancel} />
+
+        <section className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <button
+            type="button"
+            onClick={() => setShowDangerActions((value) => !value)}
+            className="flex w-full items-center justify-between text-left text-xs font-bold text-gray-700"
+          >
+            <span>고급/위험 작업</span>
+            <span className="text-gray-400">{showDangerActions ? "접기" : "펼치기"}</span>
+          </button>
+
+          {showDangerActions && (
+            <div className="mt-3 rounded-lg border border-red-100 bg-white p-3">
+              <p className="text-xs font-bold text-red-800">주문삭제</p>
+              <p className="mt-1 text-[11px] leading-5 text-gray-500">
+                주문 기록을 완전히 삭제합니다. 신규주문 또는 취소된 주문만 삭제할 수 있습니다.
+              </p>
+              <input
+                value={deleteConfirmText}
+                onChange={(event) => setDeleteConfirmText(event.target.value)}
+                disabled={!canDeleteOrder || updating}
+                placeholder="주문삭제"
+                className="mt-3 w-full rounded-lg border border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-red-200 disabled:bg-gray-100 disabled:text-gray-400"
+              />
+              {!canDeleteOrder && (
+                <p className="mt-2 text-[11px] font-semibold text-gray-500">
+                  확인완료/배송완료 주문은 삭제할 수 없습니다. 필요한 경우 주문 전체 취소로 기록을 남겨 주세요.
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={updating || !canDeleteOrder || deleteConfirmText.trim() !== "주문삭제"}
+                className="mt-3 inline-flex rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                주문삭제
+              </button>
+            </div>
+          )}
+        </section>
 
         <section className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
           <h2 className="text-sm font-bold text-blue-900 mb-3">고객 정보</h2>
@@ -847,7 +895,7 @@ export default function OrdersPage() {
 
   async function cancelOrder() {
     if (!selectedOrderId) return;
-    if (!confirm("정말 이 주문을 취소하시겠습니까?")) return;
+    if (!confirm("주문 전체를 취소하시겠습니까?\n주문 기록은 남고 매출 합계에서 제외됩니다.")) return;
     setUpdatingOrderId(selectedOrderId);
     try {
       const res = await fetch(`/api/admin/orders/${selectedOrderId}`, {
@@ -882,7 +930,7 @@ export default function OrdersPage() {
   async function cancelOrderItem(item: OrderItem) {
     if (!selectedOrderId) return;
     if (item.itemStatus === "CANCELLED") return;
-    if (!confirm(`${item.productName || "상품"} 상품만 품절취소 처리할까요?`)) return;
+    if (!confirm(`${item.productName || "상품"} 상품 1개만 품절취소 처리할까요?`)) return;
 
     setUpdatingOrderId(selectedOrderId);
     try {
