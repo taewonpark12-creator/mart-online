@@ -34,6 +34,7 @@ type OrderItem = {
   unitPrice: number;
   productName: string;
   productId: string | null;
+  itemStatus?: "ACTIVE" | "CANCELLED" | string | null;
   product?: { name: string; barcode?: string | null } | null;
 };
 
@@ -82,6 +83,11 @@ function getElapsedTime(createdAt: string): { text: string; minutes: number } {
 }
 
 function toReceiptOrder(order: Order): ReceiptOrder {
+  const activeTotalAmount = (order.items || []).reduce((sum, item) => {
+    if (item.itemStatus === "CANCELLED") return sum;
+    return sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0);
+  }, 0);
+
   return {
     orderNumber: order.orderNumber,
     customerName: order.customerName,
@@ -94,15 +100,20 @@ function toReceiptOrder(order: Order): ReceiptOrder {
     memo: order.memo || null,
     outOfStockPolicy: order.outOfStockPolicy || null,
     status: order.status,
-    totalAmount: Number(order.totalAmount),
+    totalAmount: activeTotalAmount,
     createdAt: order.createdAt,
     items: (order.items || []).map((item) => ({
       quantity: item.quantity,
       unitPrice: Number(item.unitPrice),
       productName: item.productName,
+      itemStatus: item.itemStatus === "CANCELLED" ? "CANCELLED" : "ACTIVE",
       product: item.product || undefined,
     })),
   };
+}
+
+function hasCancelledItems(order: Order) {
+  return Boolean(order.items?.some((item) => item.itemStatus === "CANCELLED"));
 }
 
 function getStatusPriority(status: OrderStatus): number {
@@ -167,6 +178,11 @@ function OrderSummaryCard({
         </div>
         <div className="flex items-center gap-2">
           {isDelayed && <span className="shrink-0 text-xs font-bold px-2 py-1 rounded-full bg-red-600 text-white">⚠️ 지연</span>}
+          {hasCancelledItems(order) && (
+            <span className="shrink-0 text-xs font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-800">
+              일부 품절취소
+            </span>
+          )}
           <span className={`shrink-0 text-xs font-bold px-2 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
             {ORDER_STATUS_LABEL[order.status]}
           </span>
@@ -240,6 +256,7 @@ function OrderDetailPanel({
   updating,
   onUpdateStatus,
   onCancel,
+  onCancelItem,
   onDelete,
   onClose,
 }: {
@@ -247,6 +264,7 @@ function OrderDetailPanel({
   updating: boolean;
   onUpdateStatus: (status: OrderStatus) => void;
   onCancel: () => void;
+  onCancelItem: (item: OrderItem) => void;
   onDelete: () => void;
   onClose?: () => void;
 }) {
@@ -309,6 +327,11 @@ function OrderDetailPanel({
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${ORDER_STATUS_COLOR[order.status]}`}>
             {ORDER_STATUS_LABEL[order.status]}
           </span>
+          {hasCancelledItems(order) && (
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
+              일부 품절취소
+            </span>
+          )}
           <p className="text-2xl font-black text-green-700">{formatPrice(order.totalAmount)}</p>
         </div>
       </div>
@@ -363,16 +386,43 @@ function OrderDetailPanel({
             {order.items && order.items.length > 0 ? (
               order.items.map((item) => {
                 const barcode = item.product?.barcode || "";
+                const isItemCancelled = item.itemStatus === "CANCELLED";
                 return (
-                  <div key={item.id} className="flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0">
+                  <div
+                    key={item.id}
+                    className={`flex justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0 ${
+                      isItemCancelled ? "text-gray-400" : ""
+                    }`}
+                  >
                     <div className="min-w-0">
-                      <p className="font-medium text-gray-800 truncate">{item.productName || "상품명 없음"}</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className={`font-medium truncate ${isItemCancelled ? "text-gray-400 line-through" : "text-gray-800"}`}>
+                          {item.productName || "상품명 없음"}
+                        </p>
+                        {isItemCancelled && (
+                          <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[11px] font-bold text-gray-600">
+                            품절취소
+                          </span>
+                        )}
+                      </div>
                       {barcode && <p className="text-xs text-gray-500">바코드: {barcode}</p>}
                       <p className="text-xs text-gray-500">{formatPrice(item.unitPrice || 0)} x {item.quantity || 0}</p>
                     </div>
-                    <p className="font-semibold text-gray-900 shrink-0">
-                      {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
-                    </p>
+                    <div className="flex shrink-0 flex-col items-end gap-2">
+                      <p className={`font-semibold ${isItemCancelled ? "text-gray-400 line-through" : "text-gray-900"}`}>
+                        {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
+                      </p>
+                      {!isItemCancelled && (
+                        <button
+                          type="button"
+                          onClick={() => onCancelItem(item)}
+                          disabled={updating}
+                          className="rounded-lg border border-red-200 bg-white px-2.5 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          품절취소
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })
@@ -829,6 +879,55 @@ export default function OrdersPage() {
     }
   }
 
+  async function cancelOrderItem(item: OrderItem) {
+    if (!selectedOrderId) return;
+    if (item.itemStatus === "CANCELLED") return;
+    if (!confirm(`${item.productName || "상품"} 상품만 품절취소 처리할까요?`)) return;
+
+    setUpdatingOrderId(selectedOrderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${selectedOrderId}/items/${item.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemStatus: "CANCELLED" }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error ?? "상품 품절취소 처리에 실패했습니다.");
+        return;
+      }
+
+      setOrders((current) =>
+        current.map((order) => {
+          if (order.id !== selectedOrderId) return order;
+
+          const nextItems = (order.items || []).map((orderItem) =>
+            orderItem.id === item.id ? { ...orderItem, itemStatus: "CANCELLED" } : orderItem,
+          );
+
+          const nextTotalAmount = nextItems.reduce((sum, orderItem) => {
+            if (orderItem.itemStatus === "CANCELLED") return sum;
+            return sum + Number(orderItem.unitPrice ?? 0) * Number(orderItem.quantity ?? 0);
+          }, 0);
+
+          return {
+            ...order,
+            totalAmount: Number(data.totalAmount ?? nextTotalAmount),
+            items: nextItems,
+          };
+        }),
+      );
+      fetchTodaySummary();
+      void fetchOrders({ silent: true });
+    } catch (error) {
+      console.error("[admin/orders] item cancel failed", error);
+      alert("상품 품절취소 처리 중 오류가 발생했습니다.");
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  }
+
   async function deleteOrder() {
     if (!selectedOrderId) return;
     setUpdatingOrderId(selectedOrderId);
@@ -1107,6 +1206,7 @@ export default function OrdersPage() {
                           updating={updatingOrderId === selectedOrderId}
                           onUpdateStatus={updateStatus}
                           onCancel={cancelOrder}
+                          onCancelItem={cancelOrderItem}
                           onDelete={deleteOrder}
                           onClose={() => setSelectedOrderId(null)}
                         />
@@ -1124,6 +1224,7 @@ export default function OrdersPage() {
                   updating={updatingOrderId === selectedOrderId}
                   onUpdateStatus={updateStatus}
                   onCancel={cancelOrder}
+                  onCancelItem={cancelOrderItem}
                   onDelete={deleteOrder}
                 />
               </div>

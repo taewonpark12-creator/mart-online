@@ -98,7 +98,14 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       <col style="width:${L.colAmount}px" />
     </colgroup>`;
 
-  const itemsHtml = order.items
+  const activeItems = order.items.filter((item) => item.itemStatus !== "CANCELLED");
+  const cancelledItems = order.items.filter((item) => item.itemStatus === "CANCELLED");
+  const activeTotalAmount = activeItems.reduce(
+    (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+    0,
+  );
+
+  const itemsHtml = activeItems
     .map((item, index) => {
       const lineTotal = item.unitPrice * item.quantity;
       const barcode = orderItemBarcode(item) || item.product?.barcode || "";
@@ -121,6 +128,13 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       </tbody>`;
     })
     .join("");
+  const cancelledItemsHtml = cancelledItems.length
+    ? `
+  <div class="cancelled-items">
+    <p><b>품절취소 상품</b></p>
+    ${cancelledItems.map((item) => `<p>- ${esc(orderItemName(item))} ${item.quantity}개</p>`).join("")}
+  </div>`
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -201,6 +215,13 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       margin-top:10px;
       line-height:1.4;
     }
+    .cancelled-items {
+      margin-top:8px;
+      padding-top:6px;
+      border-top:1px dashed #000;
+      font-size:11px;
+      line-height:1.35;
+    }
   </style>
 </head>
 <body>
@@ -231,7 +252,9 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   </table>
   <hr class="hr" style="margin-top:2px;" />
 
-  <div class="total">합계 ${formatPrice(order.totalAmount)}</div>
+  <div class="total">합계 ${formatPrice(activeTotalAmount)}</div>
+
+  ${cancelledItemsHtml}
 
   <hr class="hr" />
   <div class="footer">

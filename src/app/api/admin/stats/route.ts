@@ -23,7 +23,9 @@ export async function GET(req: NextRequest) {
       ? { createdAt: { gte: startUtc, lte: endUtc } }
       : {};
 
-    const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders, todaySales] =
+    const activeItemStatus = "ACTIVE";
+
+    const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders] =
       await Promise.all([
         prisma.order.count({
           where: { status: "PENDING", ...orderDateFilter },
@@ -59,16 +61,26 @@ export async function GET(req: NextRequest) {
           where: { status: "CANCELLED", ...orderDateFilter },
         }),
 
-        prisma.order.aggregate({
-          where: {
-            status: { not: "CANCELLED" },
-            ...orderDateFilter,
-          },
-          _sum: {
-            totalAmount: true,
-          },
-        }),
       ]);
+
+    const activeSalesItems = await prisma.orderItem.findMany({
+      where: {
+        itemStatus: activeItemStatus,
+        order: {
+          status: { not: "CANCELLED" },
+          ...orderDateFilter,
+        },
+      },
+      select: {
+        unitPrice: true,
+        quantity: true,
+      },
+    });
+
+    const todaySales = activeSalesItems.reduce(
+      (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+      0,
+    );
 
     const salesData: Array<{
       date: string;
@@ -95,11 +107,24 @@ export async function GET(req: NextRequest) {
           status: "DELIVERED",
           ...(startUtc && endUtc ? { createdAt: { gte: startUtc, lte: endUtc } } : {}),
         },
+        include: {
+          items: {
+            where: { itemStatus: activeItemStatus },
+            select: {
+              unitPrice: true,
+              quantity: true,
+            },
+          },
+        },
       });
 
       const totalSales = orders.reduce(
-        (sum, order) => sum + Number(order.totalAmount ?? 0),
-        0
+        (sum, order) =>
+          sum + order.items.reduce(
+            (itemSum, item) => itemSum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+            0,
+          ),
+        0,
       );
 
       salesData.push({
@@ -128,6 +153,7 @@ export async function GET(req: NextRequest) {
         },
         take: 10,
         where: {
+          itemStatus: activeItemStatus,
           order: {
             status: {
               not: "CANCELLED",
@@ -166,7 +192,7 @@ export async function GET(req: NextRequest) {
       approvedOrders,
       deliveredOrders,
       cancelledOrders,
-      todaySales: todaySales._sum.totalAmount ?? 0,
+      todaySales,
       salesData,
       popularProducts: popularProductDetails,
     });

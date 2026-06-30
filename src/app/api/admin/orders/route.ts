@@ -14,12 +14,17 @@ const allowedStatuses = [
 ];
 
 type PriceNameMap = Map<string, { name?: string }>;
+const CANCELLED_ITEM_STATUS = "CANCELLED";
 
 function priceNameByBarcode(barcode: string | null | undefined, priceMap: PriceNameMap) {
   const normalizedBarcode = barcode?.trim();
   if (!normalizedBarcode) return undefined;
 
   return priceMap.get(normalizedBarcode)?.name;
+}
+
+function isActiveOrderItem(item: { itemStatus?: string | null }) {
+  return item.itemStatus !== CANCELLED_ITEM_STATUS;
 }
 
 function serializeOrder(order: {
@@ -45,12 +50,18 @@ function serializeOrder(order: {
     unitPrice?: number;
     price?: number;
     quantity?: number;
+    itemStatus?: string | null;
     product?: {
       name?: string;
       barcode?: string | null;
     } | null;
   }>;
 }, priceMap: PriceNameMap = new Map()) {
+  const activeTotalAmount = (order.items || []).reduce((sum, item) => {
+    if (!isActiveOrderItem(item)) return sum;
+    return sum + Number(item.unitPrice ?? item.price ?? 0) * Number(item.quantity ?? 0);
+  }, 0);
+
   return {
     id: order.id,
     orderNumber: order.orderNumber,
@@ -61,7 +72,7 @@ function serializeOrder(order: {
     deliveryEntrance: order.deliveryEntrance,
     pickupTime: order.pickupTime,
     status: order.status,
-    totalAmount: Number(order.totalAmount ?? 0),
+    totalAmount: activeTotalAmount,
     createdAt: order.createdAt.toISOString(),
     memo: order.memo ?? null,
     paymentMethod: order.paymentMethod ?? null,
@@ -78,6 +89,7 @@ function serializeOrder(order: {
         productName,
         unitPrice: Number(item.unitPrice ?? item.price ?? 0),
         quantity: Number(item.quantity ?? 0),
+        itemStatus: isActiveOrderItem(item) ? "ACTIVE" : "CANCELLED",
         product: item.product
           ? {
               name: firstMeaningfulProductName(item.product.name, syncedName) || productName,

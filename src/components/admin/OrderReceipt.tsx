@@ -30,6 +30,7 @@ export type ReceiptOrder = {
     quantity: number;
     unitPrice: number;
     productName: string;
+    itemStatus?: "ACTIVE" | "CANCELLED" | string | null;
     product?: { name: string; barcode?: string | null } | null;
   }[];
 };
@@ -58,6 +59,12 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
   const p = (n: number) => String(n).padStart(2, "0");
   const dateStr = `${date.getFullYear()}.${p(date.getMonth() + 1)}.${p(date.getDate())} ${p(date.getHours())}:${p(date.getMinutes())}:${p(date.getSeconds())}`;
   const isPickup = order.fulfillmentType === "PICKUP";
+  const activeItems = order.items.filter((item) => item.itemStatus !== "CANCELLED");
+  const cancelledItems = order.items.filter((item) => item.itemStatus === "CANCELLED");
+  const activeTotalAmount = activeItems.reduce(
+    (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+    0,
+  );
 
   return (
     <div
@@ -129,7 +136,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
             <th className="text-right pb-1">금액</th>
           </tr>
         </thead>
-        {order.items.map((item, index) => (
+        {activeItems.map((item, index) => (
           <tbody key={index}>
             <tr>
               <td
@@ -166,8 +173,19 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
         className="text-right font-extrabold mt-2 pt-2 border-t border-dashed border-black pr-0.5"
         style={{ fontSize: `${RECEIPT_FONT.total}px` }}
       >
-        합계 {formatPrice(order.totalAmount)}
+        합계 {formatPrice(activeTotalAmount)}
       </p>
+
+      {cancelledItems.length > 0 && (
+        <div className="mt-2 border-t border-dashed border-black pt-2 text-[10px] leading-snug">
+          <p className="font-bold">품절취소 상품</p>
+          {cancelledItems.map((item, index) => (
+            <p key={`${item.productName}-${index}`}>
+              - {orderItemName(item)} {item.quantity}개
+            </p>
+          ))}
+        </div>
+      )}
 
       <hr className="border-dashed border-black my-2" />
       <p className="text-center text-[9px]">

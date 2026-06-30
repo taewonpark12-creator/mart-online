@@ -69,11 +69,13 @@ model OrderItem {
   productName String   @default("")
   quantity    Int
   unitPrice   Int
+  itemStatus  OrderItemStatus @default(ACTIVE)
   order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@index([productId])
+  @@index([itemStatus])
 }
 
 enum FulfillmentType {
@@ -85,6 +87,11 @@ enum OrderStatus {
   PENDING
   APPROVED
   DELIVERED
+  CANCELLED
+}
+
+enum OrderItemStatus {
+  ACTIVE
   CANCELLED
 }
 
