@@ -23,7 +23,9 @@ export async function GET(req: NextRequest) {
       ? { createdAt: { gte: startUtc, lte: endUtc } }
       : {};
 
-    const activeItemStatus = "ACTIVE";
+    const activeItemWhere = {
+      OR: [{ itemStatus: "ACTIVE" }, { itemStatus: null }],
+    } as any;
 
     const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders] =
       await Promise.all([
@@ -65,7 +67,7 @@ export async function GET(req: NextRequest) {
 
     const activeSalesItems = await prisma.orderItem.findMany({
       where: {
-        itemStatus: activeItemStatus,
+        ...activeItemWhere,
         order: {
           status: { not: "CANCELLED" },
           ...orderDateFilter,
@@ -109,7 +111,7 @@ export async function GET(req: NextRequest) {
         },
         include: {
           items: {
-            where: { itemStatus: activeItemStatus },
+            where: activeItemWhere,
             select: {
               unitPrice: true,
               quantity: true,
@@ -153,7 +155,7 @@ export async function GET(req: NextRequest) {
         },
         take: 10,
         where: {
-          itemStatus: activeItemStatus,
+          ...activeItemWhere,
           order: {
             status: {
               not: "CANCELLED",

@@ -8,7 +8,7 @@ type Params = { params: Promise<{ id: string; itemId: string }> };
 const ACTIVE_ITEM_STATUS = "ACTIVE";
 const CANCELLED_ITEM_STATUS = "CANCELLED";
 
-function activeItemTotal(items: Array<{ unitPrice: number; quantity: number; itemStatus: string }>) {
+function activeItemTotal(items: Array<{ unitPrice: number; quantity: number; itemStatus?: string | null }>) {
   return items.reduce((sum, item) => {
     if (item.itemStatus === CANCELLED_ITEM_STATUS) return sum;
     return sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0);
@@ -36,7 +36,7 @@ function serializeOrder(order: {
     productName: string;
     quantity: number;
     unitPrice: number;
-    itemStatus: string;
+    itemStatus?: string | null;
     product: { name: string; barcode: string | null } | null;
   }>;
 }) {

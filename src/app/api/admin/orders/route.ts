@@ -152,11 +152,19 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const orders = await prisma.order.findMany({
-      where: Object.keys(where).length > 0 ? where : undefined,
-      include: { items: { include: { product: true } } },
-      orderBy: { createdAt: "desc" },
-    });
+    const orderWhere = Object.keys(where).length > 0 ? where : undefined;
+    const [orders, totalOrderCount, statusCounts] = await Promise.all([
+      prisma.order.findMany({
+        where: orderWhere,
+        include: { items: { include: { product: true } } },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.order.count(),
+      prisma.order.groupBy({
+        by: ["status"],
+        _count: { _all: true },
+      }),
+    ]);
 
     let priceMap: PriceNameMap = new Map();
     try {
@@ -169,6 +177,11 @@ export async function GET(req: NextRequest) {
     logSafeOrderEvent("admin.orders.list.succeeded", {
       requestId,
       count: serializedOrders.length,
+      totalOrderCount,
+      filteredOutByOrderWhere: Math.max(totalOrderCount - orders.length, 0),
+      statusCounts: Object.fromEntries(
+        statusCounts.map((row) => [row.status, row._count._all]),
+      ),
       statusFilter: status || null,
       hasDateFilter: Boolean(startDate || endDate),
       elapsedMs: Date.now() - startedAt,
