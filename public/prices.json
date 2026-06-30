@@ -116856,6 +116856,33 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000003139",
+    "name": "<특가>부추1단",
+    "normalPrice": 990,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000003146",
+    "name": "<특가>양파(소)1망",
+    "normalPrice": 1480,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000003153",
+    "name": "<특가>애호박1개",
+    "normalPrice": 500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000003160",
     "name": "새송이버섯(1봉)행사",
     "normalPrice": 980,
@@ -116868,6 +116895,15 @@
     "barcode": "9100000003177",
     "name": "제주무(1박스)",
     "normalPrice": 23000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000003184",
+    "name": "<특가>대추방울토마토1팩",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116895,6 +116931,15 @@
     "barcode": "9100000003215",
     "name": "골드키위세트(1박스)행사",
     "normalPrice": 29800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000003238",
+    "name": "<특가>참외6개/1봉",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
