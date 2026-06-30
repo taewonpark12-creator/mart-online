@@ -23628,10 +23628,10 @@
     "barcode": "8801043026321",
     "name": "농심)매운새우깡400g",
     "normalPrice": 5400,
-    "eventPrice": 4980,
-    "discountRate": 8,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801043026338",
