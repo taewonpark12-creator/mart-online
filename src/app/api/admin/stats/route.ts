@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
       : {};
 
     const activeItemWhere = {
-      OR: [{ itemStatus: "ACTIVE" }, { itemStatus: null }],
-    } as any;
+      itemStatus: "ACTIVE" as const,
+    };
 
     const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders] =
       await Promise.all([
