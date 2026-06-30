@@ -117424,8 +117424,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)",
-    "normalPrice": 4980,
+    "name": "표고버섯(500g/1봉)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117442,8 +117442,8 @@
   },
   {
     "barcode": "9100000214313",
-    "name": "햇양파(특대/1망)",
-    "normalPrice": 8900,
+    "name": "햇양파(특대/1망)행사",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117910,8 +117910,8 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(2개)행사",
-    "normalPrice": 1480,
+    "name": "인큐호박(1개)",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118261,8 +118261,8 @@
   },
   {
     "barcode": "9100000218564",
-    "name": "임진강오이지오이(50개/1포)",
-    "normalPrice": 19800,
+    "name": "오이지오이(50개/1포)행사",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
