@@ -1,12 +1,13 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice, MIN_ORDER_AMOUNT } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
 import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
+import { formatCartPriceChangeNotice, syncCartPricesWithLatestSource } from "@/lib/cart-price-sync";
 import type { CartItem } from "@/lib/types";
 
 type CartDiscount =
@@ -33,12 +34,39 @@ function getCartDiscount(item: CartItem): CartDiscount {
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, updateQuantity, removeItem, totalAmount } = useCart();
+  const { items, updateQuantity, removeItem, replaceItems, totalAmount, loaded } = useCart();
   const [error, setError] = useState("");
+  const [priceNotice, setPriceNotice] = useState("");
   const [confirmingDeleteProductId, setConfirmingDeleteProductId] = useState<string | null>(null);
+  const checkedLatestPricesRef = useRef(false);
 
   const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
   const amountShort = MIN_ORDER_AMOUNT - totalAmount;
+
+  useEffect(() => {
+    if (!loaded || checkedLatestPricesRef.current) return;
+    checkedLatestPricesRef.current = true;
+
+    let ignore = false;
+
+    syncCartPricesWithLatestSource(items)
+      .then((result) => {
+        if (ignore || result.changes.length === 0) return;
+
+        replaceItems(result.items);
+        setPriceNotice(formatCartPriceChangeNotice(result.changes));
+        setError("");
+      })
+      .catch((syncError) => {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[cart-price-sync] failed", syncError);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [items, loaded, replaceItems]);
 
   const handleUpdateQuantity = (productId: string, newQuantity: number) => {
     const result = updateQuantity(productId, newQuantity);
@@ -78,6 +106,11 @@ export default function CartPage() {
         <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
           담은 상품을 확인하고 주문을 진행하세요.
         </p>
+        {priceNotice && (
+          <div className="mb-4 whitespace-pre-line rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold leading-6 text-amber-900">
+            {priceNotice}
+          </div>
+        )}
 
         {items.length === 0 ? (
           <div className="bg-white border rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center shadow-sm">

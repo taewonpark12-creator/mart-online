@@ -149,7 +149,7 @@ function OrderCompleteContent() {
                   <div className="min-w-0">
                     <p className="truncate">{item.productName || "상품명 없음"}</p>
                     <p className="text-xs text-gray-500">
-                      {item.barcode || "-"} · {item.quantity || 0}개 · {formatPrice(item.price || item.unitPrice || 0)}원
+                      {item.barcode || "-"} · {item.quantity || 0}개 · {formatPrice(item.price || item.unitPrice || 0)}
                     </p>
                   </div>
                   <span className="shrink-0 font-semibold">

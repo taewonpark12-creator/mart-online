@@ -151,10 +151,10 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
               <td />
               <td className="text-center whitespace-nowrap pb-2.5">{item.quantity}</td>
               <td className="text-right whitespace-nowrap pb-2.5">
-                {item.unitPrice.toLocaleString("ko-KR")}
+                {formatPrice(item.unitPrice)}
               </td>
               <td className="text-right whitespace-nowrap pb-2.5">
-                {(item.unitPrice * item.quantity).toLocaleString("ko-KR")}
+                {formatPrice(item.unitPrice * item.quantity)}
               </td>
             </tr>
           </tbody>

@@ -21,6 +21,7 @@
     productId: string;
     name: string;
     price: number;
+    unitPrice?: number | null;
     barcode?: string | null;
     imageUrl: string | null;
     quantity: number;

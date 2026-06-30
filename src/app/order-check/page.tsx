@@ -193,7 +193,7 @@ export default function OrderCheckPage() {
                     <div className="min-w-0">
                       <p className="truncate">{item.productName}</p>
                       <p className="text-xs text-gray-500">
-                        {item.barcode || "-"} · {item.quantity}개 · {formatPrice(item.price)}원
+                        {item.barcode || "-"} · {item.quantity}개 · {formatPrice(item.price)}
                       </p>
                     </div>
                     <span className="shrink-0 font-semibold">

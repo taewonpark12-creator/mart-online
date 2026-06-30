@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
 import { CHECKOUT_CUTOFF_NOTICE } from "@/lib/delivery-schedule";
+import { formatCartPriceChangeNotice, syncCartPricesWithLatestSource } from "@/lib/cart-price-sync";
 import {
   MIN_ORDER_AMOUNT,
   formatPrice,
@@ -136,7 +137,7 @@ function pickupLabel(value: string) {
 function toOrderItem(item: any) {
   const productId = String(item.productId ?? "").trim();
   const productName = String(item.name ?? "").trim();
-  const price = Number(item.price);
+  const price = Number(item.unitPrice ?? item.price);
   const quantity = Number(item.quantity);
 
   if (
@@ -154,19 +155,23 @@ function toOrderItem(item: any) {
     productId,
     productName,
     price,
+    unitPrice: price,
     quantity,
   };
 }
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalAmount, clearCart } = useCart();
+  const { items, totalAmount, clearCart, replaceItems, loaded } = useCart();
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [priceNotice, setPriceNotice] = useState("");
+  const [syncingPrices, setSyncingPrices] = useState(true);
   const [skipEmptyCartCheck, setSkipEmptyCartCheck] = useState(false);
   const [showCutoffNotice, setShowCutoffNotice] = useState(false);
   const submitLockRef = useRef(false);
+  const checkedLatestPricesRef = useRef(false);
 
   // Load saved delivery info from localStorage
   useEffect(() => {
@@ -205,10 +210,44 @@ export default function CheckoutPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!loaded || checkedLatestPricesRef.current) return;
+    checkedLatestPricesRef.current = true;
+
+    let ignore = false;
+    setSyncingPrices(true);
+
+    syncCartPricesWithLatestSource(items)
+      .then((result) => {
+        if (ignore) return;
+
+        if (result.changes.length > 0) {
+          replaceItems(result.items);
+          setPriceNotice(formatCartPriceChangeNotice(result.changes));
+          setError("");
+        }
+      })
+      .catch((syncError) => {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[checkout-price-sync] failed", syncError);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setSyncingPrices(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [items, loaded, replaceItems]);
+
   const isDelivery = form.fulfillmentType === "DELIVERY";
   const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
   const canSubmit = Boolean(
     !submitting &&
+    !syncingPrices &&
     !deliveryBlocked &&
     items.length > 0 &&
     form.customerName.trim() &&
@@ -318,6 +357,12 @@ export default function CheckoutPage() {
         {showCutoffNotice && (
           <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold leading-6 text-amber-900 shadow-sm">
             {CHECKOUT_CUTOFF_NOTICE}
+          </div>
+        )}
+
+        {priceNotice && (
+          <div className="mb-5 whitespace-pre-line rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold leading-6 text-amber-900 shadow-sm">
+            {priceNotice}
           </div>
         )}
 

@@ -48,10 +48,6 @@ function formatReceiptDate(iso: string) {
   return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
 }
 
-function fmtNum(n: number) {
-  return n.toLocaleString("ko-KR");
-}
-
 function maskPhone(phone: string) {
   const digits = phone.replace(/\D/g, "");
   if (digits.length === 11) {
@@ -119,8 +115,8 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
         <tr class="item-values">
           <td></td>
           <td class="v-qty">${item.quantity}</td>
-          <td class="v-unit">${fmtNum(item.unitPrice)}</td>
-          <td class="v-amt">${fmtNum(lineTotal)}</td>
+          <td class="v-unit">${formatPrice(item.unitPrice)}</td>
+          <td class="v-amt">${formatPrice(lineTotal)}</td>
         </tr>
       </tbody>`;
     })

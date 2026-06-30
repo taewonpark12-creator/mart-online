@@ -60,7 +60,7 @@ function sanitizeCartItem(item: unknown): CartItem | null {
   if (!item || typeof item !== "object") return null;
 
   const candidate = item as CartItem;
-  const price = Number(candidate.price);
+  const price = Number(candidate.unitPrice ?? candidate.price);
   const quantity = Number(candidate.quantity);
 
   if (!candidate.productId || !candidate.name || !Number.isFinite(price) || price < 0) {
@@ -70,6 +70,7 @@ function sanitizeCartItem(item: unknown): CartItem | null {
   return {
     ...candidate,
     price,
+    unitPrice: price,
     quantity: isValidPositiveInteger(quantity) ? quantity : 1,
   };
 }
@@ -110,7 +111,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return { success: false, message: "상품 가격을 확인할 수 없습니다. 새로고침 후 다시 시도해주세요." };
     }
 
-    const syncedItem = { ...item, price };
+    const syncedItem = { ...item, price, unitPrice: price };
 
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === syncedItem.productId);
@@ -182,6 +183,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           ...i,
           name: i.name || p.name,
           price: Number.isFinite(currentPrice) && currentPrice >= 0 ? currentPrice : Number(p.price),
+          unitPrice: Number.isFinite(currentPrice) && currentPrice >= 0 ? currentPrice : Number(p.price),
           barcode: p.barcode ?? i.barcode,
           imageUrl: p.imageUrl,
           isOutOfStock: p.isOutOfStock,
