@@ -42672,10 +42672,10 @@
     "barcode": "8801056030667",
     "name": "칠성사이다+펩시콜라1.5L*2입",
     "normalPrice": 5500,
-    "eventPrice": 3980,
-    "discountRate": 28,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": 4980,
+    "discountRate": 9,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056032159",
@@ -42807,10 +42807,10 @@
     "barcode": "8801056056018",
     "name": "칠성사이다+밀키스1.5L*2입",
     "normalPrice": 5500,
-    "eventPrice": 3980,
-    "discountRate": 28,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": 4980,
+    "discountRate": 9,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056059842",
@@ -43266,10 +43266,10 @@
     "barcode": "8801056226770",
     "name": "펩시콜라제로1.5L*2입",
     "normalPrice": 4500,
-    "eventPrice": 3980,
-    "discountRate": 12,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801056227098",
