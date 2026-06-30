@@ -9,6 +9,7 @@ import {
   loadPriceSource,
 } from "@/lib/order-pricing";
 import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/order-observability";
+import { firstMeaningfulProductName } from "@/lib/order-item";
 
 export const runtime = "nodejs";
 
@@ -155,7 +156,6 @@ export async function POST(req: NextRequest) {
 
       if (
         !productId ||
-        !productName ||
         !Number.isFinite(price) ||
         price < 0 ||
         !Number.isInteger(quantity) ||
@@ -223,7 +223,7 @@ export async function POST(req: NextRequest) {
       if (!product) {
         unavailableItems.push({
           productId: item.productId,
-          productName: item.productName,
+          productName: firstMeaningfulProductName(item.productName) || "상품명 없음",
           reason: "상품을 찾을 수 없습니다.",
         });
         continue;
@@ -232,7 +232,7 @@ export async function POST(req: NextRequest) {
       if (!product.isActive || product.isOutOfStock) {
         unavailableItems.push({
           productId: item.productId,
-          productName: product.name || item.productName,
+          productName: firstMeaningfulProductName(item.productName, product.name) || "상품명 없음",
           reason: !product.isActive ? "현재 판매하지 않는 상품입니다." : "품절된 상품입니다.",
         });
         continue;
@@ -241,7 +241,7 @@ export async function POST(req: NextRequest) {
       if (product.maxOrderQuantity && product.maxOrderQuantity > 0 && item.quantity > product.maxOrderQuantity) {
         unavailableItems.push({
           productId: item.productId,
-          productName: product.name || item.productName,
+          productName: firstMeaningfulProductName(item.productName, product.name) || "상품명 없음",
           reason: `최대 ${product.maxOrderQuantity}개까지 주문 가능합니다.`,
         });
         continue;
@@ -249,11 +249,13 @@ export async function POST(req: NextRequest) {
 
       const syncedProduct = getSyncedProductInfo(product, priceMap);
       const currentPrice = Number(syncedProduct.price);
+      const displayProductName =
+        firstMeaningfulProductName(item.productName, syncedProduct.name, product.name) || "상품명 없음";
 
       if (!Number.isFinite(currentPrice) || currentPrice < 0) {
         unavailableItems.push({
           productId: item.productId,
-          productName: syncedProduct.name || product.name || item.productName,
+          productName: displayProductName,
           reason: "상품 가격을 확인할 수 없습니다.",
         });
         continue;
@@ -262,17 +264,17 @@ export async function POST(req: NextRequest) {
       if (item.price !== currentPrice) {
         priceChangedItems.push({
           productId: item.productId,
-          productName: syncedProduct.name || product.name || item.productName,
+          productName: displayProductName,
           previousPrice: item.price,
           currentPrice,
-          message: `${syncedProduct.name || product.name || item.productName}: ${formatPrice(item.price)} → ${formatPrice(currentPrice)}`,
+          message: `${displayProductName}: ${formatPrice(item.price)} → ${formatPrice(currentPrice)}`,
         });
         continue;
       }
 
       orderItems.push({
         productId: item.productId,
-        productName: syncedProduct.name || product.name || item.productName,
+        productName: displayProductName,
         barcode: syncedProduct.barcode,
         price: currentPrice,
         quantity: item.quantity,

@@ -55,10 +55,6 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     const nextBarcode =
       body.barcode !== undefined ? sanitizeInput(String(body.barcode ?? "")).slice(0, 64) || null : undefined;
 
-    if (nextName !== undefined && nextName.length === 0) {
-      return NextResponse.json({ error: "상품명을 입력해주세요." }, { status: 400 });
-    }
-
     if (nextCategory !== undefined && nextCategory.length === 0) {
       return NextResponse.json({ error: "카테고리를 입력해주세요." }, { status: 400 });
     }

@@ -82,9 +82,9 @@ export async function POST(req: NextRequest) {
     const stock = toNonNegativeInt(body.stock);
     const maxOrderQuantity = toNonNegativeInt(body.maxOrderQuantity, 0);
 
-    if (!name || name.length > 100 || !category || !validateAmount(price)) {
+    if (name.length > 100 || !category || !validateAmount(price)) {
       return NextResponse.json(
-        { error: "상품명, 가격, 카테고리를 올바르게 입력해 주세요." },
+        { error: "가격, 카테고리를 올바르게 입력해 주세요." },
         { status: 400 },
       );
     }

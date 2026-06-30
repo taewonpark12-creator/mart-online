@@ -29,7 +29,7 @@ export const RECEIPT_FONT = {
 export const RECEIPT_LAYOUT = {
   paperWidthMm: 78
   ,
-  colQty: 35,
+  colQty: 48,
   colUnit: 65,
   colAmount: 70,
 };
@@ -161,9 +161,9 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       border-bottom:1px solid #000;
     }
     .items-table thead .h-name { text-align:left; }
-    .items-table thead .h-qty,
     .items-table thead .h-unit,
     .items-table thead .h-amt { text-align:right; }
+    .items-table thead .h-qty { text-align:left; }
     .item-group { page-break-inside:avoid; }
     .item-name td {
       font-size:${F.itemName}px;
@@ -183,9 +183,9 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       letter-spacing:0.05em;
     }
     .item-values td { padding-bottom:6px; vertical-align:top; }
-    .item-values .v-qty,
     .item-values .v-unit,
     .item-values .v-amt { text-align:right; white-space:nowrap; }
+    .item-values .v-qty { text-align:left; white-space:nowrap; }
     .total {
       text-align:right;
       font-size:${F.total}px;

@@ -5,6 +5,7 @@ import type { CartItem, Product } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
 import { usePriceData } from "@/contexts/PriceContext";
+import { firstMeaningfulProductName } from "@/lib/order-item";
 
 type Props = {
   product: Product;
@@ -40,7 +41,7 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
   const badges = BADGE_META.filter((badge) => Boolean(product[badge.key]));
 
   const dbPrice = toSafePrice(product.price);
-  const displayName = priceData?.name || product.name || "상품명 없음";
+  const displayName = firstMeaningfulProductName(priceData?.name, product.name) || "상품명 없음";
   const normalPrice = priceData ? toSafePrice(priceData.normalPrice, dbPrice) : dbPrice;
   const eventPrice =
     priceData?.eventPrice !== null && priceData?.eventPrice !== undefined

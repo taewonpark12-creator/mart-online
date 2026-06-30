@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { getKoreaDateRangeUtc } from "@/lib/korea-date";
 import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/order-observability";
+import { firstMeaningfulProductName } from "@/lib/order-item";
+import { loadPriceSource } from "@/lib/order-pricing";
 
 const allowedStatuses = [
   "PENDING",
@@ -10,6 +12,15 @@ const allowedStatuses = [
   "DELIVERED",
   "CANCELLED",
 ];
+
+type PriceNameMap = Map<string, { name?: string }>;
+
+function priceNameByBarcode(barcode: string | null | undefined, priceMap: PriceNameMap) {
+  const normalizedBarcode = barcode?.trim();
+  if (!normalizedBarcode) return undefined;
+
+  return priceMap.get(normalizedBarcode)?.name;
+}
 
 function serializeOrder(order: {
   id: string;
@@ -39,7 +50,7 @@ function serializeOrder(order: {
       barcode?: string | null;
     } | null;
   }>;
-}) {
+}, priceMap: PriceNameMap = new Map()) {
   return {
     id: order.id,
     orderNumber: order.orderNumber,
@@ -55,19 +66,26 @@ function serializeOrder(order: {
     memo: order.memo ?? null,
     paymentMethod: order.paymentMethod ?? null,
     outOfStockPolicy: order.outOfStockPolicy ?? null,
-    items: (order.items || []).map((item) => ({
-      id: item.id,
-      productId: item.productId,
-      productName: item.productName || item.name || "상품명 없음",
-      unitPrice: Number(item.unitPrice ?? item.price ?? 0),
-      quantity: Number(item.quantity ?? 0),
-      product: item.product
-        ? {
-            name: item.product.name,
-            barcode: item.product.barcode,
-          }
-        : undefined,
-    })),
+    items: (order.items || []).map((item) => {
+      const barcode = item.product?.barcode ?? null;
+      const syncedName = priceNameByBarcode(barcode, priceMap);
+      const productName =
+        firstMeaningfulProductName(item.productName, syncedName, item.product?.name, item.name) || "상품명 없음";
+
+      return {
+        id: item.id,
+        productId: item.productId,
+        productName,
+        unitPrice: Number(item.unitPrice ?? item.price ?? 0),
+        quantity: Number(item.quantity ?? 0),
+        product: item.product
+          ? {
+              name: firstMeaningfulProductName(item.product.name, syncedName) || productName,
+              barcode: item.product.barcode,
+            }
+          : undefined,
+      };
+    }),
   };
 }
 
@@ -128,7 +146,14 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    const serializedOrders = orders.map(serializeOrder);
+    let priceMap: PriceNameMap = new Map();
+    try {
+      priceMap = (await loadPriceSource()).priceMap;
+    } catch {
+      priceMap = new Map();
+    }
+
+    const serializedOrders = orders.map((order) => serializeOrder(order, priceMap));
     logSafeOrderEvent("admin.orders.list.succeeded", {
       requestId,
       count: serializedOrders.length,

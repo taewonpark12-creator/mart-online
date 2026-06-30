@@ -124,7 +124,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
         <thead>
           <tr className="font-bold text-[11px]">
             <th className="text-left pb-1">상품명</th>
-            <th className="text-center pb-1">수량</th>
+            <th className="text-left pb-1">수량</th>
             <th className="text-right pb-1">단가</th>
             <th className="text-right pb-1">금액</th>
           </tr>
@@ -149,7 +149,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
             )}
             <tr>
               <td />
-              <td className="text-center whitespace-nowrap pb-2.5">{item.quantity}</td>
+              <td className="text-left whitespace-nowrap pb-2.5">{item.quantity}</td>
               <td className="text-right whitespace-nowrap pb-2.5">
                 {formatPrice(item.unitPrice)}
               </td>
