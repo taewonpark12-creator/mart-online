@@ -177,9 +177,9 @@ export default function HomePage() {
       return (
         <div className="space-y-4">
           <div className="h-32 bg-gray-50 rounded-3xl animate-pulse" />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="h-48 bg-gray-50 rounded-3xl animate-pulse" />
+              <div key={index} className="h-40 bg-gray-50 rounded-xl animate-pulse sm:h-48 sm:rounded-3xl" />
             ))}
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function HomePage() {
             <span className="w-8 h-1 bg-gray-200 rounded-full" />
             <h2 className="text-lg font-bold text-gray-900">검색 결과</h2>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4">
             {visibleSearchResults.map((product) => (
               <ProductCard key={product.id} product={product} onAdd={handleAdd} />
             ))}
@@ -222,17 +222,11 @@ export default function HomePage() {
         <>
           <ProductImageNotice />
 
-          <div className="mb-8">
-            <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
-          </div>
+          <RecommendedProducts products={homeProducts} onAdd={handleAdd} />
 
           <OnlineExclusiveProducts products={exclusiveProducts} onAdd={handleAdd} />
 
-          {popularProducts.length > 0 && (
-            <div className="mb-8">
-              <PopularProducts products={popularProducts} onAdd={handleAdd} />
-            </div>
-          )}
+          <PopularProducts products={popularProducts} onAdd={handleAdd} />
         </>
       );
     }
@@ -247,7 +241,7 @@ export default function HomePage() {
         </div>
 
         {categoryProducts.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4">
             {categoryProducts.map((product) => (
               <ProductCard key={product.id} product={product} onAdd={handleAdd} />
             ))}

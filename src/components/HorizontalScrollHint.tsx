@@ -7,8 +7,12 @@ type Props = {
   className: string;
 };
 
+const SCROLL_HINT_STORAGE_KEY = "homeProductScrollHintSeen";
+let scrollHintSessionQueued = false;
+
 export function HorizontalScrollHint({ children, className }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hintTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [progress, setProgress] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -35,6 +39,20 @@ export function HorizontalScrollHint({ children, className }: Props) {
     });
   }, []);
 
+  const clearHintTimers = useCallback(() => {
+    hintTimersRef.current.forEach((timer) => clearTimeout(timer));
+    hintTimersRef.current = [];
+  }, []);
+
+  const markHintSeen = useCallback(() => {
+    clearHintTimers();
+    try {
+      window.localStorage.setItem(SCROLL_HINT_STORAGE_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  }, [clearHintTimers]);
+
   useEffect(() => {
     updateScrollState();
     const node = scrollRef.current;
@@ -46,34 +64,50 @@ export function HorizontalScrollHint({ children, className }: Props) {
     return () => observer.disconnect();
   }, [updateScrollState, children]);
 
+  useEffect(() => {
+    const node = scrollRef.current;
+    if (!node || scrollHintSessionQueued) return;
+
+    try {
+      if (window.localStorage.getItem(SCROLL_HINT_STORAGE_KEY) === "1") return;
+    } catch {
+      return;
+    }
+
+    if (node.scrollWidth <= node.clientWidth + 8) return;
+
+    scrollHintSessionQueued = true;
+    const startTimer = setTimeout(() => {
+      node.scrollTo({ left: 18, behavior: "smooth" });
+
+      const backTimer = setTimeout(() => {
+        node.scrollTo({ left: 0, behavior: "smooth" });
+      }, 260);
+
+      const doneTimer = setTimeout(() => {
+        markHintSeen();
+      }, 700);
+
+      hintTimersRef.current.push(backTimer, doneTimer);
+    }, 450);
+
+    hintTimersRef.current.push(startTimer);
+    return clearHintTimers;
+  }, [children, clearHintTimers, markHintSeen]);
+
   return (
     <div>
-      {canScrollNext && (
-        <div className="mb-2 flex justify-end">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-bold text-emerald-800 sm:text-base">
-            상품을 옆으로 밀어보세요
-            <span className="text-lg leading-none" aria-hidden>
-              →
-            </span>
-          </span>
-        </div>
-      )}
-
       <div className="group relative">
         <div
           ref={scrollRef}
           onScroll={updateScrollState}
-          className={`${className} pr-8 scrollbar-thin`}
+          onPointerDown={markHintSeen}
+          onTouchStart={markHintSeen}
+          onWheel={markHintSeen}
+          className={`${className} pr-4 scrollbar-thin`}
         >
           {children}
         </div>
-
-        {canScrollPrev && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white via-white/85 to-transparent" />
-        )}
-        {canScrollNext && (
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-white via-white/90 to-transparent" />
-        )}
 
         {canScrollPrev && (
           <button
