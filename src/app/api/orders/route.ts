@@ -28,6 +28,11 @@ type ValidatedOrderItem = OrderItemInput & {
 };
 
 const DUPLICATE_ORDER_WINDOW_MS = 2 * 60 * 1000;
+const PAYMENT_METHODS = new Set<PaymentMethod>([
+  "ONSITE_CARD",
+  "ONSITE_CASH",
+  "BANK_TRANSFER",
+]);
 
 function asString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -37,6 +42,12 @@ function asNumber(value: unknown) {
   if (typeof value === "number") return value;
   if (typeof value === "string" && value.trim() !== "") return Number(value);
   return NaN;
+}
+
+function asPaymentMethod(value: unknown) {
+  return typeof value === "string" && PAYMENT_METHODS.has(value as PaymentMethod)
+    ? (value as PaymentMethod)
+    : null;
 }
 
 function normalizePhone(value: string) {
@@ -96,7 +107,9 @@ export async function POST(req: NextRequest) {
     const pickupTime = asString(body.pickupTime);
     const memo = asString(body.memo);
     const outOfStockPolicy = (body.outOfStockPolicy as OutOfStockPolicy) || "CONTACT";
-    const paymentMethod = (body.paymentMethod as PaymentMethod) || "ONSITE_CASH";
+    const submittedPaymentMethod = asPaymentMethod(body.paymentMethod);
+    const paymentMethod =
+      submittedPaymentMethod ?? (fulfillmentType === "DELIVERY" ? "ONSITE_CASH" : null);
 
     if (!customerName || !customerPhone) {
       logSafeOrderEvent("order.create.failed", {
@@ -401,7 +414,7 @@ export async function POST(req: NextRequest) {
             fulfillmentType === "DELIVERY" ? deliveryAddress : "매장 픽업",
           pickupTime: fulfillmentType === "PICKUP" ? pickupTime : null,
           memo: memo || null,
-          paymentMethod: fulfillmentType === "DELIVERY" ? paymentMethod : null,
+          paymentMethod,
           outOfStockPolicy,
           totalAmount,
           createdAt: acceptedAt,

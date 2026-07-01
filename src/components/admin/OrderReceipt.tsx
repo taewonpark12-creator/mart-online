@@ -110,7 +110,7 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
       )}
       <hr className="border-dashed border-black my-2" />
 
-      <InfoRow label="결제 수단">
+      <InfoRow label="결제방식">
         <b>{formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType)}</b>
         {order.paymentMethod === "BANK_TRANSFER" && (
           <span className="block text-[10px] font-normal mt-0.5">{BANK_ACCOUNT.display}</span>

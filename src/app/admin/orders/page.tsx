@@ -7,6 +7,7 @@ import {
   ORDER_STATUS_LABEL,
   ORDER_STATUS_COLOR,
   FULFILLMENT_TYPE_LABEL,
+  formatPaymentMethodLabel,
   formatPrice,
   type OrderStatus,
   type FulfillmentType,
@@ -410,6 +411,7 @@ function OrderDetailPanel({
           <div className="space-y-2 text-sm">
             <p><span className="text-blue-500 font-semibold mr-2">고객</span>{order.customerName}</p>
             <p><span className="text-blue-500 font-semibold mr-2">연락처</span>{order.customerPhone}</p>
+            <p><span className="text-blue-500 font-semibold mr-2">결제방식</span>{formatPaymentMethodLabel(order.paymentMethod, order.fulfillmentType)}</p>
             {order.fulfillmentType === "PICKUP" ? (
               <>
                 <p><span className="text-blue-500 font-semibold mr-2">픽업</span>{order.pickupTime || "시간 미지정"}</p>

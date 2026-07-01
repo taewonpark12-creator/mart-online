@@ -96,8 +96,8 @@
   ];
 
   export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
-    ONSITE_CARD: "현장결제(카드)",
-    ONSITE_CASH: "현장결제(현금)",
+    ONSITE_CARD: "카드(현장결제)",
+    ONSITE_CASH: "현금(현장결제)",
     BANK_TRANSFER: "계좌이체",
   };
 
@@ -152,10 +152,13 @@
     paymentMethod: PaymentMethod | null | undefined,
     fulfillmentType?: FulfillmentType,
   ) {
-    if (fulfillmentType === "PICKUP" || paymentMethod == null) {
+    if (paymentMethod && PAYMENT_METHOD_LABEL[paymentMethod]) {
+      return PAYMENT_METHOD_LABEL[paymentMethod];
+    }
+    if (fulfillmentType === "PICKUP") {
       return "매장에서 결제";
     }
-    return PAYMENT_METHOD_LABEL[paymentMethod];
+    return "미확인";
   }
 
   // 💡 영수증이나 관리자 화면 등 다른 곳에서 시간 라벨을 쓸 때도 '경'이 안 붙도록 그대로 반환합니다.

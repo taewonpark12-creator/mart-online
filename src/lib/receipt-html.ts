@@ -235,7 +235,7 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   ${infoLine("품절 시 처리", esc(OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy || "CONTACT"] || "연락바람"), true)}
   <hr class="hr" />
 
-  <p class="info"><span class="info-label">결제 수단</span> : <b>${paymentLabel}</b>${bankExtra}</p>
+  <p class="info"><span class="info-label">결제방식</span> : <b>${paymentLabel}</b>${bankExtra}</p>
   <hr class="hr" />
 
   <table class="items-table">
