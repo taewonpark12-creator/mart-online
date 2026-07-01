@@ -102259,8 +102259,8 @@
   },
   {
     "barcode": "8809280980215",
-    "name": "사과(10개/1봉)",
-    "normalPrice": 17800,
+    "name": "사과(10개/1봉)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116884,8 +116884,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)행사",
-    "normalPrice": 980,
+    "name": "새송이버섯(1봉)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116948,7 +116948,7 @@
   {
     "barcode": "9100000003306",
     "name": "알배기배추(1통)행사",
-    "normalPrice": 99990,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117307,8 +117307,8 @@
   },
   {
     "barcode": "9100000112688",
-    "name": "미니복숭아(1팩)",
-    "normalPrice": 4980,
+    "name": "신비복숭아(10개/1팩)행사",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117532,8 +117532,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)",
-    "normalPrice": 4980,
+    "name": "표고버섯(500g/1봉)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117551,7 +117551,7 @@
   {
     "barcode": "9100000214313",
     "name": "햇양파(특대/1망)",
-    "normalPrice": 7980,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118162,8 +118162,8 @@
   },
   {
     "barcode": "9100000217338",
-    "name": "대추방울토마토(1팩)",
-    "normalPrice": 4980,
+    "name": "대추방울토마토(1팩)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
