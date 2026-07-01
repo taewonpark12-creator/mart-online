@@ -77,7 +77,7 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
 
   return (
     <div className="bg-white rounded-lg border border-gray-100 shadow-sm transition hover:shadow-md sm:rounded-xl overflow-hidden flex flex-col h-full">
-      <div className={`relative bg-gray-50 w-full overflow-hidden ${compact ? "aspect-square" : "aspect-[3/2] sm:aspect-[4/3]"}`}>
+      <div className={`relative bg-gray-50 w-full overflow-hidden ${compact ? "aspect-[6/5] sm:aspect-square" : "aspect-[5/3] sm:aspect-[4/3]"}`}>
         <ProductImage
           src={product.imageUrl}
           alt={displayName}
@@ -99,18 +99,18 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
         <button
           onClick={() => onAdd(cartProduct)}
           disabled={product.isOutOfStock || loadingPrice}
-          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-green-600 font-bold text-white shadow-md transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:bottom-2 sm:right-2 ${compact ? "min-h-[36px] px-2.5 py-1.5 text-xs" : "min-h-[38px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
+          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-green-600 font-bold text-white shadow-md transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:bottom-2 sm:right-2 ${compact ? "min-h-[34px] px-2.5 py-1.5 text-xs sm:min-h-[36px]" : "min-h-[38px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
         >
           {product.isOutOfStock ? "품절" : loadingPrice ? "확인중" : "+ 담기"}
         </button>
       </div>
 
-      <div className={`${compact ? "p-2 gap-0.5 sm:p-2.5 sm:gap-1" : "p-2.5 gap-1 sm:p-4 sm:gap-2"} flex flex-col flex-1`}>
+      <div className={`${compact ? "p-1.5 gap-0.5 sm:p-2.5 sm:gap-1" : "p-2 gap-0.5 sm:p-4 sm:gap-2"} flex flex-col flex-1`}>
         <div className="flex-1 min-w-0">
           <span className={`text-green-600 font-medium bg-green-50 px-1.5 py-0.5 rounded-full inline-block ${compact ? "text-[9px]" : "text-[9px] sm:text-xs sm:px-2"}`}>
             {product.category}
           </span>
-          <h3 className={`font-semibold text-gray-900 mt-0.5 sm:mt-1 leading-snug line-clamp-2 min-h-[2.45em] ${compact ? "text-[12px] sm:text-xs" : "text-[13px] sm:text-base"}`}>
+          <h3 className={`font-semibold text-gray-900 mt-0.5 sm:mt-1 leading-snug line-clamp-2 min-h-[2.35em] ${compact ? "text-[12px] sm:text-xs" : "text-[13px] sm:text-base"}`}>
             {displayName}
           </h3>
           {product.description && !compact && (
@@ -124,7 +124,7 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
           {loadingPrice ? (
             <p className={`font-bold text-green-700 ${compact ? "text-[15px] sm:text-base" : "text-base sm:text-xl"}`}>...</p>
           ) : hasEvent ? (
-            <div className="space-y-0.5 sm:space-y-1">
+            <div className="space-y-0 sm:space-y-1">
               <div className={`flex items-center ${compact ? "gap-1" : "gap-2"}`}>
                 <span className={`${compact ? "text-[10px]" : "text-xs"} text-gray-400 line-through`}>
                   {formatPrice(normalPrice)}

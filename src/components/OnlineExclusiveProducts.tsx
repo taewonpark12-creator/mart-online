@@ -11,5 +11,5 @@ type Props = {
 export function OnlineExclusiveProducts({ products, onAdd }: Props) {
   const exclusiveProducts = products.filter((p) => p.isOnlineExclusive);
 
-  return <HomeProductSection title="한정특가" products={exclusiveProducts} onAdd={onAdd} />;
+  return <HomeProductSection title="한정특가" products={exclusiveProducts} onAdd={onAdd} tone="deal" />;
 }

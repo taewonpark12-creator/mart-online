@@ -10,7 +10,7 @@ type Props = {
 };
 
 function PopularProductsComponent({ products, onAdd }: Props) {
-  return <HomeProductSection title="인기상품" products={products} onAdd={onAdd} />;
+  return <HomeProductSection title="인기상품" products={products} onAdd={onAdd} tone="popular" />;
 }
 
 export const PopularProducts = React.memo(PopularProductsComponent);
