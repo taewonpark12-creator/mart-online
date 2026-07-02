@@ -105,12 +105,9 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
         </button>
       </div>
 
-      <div className={`${compact ? "p-1 gap-0 sm:p-2 sm:gap-0.5" : "p-1.5 gap-0 sm:p-3.5 sm:gap-1.5"} flex flex-col flex-1`}>
+      <div className={`${compact ? "p-1 gap-0 sm:p-1.5 sm:gap-0.5" : "p-1.5 gap-0 sm:p-3 sm:gap-1"} flex flex-col flex-1`}>
         <div className="flex-1 min-w-0">
-          <span className={`text-green-600 font-medium bg-green-50 px-1.5 py-0.5 rounded-full inline-block ${compact ? "text-[9px]" : "text-[9px] sm:text-xs sm:px-2"}`}>
-            {product.category}
-          </span>
-          <h3 className={`font-semibold text-gray-900 mt-px sm:mt-0.5 leading-snug line-clamp-2 min-h-[2.35em] ${compact ? "text-[12px] sm:text-xs" : "text-[13px] sm:text-base"}`}>
+          <h3 className={`font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[2.35em] ${compact ? "text-[13px] sm:text-sm" : "text-sm sm:text-[17px]"}`}>
             {displayName}
           </h3>
           {product.description && !compact && (
@@ -120,9 +117,9 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
           )}
         </div>
 
-        <div className="mt-auto">
+        <div className="mt-auto pt-0.5">
           {loadingPrice ? (
-            <p className={`font-bold text-green-700 ${compact ? "text-[15px] sm:text-base" : "text-base sm:text-xl"}`}>...</p>
+            <p className={`font-bold text-green-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>...</p>
           ) : hasEvent ? (
             <div className="space-y-0 sm:space-y-1">
               <div className={`flex items-center ${compact ? "gap-1" : "gap-2"}`}>
@@ -133,12 +130,12 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
                   {discountRate}% 할인
                 </span>
               </div>
-              <p className={`font-black text-green-700 tracking-normal ${compact ? "text-[15px] sm:text-base" : "text-base sm:text-xl"}`}>
+              <p className={`font-black text-green-700 tracking-normal ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
                 {formatPrice(eventPrice)}
               </p>
             </div>
           ) : (
-            <p className={`font-black text-green-700 tracking-normal ${compact ? "text-[15px] sm:text-base" : "text-base sm:text-xl"}`}>
+            <p className={`font-black text-green-700 tracking-normal ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
               {formatPrice(normalPrice)}
             </p>
           )}
