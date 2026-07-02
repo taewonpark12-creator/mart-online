@@ -118388,7 +118388,7 @@
   {
     "barcode": "9100000217956",
     "name": "바나나(1송이)행사",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118666,8 +118666,8 @@
   },
   {
     "barcode": "9100000218922",
-    "name": "양배추(1망)",
-    "normalPrice": 6980,
+    "name": "양배추(5통/1박스)",
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
