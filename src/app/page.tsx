@@ -10,6 +10,7 @@ import { RecommendedProducts } from "@/components/RecommendedProducts";
 import { PopularProducts } from "@/components/PopularProducts";
 import { OrderBar } from "@/components/OrderBar";
 import { FlyerBanner } from "@/components/FlyerBanner";
+import { PwaInstallButton } from "@/components/PwaInstallButton";
 import { useCart } from "@/contexts/CartContext";
 import { PriceProvider } from "@/contexts/PriceContext";
 import type { CartItem, Product } from "@/lib/types";
@@ -259,6 +260,8 @@ export default function HomePage() {
         <Header cartCount={totalCount} />
 
         <main className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-24 sm:pb-28">
+          <PwaInstallButton />
+
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             <a
               href="https://open.kakao.com/o/sdPlnVxi"

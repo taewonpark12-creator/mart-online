@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="성사동마트">
+  <rect width="512" height="512" rx="112" fill="#16a34a"/>
+  <circle cx="256" cy="256" r="168" fill="#ffffff" opacity="0.96"/>
+  <path fill="#16a34a" d="M146 298h220v42H146zM168 214h176v42H168zM194 130h124v42H194z"/>
+  <path fill="#15803d" d="M130 356h252v34H130z"/>
+</svg>
