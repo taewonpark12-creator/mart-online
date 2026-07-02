@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const NEW_BADGE_KEY = "mart_pwa_install_button_seen";
-const INSTALLED_KEY = "mart_pwa_installed";
 const FALLBACK_MESSAGE = "Chrome 또는 Safari에서 열고 홈 화면에 추가해 주세요";
 
 type Props = {
@@ -31,23 +29,12 @@ function isKakaoInAppBrowser() {
 
 export function PwaInstallButton({ variant = "default" }: Props) {
   const [isVisible, setIsVisible] = useState(false);
-  const [showNewBadge, setShowNewBadge] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
-    if (isStandaloneMode() || window.localStorage.getItem(INSTALLED_KEY) === "1") {
-      setIsVisible(false);
-      return;
-    }
-
-    setIsVisible(true);
-
-    const hasSeenNewBadge = window.localStorage.getItem(NEW_BADGE_KEY) === "1";
-    setShowNewBadge(!hasSeenNewBadge);
-    if (!hasSeenNewBadge) {
-      window.localStorage.setItem(NEW_BADGE_KEY, "1");
-    }
+    const updateVisibilityByDisplayMode = () => setIsVisible(!isStandaloneMode());
+    updateVisibilityByDisplayMode();
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => {
@@ -58,21 +45,23 @@ export function PwaInstallButton({ variant = "default" }: Props) {
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setInstallPrompt(event as BeforeInstallPromptEvent);
-      setIsVisible(!isStandaloneMode());
+      updateVisibilityByDisplayMode();
     };
 
     const handleAppInstalled = () => {
-      window.localStorage.setItem(INSTALLED_KEY, "1");
       setInstallPrompt(null);
       setIsVisible(false);
     };
 
+    const displayModeQuery = window.matchMedia("(display-mode: standalone)");
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
+    displayModeQuery.addEventListener("change", updateVisibilityByDisplayMode);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleAppInstalled);
+      displayModeQuery.removeEventListener("change", updateVisibilityByDisplayMode);
     };
   }, []);
 
@@ -85,7 +74,6 @@ export function PwaInstallButton({ variant = "default" }: Props) {
 
   const handleClick = async () => {
     if (isStandaloneMode()) {
-      window.localStorage.setItem(INSTALLED_KEY, "1");
       setIsVisible(false);
       return;
     }
@@ -101,8 +89,9 @@ export function PwaInstallButton({ variant = "default" }: Props) {
     const choice = await promptEvent.userChoice;
 
     if (choice.outcome === "accepted") {
-      window.localStorage.setItem(INSTALLED_KEY, "1");
       setIsVisible(false);
+    } else {
+      setIsVisible(true);
     }
   };
 
@@ -124,12 +113,7 @@ export function PwaInstallButton({ variant = "default" }: Props) {
         }
         aria-label="홈 화면에 추가"
       >
-        ➕ 홈추가
-        {showNewBadge && (
-          <span className="absolute -right-1.5 -top-2 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-black leading-none text-white shadow-sm">
-            NEW
-          </span>
-        )}
+        ➕ 홈 추가
       </button>
 
       {notice && (
