@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "성사동마트 온라인 주문",
-    short_name: "성사동마트",
-    description: "성사동마트 온라인 배달 주문",
+    name: "한사랑마트",
+    short_name: "한사랑마트",
+    description: "한사랑마트 온라인 배달 주문",
     start_url: "/",
     scope: "/",
     display: "standalone",

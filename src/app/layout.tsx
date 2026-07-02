@@ -4,8 +4,19 @@ import { CartProvider } from "@/contexts/CartContext";
 import { MART_NAME } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: `${MART_NAME} - 온라인 배달 주문`,
+  applicationName: MART_NAME,
+  title: MART_NAME,
   description: `${MART_NAME} 온라인 주문 및 배달 서비스`,
+  appleWebApp: {
+    capable: true,
+    title: MART_NAME,
+    statusBarStyle: "default",
+  },
+  openGraph: {
+    siteName: MART_NAME,
+    title: MART_NAME,
+    description: `${MART_NAME} 온라인 주문 및 배달 서비스`,
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
