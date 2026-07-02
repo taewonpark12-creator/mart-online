@@ -10566,6 +10566,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801005200240",
+    "name": "차오차이)비프유니짜장180g",
+    "normalPrice": 2200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801005202022",
     "name": "샘표)사과식초900ml",
     "normalPrice": 3900,
@@ -10911,6 +10920,15 @@
     "barcode": "8801005652001",
     "name": "샘표)통알곡결명자차1kg",
     "normalPrice": 11500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801005810012",
+    "name": "차오차이)한국풍마파두부190g",
+    "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
