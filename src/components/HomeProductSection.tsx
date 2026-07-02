@@ -12,7 +12,7 @@ type Props = {
 };
 
 const HOME_PRODUCT_RAIL_CLASS =
-  "grid auto-cols-[calc((100%_-_0.5rem)/2.16)] grid-flow-col grid-rows-3 gap-2 overflow-x-auto overscroll-x-contain pb-1 snap-x snap-mandatory sm:auto-cols-[calc((100%_-_1.25rem)/3.14)] sm:gap-2.5 md:auto-cols-[8.25rem]";
+  "grid auto-cols-[calc((100%_-_0.5rem)/2.16)] grid-flow-col grid-rows-3 gap-1.5 overflow-x-auto overscroll-x-contain pb-1 snap-x snap-mandatory sm:auto-cols-[calc((100%_-_1.25rem)/3.14)] sm:gap-2 md:auto-cols-[8.25rem]";
 
 const TONE_CLASS = {
   default: {

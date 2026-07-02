@@ -105,12 +105,12 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
         </button>
       </div>
 
-      <div className={`${compact ? "p-1.5 gap-0.5 sm:p-2.5 sm:gap-1" : "p-2 gap-0.5 sm:p-4 sm:gap-2"} flex flex-col flex-1`}>
+      <div className={`${compact ? "p-1 gap-0 sm:p-2 sm:gap-0.5" : "p-1.5 gap-0 sm:p-3.5 sm:gap-1.5"} flex flex-col flex-1`}>
         <div className="flex-1 min-w-0">
           <span className={`text-green-600 font-medium bg-green-50 px-1.5 py-0.5 rounded-full inline-block ${compact ? "text-[9px]" : "text-[9px] sm:text-xs sm:px-2"}`}>
             {product.category}
           </span>
-          <h3 className={`font-semibold text-gray-900 mt-0.5 sm:mt-1 leading-snug line-clamp-2 min-h-[2.35em] ${compact ? "text-[12px] sm:text-xs" : "text-[13px] sm:text-base"}`}>
+          <h3 className={`font-semibold text-gray-900 mt-px sm:mt-0.5 leading-snug line-clamp-2 min-h-[2.35em] ${compact ? "text-[12px] sm:text-xs" : "text-[13px] sm:text-base"}`}>
             {displayName}
           </h3>
           {product.description && !compact && (
