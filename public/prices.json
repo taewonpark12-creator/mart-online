@@ -118647,6 +118647,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218878",
+    "name": "<특가>스팸클래식200g",
+    "normalPrice": 2980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218885",
     "name": "골드파인애플(1통)행사",
     "normalPrice": 99990,
