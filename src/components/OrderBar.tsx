@@ -11,7 +11,13 @@ type Props = {
 export function OrderBar({ itemCount, totalAmount, onOrderClick }: Props) {
   if (itemCount === 0) return null;
 
-  const amountShort = Math.max(MIN_ORDER_AMOUNT - totalAmount, 0);
+  const remainingAmount = Math.max(MIN_ORDER_AMOUNT - totalAmount, 0);
+  const minimumOrderMessage =
+    remainingAmount === 0
+      ? "주문 가능"
+      : totalAmount === 0
+        ? `${formatPrice(MIN_ORDER_AMOUNT)} 이상 배송`
+        : `${formatPrice(remainingAmount)} 남음`;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-green-600 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
@@ -26,7 +32,7 @@ export function OrderBar({ itemCount, totalAmount, onOrderClick }: Props) {
             <span className="truncate text-sm font-black sm:text-lg">{formatPrice(totalAmount)}</span>
           </div>
           <p className="mt-0.5 truncate text-[11px] font-semibold text-white/85 sm:text-sm">
-            {amountShort > 0 ? `${formatPrice(MIN_ORDER_AMOUNT)}부터 주문` : "주문 가능"}
+            {minimumOrderMessage}
           </p>
         </div>
         <button
