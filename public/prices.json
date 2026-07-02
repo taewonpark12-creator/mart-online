@@ -1,5 +1,14 @@
 [
   {
+    "barcode": "0",
+    "name": "일회용우의(흰색)",
+    "normalPrice": 1000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "009800800056",
     "name": "누텔라앤고52g",
     "normalPrice": 3500,
