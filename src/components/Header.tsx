@@ -1,24 +1,36 @@
 import Link from "next/link";
+import { PwaInstallButton } from "@/components/PwaInstallButton";
+
+const MART_ICON = "🏪";
+const MART_NAME = "한사랑마트";
+const MART_SUBTITLE = "온라인 배달 주문";
 
 type Props = {
   cartCount?: number;
+  showInstallButton?: boolean;
 };
 
-export function Header({ cartCount = 0 }: Props) {
+export function Header({ cartCount = 0, showInstallButton = false }: Props) {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-green-100 shadow-sm">
       <div className="max-w-5xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-1.5 sm:gap-2">
-          <span className="text-xl sm:text-2xl">🏪</span>
-          <div>
-            <p className="font-bold text-green-800 text-sm sm:text-base leading-tight">
-              한사랑마트
-            </p>
-            <p className="text-[10px] sm:text-xs text-green-600 hidden sm:block">
-              온라인 배달 주문
-            </p>
-          </div>
-        </Link>
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <Link href="/" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl" aria-hidden="true">
+              {MART_ICON}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate font-bold text-green-800 text-sm sm:text-base leading-tight">
+                {MART_NAME}
+              </p>
+              <p className="text-[10px] sm:text-xs text-green-600 hidden sm:block">
+                {MART_SUBTITLE}
+              </p>
+            </div>
+          </Link>
+
+          {showInstallButton && <PwaInstallButton variant="header" />}
+        </div>
 
         <div className="flex items-center gap-1.5 sm:gap-4">
           <Link

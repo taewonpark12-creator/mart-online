@@ -6,6 +6,10 @@ const NEW_BADGE_KEY = "mart_pwa_install_button_seen";
 const INSTALLED_KEY = "mart_pwa_installed";
 const FALLBACK_MESSAGE = "Chrome 또는 Safari에서 열고 홈 화면에 추가해 주세요";
 
+type Props = {
+  variant?: "default" | "header";
+};
+
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
@@ -25,7 +29,7 @@ function isKakaoInAppBrowser() {
   return /KAKAOTALK/i.test(window.navigator.userAgent);
 }
 
-export function PwaInstallButton() {
+export function PwaInstallButton({ variant = "default" }: Props) {
   const [isVisible, setIsVisible] = useState(false);
   const [showNewBadge, setShowNewBadge] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
@@ -106,15 +110,21 @@ export function PwaInstallButton() {
     return null;
   }
 
+  const isHeader = variant === "header";
+
   return (
-    <div className="relative mb-2 flex justify-end sm:mb-3">
+    <div className={isHeader ? "relative shrink-0" : "relative mb-2 flex justify-end sm:mb-3"}>
       <button
         type="button"
         onClick={handleClick}
-        className="relative rounded-full border border-emerald-100 bg-white px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:px-3 sm:text-xs"
+        className={
+          isHeader
+            ? "relative rounded-full border border-emerald-100 bg-emerald-50 px-2 py-1 text-[10px] font-bold leading-none text-emerald-700 shadow-sm transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+            : "relative rounded-full border border-emerald-100 bg-white px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 shadow-sm transition hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:px-3 sm:text-xs"
+        }
         aria-label="홈 화면에 추가"
       >
-        📱 홈 추가
+        ➕ 홈추가
         {showNewBadge && (
           <span className="absolute -right-1.5 -top-2 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-black leading-none text-white shadow-sm">
             NEW
@@ -123,7 +133,7 @@ export function PwaInstallButton() {
       </button>
 
       {notice && (
-        <div className="absolute right-0 top-full z-40 mt-2 w-56 rounded-xl bg-gray-900 px-3 py-2 text-xs font-semibold leading-snug text-white shadow-lg">
+        <div className="absolute left-0 top-full z-40 mt-2 w-56 rounded-xl bg-gray-900 px-3 py-2 text-xs font-semibold leading-snug text-white shadow-lg sm:left-auto sm:right-0">
           {notice}
         </div>
       )}
