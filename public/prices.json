@@ -52155,6 +52155,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801094000257",
+    "name": "코카콜라900ml",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801094000288",
     "name": "파워에이드제로라임600ml",
     "normalPrice": 2000,
