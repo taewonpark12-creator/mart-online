@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { PwaInstallButton } from "@/components/PwaInstallButton";
-
-const MART_ICON = "🏪";
-const MART_NAME = "한사랑마트";
-const MART_SUBTITLE = "온라인 배달 주문";
+import { MART_ICON_SRC, MART_NAME, MART_SUBTITLE } from "@/lib/brand";
 
 type Props = {
   cartCount?: number;
@@ -16,9 +13,12 @@ export function Header({ cartCount = 0, showInstallButton = false }: Props) {
       <div className="max-w-5xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Link href="/" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-            <span className="text-xl sm:text-2xl" aria-hidden="true">
-              {MART_ICON}
-            </span>
+            <img
+              src={MART_ICON_SRC}
+              alt=""
+              aria-hidden="true"
+              className="h-7 w-7 shrink-0 rounded-md object-contain sm:h-8 sm:w-8"
+            />
             <div className="min-w-0">
               <p className="truncate font-bold text-green-800 text-sm sm:text-base leading-tight">
                 {MART_NAME}

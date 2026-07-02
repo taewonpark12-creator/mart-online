@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { MART_ICON_SRC, MART_NAME } from "@/lib/brand";
 
 const NAV = [
   { href: "/admin/orders", label: "주문 관리", icon: "📋" },
@@ -36,8 +37,8 @@ export function AdminNav() {
     <nav className="bg-white border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <span className="text-xl mr-2">🏪</span>
-          <span className="font-bold text-gray-800 text-sm hidden sm:block">한사랑마트 관리</span>
+          <img src={MART_ICON_SRC} alt="" aria-hidden="true" className="mr-2 h-7 w-7 rounded-md object-contain" />
+          <span className="font-bold text-gray-800 text-sm hidden sm:block">{MART_NAME} 관리</span>
           {NAV.map((item) => (
             <Link
               key={item.href}
