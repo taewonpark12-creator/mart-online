@@ -16,21 +16,18 @@ const HOME_PRODUCT_RAIL_CLASS =
 
 const TONE_CLASS = {
   default: {
-    box: "border-emerald-100 bg-emerald-50/45 shadow-[0_6px_18px_rgba(15,23,42,0.04)]",
+    box: "bg-[#F3FBF4] shadow-[0_8px_22px_rgba(15,23,42,0.05)]",
     point: "bg-emerald-500",
-    divider: "border-emerald-100",
     label: "",
   },
   deal: {
-    box: "border-orange-100 bg-orange-50/55 shadow-[0_6px_18px_rgba(154,52,18,0.05)]",
+    box: "bg-[#FFF5F3] shadow-[0_8px_22px_rgba(154,52,18,0.05)]",
     point: "bg-orange-500",
-    divider: "border-orange-100",
     label: "특가",
   },
   popular: {
-    box: "border-emerald-100 bg-white shadow-[0_6px_18px_rgba(15,23,42,0.04)]",
-    point: "bg-lime-500",
-    divider: "border-emerald-100",
+    box: "bg-[#FFFBEF] shadow-[0_8px_22px_rgba(15,23,42,0.05)]",
+    point: "bg-emerald-500",
     label: "",
   },
 } as const;
@@ -40,8 +37,8 @@ export function HomeProductSection({ title, products, onAdd, tone = "default" }:
   const style = TONE_CLASS[tone];
 
   return (
-    <section className={`mb-10 rounded-2xl border px-3 py-3.5 sm:mb-12 sm:px-4 sm:py-4 ${style.box}`}>
-      <div className="flex items-center justify-between gap-2">
+    <section className={`mb-14 rounded-[18px] border border-white/70 px-3.5 py-4 sm:mb-12 sm:px-5 sm:py-5 ${style.box}`}>
+      <div className="mb-3 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <span className={`h-5 w-1.5 rounded-full ${style.point}`} aria-hidden />
           <h2 className="truncate text-base font-bold text-gray-900 sm:text-xl">{title}</h2>
@@ -52,7 +49,6 @@ export function HomeProductSection({ title, products, onAdd, tone = "default" }:
           </span>
         )}
       </div>
-      <div className={`my-3 border-t ${style.divider}`} />
 
       <HorizontalScrollHint className={HOME_PRODUCT_RAIL_CLASS}>
         {products.map((product) => (
