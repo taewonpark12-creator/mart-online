@@ -117056,7 +117056,7 @@
   {
     "barcode": "9100000003306",
     "name": "알배기배추(1통)행사",
-    "normalPrice": 980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117622,8 +117622,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)",
-    "normalPrice": 2480,
+    "name": "대파(1단)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118954,8 +118954,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)",
-    "normalPrice": 1980,
+    "name": "가지(5개/1봉)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
