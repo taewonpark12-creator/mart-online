@@ -72281,11 +72281,11 @@
   {
     "barcode": "8801242643183",
     "name": "CJ)안심얇은사각200g",
-    "normalPrice": 3000,
-    "eventPrice": 2200,
-    "discountRate": 27,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 2700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801242643190",
@@ -76287,10 +76287,10 @@
     "barcode": "8801392105012",
     "name": "백설)365칼집비엔나1kg",
     "normalPrice": 9800,
-    "eventPrice": 8500,
-    "discountRate": 13,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392105036",
