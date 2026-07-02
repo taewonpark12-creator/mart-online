@@ -32718,10 +32718,10 @@
     "barcode": "8801047570950",
     "name": "동원)녹돈델리햄450g",
     "normalPrice": 7500,
-    "eventPrice": 5980,
-    "discountRate": 20,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801047571094",
@@ -32762,7 +32762,7 @@
   {
     "barcode": "8801047574088",
     "name": "동원)그릴리크럼부어스트315g",
-    "normalPrice": 6200,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -32771,7 +32771,7 @@
   {
     "barcode": "8801047574262",
     "name": "동원)그릴리초리조부어스트315g",
-    "normalPrice": 6200,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118054,8 +118054,8 @@
   },
   {
     "barcode": "9100000216553",
-    "name": "대학찰옥수수(10개/1망)행사",
-    "normalPrice": 3980,
+    "name": "옥수수(5개/1망)",
+    "normalPrice": 3480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
