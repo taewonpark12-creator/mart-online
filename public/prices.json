@@ -62649,6 +62649,33 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801117001421",
+    "name": "오리온)지지미부추전112g",
+    "normalPrice": 2800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801117001438",
+    "name": "오리온)지지미김치전58g",
+    "normalPrice": 1500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801117001445",
+    "name": "오리온)지지미김치전112g",
+    "normalPrice": 2800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801117001599",
     "name": "오리온)오뜨애플파이175g",
     "normalPrice": 3500,
