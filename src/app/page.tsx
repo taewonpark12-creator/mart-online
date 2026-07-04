@@ -13,7 +13,8 @@ import { FlyerBanner } from "@/components/FlyerBanner";
 import { useCart } from "@/contexts/CartContext";
 import { PriceProvider } from "@/contexts/PriceContext";
 import type { CartItem, Product } from "@/lib/types";
-import { CATEGORIES, MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
+import { CATEGORIES, formatPrice } from "@/lib/types";
+import { getMinimumOrderAmount, isMinOrderEventActive } from "@/lib/min-order";
 
 const PRODUCT_LOAD_ERROR_MESSAGE = "상품을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
 const PRODUCT_FETCH_TIMEOUT_MS = 10000;
@@ -35,6 +36,8 @@ export default function HomePage() {
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
 
   const { addItem, syncWithProducts, totalAmount, totalCount } = useCart();
+  const minimumOrderAmount = getMinimumOrderAmount();
+  const minimumOrderEventActive = isMinOrderEventActive();
   const fetchCount = useRef(0);
   const isSearchMode = debouncedSearch.length > 0;
   const categoryProducts =
@@ -274,7 +277,9 @@ export default function HomePage() {
             </div>
 
             <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
-              {formatPrice(MIN_ORDER_AMOUNT)} 이상
+              {minimumOrderEventActive
+                ? `오픈 이벤트 ${formatPrice(minimumOrderAmount)} 이상`
+                : `${formatPrice(minimumOrderAmount)} 이상`}
             </div>
           </div>
 

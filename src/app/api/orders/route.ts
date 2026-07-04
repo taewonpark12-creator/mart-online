@@ -10,6 +10,7 @@ import {
 } from "@/lib/order-pricing";
 import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/order-observability";
 import { firstMeaningfulProductName } from "@/lib/order-item";
+import { getMinimumOrderAmount } from "@/lib/min-order";
 
 export const runtime = "nodejs";
 
@@ -345,8 +346,30 @@ export async function POST(req: NextRequest) {
       (sum, item) => sum + item.price * item.quantity,
       0,
     );
-
     const acceptedAt = new Date();
+    const minimumOrderAmount = getMinimumOrderAmount(acceptedAt);
+
+    if (totalAmount < minimumOrderAmount) {
+      logSafeOrderEvent("order.create.failed", {
+        requestId,
+        reason: "MINIMUM_ORDER_AMOUNT_NOT_MET",
+        totalAmount,
+        minimumOrderAmount,
+        itemCount: orderItems.length,
+        elapsedMs: Date.now() - startedAt,
+      }, "warn");
+      return NextResponse.json(
+        {
+          error: "MINIMUM_ORDER_AMOUNT_NOT_MET",
+          message: `최소 주문 금액은 ${formatPrice(minimumOrderAmount)}입니다.`,
+          minimumOrderAmount,
+          totalAmount,
+          remainingAmount: minimumOrderAmount - totalAmount,
+        },
+        { status: 400 },
+      );
+    }
+
     const acceptedAfterCutoff = isAfterCutoffTime(acceptedAt);
     const duplicateWindowStart = new Date(acceptedAt.getTime() - DUPLICATE_ORDER_WINDOW_MS);
     const normalizedCustomerPhone = normalizePhone(customerPhone);

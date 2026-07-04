@@ -1,6 +1,7 @@
 "use client";
 
-import { MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
+import { formatPrice } from "@/lib/types";
+import { getMinimumOrderAmount, isMinOrderEventActive } from "@/lib/min-order";
 
 type Props = {
   itemCount: number;
@@ -11,12 +12,16 @@ type Props = {
 export function OrderBar({ itemCount, totalAmount, onOrderClick }: Props) {
   if (itemCount === 0) return null;
 
-  const remainingAmount = Math.max(MIN_ORDER_AMOUNT - totalAmount, 0);
+  const minimumOrderAmount = getMinimumOrderAmount();
+  const eventActive = isMinOrderEventActive();
+  const remainingAmount = Math.max(minimumOrderAmount - totalAmount, 0);
   const minimumOrderMessage =
-    remainingAmount === 0
+    eventActive && remainingAmount > 0
+      ? `온라인 주문 오픈 이벤트! ${formatPrice(minimumOrderAmount)} 이상 주문 가능`
+      : remainingAmount === 0
       ? "주문 가능"
       : totalAmount === 0
-        ? `${formatPrice(MIN_ORDER_AMOUNT)} 이상 배송`
+        ? `${formatPrice(minimumOrderAmount)} 이상 배송`
         : `${formatPrice(remainingAmount)} 남음`;
 
   return (

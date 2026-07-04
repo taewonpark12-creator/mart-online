@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
-import { MIN_ORDER_AMOUNT, formatPrice } from "@/lib/types";
+import { formatPrice } from "@/lib/types";
+import { getMinimumOrderAmount } from "@/lib/min-order";
 
 const PICKUP_TIMES = [
   "09:30",
@@ -87,7 +88,8 @@ export default function OrderModal({ open, onClose }) {
   if (!open) return null;
 
   const isDelivery = form.fulfillmentType === "DELIVERY";
-  const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
+  const minimumOrderAmount = getMinimumOrderAmount();
+  const deliveryBlocked = isDelivery && totalAmount < minimumOrderAmount;
   const canSubmit =
     !submitting &&
     !deliveryBlocked &&
@@ -242,7 +244,7 @@ export default function OrderModal({ open, onClose }) {
                 />
                 {deliveryBlocked && (
                   <p className="text-sm font-semibold text-red-500">
-                    배달 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
+                    배달 주문은 {formatPrice(minimumOrderAmount)} 이상이어야 합니다.
                   </p>
                 )}
               </>

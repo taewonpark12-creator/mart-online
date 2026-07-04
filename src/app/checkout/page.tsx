@@ -7,11 +7,11 @@ import { useCart } from "@/contexts/CartContext";
 import { CHECKOUT_CUTOFF_NOTICE } from "@/lib/delivery-schedule";
 import { formatCartPriceChangeNotice, syncCartPricesWithLatestSource } from "@/lib/cart-price-sync";
 import {
-  MIN_ORDER_AMOUNT,
   formatPrice,
   PAYMENT_METHOD_OPTIONS,
   OUT_OF_STOCK_POLICY_OPTIONS,
 } from "@/lib/types";
+import { getMinimumOrderAmount } from "@/lib/min-order";
 
 const PICKUP_TIMES = [
   "09:30",
@@ -123,6 +123,17 @@ function getOrderErrorMessage(status: number, result: any) {
     return "장바구니 상품 정보를 확인할 수 없습니다. 상품을 다시 담아주세요.";
   }
 
+  if (code === "MINIMUM_ORDER_AMOUNT_NOT_MET") {
+    const minimumOrderAmount = Number(result?.minimumOrderAmount);
+    const remainingAmount = Number(result?.remainingAmount);
+    if (Number.isFinite(minimumOrderAmount) && Number.isFinite(remainingAmount) && remainingAmount > 0) {
+      return `최소 주문 금액은 ${formatPrice(minimumOrderAmount)}입니다.\n${formatPrice(remainingAmount)} 더 담아주세요.`;
+    }
+    if (Number.isFinite(minimumOrderAmount)) {
+      return `최소 주문 금액은 ${formatPrice(minimumOrderAmount)}입니다.`;
+    }
+  }
+
   return SERVER_ERROR_MESSAGE;
 }
 
@@ -162,13 +173,14 @@ function toOrderItem(item: any) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalAmount, clearCart, replaceItems, loaded } = useCart();
+  const { items, totalAmount, replaceItems, loaded } = useCart();
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [priceNotice, setPriceNotice] = useState("");
   const [syncingPrices, setSyncingPrices] = useState(true);
   const [skipEmptyCartCheck, setSkipEmptyCartCheck] = useState(false);
+  const [isOrderSuccess, setIsOrderSuccess] = useState(false);
   const [showCutoffNotice, setShowCutoffNotice] = useState(false);
   const submitLockRef = useRef(false);
   const checkedLatestPricesRef = useRef(false);
@@ -244,11 +256,14 @@ export default function CheckoutPage() {
   }, [items, loaded, replaceItems]);
 
   const isDelivery = form.fulfillmentType === "DELIVERY";
-  const deliveryBlocked = isDelivery && totalAmount < MIN_ORDER_AMOUNT;
+  const minimumOrderAmount = getMinimumOrderAmount();
+  const minimumOrderBlocked = totalAmount < minimumOrderAmount;
+  const shouldShowMinimumOrderNotice = minimumOrderBlocked && !submitting && !isOrderSuccess;
   const canSubmit = Boolean(
     !submitting &&
+    !isOrderSuccess &&
     !syncingPrices &&
-    !deliveryBlocked &&
+    !minimumOrderBlocked &&
     items.length > 0 &&
     form.customerName.trim() &&
     form.customerPhone.trim() &&
@@ -271,6 +286,7 @@ export default function CheckoutPage() {
 
     submitLockRef.current = true;
     setSubmitting(true);
+    setIsOrderSuccess(false);
     setError("");
 
     // Save delivery info if requested
@@ -316,8 +332,13 @@ export default function CheckoutPage() {
 
       const orderNumber = result.orderNumber;
 
+      setIsOrderSuccess(true);
       setSkipEmptyCartCheck(true);
-      clearCart();
+      try {
+        sessionStorage.setItem("mart_clear_cart_after_order", orderNumber);
+      } catch {
+        /* ignore */
+      }
       setForm(INITIAL_FORM);
       router.replace(`/order-complete?orderNumber=${encodeURIComponent(orderNumber)}`);
     } catch (error) {
@@ -329,7 +350,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (items.length === 0 && !skipEmptyCartCheck) {
+  if (items.length === 0 && !skipEmptyCartCheck && !isOrderSuccess) {
     return (
       <div className="min-h-screen bg-[#f8faf8]">
         <Header />
@@ -423,9 +444,9 @@ export default function CheckoutPage() {
                 autoComplete="street-address"
                 className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
               />
-              {deliveryBlocked && (
+              {shouldShowMinimumOrderNotice && (
                 <p className="text-sm font-semibold text-red-500">
-                  배송 주문은 {formatPrice(MIN_ORDER_AMOUNT)} 이상이어야 합니다.
+                  주문은 {formatPrice(minimumOrderAmount)} 이상이어야 합니다.
                 </p>
               )}
               <label className="flex min-h-[48px] items-center gap-3 text-base">
@@ -555,9 +576,9 @@ export default function CheckoutPage() {
                   {error}
                 </p>
               )}
-              {deliveryBlocked && (
+              {shouldShowMinimumOrderNotice && (
                 <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm font-bold text-amber-800">
-                  {formatPrice(MIN_ORDER_AMOUNT)} 이상 배송 주문 가능합니다.
+                  {formatPrice(minimumOrderAmount)} 이상 주문 가능합니다.
                 </p>
               )}
               <button

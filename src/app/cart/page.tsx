@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { useCart } from "@/contexts/CartContext";
-import { formatPrice, MIN_ORDER_AMOUNT } from "@/lib/types";
+import { formatPrice } from "@/lib/types";
+import { getMinimumOrderAmount, isMinOrderEventActive } from "@/lib/min-order";
 import { ProductImage } from "@/components/ProductImage";
 import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
 import { formatCartPriceChangeNotice, syncCartPricesWithLatestSource } from "@/lib/cart-price-sync";
@@ -40,8 +41,10 @@ export default function CartPage() {
   const [confirmingDeleteProductId, setConfirmingDeleteProductId] = useState<string | null>(null);
   const checkedLatestPricesRef = useRef(false);
 
-  const meetsMinimum = totalAmount >= MIN_ORDER_AMOUNT;
-  const amountShort = MIN_ORDER_AMOUNT - totalAmount;
+  const minimumOrderAmount = getMinimumOrderAmount();
+  const minimumOrderEventActive = isMinOrderEventActive();
+  const meetsMinimum = totalAmount >= minimumOrderAmount;
+  const amountShort = Math.max(minimumOrderAmount - totalAmount, 0);
 
   useEffect(() => {
     if (!loaded || checkedLatestPricesRef.current) return;
@@ -92,7 +95,7 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (!meetsMinimum) {
-      setError(`최소 주문 금액은 ${formatPrice(MIN_ORDER_AMOUNT)}입니다.`);
+      setError(`최소 주문 금액은 ${formatPrice(minimumOrderAmount)}입니다.`);
       return;
     }
     router.push("/checkout");
@@ -237,7 +240,9 @@ export default function CartPage() {
 
               {!meetsMinimum && (
                 <p className="text-xs sm:text-sm text-amber-700 bg-amber-50 rounded-xl px-3 py-2 sm:py-3">
-                  {formatPrice(MIN_ORDER_AMOUNT)} 이상 주문 가능합니다.{" "}
+                  {minimumOrderEventActive
+                    ? `온라인 주문 오픈 이벤트! ${formatPrice(minimumOrderAmount)} 이상 주문 가능`
+                    : `${formatPrice(minimumOrderAmount)} 이상 주문 가능합니다.`}{" "}
                   <span className="font-medium">{formatPrice(amountShort)}</span> 더 담아주세요.
                 </p>
               )}

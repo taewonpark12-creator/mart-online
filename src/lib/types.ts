@@ -32,7 +32,7 @@
     maxOrderQuantity?: number | null; // 최대 주문 수량 (null 또는 0이면 제한 없음)
   };
 
-  export const MIN_ORDER_AMOUNT = 40_000;
+  export { DEFAULT_MIN_ORDER_AMOUNT as MIN_ORDER_AMOUNT } from "@/lib/min-order";
 
   export type FulfillmentType = "DELIVERY" | "PICKUP";
 

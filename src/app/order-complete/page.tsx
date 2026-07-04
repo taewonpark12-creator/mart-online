@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/Header";
+import { useCart } from "@/contexts/CartContext";
 import {
   ORDER_COMPLETE_CUTOFF_NOTICE,
   isAfterCutoffTime,
@@ -27,9 +28,22 @@ function OrderCompleteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("orderNumber");
+  const { clearCart } = useCart();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!orderNumber) return;
+
+    try {
+      if (sessionStorage.getItem("mart_clear_cart_after_order") !== orderNumber) return;
+      clearCart();
+      sessionStorage.removeItem("mart_clear_cart_after_order");
+    } catch {
+      /* ignore */
+    }
+  }, [clearCart, orderNumber]);
 
   useEffect(() => {
     if (!orderNumber) {
