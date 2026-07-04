@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+const IOS_SAFARI_MESSAGE = "아이폰에서는 하단 공유 버튼을 누른 뒤 '홈 화면에 추가'를 선택해주세요.";
 const FALLBACK_MESSAGE = "Chrome 또는 Safari에서 열고 홈 화면에 추가해 주세요";
 
 type Props = {
@@ -24,7 +25,40 @@ function isStandaloneMode() {
 }
 
 function isKakaoInAppBrowser() {
-  return /KAKAOTALK/i.test(window.navigator.userAgent);
+  return /KAKAOTALK/i.test(getUserAgent());
+}
+
+function getUserAgent() {
+  return window.navigator.userAgent;
+}
+
+function isIOSDevice() {
+  const navigatorWithTouch = window.navigator as Navigator & { maxTouchPoints?: number };
+
+  return (
+    /iPad|iPhone|iPod/i.test(getUserAgent()) ||
+    (window.navigator.platform === "MacIntel" && Number(navigatorWithTouch.maxTouchPoints) > 1)
+  );
+}
+
+function isNaverInAppBrowser() {
+  return /NAVER|NAVER\(inapp/i.test(getUserAgent());
+}
+
+function isIOSChrome() {
+  return isIOSDevice() && /CriOS/i.test(getUserAgent());
+}
+
+function isIOSSafari() {
+  const userAgent = getUserAgent();
+  const isSafari = /Safari/i.test(userAgent);
+  const isOtherIOSBrowser = /CriOS|FxiOS|EdgiOS|OPiOS/i.test(userAgent);
+  const isInAppBrowser =
+    isKakaoInAppBrowser() ||
+    isNaverInAppBrowser() ||
+    /DaumApps|FBAN|FBAV|Instagram|Line/i.test(userAgent);
+
+  return isIOSDevice() && isSafari && !isOtherIOSBrowser && !isInAppBrowser;
 }
 
 export function PwaInstallButton({ variant = "default" }: Props) {
@@ -78,7 +112,12 @@ export function PwaInstallButton({ variant = "default" }: Props) {
       return;
     }
 
-    if (!installPrompt || isKakaoInAppBrowser()) {
+    if (isIOSSafari()) {
+      setNotice(IOS_SAFARI_MESSAGE);
+      return;
+    }
+
+    if (!installPrompt || isKakaoInAppBrowser() || isNaverInAppBrowser() || isIOSChrome()) {
       setNotice(FALLBACK_MESSAGE);
       return;
     }
