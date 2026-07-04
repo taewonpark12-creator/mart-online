@@ -62515,8 +62515,17 @@
   },
   {
     "barcode": "8801116062775",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "디스오리진1보루",
+    "normalPrice": 40000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801116062782",
+    "name": "디스오리진",
+    "normalPrice": 4000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -113583,6 +113592,15 @@
     "barcode": "8809791140023",
     "name": "부각마을)다시마튀각55g",
     "normalPrice": 2800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809797610001",
+    "name": "신선란(미국산)30구/1판",
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
