@@ -66422,7 +66422,7 @@
   {
     "barcode": "8801121761410",
     "name": "매일)바이오플레인요거트450g",
-    "normalPrice": 4200,
+    "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -109461,6 +109461,15 @@
     "barcode": "8809536246645",
     "name": "구운껍질캐슈넛200g",
     "normalPrice": 6500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809536246652",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
