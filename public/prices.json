@@ -21494,7 +21494,7 @@
   {
     "barcode": "8801039002186",
     "name": "해표)볶음참깨100g",
-    "normalPrice": 3900,
+    "normalPrice": 4300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -21503,7 +21503,7 @@
   {
     "barcode": "8801039002193",
     "name": "해표)볶음참깨180g",
-    "normalPrice": 5750,
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -21566,7 +21566,7 @@
   {
     "barcode": "8801039003848",
     "name": "해표)매실청650g",
-    "normalPrice": 6950,
+    "normalPrice": 7800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -51366,8 +51366,8 @@
     "barcode": "8801075014532",
     "name": "사조)살코기참치85g",
     "normalPrice": 1800,
-    "eventPrice": 1480,
-    "discountRate": 18,
+    "eventPrice": 1600,
+    "discountRate": 11,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -51384,8 +51384,8 @@
     "barcode": "8801075014617",
     "name": "사조)고추참치85g",
     "normalPrice": 1800,
-    "eventPrice": 1480,
-    "discountRate": 18,
+    "eventPrice": 1600,
+    "discountRate": 11,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -51393,8 +51393,8 @@
     "barcode": "8801075014624",
     "name": "사조)찌개참치85g",
     "normalPrice": 1800,
-    "eventPrice": 1480,
-    "discountRate": 18,
+    "eventPrice": 1600,
+    "discountRate": 11,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -51402,8 +51402,8 @@
     "barcode": "8801075014631",
     "name": "사조)마일드참치85g",
     "normalPrice": 1800,
-    "eventPrice": 1480,
-    "discountRate": 18,
+    "eventPrice": 1600,
+    "discountRate": 11,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -109468,8 +109468,8 @@
   },
   {
     "barcode": "8809536246652",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "구운껍질캐슈넛120g",
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
