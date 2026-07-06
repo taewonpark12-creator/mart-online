@@ -116857,7 +116857,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(3봉)",
+    "name": "팽이버섯(4봉)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -116929,8 +116929,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)",
-    "normalPrice": 17800,
+    "name": "수박(5kg/1통)행사",
+    "normalPrice": 15900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117001,8 +117001,8 @@
   },
   {
     "barcode": "9100000002477",
-    "name": "체리(1팩)",
-    "normalPrice": 999990,
+    "name": "체리(1팩)행사",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117109,8 +117109,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)행사",
-    "normalPrice": 980,
+    "name": "새송이버섯(1봉)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117191,7 +117191,7 @@
   {
     "barcode": "9100000003368",
     "name": "골드키위(10개/1팩)행사",
-    "normalPrice": 9800,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118342,8 +118342,8 @@
   },
   {
     "barcode": "9100000217116",
-    "name": "알타리무(3단)",
-    "normalPrice": 6980,
+    "name": "얼갈이(1단)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118864,8 +118864,8 @@
   },
   {
     "barcode": "9100000219066",
-    "name": "열무/얼갈이(1단)행사",
-    "normalPrice": 99990,
+    "name": "열무(1단)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
