@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const TARGET_URL = "https://lovemart.vercel.app/";
+const TARGET_URL = "https://lovemart.kr/";
 
 function isKakaoTalkInAppBrowser() {
   if (typeof window === "undefined") return false;
