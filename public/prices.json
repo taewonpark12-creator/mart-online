@@ -118028,7 +118028,7 @@
   {
     "barcode": "9100000214269",
     "name": "고당도오렌지(13개/1망)행사",
-    "normalPrice": 4980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118756,8 +118756,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
-    "normalPrice": 2480,
+    "name": "바나나(1송이)",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
