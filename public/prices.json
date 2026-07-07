@@ -116902,8 +116902,8 @@
   },
   {
     "barcode": "9100000000005",
-    "name": "비니루대표매입",
-    "normalPrice": 0,
+    "name": "애플수박1통",
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116938,7 +116938,7 @@
   },
   {
     "barcode": "9100000000145",
-    "name": "메론1개",
+    "name": "메론1통",
     "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
