@@ -46242,6 +46242,33 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801066056428",
+    "name": "사조)닭가슴살마일드100g",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801066056435",
+    "name": "사조)닭가슴살블랙페퍼100g",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801066056688",
+    "name": "사조)닭가슴살훈제100g",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801066057272",
     "name": "대림)야채듬뿍물만두300*2",
     "normalPrice": 7800,
