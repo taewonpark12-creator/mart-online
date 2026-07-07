@@ -15555,19 +15555,19 @@
     "barcode": "8801007880402",
     "name": "CJ)닭가슴살직화스테이크100g",
     "normalPrice": 3200,
-    "eventPrice": 1980,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007880440",
     "name": "CJ)닭가슴살직화통살구이100g",
     "normalPrice": 3200,
-    "eventPrice": 1980,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007882185",
@@ -15582,10 +15582,10 @@
     "barcode": "8801007882703",
     "name": "CJ)닭가슴살소시지120g",
     "normalPrice": 3200,
-    "eventPrice": 1980,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007894775",
@@ -15843,10 +15843,10 @@
     "barcode": "8801007966724",
     "name": "CJ)닭가슴살통살구이페퍼100g",
     "normalPrice": 3200,
-    "eventPrice": 1980,
-    "discountRate": 38,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007971339",
@@ -72345,19 +72345,19 @@
     "barcode": "8801242001716",
     "name": "CJ)시원오뎅한그릇360g",
     "normalPrice": 2700,
-    "eventPrice": 1980,
-    "discountRate": 27,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801242039085",
     "name": "CJ)얼큰오뎅한그릇360g",
     "normalPrice": 2700,
-    "eventPrice": 1980,
-    "discountRate": 27,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801242041583",
@@ -76268,7 +76268,7 @@
   {
     "barcode": "8801392088230",
     "name": "CJ)동그란스팸160g",
-    "normalPrice": 2700,
+    "normalPrice": 3700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -76377,10 +76377,10 @@
     "barcode": "8801392102158",
     "name": "CJ)닭가슴살순살청양100g",
     "normalPrice": 3300,
-    "eventPrice": 1980,
-    "discountRate": 40,
-    "saleStartDate": "2026-06-23",
-    "saleEndDate": "2026-07-07"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392103407",
