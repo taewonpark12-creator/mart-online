@@ -116084,9 +116084,9 @@
   {
     "barcode": "8809975699378",
     "name": "아워홈)포차꼬치어묵96g",
-    "normalPrice": 2500,
-    "eventPrice": 1980,
-    "discountRate": 21,
+    "normalPrice": 1980,
+    "eventPrice": null,
+    "discountRate": null,
     "saleStartDate": "2026-06-23",
     "saleEndDate": "2026-07-07"
   },
