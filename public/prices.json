@@ -116775,6 +116775,33 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000000",
+    "name": "초당옥수수1팩",
+    "normalPrice": 3980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000000000",
+    "name": "감자1봉",
+    "normalPrice": 3980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000002",
+    "name": "스낵오이1봉",
+    "normalPrice": 2980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000000527",
     "name": "생분해성봉투(중)",
     "normalPrice": 100,
