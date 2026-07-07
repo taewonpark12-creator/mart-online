@@ -25661,11 +25661,11 @@
   {
     "barcode": "8801045100210",
     "name": "오뚜기)토마토케찹500g",
-    "normalPrice": 3500,
-    "eventPrice": 3300,
-    "discountRate": 6,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 3800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801045100432",
