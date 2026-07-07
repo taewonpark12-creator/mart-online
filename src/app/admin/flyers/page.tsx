@@ -13,12 +13,16 @@ type Flyer = {
   updatedAt: string;
 };
 
+const MAX_FLYER_UPLOAD_BYTES = 20 * 1024 * 1024;
+const ALLOWED_FLYER_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
 export default function FlyerManagementPage() {
   const router = useRouter();
   const pathname = usePathname();
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [fileUploading, setFileUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
   const fetchFlyers = async () => {
@@ -85,6 +89,56 @@ export default function FlyerManagementPage() {
       alert("업로드 실패");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleFileUpload = async (file: File | undefined) => {
+    if (!file) return;
+
+    if (file.size > MAX_FLYER_UPLOAD_BYTES) {
+      alert("전단 이미지는 20MB 이하만 업로드할 수 있습니다.");
+      return;
+    }
+
+    if (!ALLOWED_FLYER_UPLOAD_TYPES.has(file.type)) {
+      alert("JPG, PNG, WebP 전단 이미지만 업로드할 수 있습니다.");
+      return;
+    }
+
+    setFileUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadRes = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const uploadData = await uploadRes.json().catch(() => ({}));
+
+      if (!uploadRes.ok || !uploadData?.url) {
+        alert(uploadData?.error || "전단 이미지 업로드에 실패했습니다.");
+        return;
+      }
+
+      const createRes = await fetch("/api/admin/flyers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: uploadData.url }),
+      });
+      const createData = await createRes.json().catch(() => ({}));
+
+      if (!createRes.ok) {
+        alert(createData?.error || "전단지 등록에 실패했습니다.");
+        return;
+      }
+
+      fetchFlyers();
+    } catch (error) {
+      console.error("전단지 파일 업로드 오류:", error);
+      alert("전단 이미지 업로드에 실패했습니다.");
+    } finally {
+      setFileUploading(false);
     }
   };
 
@@ -187,14 +241,25 @@ export default function FlyerManagementPage() {
             >
               URL 입력
             </button>
-            <button
-              type="button"
-              disabled
-              title="파일 업로드는 현재 준비 중입니다."
-              className="flex-1 py-2 px-4 rounded-lg bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed"
+            <label
+              className={`flex-1 cursor-pointer rounded-lg px-4 py-2 text-center text-sm font-medium transition ${
+                fileUploading
+                  ? "bg-gray-100 text-gray-400"
+                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              }`}
             >
-              파일 업로드 준비 중
-            </button>
+              {fileUploading ? "파일 업로드 중..." : "파일 업로드"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                disabled={fileUploading}
+                onChange={(event) => {
+                  void handleFileUpload(event.target.files?.[0]);
+                  event.currentTarget.value = "";
+                }}
+                className="sr-only"
+              />
+            </label>
           </div>
 
           <form onSubmit={handleUpload} className="space-y-4">
@@ -211,7 +276,7 @@ export default function FlyerManagementPage() {
                 required
               />
               <p className="text-xs text-gray-500 mt-1">
-                외부 이미지 호스팅 서비스의 URL을 입력하세요.
+                외부 이미지 URL을 입력하거나, 위 파일 업로드로 20MB 이하 전단 이미지를 등록하세요.
               </p>
             </div>
             <button
@@ -318,7 +383,7 @@ export default function FlyerManagementPage() {
           <h3 className="font-semibold text-blue-900 mb-2">사용 방법</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• 이미지 URL을 입력해 전단지를 등록하세요.</li>
-            <li>• 파일 업로드는 현재 준비 중입니다.</li>
+            <li>• 파일 업로드는 JPG, PNG, WebP를 지원하며 서버에서 WebP로 압축됩니다.</li>
             <li>• ↑↓ 버튼으로 전단지 순서를 변경할 수 있습니다.</li>
             <li>• 표시/숨김 버튼으로 전단지 노출 여부를 제어할 수 있습니다.</li>
             <li>• 삭제 버튼으로 전단지를 삭제할 수 있습니다.</li>

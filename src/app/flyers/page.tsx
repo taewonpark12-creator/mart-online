@@ -37,6 +37,7 @@ export default function FlyersPage() {
 
   const currentFlyer = flyers[currentIndex];
   const currentImageUrl = currentFlyer?.imageUrl ?? "";
+  const zoomUrl = currentImageUrl ? `/flyers/view?src=${encodeURIComponent(currentImageUrl)}` : "";
 
   const handlePrev = () => {
     setFailedImageUrl(null);
@@ -111,17 +112,23 @@ export default function FlyersPage() {
                   onTouchStart={handleSwipeStart}
                   onMouseDown={handleSwipeStart}
                 >
-                  <img
-                    key={currentImageUrl}
-                    src={currentImageUrl}
-                    alt={`전단지 ${currentIndex + 1}`}
-                    className="max-w-full max-h-full object-contain"
-                    referrerPolicy="no-referrer"
-                    onError={() => {
-                      console.error("[/flyers] Failed to load flyer image:", currentImageUrl);
-                      setFailedImageUrl(currentImageUrl);
-                    }}
-                  />
+                  <a href={zoomUrl} className="flex h-full w-full items-center justify-center" aria-label="전단지 확대 보기">
+                    <img
+                      key={currentImageUrl}
+                      src={currentImageUrl}
+                      alt={`전단지 ${currentIndex + 1}`}
+                      className="max-w-full max-h-full object-contain"
+                      referrerPolicy="no-referrer"
+                      onError={() => {
+                        console.error("[/flyers] Failed to load flyer image:", currentImageUrl);
+                        setFailedImageUrl(currentImageUrl);
+                      }}
+                    />
+                  </a>
+                </div>
+
+                <div className="absolute left-1/2 top-3 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-xs font-bold text-white">
+                  이미지를 누르면 확대됩니다
                 </div>
 
                 {/* 네비게이션 버튼 */}

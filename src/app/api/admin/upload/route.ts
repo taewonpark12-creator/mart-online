@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 import { isAdminAuthenticated } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -7,11 +8,14 @@ export const runtime = "nodejs";
 const FLYER_UPLOAD_REPO = process.env.FLYER_UPLOAD_REPO ?? "taewonpark12-creator/mart-online";
 const FLYER_UPLOAD_BRANCH = process.env.FLYER_UPLOAD_BRANCH ?? "main";
 const FLYER_UPLOAD_DIR = "public/flyers";
-const MAX_FLYER_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_FLYER_IMAGE_BYTES = 20 * 1024 * 1024;
+const FLYER_IMAGE_MAX_LONG_EDGE = 2800;
+const FLYER_IMAGE_QUALITY = 85;
 
 const ALLOWED_FLYER_IMAGE_TYPES: Record<string, string> = {
-  "image/jpeg": ".jpg",
-  "image/png": ".png",
+  "image/jpeg": ".webp",
+  "image/png": ".webp",
+  "image/webp": ".webp",
 };
 
 function createFlyerFilename(file: File, ext: string) {
@@ -77,19 +81,35 @@ export async function POST(req: NextRequest) {
     }
 
     if (file.size > MAX_FLYER_IMAGE_BYTES) {
-      return NextResponse.json({ error: "Images must be 5MB or smaller." }, { status: 400 });
+      return NextResponse.json({ error: "전단 이미지는 20MB 이하만 업로드할 수 있습니다." }, { status: 400 });
     }
 
     const ext = ALLOWED_FLYER_IMAGE_TYPES[file.type];
     if (!ext) {
-      return NextResponse.json({ error: "Only JPG and PNG flyer images can be uploaded." }, { status: 400 });
+      return NextResponse.json({ error: "JPG, PNG, WebP 전단 이미지만 업로드할 수 있습니다." }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const filename = createFlyerFilename(file, ext);
     const filePath = `${FLYER_UPLOAD_DIR}/${filename}`;
+    let optimizedBuffer: Buffer;
 
-    await uploadFlyerToGitHub(filePath, buffer);
+    try {
+      optimizedBuffer = await sharp(buffer, { failOn: "warning" })
+        .rotate()
+        .resize({
+          width: FLYER_IMAGE_MAX_LONG_EDGE,
+          height: FLYER_IMAGE_MAX_LONG_EDGE,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: FLYER_IMAGE_QUALITY })
+        .toBuffer();
+    } catch {
+      return NextResponse.json({ error: "이미지 파일만 업로드할 수 있습니다." }, { status: 400 });
+    }
+
+    await uploadFlyerToGitHub(filePath, optimizedBuffer);
 
     return NextResponse.json({ url: `/flyers/${filename}` });
   } catch (error) {
