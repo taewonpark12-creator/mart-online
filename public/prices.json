@@ -116802,6 +116802,168 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000000003",
+    "name": "골드키위1팩",
+    "normalPrice": 9800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000004",
+    "name": "태전점청과",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000005",
+    "name": "비니루대표매입",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000013",
+    "name": "탑두부",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000014",
+    "name": "수산(생선)",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000015",
+    "name": "손/깨두부\\1500",
+    "normalPrice": 1500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000145",
+    "name": "해)토마토+과일촌제주감귤",
+    "normalPrice": 2950,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000169",
+    "name": "썬키스트2L(1+1)",
+    "normalPrice": 2990,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000176",
+    "name": "과일촌제주감귤+참매실",
+    "normalPrice": 2600,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000183",
+    "name": "스퀴즈+토마토",
+    "normalPrice": 2600,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000206",
+    "name": "롯데제주감귤+썬키스트포도100",
+    "normalPrice": 3700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000220",
+    "name": "통황태\\5000",
+    "normalPrice": 5000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000237",
+    "name": "통북어\\4500",
+    "normalPrice": 4500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000244",
+    "name": "신우청과(주)",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000251",
+    "name": "한림청과",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000336",
+    "name": "영광농산(주)",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000343",
+    "name": "해)토마토+미닛제주감귤",
+    "normalPrice": 2950,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000350",
+    "name": "미닛메이드제주감귤1.5L+1.5L",
+    "normalPrice": 2750,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000000527",
     "name": "생분해성봉투(중)",
     "normalPrice": 100,
