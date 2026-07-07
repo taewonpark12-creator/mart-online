@@ -29061,6 +29061,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801045673790",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801045676500",
     "name": "오뚜기)케요네스310g",
     "normalPrice": 4400,
@@ -42860,11 +42869,11 @@
   {
     "barcode": "8801056061579",
     "name": "펩시콜라210ml*6입",
-    "normalPrice": 4000,
-    "eventPrice": 3750,
-    "discountRate": 6,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 3980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801056069476",
@@ -43317,6 +43326,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801056227371",
+    "name": "롯데)더하다옥수수수염차500ml",
+    "normalPrice": 1500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801056227388",
     "name": "칠성사이다제로+펩시콜라제로1.5L*2입",
     "normalPrice": 5500,
@@ -43324,6 +43342,15 @@
     "discountRate": 9,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
+  },
+  {
+    "barcode": "8801056227517",
+    "name": "롯데)더하다보리차500ml",
+    "normalPrice": 1500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801056228101",
@@ -56487,28 +56514,28 @@
     "barcode": "8801105911084",
     "name": "써니텐오렌지1.5L",
     "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1350,
+    "discountRate": 25,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801105911091",
     "name": "써니텐파인1.5L",
     "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1350,
+    "discountRate": 25,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801105911107",
     "name": "써니텐포도1.5L",
     "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1350,
+    "discountRate": 25,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801105912258",
