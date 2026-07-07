@@ -30879,6 +30879,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801046403433",
+    "name": "스파크액체세제2.6L",
+    "normalPrice": 9000,
+    "eventPrice": 7980,
+    "discountRate": 11,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
+  },
+  {
     "barcode": "8801046409527",
     "name": "스파크프라임5.5kg",
     "normalPrice": 11500,
@@ -53967,8 +53976,8 @@
     "barcode": "8801101168796",
     "name": "피죤)핑크로즈2.1L*2입",
     "normalPrice": 9500,
-    "eventPrice": 7500,
-    "discountRate": 21,
+    "eventPrice": 8500,
+    "discountRate": 11,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -53976,8 +53985,8 @@
     "barcode": "8801101168802",
     "name": "피죤)블루비앙카2.1L*2입",
     "normalPrice": 9500,
-    "eventPrice": 7500,
-    "discountRate": 21,
+    "eventPrice": 8500,
+    "discountRate": 11,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -53985,8 +53994,8 @@
     "barcode": "8801101168819",
     "name": "피죤)옐로미모사2.1L*2입",
     "normalPrice": 9500,
-    "eventPrice": 7500,
-    "discountRate": 21,
+    "eventPrice": 8500,
+    "discountRate": 11,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -54093,8 +54102,8 @@
     "barcode": "8801101883835",
     "name": "피죤)핑크로즈1.6L*2입",
     "normalPrice": 8000,
-    "eventPrice": 6500,
-    "discountRate": 19,
+    "eventPrice": 6980,
+    "discountRate": 13,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -54102,8 +54111,8 @@
     "barcode": "8801101883842",
     "name": "피죤)옐로미모사1.6L*2입",
     "normalPrice": 8000,
-    "eventPrice": 6500,
-    "discountRate": 19,
+    "eventPrice": 6980,
+    "discountRate": 13,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -54111,8 +54120,8 @@
     "barcode": "8801101883859",
     "name": "피죤)블루비앙카1.6L*2입",
     "normalPrice": 8000,
-    "eventPrice": 6500,
-    "discountRate": 19,
+    "eventPrice": 6980,
+    "discountRate": 13,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -93810,6 +93819,15 @@
     "barcode": "8809004774045",
     "name": "홈키파)내츄럴모기향30매",
     "normalPrice": 6500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809004774052",
+    "name": "홈키파)내츄럴모기향50매",
+    "normalPrice": 9000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
