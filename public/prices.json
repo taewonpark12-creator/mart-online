@@ -25319,7 +25319,7 @@
   {
     "barcode": "8801045010113",
     "name": "오뚜기)카레순한맛100g",
-    "normalPrice": 2500,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25328,7 +25328,7 @@
   {
     "barcode": "8801045010120",
     "name": "오뚜기)카레약간매운맛100g",
-    "normalPrice": 2500,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25337,7 +25337,7 @@
   {
     "barcode": "8801045010137",
     "name": "오뚜기)카레매운맛100g",
-    "normalPrice": 2500,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25427,7 +25427,7 @@
   {
     "barcode": "8801045014104",
     "name": "오뚜기)바몬드골드약간매운맛100g",
-    "normalPrice": 3300,
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25436,7 +25436,7 @@
   {
     "barcode": "8801045014111",
     "name": "오뚜기)바몬드카레골드순한맛100g",
-    "normalPrice": 3300,
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25445,7 +25445,7 @@
   {
     "barcode": "8801045014135",
     "name": "오뚜기)바몬드카레골드매운맛100g",
-    "normalPrice": 3300,
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25670,7 +25670,7 @@
   {
     "barcode": "8801045100432",
     "name": "오뚜기)토마토케찹800g",
-    "normalPrice": 5200,
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -27956,7 +27956,7 @@
   {
     "barcode": "8801045451114",
     "name": "오뚜기)겨자분50g",
-    "normalPrice": 950,
+    "normalPrice": 1100,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -28523,7 +28523,7 @@
   {
     "barcode": "8801045534855",
     "name": "오뚜기)로우슈가케찹290g",
-    "normalPrice": 2950,
+    "normalPrice": 3300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -29062,8 +29062,8 @@
   },
   {
     "barcode": "8801045673790",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "오뚜기)저당참깨드레싱290g",
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -43427,11 +43427,11 @@
   {
     "barcode": "8801056235581",
     "name": "펩시제로210ml*6입",
-    "normalPrice": 4000,
-    "eventPrice": 3750,
-    "discountRate": 6,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 3980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801056235925",
