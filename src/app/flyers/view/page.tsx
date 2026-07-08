@@ -18,15 +18,29 @@ function FlyerImageViewerContent() {
         <a href="/flyers" className="rounded-lg px-3 py-2 text-sm font-bold text-gray-700">
           닫기
         </a>
-        <p className="text-xs font-semibold text-gray-500">손가락으로 확대해서 볼 수 있습니다</p>
+        <div className="flex items-center gap-2">
+          {imageUrl && (
+            <a
+              href={imageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white"
+            >
+              원본 새 탭
+            </a>
+          )}
+          <p className="hidden text-xs font-semibold text-gray-500 sm:block">손가락으로 확대해서 볼 수 있습니다</p>
+        </div>
       </div>
 
       {imageUrl ? (
-        <div className="mx-auto w-full max-w-none">
+        <div className="mx-auto w-full overflow-visible">
           <img
             src={imageUrl}
             alt="전단지 확대 이미지"
-            className="block h-auto w-full select-auto"
+            className="block h-auto w-full max-w-none select-auto"
+            loading="eager"
+            decoding="async"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -46,4 +60,3 @@ export default function FlyerImageViewerPage() {
     </Suspense>
   );
 }
-

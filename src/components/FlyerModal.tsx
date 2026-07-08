@@ -53,6 +53,9 @@ export function FlyerModal({ isOpen, onClose }: Props) {
     setCurrentIndex((prev) => (prev < flyers.length - 1 ? prev + 1 : 0));
   };
 
+  const currentImageUrl = flyers[currentIndex]?.imageUrl ?? "";
+  const zoomUrl = currentImageUrl ? `/flyers/view?src=${encodeURIComponent(currentImageUrl)}` : "";
+
   const handleSwipeStart = (e: React.TouchEvent | React.MouseEvent) => {
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const handleSwipeMove = (moveEvent: TouchEvent | MouseEvent) => {
@@ -92,12 +95,32 @@ export function FlyerModal({ isOpen, onClose }: Props) {
         {/* 헤더 */}
         <div className="flex items-center justify-between p-4 border-b bg-white">
           <h2 className="font-bold text-gray-900 text-lg">세일 전단</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none min-h-[44px] min-w-[44px] flex items-center justify-center"
-          >
-            ×
-          </button>
+          <div className="flex items-center gap-2">
+            {currentImageUrl && (
+              <>
+                <a
+                  href={zoomUrl}
+                  className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700"
+                >
+                  확대
+                </a>
+                <a
+                  href={currentImageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white"
+                >
+                  원본 새 탭
+                </a>
+              </>
+            )}
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 text-2xl leading-none min-h-[44px] min-w-[44px] flex items-center justify-center"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         {/* 전단지 영역 */}
@@ -118,9 +141,12 @@ export function FlyerModal({ isOpen, onClose }: Props) {
                 onMouseDown={handleSwipeStart}
               >
                 <img
-                  src={flyers[currentIndex].imageUrl}
+                  src={currentImageUrl}
                   alt={`전단지 ${currentIndex + 1}`}
                   className="max-w-full max-h-full object-contain"
+                  loading="eager"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
                 />
               </div>
 

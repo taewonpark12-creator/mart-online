@@ -87,7 +87,19 @@ export default function FlyersPage() {
         {/* 헤더 */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900">세일 전단</h1>
-          <GoBackToShoppingButton />
+          <div className="flex items-center gap-2">
+            {currentImageUrl && failedImageUrl !== currentImageUrl && (
+              <a
+                href={currentImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 shadow-sm"
+              >
+                원본 새 탭
+              </a>
+            )}
+            <GoBackToShoppingButton />
+          </div>
         </div>
 
         {/* 전단지 영역 */}
@@ -118,6 +130,8 @@ export default function FlyersPage() {
                       src={currentImageUrl}
                       alt={`전단지 ${currentIndex + 1}`}
                       className="max-w-full max-h-full object-contain"
+                      loading="eager"
+                      decoding="async"
                       referrerPolicy="no-referrer"
                       onError={() => {
                         console.error("[/flyers] Failed to load flyer image:", currentImageUrl);
