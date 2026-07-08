@@ -17326,8 +17326,8 @@
   },
   {
     "barcode": "8801019320583",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "해태)오예스미니크림소다192g",
+    "normalPrice": 4200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -58744,8 +58744,8 @@
   },
   {
     "barcode": "8801111964784",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "크라운)뽀또체다치즈버터278g",
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -58753,8 +58753,8 @@
   },
   {
     "barcode": "8801111964814",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "크라운)뽀또레몬커스타드288g",
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -58771,8 +58771,8 @@
   },
   {
     "barcode": "8801111965088",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "크라운)산도살구팝323g",
+    "normalPrice": 4900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -78519,10 +78519,10 @@
     "barcode": "8801492393609",
     "name": "하림)용가리치킨750g",
     "normalPrice": 12000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 7980,
+    "discountRate": 34,
+    "saleStartDate": "2026-07-07",
+    "saleEndDate": "2026-07-21"
   },
   {
     "barcode": "8801517150132",
