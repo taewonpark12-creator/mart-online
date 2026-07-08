@@ -117136,8 +117136,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)행사",
-    "normalPrice": 1480,
+    "name": "햇양파(소)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117235,8 +117235,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)행사",
-    "normalPrice": 15900,
+    "name": "수박(5kg/1통)",
+    "normalPrice": 17800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117307,8 +117307,8 @@
   },
   {
     "barcode": "9100000002477",
-    "name": "체리(1팩)행사",
-    "normalPrice": 7980,
+    "name": "체리(1팩)",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117847,8 +117847,8 @@
   },
   {
     "barcode": "9100000113159",
-    "name": "깐마늘(800g/1봉)행사",
-    "normalPrice": 6980,
+    "name": "깐마늘(800g/1봉)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118307,7 +118307,7 @@
   {
     "barcode": "9100000215433",
     "name": "한입마늘(800g/1봉)행사",
-    "normalPrice": 6980,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
