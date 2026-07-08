@@ -23,6 +23,7 @@ import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString,
 import { printReceiptNow } from "@/lib/print-receipt";
 import type { ReceiptOrder } from "@/lib/receipt-html";
 
+// Keep order-list fetching separate from notification checks and sound repeat timers.
 const ORDER_LIST_AUTO_REFRESH_MS = 5 * 60 * 1000;
 const ORDER_NOTIFICATION_VISIBLE_POLL_MS = 15000;
 const ORDER_NOTIFICATION_HIDDEN_POLL_MS = 60000;
