@@ -43031,11 +43031,11 @@
   {
     "barcode": "8801056091231",
     "name": "칠성사이다210ml*6입",
-    "normalPrice": 3980,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 4500,
+    "eventPrice": 3980,
+    "discountRate": 12,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056093815",
@@ -53210,11 +53210,11 @@
   {
     "barcode": "8801094593025",
     "name": "코카콜라215ml*6입",
-    "normalPrice": 3980,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 5000,
+    "eventPrice": 3980,
+    "discountRate": 20,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094602703",
