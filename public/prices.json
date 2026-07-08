@@ -72866,7 +72866,7 @@
   {
     "barcode": "8801252021100",
     "name": "크린백(미니)17*25*50",
-    "normalPrice": 2300,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -72875,7 +72875,7 @@
   {
     "barcode": "8801252022107",
     "name": "크린백25*35(소)50매",
-    "normalPrice": 2300,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73244,7 +73244,7 @@
   {
     "barcode": "8801252046509",
     "name": "크린고무장갑(대)",
-    "normalPrice": 3300,
+    "normalPrice": 3600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -77698,8 +77698,8 @@
   },
   {
     "barcode": "8801422967399",
-    "name": "삼)다용도 소주컵",
-    "normalPrice": 1600,
+    "name": "삼아)다용도소주컵15입",
+    "normalPrice": 2000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -82233,6 +82233,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802259031642",
+    "name": "롯데)KBO빼빼로초코",
+    "normalPrice": 1800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802259031703",
     "name": "롯데)KBO빼빼로초코필드53g",
     "normalPrice": 1800,
@@ -83891,7 +83900,7 @@
   {
     "barcode": "8803139030069",
     "name": "강력수세미2p",
-    "normalPrice": 1350,
+    "normalPrice": 1500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -90468,6 +90477,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8806080080411",
+    "name": "3M정전기청소포대형60매",
+    "normalPrice": 12500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8806102400265",
     "name": "까스명수골드75ml",
     "normalPrice": 750,
@@ -92763,6 +92781,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8807820010132",
+    "name": "토마토접는과도",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8807820010408",
     "name": "샤프주방가위(중)",
     "normalPrice": 6500,
@@ -94394,7 +94421,7 @@
   {
     "barcode": "8809016248015",
     "name": "멀티탭접지2구5호",
-    "normalPrice": 12500,
+    "normalPrice": 15000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -94448,7 +94475,7 @@
   {
     "barcode": "8809016248152",
     "name": "멀티탭접지6구5호",
-    "normalPrice": 22500,
+    "normalPrice": 26000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -96041,7 +96068,7 @@
   {
     "barcode": "8809049330343",
     "name": "우,향균스탠드주걱",
-    "normalPrice": 1500,
+    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
