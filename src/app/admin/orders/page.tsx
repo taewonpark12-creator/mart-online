@@ -23,8 +23,9 @@ import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString,
 import { printReceiptNow } from "@/lib/print-receipt";
 import type { ReceiptOrder } from "@/lib/receipt-html";
 
-const ORDERS_VISIBLE_REFRESH_MS = 15000;
-const ORDERS_HIDDEN_REFRESH_MS = 60000;
+const ORDER_LIST_AUTO_REFRESH_MS = 5 * 60 * 1000;
+const ORDER_NOTIFICATION_VISIBLE_POLL_MS = 15000;
+const ORDER_NOTIFICATION_HIDDEN_POLL_MS = 60000;
 const TODAY_SUMMARY_REFRESH_MS = 60000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_SESSION_ENABLED_STORAGE_KEY = "adminOrderNotificationSessionEnabled";
@@ -839,14 +840,12 @@ export default function OrdersPage() {
     fetchOrders();
   }, [fetchOrders]);
 
-  const ordersRefreshIntervalMs = isPageHidden ? ORDERS_HIDDEN_REFRESH_MS : ORDERS_VISIBLE_REFRESH_MS;
-
   useEffect(() => {
     const interval = setInterval(() => {
       fetchOrders({ silent: true });
-    }, ordersRefreshIntervalMs);
+    }, ORDER_LIST_AUTO_REFRESH_MS);
     return () => clearInterval(interval);
-  }, [fetchOrders, ordersRefreshIntervalMs]);
+  }, [fetchOrders]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -893,13 +892,15 @@ export default function OrdersPage() {
     return () => clearInterval(interval);
   }, [fetchTodaySummary]);
 
+  const notificationPollIntervalMs = isPageHidden ? ORDER_NOTIFICATION_HIDDEN_POLL_MS : ORDER_NOTIFICATION_VISIBLE_POLL_MS;
+
   useEffect(() => {
     void pollPendingOrders();
     const interval = setInterval(() => {
       void pollPendingOrders();
-    }, ordersRefreshIntervalMs);
+    }, notificationPollIntervalMs);
     return () => clearInterval(interval);
-  }, [ordersRefreshIntervalMs, pollPendingOrders]);
+  }, [notificationPollIntervalMs, pollPendingOrders]);
 
   useEffect(() => {
     notificationEnabledRef.current = notificationEnabled;
