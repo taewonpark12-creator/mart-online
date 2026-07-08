@@ -16,6 +16,20 @@ type Flyer = {
 const MAX_FLYER_UPLOAD_BYTES = 20 * 1024 * 1024;
 const ALLOWED_FLYER_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
+function getFlyerUploadErrorMessage(status: number, data: unknown) {
+  const response = data && typeof data === "object" ? data as Record<string, unknown> : {};
+  const message = String(response.message || response.error || "전단 이미지 업로드에 실패했습니다.");
+  const code = typeof response.code === "string" ? response.code : "";
+  const requestId = typeof response.requestId === "string" ? response.requestId : "";
+
+  return [
+    message,
+    code ? `오류 코드: ${code}` : "",
+    requestId ? `요청 ID: ${requestId}` : "",
+    `HTTP 상태: ${status}`,
+  ].filter(Boolean).join("\n");
+}
+
 export default function FlyerManagementPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -23,6 +37,7 @@ export default function FlyerManagementPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [fileUploading, setFileUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
   const fetchFlyers = async () => {
@@ -69,6 +84,7 @@ export default function FlyerManagementPage() {
     if (!imageUrl) return;
 
     setUploading(true);
+    setUploadError("");
     try {
       const res = await fetch("/api/admin/flyers", {
         method: "POST",
@@ -78,7 +94,7 @@ export default function FlyerManagementPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        alert(data.error || "업로드 실패");
+        setUploadError(data.error || data.message || "업로드 실패");
         return;
       }
 
@@ -86,7 +102,7 @@ export default function FlyerManagementPage() {
       fetchFlyers();
     } catch (error) {
       console.error("전단지 업로드 오류:", error);
-      alert("업로드 실패");
+      setUploadError("전단지 업로드 중 네트워크 오류가 발생했습니다.");
     } finally {
       setUploading(false);
     }
@@ -96,16 +112,17 @@ export default function FlyerManagementPage() {
     if (!file) return;
 
     if (file.size > MAX_FLYER_UPLOAD_BYTES) {
-      alert("전단 이미지는 20MB 이하만 업로드할 수 있습니다.");
+      setUploadError("전단 이미지는 20MB 이하만 업로드할 수 있습니다.");
       return;
     }
 
     if (!ALLOWED_FLYER_UPLOAD_TYPES.has(file.type)) {
-      alert("JPG, PNG, WebP 전단 이미지만 업로드할 수 있습니다.");
+      setUploadError("JPG, PNG, WebP 전단 이미지만 업로드할 수 있습니다.");
       return;
     }
 
     setFileUploading(true);
+    setUploadError("");
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -117,7 +134,7 @@ export default function FlyerManagementPage() {
       const uploadData = await uploadRes.json().catch(() => ({}));
 
       if (!uploadRes.ok || !uploadData?.url) {
-        alert(uploadData?.error || "전단 이미지 업로드에 실패했습니다.");
+        setUploadError(getFlyerUploadErrorMessage(uploadRes.status, uploadData));
         return;
       }
 
@@ -129,14 +146,14 @@ export default function FlyerManagementPage() {
       const createData = await createRes.json().catch(() => ({}));
 
       if (!createRes.ok) {
-        alert(createData?.error || "전단지 등록에 실패했습니다.");
+        setUploadError(createData?.error || createData?.message || "전단지 등록에 실패했습니다.");
         return;
       }
 
       fetchFlyers();
     } catch (error) {
       console.error("전단지 파일 업로드 오류:", error);
-      alert("전단 이미지 업로드에 실패했습니다.");
+      setUploadError("전단 이미지 업로드 중 네트워크 오류가 발생했습니다.");
     } finally {
       setFileUploading(false);
     }
@@ -279,6 +296,11 @@ export default function FlyerManagementPage() {
                 외부 이미지 URL을 입력하거나, 위 파일 업로드로 20MB 이하 전단 이미지를 등록하세요.
               </p>
             </div>
+            {uploadError && (
+              <div className="whitespace-pre-line rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold leading-6 text-red-700">
+                {uploadError}
+              </div>
+            )}
             <button
               type="submit"
               disabled={uploading}
