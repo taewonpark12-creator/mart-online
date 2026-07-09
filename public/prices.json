@@ -9900,6 +9900,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8800346461266",
+    "name": "치즈슬랑이",
+    "normalPrice": 3500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800346461280",
+    "name": "거북슬랑이",
+    "normalPrice": 3500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "88003542",
     "name": "한라산",
     "normalPrice": 4000,
@@ -102728,7 +102746,7 @@
   {
     "barcode": "8809280980604",
     "name": "아오리사과(10개/1봉)",
-    "normalPrice": 9999990,
+    "normalPrice": 12800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
