@@ -117109,8 +117109,8 @@
   },
   {
     "barcode": "9100000000004",
-    "name": "태전점청과",
-    "normalPrice": 0,
+    "name": "하우스밀감1팩",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117226,8 +117226,8 @@
   },
   {
     "barcode": "9100000000251",
-    "name": "123",
-    "normalPrice": 2980,
+    "name": "하우스밀감1팩",
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119232,6 +119232,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218823",
+    "name": "호박고구마100g",
+    "normalPrice": 800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218830",
     "name": "송산포도(3kg/1박스)",
     "normalPrice": 28900,
@@ -119244,6 +119253,24 @@
     "barcode": "9100000218847",
     "name": "펩시콜라355ml*24",
     "normalPrice": 19500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218854",
+    "name": "당근100g",
+    "normalPrice": 300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218861",
+    "name": "감자100g",
+    "normalPrice": 250,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119277,6 +119304,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218908",
+    "name": "밤고구마100g",
+    "normalPrice": 600,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218915",
     "name": "얼갈이(1단)행사",
     "normalPrice": 1480,
@@ -119289,6 +119325,15 @@
     "barcode": "9100000218922",
     "name": "양배추(1망)",
     "normalPrice": 11000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218939",
+    "name": "손질대파1팩",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119325,6 +119370,24 @@
     "barcode": "9100000218977",
     "name": "대봉감(4.5kg/1박스)",
     "normalPrice": 17800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218984",
+    "name": "어린잎채소1팩",
+    "normalPrice": 1480,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218991",
+    "name": "고수1팩",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119424,6 +119487,15 @@
     "barcode": "9100000219103",
     "name": "쪽파(1단)행사",
     "normalPrice": 1980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000219110",
+    "name": "브로콜리1개",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
