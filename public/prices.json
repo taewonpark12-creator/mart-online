@@ -52353,6 +52353,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801094000431",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801094000479",
     "name": "조지아블랙600ml",
     "normalPrice": 2200,
@@ -118973,7 +118982,7 @@
   {
     "barcode": "9100000217963",
     "name": "떡",
-    "normalPrice": 20000,
+    "normalPrice": 60000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
