@@ -58753,8 +58753,8 @@
   },
   {
     "barcode": "8801111964807",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "크라운)뽀또레몬커스타드144g",
+    "normalPrice": 2700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75746,11 +75746,11 @@
   {
     "barcode": "8801392025419",
     "name": "CJ)삼호부산어묵200g",
-    "normalPrice": 1200,
-    "eventPrice": 990,
-    "discountRate": 18,
-    "saleStartDate": "2026-07-07",
-    "saleEndDate": "2026-07-21"
+    "normalPrice": 1100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392025815",
