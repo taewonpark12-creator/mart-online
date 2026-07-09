@@ -3,13 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
 import { sanitizeInput, validateAmount } from "@/lib/security";
-
-function serializeProduct<T extends { price: bigint | number }>(product: T) {
-  return {
-    ...product,
-    price: product.price.toString(),
-  };
-}
+import { findProducts, serializeProduct } from "@/lib/product-query";
 
 function toNonNegativeInt(value: unknown, fallback = 0) {
   const next = Number(value);
@@ -34,32 +28,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    const products = await prisma.product.findMany({
-      where: {
-        ...(activeOnly ? { isActive: true } : {}),
-        ...(recommendedOnly ? { isRecommended: true } : {}),
-        ...(excludeRecommended ? { isRecommended: false } : {}),
-        ...(popularOnly ? { isPopular: true } : {}),
-        ...(onlineExclusiveOnly ? { isOnlineExclusive: true } : {}),
-        ...(category && category !== "전체" ? { category } : {}),
-        ...(outOfStockOnly ? { isOutOfStock: true } : {}),
-        ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
-        ...(q
-          ? {
-              OR: [
-                { name: { contains: q } },
-                { description: { contains: q } },
-                { barcode: { contains: q } },
-              ],
-            }
-          : {}),
-      },
-      orderBy: recommendedOnly
-        ? [{ recommendedOrder: "desc" }, { name: "asc" }]
-        : [{ category: "asc" }, { name: "asc" }],
+    const products = await findProducts({
+      category,
+      q,
+      activeOnly,
+      recommendedOnly,
+      excludeRecommended,
+      popularOnly,
+      onlineExclusiveOnly,
+      outOfStockOnly,
+      includeOutOfStock,
     });
 
-    return NextResponse.json(products.map(serializeProduct));
+    return NextResponse.json(products);
   } catch (error) {
     console.error("Products API Error:", error);
     return NextResponse.json({ error: "상품 목록을 불러오지 못했습니다." }, { status: 500 });

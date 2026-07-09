@@ -97,28 +97,18 @@ export default function HomePage() {
         return;
       }
 
-      const [allRes, homeRes, popularRes, exclusiveRes] = await Promise.all([
-        fetch("/api/products", { signal: controller.signal }),
-        fetch("/api/products?recommended=true", { signal: controller.signal }),
-        fetch("/api/products?popular=true", { signal: controller.signal }),
-        fetch("/api/products?onlineExclusive=true", { signal: controller.signal }),
-      ]);
+      const homeRes = await fetch("/api/products/home", { signal: controller.signal });
 
-      if (!allRes.ok || !homeRes.ok || !popularRes.ok || !exclusiveRes.ok) {
+      if (!homeRes.ok) {
         throw new Error("Failed to load home products");
       }
 
-      const [allRaw, homeRaw, popularRaw, exclusiveRaw] = await Promise.all([
-        allRes.json(),
-        homeRes.json(),
-        popularRes.json(),
-        exclusiveRes.json(),
-      ]);
+      const homeData = await homeRes.json().catch(() => ({}));
 
-      const nextAllProducts = Array.isArray(allRaw) ? allRaw : [];
-      const nextHomeProducts = Array.isArray(homeRaw) ? homeRaw : [];
-      const nextPopularProducts = Array.isArray(popularRaw) ? popularRaw : [];
-      const nextExclusiveProducts = Array.isArray(exclusiveRaw) ? exclusiveRaw : [];
+      const nextAllProducts = Array.isArray(homeData.products) ? homeData.products : [];
+      const nextHomeProducts = Array.isArray(homeData.recommendedProducts) ? homeData.recommendedProducts : [];
+      const nextPopularProducts = Array.isArray(homeData.popularProducts) ? homeData.popularProducts : [];
+      const nextExclusiveProducts = Array.isArray(homeData.onlineExclusiveProducts) ? homeData.onlineExclusiveProducts : [];
 
       setAllProducts(nextAllProducts);
       setHomeProducts(nextHomeProducts);
