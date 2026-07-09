@@ -18,19 +18,7 @@ function FlyerImageViewerContent() {
         <a href="/flyers" className="rounded-lg px-3 py-2 text-sm font-bold text-gray-700">
           닫기
         </a>
-        <div className="flex items-center gap-2">
-          {imageUrl && (
-            <a
-              href={imageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white"
-            >
-              원본 새 탭
-            </a>
-          )}
-          <p className="hidden text-xs font-semibold text-gray-500 sm:block">손가락으로 확대해서 볼 수 있습니다</p>
-        </div>
+        <p className="hidden text-xs font-semibold text-gray-500 sm:block">손가락으로 확대해서 볼 수 있습니다</p>
       </div>
 
       {imageUrl ? (

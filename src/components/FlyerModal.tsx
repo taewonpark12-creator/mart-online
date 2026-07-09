@@ -97,22 +97,12 @@ export function FlyerModal({ isOpen, onClose }: Props) {
           <h2 className="font-bold text-gray-900 text-lg">세일 전단</h2>
           <div className="flex items-center gap-2">
             {currentImageUrl && (
-              <>
-                <a
-                  href={zoomUrl}
-                  className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700"
-                >
-                  확대
-                </a>
-                <a
-                  href={currentImageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white"
-                >
-                  원본 새 탭
-                </a>
-              </>
+              <a
+                href={zoomUrl}
+                className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700"
+              >
+                확대
+              </a>
             )}
             <button
               onClick={onClose}
