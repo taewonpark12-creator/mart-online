@@ -117253,7 +117253,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(3봉)",
+    "name": "팽이버섯(4봉)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -118990,8 +118990,8 @@
   },
   {
     "barcode": "9100000218564",
-    "name": "오이지오이(50개/1포)",
-    "normalPrice": 13800,
+    "name": "오이지오이(50개/1포)행사",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119476,8 +119476,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)",
-    "normalPrice": 1980,
+    "name": "가지(5개/1봉)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
