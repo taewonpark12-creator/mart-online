@@ -284,7 +284,13 @@ export default function HomePage() {
               검색
             </span>
             <input
-              type="text"
+              type="search"
+              name="product-search"
+              inputMode="search"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="none"
+              spellCheck={false}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="상품명 검색"
