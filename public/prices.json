@@ -117379,7 +117379,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(4봉)행사",
+    "name": "팽이버섯(3봉)",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -118055,7 +118055,7 @@
   {
     "barcode": "9100000112688",
     "name": "천도복숭아(10개/1팩)행사",
-    "normalPrice": 4980,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118909,8 +118909,8 @@
   },
   {
     "barcode": "9100000217338",
-    "name": "대추방울토마토(1팩)행사",
-    "normalPrice": 2980,
+    "name": "대추방울토마토(1팩)",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118999,8 +118999,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
-    "normalPrice": 1980,
+    "name": "바나나(1송이)",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119674,8 +119674,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)행사",
-    "normalPrice": 1480,
+    "name": "가지(5개/1봉)",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
