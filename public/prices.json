@@ -54378,6 +54378,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801101891786",
+    "name": "피죤)초고농축오션후레쉬1L",
+    "normalPrice": 5800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801101891915",
     "name": "피죤)무균무때제로주방용750ml",
     "normalPrice": 5950,
@@ -74837,7 +74846,7 @@
   {
     "barcode": "8801353005979",
     "name": "산도깨비)오이비누3입",
-    "normalPrice": 1950,
+    "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74846,7 +74855,7 @@
   {
     "barcode": "8801353005986",
     "name": "산도깨비)라벤더비누3입",
-    "normalPrice": 1950,
+    "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74855,7 +74864,7 @@
   {
     "barcode": "8801353005993",
     "name": "산도깨비)화장비누로즈3입",
-    "normalPrice": 1950,
+    "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74973,6 +74982,15 @@
     "barcode": "8801353006457",
     "name": "산도깨비)공기청향제숲향300ml",
     "normalPrice": 3400,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801353006501",
+    "name": "산도깨비)살구비누3입",
+    "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -90992,7 +91010,7 @@
   {
     "barcode": "8806325604969",
     "name": "참그린)녹차500g",
-    "normalPrice": 2800,
+    "normalPrice": 3200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91568,7 +91586,7 @@
   {
     "barcode": "8806325629269",
     "name": "비트)아로마웨이브카모마일2L",
-    "normalPrice": 9500,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
