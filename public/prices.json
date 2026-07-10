@@ -117173,7 +117173,7 @@
   {
     "barcode": "9100000000015",
     "name": "대극천복숭아1팩",
-    "normalPrice": 8900,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117209,7 +117209,7 @@
   {
     "barcode": "9100000000183",
     "name": "복숭아1팩",
-    "normalPrice": 8900,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117227,7 +117227,7 @@
   {
     "barcode": "9100000000220",
     "name": "체리1팩",
-    "normalPrice": 7980,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117262,7 +117262,7 @@
   },
   {
     "barcode": "9100000000336",
-    "name": "초당옥수수1팩",
+    "name": "옥수수1팩",
     "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
