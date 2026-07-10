@@ -14528,9 +14528,9 @@
   {
     "barcode": "8801007654935",
     "name": "참그린)녹차1.2kg",
-    "normalPrice": 5000,
-    "eventPrice": 3980,
-    "discountRate": 20,
+    "normalPrice": 5500,
+    "eventPrice": 4800,
+    "discountRate": 13,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -54209,27 +54209,27 @@
   {
     "barcode": "8801101884238",
     "name": "피죤)고농축로맨틱플라워1L",
-    "normalPrice": 6000,
-    "eventPrice": 4980,
-    "discountRate": 17,
+    "normalPrice": 7500,
+    "eventPrice": 5980,
+    "discountRate": 20,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101884245",
     "name": "피죤)고농축써니가든1L",
-    "normalPrice": 6000,
-    "eventPrice": 4980,
-    "discountRate": 17,
+    "normalPrice": 7500,
+    "eventPrice": 5980,
+    "discountRate": 20,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101884252",
     "name": "피죤)고농축블루비앙카1L",
-    "normalPrice": 6000,
-    "eventPrice": 4980,
-    "discountRate": 17,
+    "normalPrice": 7500,
+    "eventPrice": 5980,
+    "discountRate": 20,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -54380,11 +54380,11 @@
   {
     "barcode": "8801101891786",
     "name": "피죤)초고농축오션후레쉬1L",
-    "normalPrice": 5800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 7500,
+    "eventPrice": 5980,
+    "discountRate": 20,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101891915",
@@ -91568,7 +91568,7 @@
   {
     "barcode": "8806325629078",
     "name": "비트)아로마웨이브시트러스2L",
-    "normalPrice": 9500,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91604,9 +91604,9 @@
   {
     "barcode": "8806325629306",
     "name": "참그린)천혜향1.2kg",
-    "normalPrice": 5000,
-    "eventPrice": 3980,
-    "discountRate": 20,
+    "normalPrice": 5500,
+    "eventPrice": 4800,
+    "discountRate": 13,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
