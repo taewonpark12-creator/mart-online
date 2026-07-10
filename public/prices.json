@@ -30954,10 +30954,10 @@
     "barcode": "8801046426388",
     "name": "애경)울샴푸1.4L",
     "normalPrice": 6500,
-    "eventPrice": 5980,
-    "discountRate": 8,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801046444962",
