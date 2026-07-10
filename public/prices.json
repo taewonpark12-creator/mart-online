@@ -23034,10 +23034,10 @@
     "barcode": "8801043015141",
     "name": "농심)오징어짬뽕5입",
     "normalPrice": 6500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 5980,
+    "discountRate": 8,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043015158",
@@ -28461,10 +28461,10 @@
     "barcode": "8801045521077",
     "name": "오뚜기)열라면5입",
     "normalPrice": 4200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 3980,
+    "discountRate": 5,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801045521213",
