@@ -117379,8 +117379,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)행사",
-    "normalPrice": 1480,
+    "name": "햇양파(소)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117478,8 +117478,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)",
-    "normalPrice": 17800,
+    "name": "수박(5kg/1통)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117658,8 +117658,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)",
-    "normalPrice": 1480,
+    "name": "새송이버섯(1봉)행사",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118306,8 +118306,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)행사",
-    "normalPrice": 3980,
+    "name": "표고버섯(500g/1봉)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118559,7 +118559,7 @@
   {
     "barcode": "9100000215440",
     "name": "브로컬리(1개)행사",
-    "normalPrice": 980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118648,8 +118648,8 @@
   },
   {
     "barcode": "9100000216225",
-    "name": "오이(5개/1봉)",
-    "normalPrice": 2980,
+    "name": "오이(5개/1봉)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
