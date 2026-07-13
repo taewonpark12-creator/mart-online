@@ -117550,8 +117550,8 @@
   },
   {
     "barcode": "9100000002477",
-    "name": "체리(1팩)",
-    "normalPrice": 8900,
+    "name": "체리(1팩)행사",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118594,8 +118594,8 @@
   },
   {
     "barcode": "9100000215914",
-    "name": "참외(6개/1봉)",
-    "normalPrice": 7980,
+    "name": "참외(6개/1봉)행사",
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118792,7 +118792,7 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(1개)",
+    "name": "인큐호박(2개)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -119387,7 +119387,7 @@
   {
     "barcode": "9100000218960",
     "name": "양배추(1통)행사",
-    "normalPrice": 2480,
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119694,6 +119694,15 @@
     "barcode": "9100000219325",
     "name": "벌마늘(1망)",
     "normalPrice": 17800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000219332",
+    "name": "고구마순(1단)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
