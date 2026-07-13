@@ -102699,6 +102699,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809275381089",
+    "name": "달인돌자반볶음60g+60g",
+    "normalPrice": 4300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "2019-03-08",
+    "saleEndDate": "2019-04-01"
+  },
+  {
     "barcode": "8809275381720",
     "name": "달인광천김재래55g",
     "normalPrice": 3500,
