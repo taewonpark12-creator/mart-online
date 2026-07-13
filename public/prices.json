@@ -70731,6 +70731,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801166412346",
+    "name": "하기스)매직컴포트5공용38입",
+    "normalPrice": 42500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "88011707",
     "name": "말보로)레드",
     "normalPrice": 4500,
@@ -104897,7 +104906,7 @@
   {
     "barcode": "8809361419320",
     "name": "깨끗한내추럴소프트3겹30롤",
-    "normalPrice": 12000,
+    "normalPrice": 14500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
