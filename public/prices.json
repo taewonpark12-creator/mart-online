@@ -12522,10 +12522,10 @@
     "barcode": "8801007150352",
     "name": "백설)튀김가루1kg",
     "normalPrice": 3900,
-    "eventPrice": 2980,
-    "discountRate": 24,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007150369",
@@ -12540,10 +12540,10 @@
     "barcode": "8801007150390",
     "name": "백설)부침가루1kg",
     "normalPrice": 3900,
-    "eventPrice": 2980,
-    "discountRate": 24,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007150406",
