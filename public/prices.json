@@ -119385,6 +119385,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218793",
+    "name": "<특가>쌀1kg",
+    "normalPrice": 4500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218809",
     "name": "파프리카(6개/1봉)행사",
     "normalPrice": 3980,
