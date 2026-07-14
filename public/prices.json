@@ -110916,6 +110916,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809608271216",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809608271223",
     "name": "미쟝센 파워스윙크림왁스9",
     "normalPrice": 8700,
@@ -115110,6 +115119,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809878064129",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809878064136",
     "name": "퍼실엑스퍼트실내건조2L",
     "normalPrice": 20000,
@@ -117021,6 +117039,15 @@
     "barcode": "8888021309133",
     "name": "에너자이저AA4입",
     "normalPrice": 4300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8888021312331",
+    "name": "에버레디건전지AA4입",
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
