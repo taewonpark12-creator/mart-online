@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  isAdminPasswordConfigured,
   verifyAdminPassword,
   ADMIN_COOKIE_NAME,
   ADMIN_LAST_LOGIN_COOKIE_NAME,
@@ -10,6 +11,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const password = typeof body?.password === "string" ? body.password : "";
+
+    if (!isAdminPasswordConfigured()) {
+      return NextResponse.json(
+        { error: "관리자 비밀번호가 설정되어 있지 않습니다." },
+        { status: 503 },
+      );
+    }
 
     if (!verifyAdminPassword(password)) {
       return NextResponse.json(

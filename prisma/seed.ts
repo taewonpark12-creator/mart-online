@@ -1,17 +1,32 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+function ensureDestructiveAllowed() {
+  if (process.env.ALLOW_DESTRUCTIVE !== "true") {
+    console.log("Blocked: set ALLOW_DESTRUCTIVE=true to run this destructive seed script.");
+    return false;
+  }
 
-async function main() {
-  // 기존의 모든 데이터를 삭제하여 깨끗한 상태로 만듭니다.
-  // 실제 운영 중에는 이 파일을 실행하지 않도록 주의하세요!
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  // await prisma.product.deleteMany(); // 상품은 삭제하지 않음
-
-  console.log("✅ 모든 주문 데이터를 삭제했습니다.");
+  return true;
 }
 
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+async function main() {
+  if (!ensureDestructiveAllowed()) {
+    return;
+  }
+
+  const prisma = new PrismaClient();
+
+  try {
+    await prisma.orderItem.deleteMany();
+    await prisma.order.deleteMany();
+
+    console.log("Order seed cleanup completed.");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

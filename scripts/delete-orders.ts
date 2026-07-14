@@ -1,8 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+function ensureDestructiveAllowed() {
+  if (process.env.ALLOW_DESTRUCTIVE !== "true") {
+    console.log("Blocked: set ALLOW_DESTRUCTIVE=true to run this destructive order deletion script.");
+    return false;
+  }
+
+  return true;
+}
 
 async function deleteAllOrders() {
+  if (!ensureDestructiveAllowed()) {
+    return;
+  }
+
+  const prisma = new PrismaClient();
+
   try {
     console.log('Starting to delete all orders...');
 

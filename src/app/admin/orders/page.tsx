@@ -310,6 +310,21 @@ function OrderDetailPanel({
       alert('"주문삭제"를 정확히 입력해야 삭제할 수 있습니다.');
       return;
     }
+    const confirmed = window.confirm(
+      [
+        "이 주문을 완전히 삭제하시겠습니까?",
+        "삭제 후 복구할 수 없습니다.",
+        "",
+        `주문번호: ${order.orderNumber}`,
+        `고객명: ${order.customerName}`,
+        `주문금액: ${formatPrice(order.totalAmount)}`,
+      ].join("\n"),
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     onDelete();
   };
 
@@ -1082,6 +1097,7 @@ export default function OrdersPage() {
       fetchTodaySummary();
       void fetchOrders({ silent: true });
       void pollPendingOrders();
+      alert("주문이 삭제되었습니다.");
     } catch (error) {
       console.error("[admin/orders] delete failed", error);
       alert("주문 삭제 중 오류가 발생했습니다.");

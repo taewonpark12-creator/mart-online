@@ -32,9 +32,8 @@ Chrome/Edge 사용을 권장합니다.
 # 의존성 설치
 npm install
 
-# 데이터베이스 생성 및 시드
+# 데이터베이스 생성
 npx prisma db push
-npm run db:seed
 
 # 개발 서버 실행
 npm run dev
@@ -47,18 +46,18 @@ npm run dev
 
 ## 관리자 비밀번호
 
-기본값: `940326@@`
-
-`.env` 파일의 `ADMIN_PASSWORD` 값을 변경하세요.
+관리자 비밀번호는 `.env.local` 또는 Vercel 환경변수의 `ADMIN_PASSWORD`에 설정합니다.
+기본 비밀번호는 없으며, `ADMIN_PASSWORD`가 없으면 관리자 로그인은 차단됩니다.
 
 ## Flyer uploads
 
 Admin flyer file uploads commit JPG/PNG files to `public/flyers/` through the GitHub Contents API.
 Set these environment variables in Vercel:
 
-- `GITHUB_TOKEN`: GitHub token with contents write access to this repository.
-- `FLYER_UPLOAD_REPO`: Optional, defaults to `taewonpark12-creator/mart-online`.
-- `FLYER_UPLOAD_BRANCH`: Optional, defaults to `main`.
+- `GITHUB_TOKEN` with repo contents write access
+- `GITHUB_OWNER`
+- `GITHUB_REPO`
+- `GITHUB_BRANCH` (usually `main`)
 
 Uploaded flyer records store `/flyers/<filename>` in the database.
 
@@ -68,4 +67,3 @@ Uploaded flyer records store `/flyers/<filename>` in the database.
 - TypeScript
 - Tailwind CSS 4
 - Prisma + SQLite
-

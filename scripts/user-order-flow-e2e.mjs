@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 const BASE_URL = (process.env.BASE_URL || "http://127.0.0.1:3000").replace(/\/$/, "");
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "940326@@";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const MIN_ORDER_AMOUNT = 40_000;
 
 function log(title, payload) {
@@ -233,6 +233,10 @@ function adjustCartToMinimum(cart) {
 }
 
 async function loginAsAdmin() {
+  if (!ADMIN_PASSWORD) {
+    return "";
+  }
+
   const result = await request("/api/admin/login", {
     method: "POST",
     body: JSON.stringify({ password: ADMIN_PASSWORD }),
