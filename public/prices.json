@@ -62937,6 +62937,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801117001414",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801117001421",
     "name": "오리온)지지미부추전112g",
     "normalPrice": 2800,
