@@ -17352,6 +17352,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801019320347",
+    "name": "해태)에이스씬솔티카라멜145g",
+    "normalPrice": 2200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801019320545",
+    "name": "해태)구운나초26g",
+    "normalPrice": 1100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801019320576",
     "name": "해태)후렌치파이파인애플192g",
     "normalPrice": 4800,
@@ -58842,6 +58860,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801111965439",
+    "name": "크라운)빅파이살구324g",
+    "normalPrice": 4800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114101568",
     "name": "풀무원)국산순두부350g",
     "normalPrice": 2300,
@@ -60041,7 +60068,7 @@
   {
     "barcode": "8801114184257",
     "name": "풀무원)국산서리태콩국물960ml",
-    "normalPrice": 6800,
+    "normalPrice": 8000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
