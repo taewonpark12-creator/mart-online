@@ -20475,6 +20475,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037050158",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801037050721",
     "name": "맥심화이트골드20T",
     "normalPrice": 5800,
@@ -21132,6 +21141,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037094459",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801037094466",
     "name": "포스트)현미그레놀라310g",
     "normalPrice": 5800,
@@ -21258,6 +21276,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037097467",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801037097474",
     "name": "포스트)크리치오300g",
     "normalPrice": 5800,
@@ -21324,6 +21351,15 @@
     "barcode": "8801037099591",
     "name": "애사비콤부차배모과10T",
     "normalPrice": 5800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801037099652",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118001,7 +118037,7 @@
   {
     "barcode": "9100000111711",
     "name": "수박(8kg/1통)",
-    "normalPrice": 24800,
+    "normalPrice": 28900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
