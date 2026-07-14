@@ -12009,10 +12009,10 @@
     "barcode": "8801007055145",
     "name": "백설)햇자른당면500g",
     "normalPrice": 4800,
-    "eventPrice": 3980,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007055152",
