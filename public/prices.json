@@ -20476,8 +20476,8 @@
   },
   {
     "barcode": "8801037050158",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "포스트)그래놀라블루베리500g",
+    "normalPrice": 11500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -20909,7 +20909,7 @@
   {
     "barcode": "8801037073683",
     "name": "맥심디카페인100T",
-    "normalPrice": 27000,
+    "normalPrice": 28000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -21142,8 +21142,8 @@
   },
   {
     "barcode": "8801037094459",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "포스트)현미그래놀라500g",
+    "normalPrice": 11500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -21277,8 +21277,8 @@
   },
   {
     "barcode": "8801037097467",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "포스트)크리치오500g",
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -21358,8 +21358,8 @@
   },
   {
     "barcode": "8801037099652",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "오레오BTS호떡100g",
+    "normalPrice": 1800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -37568,11 +37568,11 @@
   {
     "barcode": "8801052023885",
     "name": "청정원)고소한들기름350ml",
-    "normalPrice": 16000,
-    "eventPrice": 9900,
-    "discountRate": 38,
-    "saleStartDate": "2026-07-07",
-    "saleEndDate": "2026-07-21"
+    "normalPrice": 17000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801052024646",
