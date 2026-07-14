@@ -118108,8 +118108,8 @@
   },
   {
     "barcode": "9100000113159",
-    "name": "깐마늘(800g/1봉)",
-    "normalPrice": 8900,
+    "name": "깐마늘(800g/1봉)행사",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118568,7 +118568,7 @@
   {
     "barcode": "9100000215433",
     "name": "한입마늘(800g/1봉)행사",
-    "normalPrice": 7980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118711,8 +118711,8 @@
   },
   {
     "barcode": "9100000216553",
-    "name": "옥수수(5개/1망)",
-    "normalPrice": 3480,
+    "name": "옥수수(5개/1망)행사",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118810,7 +118810,7 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(2개)행사",
+    "name": "인큐호박(1개)",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -119405,7 +119405,7 @@
   {
     "barcode": "9100000218960",
     "name": "양배추(1통)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119720,7 +119720,7 @@
   {
     "barcode": "9100000219332",
     "name": "고구마순(1단)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119791,7 +119791,7 @@
   },
   {
     "barcode": "9101003821",
-    "name": "팩느타리버섯(1팩)",
+    "name": "팩느타리버섯(2팩)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
