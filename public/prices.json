@@ -73136,7 +73136,7 @@
   {
     "barcode": "8801252025016",
     "name": "크린롤백25*35(중)200매",
-    "normalPrice": 5950,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73388,7 +73388,7 @@
   {
     "barcode": "8801252042426",
     "name": "크린장갑100매",
-    "normalPrice": 5500,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73406,7 +73406,7 @@
   {
     "barcode": "8801252042501",
     "name": "크린장갑프리미엄50매",
-    "normalPrice": 3600,
+    "normalPrice": 4300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73415,7 +73415,7 @@
   {
     "barcode": "8801252046400",
     "name": "크린면코팅장갑",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -77897,7 +77897,7 @@
   {
     "barcode": "8801422916120",
     "name": "삼아쿠킹호일250*10",
-    "normalPrice": 3500,
+    "normalPrice": 4200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -86771,7 +86771,7 @@
   {
     "barcode": "8803733333580",
     "name": "락앤락)위생백(중)300매",
-    "normalPrice": 5300,
+    "normalPrice": 6900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -94709,7 +94709,7 @@
   {
     "barcode": "8809016248039",
     "name": "멀티탭접지3구2호",
-    "normalPrice": 7200,
+    "normalPrice": 8800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116568,6 +116568,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809986142481",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809990039807",
     "name": "한우100%사골곰국",
     "normalPrice": 8900,
@@ -117767,7 +117776,7 @@
   {
     "barcode": "9100000002996",
     "name": "블루베리(1팩)",
-    "normalPrice": 999990,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119342,7 +119351,7 @@
   {
     "barcode": "9100000218670",
     "name": "토마토(5kg/1박스)",
-    "normalPrice": 19800,
+    "normalPrice": 18900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
