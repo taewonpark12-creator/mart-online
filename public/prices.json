@@ -26505,6 +26505,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801045203805",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801045203829",
     "name": "오뚜기)현미식초18L",
     "normalPrice": 21000,
@@ -26562,6 +26571,15 @@
     "barcode": "8801045205892",
     "name": "오뚜기)푸팟퐁카레180g",
     "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801045206165",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -28143,6 +28161,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801045459127",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801045459233",
     "name": "오뚜기)강황48g",
     "normalPrice": 3500,
@@ -29235,6 +29262,15 @@
     "barcode": "8801045702643",
     "name": "오뚜기)육개장사발면",
     "normalPrice": 1000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801045712499",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -82497,6 +82533,15 @@
     "barcode": "8802259031239",
     "name": "롯데)자일리톨오리지날100g",
     "normalPrice": 5200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259031437",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
