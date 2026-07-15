@@ -66240,6 +66240,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801119745859",
+    "name": "테라485ml*6입",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801119745897",
+    "name": "테라485ml*24입",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801119770011",
     "name": "테라병500ml",
     "normalPrice": 2150,
