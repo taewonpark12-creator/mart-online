@@ -117595,8 +117595,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)",
-    "normalPrice": 2480,
+    "name": "햇양파(소)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117659,7 +117659,7 @@
   {
     "barcode": "9100000001944",
     "name": "햇무(1박스)",
-    "normalPrice": 19800,
+    "normalPrice": 18900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118504,8 +118504,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)행사",
-    "normalPrice": 1980,
+    "name": "대파(1단)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118738,8 +118738,8 @@
   },
   {
     "barcode": "9100000215280",
-    "name": "햇무(1개)",
-    "normalPrice": 2480,
+    "name": "햇무(1개)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119360,7 +119360,7 @@
   {
     "barcode": "9100000218564",
     "name": "오이지오이(50개/1포)행사",
-    "normalPrice": 9800,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
