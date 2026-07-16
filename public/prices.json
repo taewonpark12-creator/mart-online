@@ -77808,10 +77808,10 @@
     "barcode": "8801392177583",
     "name": "비비고)진한삼계탕800g",
     "normalPrice": 11500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 9900,
+    "discountRate": 14,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801392177941",
