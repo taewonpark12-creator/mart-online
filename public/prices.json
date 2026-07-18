@@ -66972,10 +66972,10 @@
     "barcode": "8801123307081",
     "name": "롯데)의성마늘프랑크350g",
     "normalPrice": 7500,
-    "eventPrice": 6980,
-    "discountRate": 7,
-    "saleStartDate": "2021-05-01",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801123307289",
