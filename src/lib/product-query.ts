@@ -11,6 +11,7 @@ type ProductListOptions = {
   onlineExclusiveOnly?: boolean;
   outOfStockOnly?: boolean;
   includeOutOfStock?: boolean;
+  customerSearchFieldsOnly?: boolean;
 };
 
 type ProductWithPrice = {
@@ -70,6 +71,22 @@ export async function findProducts(options: ProductListOptions = {}) {
   const products = await prisma.product.findMany({
     where: getProductWhere(options),
     orderBy: getProductOrderBy(options),
+    ...(options.customerSearchFieldsOnly
+      ? {
+          select: {
+            id: true,
+            name: true,
+            barcode: true,
+            price: true,
+            imageUrl: true,
+            isRecommended: true,
+            isOnlineExclusive: true,
+            isPopular: true,
+            isOutOfStock: true,
+            maxOrderQuantity: true,
+          },
+        }
+      : {}),
   });
 
   return products.map(serializeProduct);

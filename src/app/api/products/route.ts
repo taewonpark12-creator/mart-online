@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
       onlineExclusiveOnly,
       outOfStockOnly,
       includeOutOfStock,
+      customerSearchFieldsOnly: !requiresAdmin,
     });
 
     return NextResponse.json(products);
