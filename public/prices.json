@@ -119647,8 +119647,8 @@
   },
   {
     "barcode": "9100000218922",
-    "name": "양배추(1박스)",
-    "normalPrice": 13800,
+    "name": "양배추(1망)",
+    "normalPrice": 13000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119783,7 +119783,7 @@
   {
     "barcode": "9100000219073",
     "name": "햇마늘(1망)행사",
-    "normalPrice": 4980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
