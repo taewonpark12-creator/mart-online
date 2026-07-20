@@ -46170,6 +46170,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801063310349",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801063310479",
     "name": "유동)자연산골뱅이140g",
     "normalPrice": 5300,
