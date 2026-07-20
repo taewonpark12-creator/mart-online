@@ -22,6 +22,7 @@ const OUT_OF_STOCK_POLICY_LABEL: Record<string, string> = {
 import { getKoreaTodayString, getKoreaYesterdayString, getKoreaMonthStartString, getKoreaDaysAgoString } from "@/lib/korea-date";
 import { printReceiptNow } from "@/lib/print-receipt";
 import type { ReceiptOrder } from "@/lib/receipt-html";
+import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort";
 
 // Keep order-list fetching separate from notification checks and sound repeat timers.
 const ORDER_LIST_AUTO_REFRESH_MS = 5 * 60 * 1000;
@@ -40,7 +41,7 @@ type OrderItem = {
   productName: string;
   productId: string | null;
   itemStatus?: "ACTIVE" | "CANCELLED" | string | null;
-  product?: { name: string; barcode?: string | null } | null;
+  product?: { name: string; barcode?: string | null; category?: string | null } | null;
 };
 
 type Order = {
@@ -107,7 +108,7 @@ function toReceiptOrder(order: Order): ReceiptOrder {
     status: order.status,
     totalAmount: activeTotalAmount,
     createdAt: order.createdAt,
-    items: (order.items || []).map((item) => ({
+    items: sortOrderItemsByProductCategory(order.items || []).map((item) => ({
       quantity: item.quantity,
       unitPrice: Number(item.unitPrice),
       productName: item.productName,
@@ -453,7 +454,7 @@ function OrderDetailPanel({
           <h2 className="text-sm font-bold text-gray-900 mb-3">주문 상품</h2>
           <div className="divide-y">
             {order.items && order.items.length > 0 ? (
-              order.items.map((item) => {
+              sortOrderItemsByProductCategory(order.items).map((item) => {
                 const barcode = item.product?.barcode || "";
                 const isItemCancelled = item.itemStatus === "CANCELLED";
                 return (

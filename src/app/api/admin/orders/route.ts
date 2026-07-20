@@ -54,6 +54,7 @@ function serializeOrder(order: {
     product?: {
       name?: string;
       barcode?: string | null;
+      category?: string | null;
     } | null;
   }>;
 }, priceMap: PriceNameMap = new Map()) {
@@ -94,6 +95,7 @@ function serializeOrder(order: {
           ? {
               name: firstMeaningfulProductName(item.product.name, syncedName) || productName,
               barcode: item.product.barcode,
+              category: item.product.category ?? null,
             }
           : undefined,
       };

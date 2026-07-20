@@ -37,7 +37,7 @@ function serializeOrder(order: {
     quantity: number;
     unitPrice: number;
     itemStatus?: string | null;
-    product: { name: string; barcode: string | null } | null;
+    product: { name: string; barcode: string | null; category: string | null } | null;
   }>;
 }) {
   return {
@@ -66,6 +66,7 @@ function serializeOrder(order: {
         ? {
             name: item.product.name,
             barcode: item.product.barcode,
+            category: item.product.category,
           }
         : undefined,
     })),
@@ -133,10 +134,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
           items: {
             include: {
               product: {
-                select: {
-                  name: true,
-                  barcode: true,
-                },
+                  select: {
+                    name: true,
+                    barcode: true,
+                    category: true,
+                  },
               },
             },
           },

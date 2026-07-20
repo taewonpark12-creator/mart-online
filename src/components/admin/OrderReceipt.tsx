@@ -1,5 +1,6 @@
 import { STORE } from "@/lib/store";
 import { orderItemBarcode, orderItemName } from "@/lib/order-item";
+import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort";
 import { RECEIPT_FONT, RECEIPT_LAYOUT } from "@/lib/receipt-html";
 import {
   BANK_ACCOUNT,
@@ -31,7 +32,7 @@ export type ReceiptOrder = {
     unitPrice: number;
     productName: string;
     itemStatus?: "ACTIVE" | "CANCELLED" | string | null;
-    product?: { name: string; barcode?: string | null } | null;
+    product?: { name: string; barcode?: string | null; category?: string | null } | null;
   }[];
 };
 
@@ -59,8 +60,9 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
   const p = (n: number) => String(n).padStart(2, "0");
   const dateStr = `${date.getFullYear()}.${p(date.getMonth() + 1)}.${p(date.getDate())} ${p(date.getHours())}:${p(date.getMinutes())}:${p(date.getSeconds())}`;
   const isPickup = order.fulfillmentType === "PICKUP";
-  const activeItems = order.items.filter((item) => item.itemStatus !== "CANCELLED");
-  const cancelledItems = order.items.filter((item) => item.itemStatus === "CANCELLED");
+  const sortedItems = sortOrderItemsByProductCategory(order.items);
+  const activeItems = sortedItems.filter((item) => item.itemStatus !== "CANCELLED");
+  const cancelledItems = sortedItems.filter((item) => item.itemStatus === "CANCELLED");
   const activeTotalAmount = activeItems.reduce(
     (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
     0,

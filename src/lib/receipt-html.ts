@@ -8,6 +8,7 @@ import {
 } from "@/lib/types";
 import type { ReceiptOrder } from "@/components/admin/OrderReceipt";
 import { orderItemBarcode, orderItemName } from "@/lib/order-item";
+import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort";
 
 export type { ReceiptOrder };
 
@@ -98,8 +99,9 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
       <col style="width:${L.colAmount}px" />
     </colgroup>`;
 
-  const activeItems = order.items.filter((item) => item.itemStatus !== "CANCELLED");
-  const cancelledItems = order.items.filter((item) => item.itemStatus === "CANCELLED");
+  const sortedItems = sortOrderItemsByProductCategory(order.items);
+  const activeItems = sortedItems.filter((item) => item.itemStatus !== "CANCELLED");
+  const cancelledItems = sortedItems.filter((item) => item.itemStatus === "CANCELLED");
   const activeTotalAmount = activeItems.reduce(
     (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
     0,
