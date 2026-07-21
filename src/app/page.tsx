@@ -133,7 +133,10 @@ export default function HomePage() {
   const fetchCategoryProducts = useCallback(async (categoryName: string, page: number) => {
     setCategoryLoading(true);
     try {
-      const params = new URLSearchParams({ category: categoryName, page: String(page) });
+      const params = new URLSearchParams({ page: String(page) });
+      if (categoryName !== CATEGORIES[0]) {
+        params.append("category", categoryName);
+      }
       const res = await fetch(`/api/products?${params.toString()}`);
 
       if (!res.ok) {
@@ -315,7 +318,9 @@ export default function HomePage() {
           </h2>
         </div>
 
-        {categoryProducts.length > 0 ? (
+        {categoryLoading && categoryProducts.length === 0 ? (
+          <div className="py-20 text-center text-gray-400">상품을 불러오는 중입니다...</div>
+        ) : categoryProducts.length > 0 ? (
           <>
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-3.5">
               {categoryProducts.map((product) => (
