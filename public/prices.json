@@ -118090,8 +118090,8 @@
   },
   {
     "barcode": "9100000003511",
-    "name": "거봉포도(2kg/1박스)",
-    "normalPrice": 19800,
+    "name": "거봉포도(2kg/1박스)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119278,8 +119278,8 @@
   },
   {
     "barcode": "9100000217444",
-    "name": "하우스귤(3kg/1박스)",
-    "normalPrice": 29800,
+    "name": "하우스귤(3kg/1박스)행사",
+    "normalPrice": 24800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119593,8 +119593,8 @@
   },
   {
     "barcode": "9100000218830",
-    "name": "송산포도(3kg/1박스)",
-    "normalPrice": 28900,
+    "name": "켐벨포도(3kg/1박스)행사",
+    "normalPrice": 29800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
