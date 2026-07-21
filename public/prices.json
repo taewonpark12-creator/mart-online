@@ -84180,10 +84180,10 @@
     "barcode": "8802989001410",
     "name": "썬큐)베이키드빈스2.7kg",
     "normalPrice": 12500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 9900,
+    "discountRate": 21,
+    "saleStartDate": "2022-01-13",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8802998033846",
