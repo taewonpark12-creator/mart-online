@@ -6237,6 +6237,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "4005808858224",
+    "name": "아트릭스스트롱크림250ml",
+    "normalPrice": 9000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "4005808891412",
     "name": "니베아)인텐시브로션400ml",
     "normalPrice": 13500,
@@ -114312,6 +114321,15 @@
     "barcode": "8809798340280",
     "name": "종량제봉투5L*20매",
     "normalPrice": 4200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809802930148",
+    "name": "여행용7종세트",
+    "normalPrice": 9000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
