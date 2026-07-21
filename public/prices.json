@@ -118037,7 +118037,7 @@
   {
     "barcode": "9100000003368",
     "name": "골드키위(10개/1팩)행사",
-    "normalPrice": 999990,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118945,8 +118945,8 @@
   },
   {
     "barcode": "9100000216225",
-    "name": "오이(5개/1봉)행사",
-    "normalPrice": 1480,
+    "name": "오이(3개/1봉)",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119323,8 +119323,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
-    "normalPrice": 1980,
+    "name": "바나나(1송이)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120080,7 +120080,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 980,
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
