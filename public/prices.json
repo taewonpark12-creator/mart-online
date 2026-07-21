@@ -17571,10 +17571,10 @@
     "barcode": "8801019516078",
     "name": "해태)고향만두왕교자300g*2입",
     "normalPrice": 7500,
-    "eventPrice": 6980,
-    "discountRate": 7,
-    "saleStartDate": "2026-07-07",
-    "saleEndDate": "2026-07-21"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801019602498",
