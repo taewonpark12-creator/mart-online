@@ -1,6 +1,8 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
+const PAGE_SIZE = 100;
+
 type ProductListOptions = {
   category?: string;
   q?: string;
@@ -12,6 +14,7 @@ type ProductListOptions = {
   outOfStockOnly?: boolean;
   includeOutOfStock?: boolean;
   customerSearchFieldsOnly?: boolean;
+  page?: number;
 };
 
 type ProductWithPrice = {
@@ -68,28 +71,45 @@ function getProductOrderBy(options: ProductListOptions): Prisma.ProductOrderByWi
 }
 
 export async function findProducts(options: ProductListOptions = {}) {
-  const products = await prisma.product.findMany({
-    where: getProductWhere(options),
-    orderBy: getProductOrderBy(options),
-    ...(options.customerSearchFieldsOnly
-      ? {
-          select: {
-            id: true,
-            name: true,
-            barcode: true,
-            price: true,
-            imageUrl: true,
-            isRecommended: true,
-            isOnlineExclusive: true,
-            isPopular: true,
-            isOutOfStock: true,
-            maxOrderQuantity: true,
-          },
-        }
-      : {}),
-  });
+  const page = options.page ?? 1;
+  const skip = (page - 1) * PAGE_SIZE;
 
-  return products.map(serializeProduct);
+  const [products, totalCount] = await Promise.all([
+    prisma.product.findMany({
+      where: getProductWhere(options),
+      orderBy: getProductOrderBy(options),
+      skip,
+      take: PAGE_SIZE,
+      ...(options.customerSearchFieldsOnly
+        ? {
+            select: {
+              id: true,
+              name: true,
+              barcode: true,
+              price: true,
+              category: true,
+              imageUrl: true,
+              isRecommended: true,
+              isOnlineExclusive: true,
+              isPopular: true,
+              isOutOfStock: true,
+              recommendedOrder: true,
+              popularOrder: true,
+              maxOrderQuantity: true,
+            },
+          }
+        : {}),
+    }),
+    prisma.product.count({
+      where: getProductWhere(options),
+    }),
+  ]);
+
+  return {
+    products: products.map(serializeProduct),
+    hasMore: skip + products.length < totalCount,
+    total: totalCount,
+  };
 }
 
 export function getHomeProductCollections<T extends { isRecommended: boolean; isPopular: boolean; isOnlineExclusive: boolean; recommendedOrder: number; name: string }>(
@@ -108,5 +128,85 @@ export function getHomeProductCollections<T extends { isRecommended: boolean; is
     recommendedProducts,
     popularProducts: products.filter((product) => product.isPopular),
     onlineExclusiveProducts: products.filter((product) => product.isOnlineExclusive),
+  };
+}
+
+export async function getHomeProducts() {
+  const [recommendedProducts, popularProducts, onlineExclusiveProducts] = await Promise.all([
+    prisma.product.findMany({
+      where: {
+        isActive: true,
+        isOutOfStock: false,
+        isRecommended: true,
+      },
+      orderBy: [{ recommendedOrder: "desc" }, { name: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        barcode: true,
+        price: true,
+        category: true,
+        imageUrl: true,
+        isRecommended: true,
+        isOnlineExclusive: true,
+        isPopular: true,
+        isOutOfStock: true,
+        recommendedOrder: true,
+        popularOrder: true,
+        maxOrderQuantity: true,
+      },
+    }),
+    prisma.product.findMany({
+      where: {
+        isActive: true,
+        isOutOfStock: false,
+        isPopular: true,
+      },
+      orderBy: [{ popularOrder: "asc" }, { name: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        barcode: true,
+        price: true,
+        category: true,
+        imageUrl: true,
+        isRecommended: true,
+        isOnlineExclusive: true,
+        isPopular: true,
+        isOutOfStock: true,
+        recommendedOrder: true,
+        popularOrder: true,
+        maxOrderQuantity: true,
+      },
+    }),
+    prisma.product.findMany({
+      where: {
+        isActive: true,
+        isOutOfStock: false,
+        isOnlineExclusive: true,
+      },
+      orderBy: [{ name: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        barcode: true,
+        price: true,
+        category: true,
+        imageUrl: true,
+        isRecommended: true,
+        isOnlineExclusive: true,
+        isPopular: true,
+        isOutOfStock: true,
+        recommendedOrder: true,
+        popularOrder: true,
+        maxOrderQuantity: true,
+      },
+    }),
+  ]);
+
+  return {
+    recommendedProducts: recommendedProducts.map(serializeProduct),
+    popularProducts: popularProducts.map(serializeProduct),
+    onlineExclusiveProducts: onlineExclusiveProducts.map(serializeProduct),
   };
 }

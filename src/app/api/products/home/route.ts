@@ -1,40 +1,15 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { getHomeProductCollections, serializeProduct } from "@/lib/product-query";
+import { getHomeProducts } from "@/lib/product-query";
 
 export async function GET() {
   try {
-    const products = await prisma.product.findMany({
-      where: {
-        isActive: true,
-        isOutOfStock: false,
-      },
-      orderBy: [{ category: "asc" }, { name: "asc" }],
-      select: {
-        id: true,
-        name: true,
-        barcode: true,
-        price: true,
-        category: true,
-        imageUrl: true,
-        isRecommended: true,
-        isOnlineExclusive: true,
-        isPopular: true,
-        isOutOfStock: true,
-        recommendedOrder: true,
-        popularOrder: true,
-        maxOrderQuantity: true,
-      },
-    });
+    const homeData = await getHomeProducts();
 
-    const serializedProducts = products.map(serializeProduct);
-
-    return NextResponse.json(getHomeProductCollections(serializedProducts));
+    return NextResponse.json(homeData);
   } catch (error) {
     console.error("Products Home API Error:", error);
     return NextResponse.json(
       {
-        products: [],
         recommendedProducts: [],
         popularProducts: [],
         onlineExclusiveProducts: [],

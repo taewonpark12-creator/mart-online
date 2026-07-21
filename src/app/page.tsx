@@ -21,7 +21,6 @@ const PRODUCT_FETCH_TIMEOUT_MS = 10000;
 const INITIAL_VISIBLE_SEARCH_COUNT = 60;
 
 export default function HomePage() {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [homeProducts, setHomeProducts] = useState<Product[]>([]);
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [exclusiveProducts, setExclusiveProducts] = useState<Product[]>([]);
@@ -30,28 +29,26 @@ export default function HomePage() {
   const [hasCategorySelection, setHasCategorySelection] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [visibleSearchCount, setVisibleSearchCount] = useState(INITIAL_VISIBLE_SEARCH_COUNT);
   const [loading, setLoading] = useState(true);
   const [productError, setProductError] = useState("");
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
+  const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
+  const [categoryPage, setCategoryPage] = useState(1);
+  const [categoryHasMore, setCategoryHasMore] = useState(false);
+  const [categoryLoading, setCategoryLoading] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchHasMore, setSearchHasMore] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const categoryObserverRef = useRef<IntersectionObserver | null>(null);
+  const searchObserverRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   const { addItem, syncWithProducts, totalAmount, totalCount } = useCart();
   const minimumOrderAmount = getMinimumOrderAmount();
   const minimumOrderEventActive = isMinOrderEventActive();
   const fetchCount = useRef(0);
   const isSearchMode = debouncedSearch.length > 0;
-  const categoryProducts =
-    category === CATEGORIES[0]
-      ? allProducts
-      : (() => {
-          const filtered = allProducts.filter((product) => product.category === category);
-          const popular = filtered.filter((p) => p.isPopular === true);
-          const regular = filtered.filter((p) => p.isPopular !== true);
-          popular.sort((a, b) => (a.popularOrder ?? Infinity) - (b.popularOrder ?? Infinity));
-          return [...popular, ...regular];
-        })();
-  const visibleSearchResults = searchResults.slice(0, visibleSearchCount);
-  const hasMoreSearchResults = visibleSearchCount < searchResults.length;
   const visibleCategories = ["홈", ...CATEGORIES] as readonly string[];
   const isHomeView = !hasCategorySelection;
 
@@ -61,7 +58,8 @@ export default function HomePage() {
   }, [search]);
 
   useEffect(() => {
-    setVisibleSearchCount(INITIAL_VISIBLE_SEARCH_COUNT);
+    setSearchPage(1);
+    setSearchHasMore(false);
   }, [debouncedSearch]);
 
   useEffect(() => {
@@ -83,7 +81,7 @@ export default function HomePage() {
 
     try {
       if (isSearchMode) {
-        const params = new URLSearchParams({ q: debouncedSearch });
+        const params = new URLSearchParams({ q: debouncedSearch, page: String(searchPage) });
         const res = await fetch(`/api/products?${params.toString()}`, { signal: controller.signal });
 
         if (!res.ok) {
@@ -91,8 +89,15 @@ export default function HomePage() {
         }
 
         const data = await res.json();
-        const results = Array.isArray(data) ? data : [];
-        setSearchResults(results);
+        const results = Array.isArray(data.products) ? data.products : [];
+        const hasMore = data.hasMore ?? false;
+
+        if (searchPage === 1) {
+          setSearchResults(results);
+        } else {
+          setSearchResults((prev) => [...prev, ...results]);
+        }
+        setSearchHasMore(hasMore);
         syncWithProducts(results);
         return;
       }
@@ -105,17 +110,15 @@ export default function HomePage() {
 
       const homeData = await homeRes.json().catch(() => ({}));
 
-      const nextAllProducts = Array.isArray(homeData.products) ? homeData.products : [];
       const nextHomeProducts = Array.isArray(homeData.recommendedProducts) ? homeData.recommendedProducts : [];
       const nextPopularProducts = Array.isArray(homeData.popularProducts) ? homeData.popularProducts : [];
       const nextExclusiveProducts = Array.isArray(homeData.onlineExclusiveProducts) ? homeData.onlineExclusiveProducts : [];
 
-      setAllProducts(nextAllProducts);
       setHomeProducts(nextHomeProducts);
       setPopularProducts(nextPopularProducts);
       setExclusiveProducts(nextExclusiveProducts);
       setSearchResults([]);
-      syncWithProducts(nextAllProducts);
+      syncWithProducts([...nextHomeProducts, ...nextPopularProducts, ...nextExclusiveProducts]);
     } catch (error) {
       setProductError(PRODUCT_LOAD_ERROR_MESSAGE);
       if (process.env.NODE_ENV !== "production") {
@@ -125,11 +128,88 @@ export default function HomePage() {
       window.clearTimeout(timeout);
       setLoading(false);
     }
-  }, [debouncedSearch, isSearchMode, syncWithProducts]);
+  }, [debouncedSearch, isSearchMode, syncWithProducts, searchPage]);
+
+  const fetchCategoryProducts = useCallback(async (categoryName: string, page: number) => {
+    setCategoryLoading(true);
+    try {
+      const params = new URLSearchParams({ category: categoryName, page: String(page) });
+      const res = await fetch(`/api/products?${params.toString()}`);
+
+      if (!res.ok) {
+        throw new Error("Failed to load category products");
+      }
+
+      const data = await res.json();
+      const results = Array.isArray(data.products) ? data.products : [];
+      const hasMore = data.hasMore ?? false;
+
+      if (page === 1) {
+        setCategoryProducts(results);
+      } else {
+        setCategoryProducts((prev) => [...prev, ...results]);
+      }
+      setCategoryHasMore(hasMore);
+      syncWithProducts(results);
+    } catch (error) {
+      console.error("Category products loading failed:", error);
+    } finally {
+      setCategoryLoading(false);
+    }
+  }, [syncWithProducts]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    if (hasCategorySelection && category !== CATEGORIES[0]) {
+      fetchCategoryProducts(category, categoryPage);
+    }
+  }, [hasCategorySelection, category, categoryPage, fetchCategoryProducts]);
+
+  useEffect(() => {
+    if (categoryObserverRef.current) {
+      categoryObserverRef.current.disconnect();
+    }
+
+    if (searchObserverRef.current) {
+      searchObserverRef.current.disconnect();
+    }
+
+    if (!loadMoreRef.current) return;
+
+    if (isSearchMode && searchHasMore && !searchLoading) {
+      searchObserverRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setSearchPage((prev) => prev + 1);
+          }
+        },
+        { threshold: 0.1 }
+      );
+      searchObserverRef.current.observe(loadMoreRef.current);
+    } else if (!isSearchMode && hasCategorySelection && categoryHasMore && !categoryLoading) {
+      categoryObserverRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setCategoryPage((prev) => prev + 1);
+          }
+        },
+        { threshold: 0.1 }
+      );
+      categoryObserverRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (categoryObserverRef.current) {
+        categoryObserverRef.current.disconnect();
+      }
+      if (searchObserverRef.current) {
+        searchObserverRef.current.disconnect();
+      }
+    };
+  }, [isSearchMode, searchHasMore, searchLoading, hasCategorySelection, categoryHasMore, categoryLoading]);
 
   const handleAdd = useCallback((product: Omit<CartItem, "quantity">) => {
     const result = addItem({
@@ -157,11 +237,17 @@ export default function HomePage() {
       setHasCategorySelection(false);
       setSearch("");
       setDebouncedSearch("");
+      setCategoryProducts([]);
+      setCategoryPage(1);
+      setCategoryHasMore(false);
     } else {
       setCategory(nextCategory);
       setHasCategorySelection(true);
       setSearch("");
       setDebouncedSearch("");
+      setCategoryPage(1);
+      setCategoryHasMore(false);
+      setCategoryProducts([]);
     }
   }, []);
 
@@ -191,19 +277,15 @@ export default function HomePage() {
             <h2 className="text-lg font-bold text-gray-900">검색 결과</h2>
           </div>
           <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-3.5">
-            {visibleSearchResults.map((product) => (
+            {searchResults.map((product) => (
               <ProductCard key={product.id} product={product} onAdd={handleAdd} />
             ))}
           </div>
-          {hasMoreSearchResults && (
-            <div className="flex justify-center mt-6">
-              <button
-                type="button"
-                onClick={() => setVisibleSearchCount((count) => count + INITIAL_VISIBLE_SEARCH_COUNT)}
-                className="px-5 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold min-h-[44px]"
-              >
-                더 보기
-              </button>
+          {searchHasMore && (
+            <div className="flex justify-center mt-6" ref={loadMoreRef}>
+              {searchLoading && (
+                <div className="px-5 py-3 text-sm text-gray-500">로딩 중...</div>
+              )}
             </div>
           )}
         </>
@@ -234,11 +316,25 @@ export default function HomePage() {
         </div>
 
         {categoryProducts.length > 0 ? (
-          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-3.5">
-            {categoryProducts.map((product) => (
-              <ProductCard key={product.id} product={product} onAdd={handleAdd} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-3.5">
+              {categoryProducts.map((product) => (
+                <ProductCard key={product.id} product={product} onAdd={handleAdd} />
+              ))}
+            </div>
+            {categoryHasMore && (
+              <div className="flex justify-center mt-6" ref={loadMoreRef}>
+                <button
+                  type="button"
+                  onClick={() => setCategoryPage((prev) => prev + 1)}
+                  disabled={categoryLoading}
+                  className="px-5 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold min-h-[44px]"
+                >
+                  {categoryLoading ? "로딩 중..." : "더 보기"}
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="py-20 text-center text-gray-400">표시할 상품이 없습니다.</div>
         )}

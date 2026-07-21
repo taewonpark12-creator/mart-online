@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const category = sanitizeInput(searchParams.get("category") ?? "");
     const q = sanitizeInput(searchParams.get("q")?.trim() ?? "").slice(0, 100);
+    const page = toNonNegativeInt(searchParams.get("page"), 1);
     const activeOnly = searchParams.get("activeOnly") !== "false";
     const recommendedOnly = searchParams.get("recommended") === "true";
     const excludeRecommended = searchParams.get("excludeRecommended") === "true";
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    const products = await findProducts({
+    const result = await findProducts({
       category,
       q,
       activeOnly,
@@ -39,9 +40,10 @@ export async function GET(req: NextRequest) {
       outOfStockOnly,
       includeOutOfStock,
       customerSearchFieldsOnly: !requiresAdmin,
+      page,
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Products API Error:", error);
     return NextResponse.json({ error: "상품 목록을 불러오지 못했습니다." }, { status: 500 });
