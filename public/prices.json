@@ -118603,8 +118603,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)",
-    "normalPrice": 4980,
+    "name": "표고버섯(500g/1봉)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119657,7 +119657,7 @@
   {
     "barcode": "9100000218922",
     "name": "양배추(1망)",
-    "normalPrice": 13000,
+    "normalPrice": 10000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
