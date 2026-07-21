@@ -166,7 +166,7 @@ export default function HomePage() {
   }, [fetchProducts]);
 
   useEffect(() => {
-    if (hasCategorySelection && category !== CATEGORIES[0]) {
+    if (hasCategorySelection) {
       fetchCategoryProducts(category, categoryPage);
     }
   }, [hasCategorySelection, category, categoryPage, fetchCategoryProducts]);
