@@ -945,7 +945,8 @@ export default function ProductsPage() {
       }
 
       const data = await res.json();
-      const normalizedProducts = Array.isArray(data) ? data.map(normalizeProduct) : [];
+      const productsArray = data.products || [];
+      const normalizedProducts = productsArray.map(normalizeProduct);
       setProducts(normalizedProducts);
       setActiveProductId((current) => current ?? normalizedProducts[0]?.id ?? null);
     } catch (error) {
