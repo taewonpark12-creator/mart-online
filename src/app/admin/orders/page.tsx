@@ -1002,6 +1002,8 @@ export default function OrdersPage() {
         return;
       }
 
+      const updatedOrder = await res.json();
+      setSelectedOrderDetail(updatedOrder);
       setOrders((current) => {
         const nextOrders = current.map((order) => (order.id === selectedOrderId ? { ...order, status } : order));
         syncPendingNotificationState(nextOrders);

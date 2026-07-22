@@ -19,12 +19,16 @@ type ProductListOptions = {
 
 type ProductWithPrice = {
   price: bigint | number;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 };
 
 export function serializeProduct<T extends ProductWithPrice>(product: T) {
   return {
     ...product,
     price: product.price.toString(),
+    createdAt: product.createdAt?.toISOString() ?? null,
+    updatedAt: product.updatedAt?.toISOString() ?? null,
   };
 }
 
