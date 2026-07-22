@@ -62901,6 +62901,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801116062812",
+    "name": "라일락1보루",
+    "normalPrice": 40000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801116062829",
+    "name": "라일락",
+    "normalPrice": 4000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801116105168",
     "name": "에쎄클래식1보루",
     "normalPrice": 45000,
