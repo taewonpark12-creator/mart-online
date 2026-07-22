@@ -40961,7 +40961,7 @@
   {
     "barcode": "8801052436609",
     "name": "청정원)콩된장3kg",
-    "normalPrice": 39000,
+    "normalPrice": 39500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -56621,6 +56621,15 @@
   {
     "barcode": "8801104953719",
     "name": "저당붕어싸만코",
+    "normalPrice": 1400,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801104954419",
+    "name": "더위사냥소프트커피치어팩",
     "normalPrice": 1400,
     "eventPrice": null,
     "discountRate": null,
