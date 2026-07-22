@@ -14,6 +14,24 @@ function isValidOrderId(id: string) {
   return /^[A-Za-z0-9_-]{8,128}$/.test(id);
 }
 
+function serializeOrderDetail(order: any) {
+  return {
+    ...order,
+    createdAt: order.createdAt?.toISOString() ?? null,
+    updatedAt: order.updatedAt?.toISOString() ?? null,
+    items: order.items?.map((item: any) => ({
+      ...item,
+      unitPrice: Number(item.unitPrice ?? 0),
+      product: item.product ? {
+        ...item.product,
+        price: item.product.price?.toString() ?? "0",
+        createdAt: item.product.createdAt?.toISOString() ?? null,
+        updatedAt: item.product.updatedAt?.toISOString() ?? null,
+      } : null,
+    })) ?? [],
+  };
+}
+
 export async function GET(_req: NextRequest, { params }: Params) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
@@ -33,7 +51,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "주문을 찾을 수 없습니다." }, { status: 404 });
   }
 
-  return NextResponse.json(order);
+  return NextResponse.json(serializeOrderDetail(order));
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
@@ -136,7 +154,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       elapsedMs: Date.now() - startedAt,
     });
 
-    return NextResponse.json(order);
+    return NextResponse.json(serializeOrderDetail(order));
   } catch (error) {
     logSafeOrderError(
       "admin.order.status_change.failed",
