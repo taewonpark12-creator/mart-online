@@ -87140,7 +87140,7 @@
   {
     "barcode": "8803838001179",
     "name": "진도라이트10kg",
-    "normalPrice": 22900,
+    "normalPrice": 23900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -87149,7 +87149,7 @@
   {
     "barcode": "8803838600587",
     "name": "스마일캣1.8kg",
-    "normalPrice": 11000,
+    "normalPrice": 11900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -87158,7 +87158,7 @@
   {
     "barcode": "8803838601386",
     "name": "스마일캣5kg",
-    "normalPrice": 22000,
+    "normalPrice": 22900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -87167,7 +87167,7 @@
   {
     "barcode": "8803838613587",
     "name": "스마일독프리미엄1.8kg",
-    "normalPrice": 9500,
+    "normalPrice": 9900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -87176,7 +87176,7 @@
   {
     "barcode": "8803838614386",
     "name": "스마일독프리미엄5kg",
-    "normalPrice": 18500,
+    "normalPrice": 19900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -100343,7 +100343,7 @@
   {
     "barcode": "8809172319208",
     "name": "원더캣츠5kg",
-    "normalPrice": 24000,
+    "normalPrice": 26900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -100901,7 +100901,7 @@
   {
     "barcode": "8809192516083",
     "name": "네츄럴먼치롤10P",
-    "normalPrice": 1000,
+    "normalPrice": 1200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -110061,6 +110061,15 @@
     "saleEndDate": "2026-08-04"
   },
   {
+    "barcode": "8809536246607",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809536246614",
     "name": "건미역500g",
     "normalPrice": 14500,
@@ -115355,7 +115364,7 @@
   {
     "barcode": "8809882770122",
     "name": "오래먹는양치껌(유산균콜라겐)140g",
-    "normalPrice": 5300,
+    "normalPrice": 5900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116759,7 +116768,7 @@
   {
     "barcode": "8809990232802",
     "name": "엔젤스캣2kg",
-    "normalPrice": 13900,
+    "normalPrice": 14900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116768,7 +116777,7 @@
   {
     "barcode": "8809990232833",
     "name": "엔젤스독2kg",
-    "normalPrice": 12900,
+    "normalPrice": 13900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119360,7 +119369,7 @@
   {
     "barcode": "9100000217956",
     "name": "바나나(1송이)",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
