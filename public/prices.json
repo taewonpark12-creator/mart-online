@@ -117802,8 +117802,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)",
-    "normalPrice": 17800,
+    "name": "수박(5kg/1통)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118648,8 +118648,8 @@
   },
   {
     "barcode": "9100000214313",
-    "name": "햇양파(특대/1망)",
-    "normalPrice": 8900,
+    "name": "햇양파(특대/1망)행사",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119018,7 +119018,7 @@
   {
     "barcode": "9100000216553",
     "name": "미백옥수수(10개/1망)행사",
-    "normalPrice": 4980,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119512,8 +119512,8 @@
   },
   {
     "barcode": "9100000218687",
-    "name": "단호박(1통)",
-    "normalPrice": 2980,
+    "name": "단호박(1통)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119863,8 +119863,8 @@
   },
   {
     "barcode": "9100000219127",
-    "name": "복숭아(1팩)",
-    "normalPrice": 12000,
+    "name": "복숭아(1팩)행사",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
