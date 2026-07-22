@@ -117,7 +117,7 @@ export async function findProducts(options: ProductListOptions = {}) {
 }
 
 export async function findProductsForAdmin(options: Omit<ProductListOptions, 'customerSearchFieldsOnly'> = {}) {
-  const page = options.page ?? 1;
+  const page = Math.max(1, options.page ?? 1);
   const skip = (page - 1) * PAGE_SIZE;
 
   const [products, totalCount] = await Promise.all([
