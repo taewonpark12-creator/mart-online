@@ -385,7 +385,7 @@ export default function HomePage() {
               검색
             </span>
             <input
-              type="search"
+              type="text"
               name="product-search"
               inputMode="search"
               autoComplete="off"
