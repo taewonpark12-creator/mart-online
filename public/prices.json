@@ -25787,7 +25787,7 @@
   {
     "barcode": "8801045100111",
     "name": "오뚜기)토마토케찹300g",
-    "normalPrice": 2400,
+    "normalPrice": 2700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25814,7 +25814,7 @@
   {
     "barcode": "8801045100517",
     "name": "오뚜기)토마토케찹1kg",
-    "normalPrice": 6300,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -26111,7 +26111,7 @@
   {
     "barcode": "8801045140117",
     "name": "오뚜기)후레시마요네즈300g",
-    "normalPrice": 3200,
+    "normalPrice": 3400,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -27407,7 +27407,7 @@
   {
     "barcode": "8801045351100",
     "name": "오뚜기)옛날미역50g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -27461,7 +27461,7 @@
   {
     "barcode": "8801045352138",
     "name": "오뚜기)옛날자른미역120g",
-    "normalPrice": 7500,
+    "normalPrice": 8200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -67215,19 +67215,19 @@
     "barcode": "8801123726585",
     "name": "롯데)의성마늘고기왕교자385g*2입",
     "normalPrice": 9800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 7980,
+    "discountRate": 19,
+    "saleStartDate": "2026-07-21",
+    "saleEndDate": "2026-08-04"
   },
   {
     "barcode": "8801123726608",
     "name": "롯데)의성마늘김치왕교자385g*2입",
     "normalPrice": 9800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 7980,
+    "discountRate": 19,
+    "saleStartDate": "2026-07-21",
+    "saleEndDate": "2026-08-04"
   },
   {
     "barcode": "8801123726622",
@@ -118666,8 +118666,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)",
-    "normalPrice": 4980,
+    "name": "표고버섯(500g/1봉)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
