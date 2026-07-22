@@ -16860,10 +16860,10 @@
     "barcode": "8801019316104",
     "name": "해태)홈런볼4번들",
     "normalPrice": 5500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 4980,
+    "discountRate": 9,
+    "saleStartDate": "2026-07-21",
+    "saleEndDate": "2026-08-04"
   },
   {
     "barcode": "8801019316364",
