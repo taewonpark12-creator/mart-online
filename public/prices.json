@@ -72612,6 +72612,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801235250909",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801235252613",
     "name": "롯데)종이컵365ml*25입",
     "normalPrice": 4000,
@@ -95781,6 +95790,15 @@
     "barcode": "8809031239678",
     "name": "이지소쿠리대3.7L",
     "normalPrice": 7500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809031239913",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
