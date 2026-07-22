@@ -117812,7 +117812,7 @@
   {
     "barcode": "9100000002125",
     "name": "곱슬이콩나물(1박스)행사",
-    "normalPrice": 3980,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118415,7 +118415,7 @@
   {
     "barcode": "9100000113159",
     "name": "깐마늘(800g/1봉)",
-    "normalPrice": 8900,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118766,7 +118766,7 @@
   {
     "barcode": "9100000214801",
     "name": "햇양파(15kg/1망)행사",
-    "normalPrice": 15800,
+    "normalPrice": 18900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118873,8 +118873,8 @@
   },
   {
     "barcode": "9100000215433",
-    "name": "한입마늘(800g/1봉)행사",
-    "normalPrice": 7980,
+    "name": "한입마늘(800g/1봉)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120098,7 +120098,7 @@
   {
     "barcode": "9100246100",
     "name": "햇미역줄기(1박스)행사",
-    "normalPrice": 5980,
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
