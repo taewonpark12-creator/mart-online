@@ -339,8 +339,8 @@ function OrderDetailPanel({
   }
 
   return (
-    <aside className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-      <div className="border-b p-5">
+    <aside className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col max-h-[calc(100vh-8rem)]">
+      <div className="border-b p-5 shrink-0">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs text-gray-400 font-mono">{order.orderNumber}</p>
@@ -374,7 +374,7 @@ function OrderDetailPanel({
         </div>
       </div>
 
-      <div className="p-5 space-y-5">
+      <div className="p-5 space-y-5 overflow-y-auto flex-1">
         <button
           type="button"
           onClick={handlePrintReceipt}

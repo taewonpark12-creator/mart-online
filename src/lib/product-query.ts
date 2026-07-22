@@ -112,6 +112,29 @@ export async function findProducts(options: ProductListOptions = {}) {
   };
 }
 
+export async function findProductsForAdmin(options: Omit<ProductListOptions, 'customerSearchFieldsOnly'> = {}) {
+  const page = options.page ?? 1;
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const [products, totalCount] = await Promise.all([
+    prisma.product.findMany({
+      where: getProductWhere(options),
+      orderBy: getProductOrderBy(options),
+      skip,
+      take: PAGE_SIZE,
+    }),
+    prisma.product.count({
+      where: getProductWhere(options),
+    }),
+  ]);
+
+  return {
+    products: products.map(serializeProduct),
+    hasMore: skip + products.length < totalCount,
+    total: totalCount,
+  };
+}
+
 export function getHomeProductCollections<T extends { isRecommended: boolean; isPopular: boolean; isOnlineExclusive: boolean; recommendedOrder: number; name: string }>(
   products: T[],
 ) {

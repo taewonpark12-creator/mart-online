@@ -3,8 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { getKoreaDateRangeUtc } from "@/lib/korea-date";
 import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/order-observability";
-import { firstMeaningfulProductName } from "@/lib/order-item";
-import { loadPriceSource } from "@/lib/order-pricing";
 
 const allowedStatuses = [
   "PENDING",
@@ -13,93 +11,44 @@ const allowedStatuses = [
   "CANCELLED",
 ];
 
-type PriceNameMap = Map<string, { name?: string }>;
-const CANCELLED_ITEM_STATUS = "CANCELLED";
-
-function priceNameByBarcode(barcode: string | null | undefined, priceMap: PriceNameMap) {
-  const normalizedBarcode = barcode?.trim();
-  if (!normalizedBarcode) return undefined;
-
-  return priceMap.get(normalizedBarcode)?.name;
-}
-
-function isActiveOrderItem(item: { itemStatus?: string | null }) {
-  return item.itemStatus !== CANCELLED_ITEM_STATUS;
-}
-
 function serializeOrder(order: {
   id: string;
-  orderNumber: string;
   customerName: string;
   customerPhone: string;
   fulfillmentType: string;
-  deliveryAddress: string;
-  deliveryEntrance: string | null;
-  pickupTime: string | null;
   status: string;
   totalAmount: number;
   createdAt: Date;
-  memo?: string | null;
-  paymentMethod?: string | null;
-  outOfStockPolicy?: string | null;
   items?: Array<{
-    id: string;
-    productId: string | null;
-    productName?: string;
-    name?: string;
-    unitPrice?: number;
-    price?: number;
-    quantity?: number;
     itemStatus?: string | null;
-    product?: {
-      name?: string;
-      barcode?: string | null;
-      category?: string | null;
-    } | null;
   }>;
-}, priceMap: PriceNameMap = new Map()) {
-  const activeTotalAmount = (order.items || []).reduce((sum, item) => {
-    if (!isActiveOrderItem(item)) return sum;
-    return sum + Number(item.unitPrice ?? item.price ?? 0) * Number(item.quantity ?? 0);
-  }, 0);
+}) {
+  const hasCancelledItems = (order.items || []).some((item) => item.itemStatus === "CANCELLED");
 
   return {
     id: order.id,
-    orderNumber: order.orderNumber,
+    orderNumber: "",
     customerName: order.customerName,
     customerPhone: order.customerPhone,
     fulfillmentType: order.fulfillmentType,
-    deliveryAddress: order.deliveryAddress,
-    deliveryEntrance: order.deliveryEntrance,
-    pickupTime: order.pickupTime,
+    deliveryAddress: "",
+    deliveryEntrance: null,
+    pickupTime: null,
     status: order.status,
-    totalAmount: activeTotalAmount,
+    totalAmount: order.totalAmount,
     createdAt: order.createdAt.toISOString(),
-    memo: order.memo ?? null,
-    paymentMethod: order.paymentMethod ?? null,
-    outOfStockPolicy: order.outOfStockPolicy ?? null,
-    items: (order.items || []).map((item) => {
-      const barcode = item.product?.barcode ?? null;
-      const syncedName = priceNameByBarcode(barcode, priceMap);
-      const productName =
-        firstMeaningfulProductName(item.productName, syncedName, item.product?.name, item.name) || "상품명 없음";
-
-      return {
-        id: item.id,
-        productId: item.productId,
-        productName,
-        unitPrice: Number(item.unitPrice ?? item.price ?? 0),
-        quantity: Number(item.quantity ?? 0),
-        itemStatus: isActiveOrderItem(item) ? "ACTIVE" : "CANCELLED",
-        product: item.product
-          ? {
-              name: firstMeaningfulProductName(item.product.name, syncedName) || productName,
-              barcode: item.product.barcode,
-              category: item.product.category ?? null,
-            }
-          : undefined,
-      };
-    }),
+    memo: null,
+    paymentMethod: null,
+    outOfStockPolicy: null,
+    items: (order.items || []).map((item) => ({
+      id: "",
+      productId: null,
+      productName: "",
+      unitPrice: 0,
+      quantity: 0,
+      itemStatus: item.itemStatus === "CANCELLED" ? "CANCELLED" : "ACTIVE",
+      product: undefined,
+    })),
   };
 }
 
@@ -158,7 +107,20 @@ export async function GET(req: NextRequest) {
     const [orders, totalOrderCount, statusCounts] = await Promise.all([
       prisma.order.findMany({
         where: orderWhere,
-        include: { items: { include: { product: true } } },
+        select: {
+          id: true,
+          customerName: true,
+          customerPhone: true,
+          fulfillmentType: true,
+          status: true,
+          totalAmount: true,
+          createdAt: true,
+          items: {
+            select: {
+              itemStatus: true,
+            },
+          },
+        },
         orderBy: { createdAt: "desc" },
       }),
       prisma.order.count(),
@@ -168,14 +130,7 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    let priceMap: PriceNameMap = new Map();
-    try {
-      priceMap = (await loadPriceSource()).priceMap;
-    } catch {
-      priceMap = new Map();
-    }
-
-    const serializedOrders = orders.map((order) => serializeOrder(order, priceMap));
+    const serializedOrders = orders.map((order) => serializeOrder(order));
     logSafeOrderEvent("admin.orders.list.succeeded", {
       requestId,
       count: serializedOrders.length,

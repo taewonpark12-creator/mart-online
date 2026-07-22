@@ -919,7 +919,7 @@ export default function ProductsPage() {
         ...(searchQuery ? { q: searchQuery } : {}),
         ...(categoryFilter ? { category: categoryFilter } : {}),
       });
-      const res = await fetch(`/api/products?${params.toString()}`);
+      const res = await fetch(`/api/admin/products?${params.toString()}`);
 
       if (res.status === 401) {
         console.log("[ADMIN REDIRECT]", {
@@ -1249,7 +1249,7 @@ export default function ProductsPage() {
     setBulkImageResult(null);
 
     try {
-      const productsRes = await fetch("/api/products?activeOnly=false&includeOutOfStock=true");
+      const productsRes = await fetch("/api/admin/products?activeOnly=false&includeOutOfStock=true");
       const allProductsData = await productsRes.json().catch(() => ({}));
       if (!productsRes.ok || !Array.isArray(allProductsData)) {
         throw new Error(allProductsData.error ?? "전체 상품 목록을 불러오지 못했습니다.");
