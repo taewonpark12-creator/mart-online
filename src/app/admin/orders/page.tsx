@@ -543,6 +543,8 @@ export default function OrdersPage() {
     tone: "green" | "red" | "gray";
     message: string;
   } | null>(null);
+  const [selectedOrderDetail, setSelectedOrderDetail] = useState<Order | null>(null);
+  const [loadingOrderDetail, setLoadingOrderDetail] = useState(false);
   const orderNotificationAudioRef = useRef<HTMLAudioElement | null>(null);
   const notificationRepeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const notificationEnabledRef = useRef(false);
@@ -589,6 +591,31 @@ export default function OrdersPage() {
   const selectedOrder = selectedOrderId
     ? orders.find((order) => order.id === selectedOrderId) ?? null
     : null;
+
+  const fetchOrderDetail = useCallback(async (orderId: string) => {
+    setLoadingOrderDetail(true);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error("주문 상세를 불러오지 못했습니다.");
+      }
+      const data = await res.json();
+      setSelectedOrderDetail(data);
+    } catch (error) {
+      console.error("[admin/orders] order detail fetch failed", error);
+      setSelectedOrderDetail(null);
+    } finally {
+      setLoadingOrderDetail(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedOrderId) {
+      void fetchOrderDetail(selectedOrderId);
+    } else {
+      setSelectedOrderDetail(null);
+    }
+  }, [selectedOrderId, fetchOrderDetail]);
 
   const visibleOrders = orders
     .filter((order) => matchesSearch(order, search.trim()))
@@ -1371,7 +1398,7 @@ export default function OrdersPage() {
                     {selectedOrderId === order.id && (
                       <div className="lg:hidden mt-3">
                         <OrderDetailPanel
-                          order={selectedOrder}
+                          order={selectedOrderDetail}
                           updating={updatingOrderId === selectedOrderId}
                           onUpdateStatus={updateStatus}
                           onCancel={cancelOrder}
@@ -1389,7 +1416,7 @@ export default function OrdersPage() {
             <div className="hidden lg:block w-full lg:w-[450px]">
               <div className="sticky top-6">
                 <OrderDetailPanel
-                  order={selectedOrder}
+                  order={selectedOrderDetail}
                   updating={updatingOrderId === selectedOrderId}
                   onUpdateStatus={updateStatus}
                   onCancel={cancelOrder}
