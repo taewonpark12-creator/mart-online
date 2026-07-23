@@ -87174,6 +87174,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8803838001018",
+    "name": "수라상소고기와야채1.6kg",
+    "normalPrice": 17900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8803838001025",
+    "name": "수라상연어와채소1.6kg",
+    "normalPrice": 17900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8803838001179",
     "name": "진도라이트10kg",
     "normalPrice": 23900,
@@ -100884,6 +100902,132 @@
     "barcode": "8809192512146",
     "name": "소고기츄240g",
     "normalPrice": 8900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512498",
+    "name": "맘마앤치킨꼬치300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512504",
+    "name": "맘마앤오리꽈배기300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512511",
+    "name": "맘마앤치킨슬라이스300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512528",
+    "name": "맘마앤치킨링300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512535",
+    "name": "맘마앤치킨안심300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512542",
+    "name": "맘마앤치킨꽈배기300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512559",
+    "name": "맘마앤치꽈배기1kg",
+    "normalPrice": 25000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512566",
+    "name": "맘마앤치킨닭갈비1kg",
+    "normalPrice": 25000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512573",
+    "name": "맘마앤치킨비스켓1kg",
+    "normalPrice": 25000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512580",
+    "name": "맘마앤오리링1kg",
+    "normalPrice": 25000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512597",
+    "name": "맘마앤치킨고구마1kg",
+    "normalPrice": 25000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512603",
+    "name": "맘마앤치킨닭갈비300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512610",
+    "name": "맘마앤소기기혼합300g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809192512627",
+    "name": "맘마앤연어혼합300g",
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
