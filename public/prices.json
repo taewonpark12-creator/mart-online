@@ -50142,10 +50142,10 @@
     "barcode": "8801069403137",
     "name": "남양)과수원사과190ml*4입",
     "normalPrice": 2200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1500,
+    "discountRate": 32,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801069403144",
