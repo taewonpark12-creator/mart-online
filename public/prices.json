@@ -27147,10 +27147,10 @@
     "barcode": "8801045303406",
     "name": "오뚜기)오즈키친전복죽450g",
     "normalPrice": 4900,
-    "eventPrice": 4500,
-    "discountRate": 8,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801045303413",
