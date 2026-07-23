@@ -9612,6 +9612,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8800273040114",
+    "name": "소금치즈쿠키270g",
+    "normalPrice": 5000,
+    "eventPrice": 3980,
+    "discountRate": 20,
+    "saleStartDate": "2019-10-20",
+    "saleEndDate": "2026-12-31"
+  },
+  {
     "barcode": "8800274131293",
     "name": "아이엠캔디100g",
     "normalPrice": 2980,
