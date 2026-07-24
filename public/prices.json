@@ -102250,8 +102250,8 @@
   },
   {
     "barcode": "8809232165943",
-    "name": "사과(1봉)",
-    "normalPrice": 17800,
+    "name": "사과(1봉)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -103267,8 +103267,8 @@
   },
   {
     "barcode": "8809280980215",
-    "name": "사과(10개/1봉)",
-    "normalPrice": 17800,
+    "name": "사과(10개/1봉)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
