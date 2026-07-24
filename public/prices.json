@@ -54497,18 +54497,18 @@
   {
     "barcode": "8801101889028",
     "name": "퓨어)뽀드득주방세제레몬1.2L",
-    "normalPrice": 3000,
-    "eventPrice": 2480,
-    "discountRate": 17,
+    "normalPrice": 3500,
+    "eventPrice": 2800,
+    "discountRate": 20,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101889035",
     "name": "퓨어)뽀드득주방세제자몽1.2L",
-    "normalPrice": 3000,
-    "eventPrice": 2480,
-    "discountRate": 17,
+    "normalPrice": 3500,
+    "eventPrice": 2800,
+    "discountRate": 20,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -54568,8 +54568,8 @@
   },
   {
     "barcode": "8801101891908",
-    "name": "피죤)무균무때재로욕실750ml",
-    "normalPrice": 6000,
+    "name": "피죤)무균무때제로욕실용750ml",
+    "normalPrice": 5950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
