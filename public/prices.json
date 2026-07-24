@@ -21467,7 +21467,7 @@
   {
     "barcode": "8801038116242",
     "name": "도루코)페이스4면도기4입",
-    "normalPrice": 6200,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -54565,6 +54565,15 @@
     "discountRate": 20,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
+  },
+  {
+    "barcode": "8801101891908",
+    "name": "피죤)무균무때재로욕실750ml",
+    "normalPrice": 6000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801101891915",
