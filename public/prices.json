@@ -117749,7 +117749,7 @@
   {
     "barcode": "9100000000176",
     "name": "자두1팩",
-    "normalPrice": 9800,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117785,7 +117785,7 @@
   {
     "barcode": "9100000000237",
     "name": "천도복숭아1팩",
-    "normalPrice": 4980,
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119855,7 +119855,7 @@
   {
     "barcode": "9100000218861",
     "name": "감자100g",
-    "normalPrice": 250,
+    "normalPrice": 300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
