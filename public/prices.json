@@ -110270,11 +110270,11 @@
   {
     "barcode": "8809536246607",
     "name": "완도명가)다시마300g",
-    "normalPrice": 5500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 7000,
+    "eventPrice": 5500,
+    "discountRate": 21,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809536246614",
