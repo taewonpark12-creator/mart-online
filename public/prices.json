@@ -38829,10 +38829,10 @@
     "barcode": "8801052071022",
     "name": "청정원)국산콩두부280g*2입",
     "normalPrice": 4700,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2500,
+    "discountRate": 47,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801052071282",
