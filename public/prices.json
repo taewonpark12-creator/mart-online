@@ -9171,15 +9171,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "7808731404172",
-    "name": "세카노패밀리리제르바750ml",
-    "normalPrice": 24000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "7808755600680",
     "name": "블루베리(1팩)행사",
     "normalPrice": 3000,
@@ -9430,24 +9421,6 @@
     "discountRate": 43,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
-  },
-  {
-    "barcode": "8410702038515",
-    "name": "비티스라툼750ml",
-    "normalPrice": 25000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8410702046299",
-    "name": "비나라조스750ml",
-    "normalPrice": 25000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
   },
   {
     "barcode": "8412707034127",
@@ -103278,15 +103251,6 @@
     "barcode": "8809275383670",
     "name": "광천명란김12입",
     "normalPrice": 6000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8809276846129",
-    "name": "산엘리아스메를로750ml",
-    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
