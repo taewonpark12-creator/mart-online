@@ -9882,6 +9882,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8800346460023",
+    "name": "티니핑클릭커",
+    "normalPrice": 5000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8800346460030",
     "name": "종이스퀴시세트",
     "normalPrice": 3500,
@@ -9948,6 +9957,15 @@
     "barcode": "8800346461280",
     "name": "거북슬랑이",
     "normalPrice": 3500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800346461587",
+    "name": "토마토스랑이",
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
