@@ -117838,8 +117838,8 @@
   },
   {
     "barcode": "9100000000343",
-    "name": "호랑이콩1팩",
-    "normalPrice": 2980,
+    "name": "샤인머스켓1팩",
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117847,8 +117847,17 @@
   },
   {
     "barcode": "9100000000350",
-    "name": "강낭콩1팩",
-    "normalPrice": 2980,
+    "name": "거봉1팩",
+    "normalPrice": 5000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000000497",
+    "name": "부추1단",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117927,9 +117936,45 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "91000000013",
+    "name": "아오리사과1봉",
+    "normalPrice": 12000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000001470",
     "name": "배달봉투1매",
     "normalPrice": 100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000001517",
+    "name": "자두1팩",
+    "normalPrice": 9800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000001524",
+    "name": "아삭이고추1팩",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000001531",
+    "name": "청양고추1봉",
+    "normalPrice": 2500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
