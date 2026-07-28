@@ -118909,8 +118909,8 @@
   },
   {
     "barcode": "9100000214306",
-    "name": "오이(10개/1봉)행사",
-    "normalPrice": 3980,
+    "name": "오이(3개/1봉)",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119954,7 +119954,7 @@
   {
     "barcode": "9100000218922",
     "name": "양배추(1박스)",
-    "normalPrice": 12000,
+    "normalPrice": 12800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
