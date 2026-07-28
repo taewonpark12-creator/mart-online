@@ -63135,6 +63135,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801117001636",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801117001766",
     "name": "오리온)그래놀라저당카카오235g",
     "normalPrice": 5900,
@@ -119585,7 +119594,7 @@
   {
     "barcode": "9100000217338",
     "name": "대추방울토마토(1팩)",
-    "normalPrice": 4980,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
