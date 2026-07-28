@@ -47387,7 +47387,7 @@
   {
     "barcode": "8801066710559",
     "name": "대림)순두부400g",
-    "normalPrice": 850,
+    "normalPrice": 900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -84321,6 +84321,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8803060081178",
+    "name": "백제)햅쌀떡국163g",
+    "normalPrice": 3200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8803060082441",
     "name": "백제)쌀국수파곰탕면93g",
     "normalPrice": 1800,
@@ -93755,7 +93764,7 @@
   {
     "barcode": "8808211015552",
     "name": "한승)빙초산450ml",
-    "normalPrice": 5800,
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
