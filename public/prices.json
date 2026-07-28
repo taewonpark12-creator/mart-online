@@ -118026,6 +118026,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000001906",
+    "name": "노르웨이자반1손",
+    "normalPrice": 13500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000001913",
     "name": "매실(10kg/1망)",
     "normalPrice": 999990,
@@ -118035,9 +118044,36 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000001920",
+    "name": "오징어2마리",
+    "normalPrice": 7500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000001937",
+    "name": "국내산갈치1마리",
+    "normalPrice": 6500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000001944",
     "name": "햇무(1박스)",
     "normalPrice": 18900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000001951",
+    "name": "고구마순1단",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119900,7 +119936,7 @@
   {
     "barcode": "9100000218861",
     "name": "감자100g",
-    "normalPrice": 300,
+    "normalPrice": 200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
