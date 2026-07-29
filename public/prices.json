@@ -118550,7 +118550,7 @@
   {
     "barcode": "910000000665",
     "name": "자두(1팩)행사",
-    "normalPrice": 999990,
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118982,7 +118982,7 @@
   {
     "barcode": "9100000214313",
     "name": "햇양파(특대/1망)행사",
-    "normalPrice": 7980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119089,8 +119089,8 @@
   },
   {
     "barcode": "9100000214795",
-    "name": "참외(10개/1봉)행사",
-    "normalPrice": 7980,
+    "name": "참외(10개/1봉)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119252,7 +119252,7 @@
   {
     "barcode": "9100000215914",
     "name": "참외(6개/1봉)",
-    "normalPrice": 7980,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120368,7 +120368,7 @@
   {
     "barcode": "9100000219332",
     "name": "고구마순(1단)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120376,8 +120376,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)행사",
-    "normalPrice": 1480,
+    "name": "가지(5개/1봉)",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
