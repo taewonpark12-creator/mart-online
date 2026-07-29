@@ -110268,6 +110268,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809536246454",
+    "name": "알뜰세일(도시락김)",
+    "normalPrice": 2000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809536246508",
     "name": "구운곱창돌김5매*3입",
     "normalPrice": 8500,
