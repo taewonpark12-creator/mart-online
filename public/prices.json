@@ -8361,6 +8361,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "675684222125",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "686464497008",
     "name": "퀵블라스트체리58g",
     "normalPrice": 3200,
@@ -102629,7 +102638,7 @@
   {
     "barcode": "8809251850752",
     "name": "몬파인애플월남쌈소스295ml",
-    "normalPrice": 5800,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
