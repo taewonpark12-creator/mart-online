@@ -1,5 +1,5 @@
 export const EVENT_MIN_ORDER_START = "2026-07-01";
-export const EVENT_MIN_ORDER_END = "2026-07-31";
+export const EVENT_MIN_ORDER_END = "2026-08-31";
 export const EVENT_MIN_ORDER_AMOUNT = 30_000;
 export const DEFAULT_MIN_ORDER_AMOUNT = 40_000;
 
