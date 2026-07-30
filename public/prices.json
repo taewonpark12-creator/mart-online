@@ -118630,8 +118630,8 @@
   },
   {
     "barcode": "910000000665",
-    "name": "자두(1팩)행사",
-    "normalPrice": 4980,
+    "name": "자두(1팩)",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
