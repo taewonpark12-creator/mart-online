@@ -120555,6 +120555,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9414997000034",
+    "name": "서울)데어리휘핑250g",
+    "normalPrice": 8000,
+    "eventPrice": 2980,
+    "discountRate": 63,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
+  },
+  {
     "barcode": "9421016151318",
     "name": "웨스트골드버터무염250g",
     "normalPrice": 8000,
