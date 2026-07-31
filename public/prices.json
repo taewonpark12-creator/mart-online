@@ -18369,13 +18369,22 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801022915745",
+    "name": "클라우드크러시350ml*6입",
+    "normalPrice": 9000,
+    "eventPrice": 8500,
+    "discountRate": 6,
+    "saleStartDate": "2023-12-24",
+    "saleEndDate": "2026-12-31"
+  },
+  {
     "barcode": "8801022915752",
     "name": "클라우드크러시470ml*6입",
     "normalPrice": 12600,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 12000,
+    "discountRate": 5,
+    "saleStartDate": "2023-12-24",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801022915769",
