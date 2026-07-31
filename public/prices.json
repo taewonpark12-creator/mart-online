@@ -21447,6 +21447,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037099782",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801038113814",
     "name": "도루코)일회용면도기10입",
     "normalPrice": 3200,
@@ -24131,7 +24140,7 @@
   {
     "barcode": "8801043034722",
     "name": "웰치스포도1.5L",
-    "normalPrice": 2500,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25121,7 +25130,7 @@
   {
     "barcode": "8801043067225",
     "name": "웰치제로그레이프1.5L",
-    "normalPrice": 2500,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -44129,7 +44138,7 @@
   {
     "barcode": "8801060231012",
     "name": "백광)트래펑1L",
-    "normalPrice": 2500,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -52193,7 +52202,7 @@
   {
     "barcode": "8801083453002",
     "name": "캘로그)크랜베리그래놀라280g",
-    "normalPrice": 6500,
+    "normalPrice": 6800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -107732,7 +107741,7 @@
   {
     "barcode": "8809448180495",
     "name": "버블윅)리핏파워젤3.1L",
-    "normalPrice": 8800,
+    "normalPrice": 9900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117281,7 +117290,7 @@
   {
     "barcode": "8886467100017",
     "name": "프링글스오리지널110g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117290,7 +117299,7 @@
   {
     "barcode": "8886467100024",
     "name": "프링글스어니언110g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117299,7 +117308,7 @@
   {
     "barcode": "8886467100031",
     "name": "프링글스치즈맛110g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117308,7 +117317,7 @@
   {
     "barcode": "8886467100055",
     "name": "프링글스핫앤스파이시110g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117317,7 +117326,7 @@
   {
     "barcode": "8886467104725",
     "name": "프링글스버터카라멜110g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117326,7 +117335,7 @@
   {
     "barcode": "8886467124785",
     "name": "프링글스스모키바메큐피자102g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117335,7 +117344,7 @@
   {
     "barcode": "8886467126789",
     "name": "프링글스숯불갈비100g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117344,7 +117353,7 @@
   {
     "barcode": "8886467126796",
     "name": "프링글스찹스테이크100g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117353,7 +117362,7 @@
   {
     "barcode": "8886467127311",
     "name": "프링글스매콤로제떡볶이100g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117362,7 +117371,7 @@
   {
     "barcode": "8886467128110",
     "name": "프링글스스윗어니언100g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117371,7 +117380,7 @@
   {
     "barcode": "8886467128820",
     "name": "프링글스캐리비안치킨100g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -117380,7 +117389,7 @@
   {
     "barcode": "8886467128837",
     "name": "프링글스닭강정100g",
-    "normalPrice": 2600,
+    "normalPrice": 2800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
