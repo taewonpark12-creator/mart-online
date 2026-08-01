@@ -17,6 +17,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "검색어가 없습니다." }, { status: 400 });
   }
 
+  console.log("[search-image] GOOGLE_SEARCH_API_KEY exists:", !!GOOGLE_SEARCH_API_KEY);
+  console.log("[search-image] GOOGLE_SEARCH_ENGINE_ID exists:", !!GOOGLE_SEARCH_ENGINE_ID);
+
   if (!GOOGLE_SEARCH_API_KEY || !GOOGLE_SEARCH_ENGINE_ID) {
     console.error("Google Search API credentials not configured");
     return NextResponse.json({ error: "이미지 검색 설정이 필요합니다." }, { status: 500 });
