@@ -36,6 +36,8 @@ export async function GET(req: Request) {
 
     if (!response.ok) {
       console.error("Google image search failed:", response.status);
+      const errorText = await response.text();
+      console.error("Google Search API error response:", errorText);
       return NextResponse.json({ error: "이미지 검색에 실패했습니다." }, { status: 500 });
     }
 
