@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { sanitizeInput } from "@/lib/security";
 
-const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID ?? "5CTXJMXh6ZfTnjgxw5og";
-const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET ?? "Pmg86kSmBd";
+const GOOGLE_SEARCH_API_KEY = process.env.GOOGLE_SEARCH_API_KEY;
+const GOOGLE_SEARCH_ENGINE_ID = process.env.GOOGLE_SEARCH_ENGINE_ID;
 
 export async function GET(req: Request) {
   if (!(await isAdminAuthenticated())) {
@@ -17,29 +17,28 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "검색어가 없습니다." }, { status: 400 });
   }
 
+  if (!GOOGLE_SEARCH_API_KEY || !GOOGLE_SEARCH_ENGINE_ID) {
+    console.error("Google Search API credentials not configured");
+    return NextResponse.json({ error: "이미지 검색 설정이 필요합니다." }, { status: 500 });
+  }
+
   try {
-    const url = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
-      query,
-    )}&display=10&sort=sim`;
+    const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_SEARCH_API_KEY}&cx=${GOOGLE_SEARCH_ENGINE_ID}&q=${encodeURIComponent(query)}&searchType=image&num=10`;
 
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        "X-Naver-Client-Id": NAVER_CLIENT_ID,
-        "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
-      },
     });
 
     if (!response.ok) {
-      console.error("Naver image search failed:", response.status);
+      console.error("Google image search failed:", response.status);
       return NextResponse.json({ error: "이미지 검색에 실패했습니다." }, { status: 500 });
     }
 
     const data = await response.json();
     const images =
       data?.items
-        ?.map((item: { image?: unknown }) => item.image)
-        .filter((img: unknown): img is string => typeof img === "string" && img.startsWith("http")) || [];
+        ?.map((item: { link?: unknown }) => item.link)
+        .filter((img: unknown): img is string => typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://"))) || [];
 
     return NextResponse.json({
       success: true,
