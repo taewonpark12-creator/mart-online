@@ -119234,7 +119234,7 @@
   {
     "barcode": "9100000214856",
     "name": "단양/백학홍고추(20kg/1박스)",
-    "normalPrice": 110000,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119522,7 +119522,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 8900,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119746,7 +119746,7 @@
   },
   {
     "barcode": "9100000217468",
-    "name": "고창홍고추(20kg/1박스)",
+    "name": "홍고추(20kg/1박스)",
     "normalPrice": 99000,
     "eventPrice": null,
     "discountRate": null,
@@ -120556,8 +120556,8 @@
   },
   {
     "barcode": "9101003821",
-    "name": "팩느타리버섯(1팩)",
-    "normalPrice": 980,
+    "name": "팩느타리버섯(2팩)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
