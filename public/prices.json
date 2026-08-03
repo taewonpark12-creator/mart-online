@@ -43068,10 +43068,10 @@
     "barcode": "8801056049201",
     "name": "게토레이레몬600ml",
     "normalPrice": 1950,
-    "eventPrice": 1480,
-    "discountRate": 24,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801056050269",
