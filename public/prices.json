@@ -118352,7 +118352,7 @@
   {
     "barcode": "9100000002477",
     "name": "체리(1팩)",
-    "normalPrice": 9800,
+    "normalPrice": 9999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119954,7 +119954,7 @@
   {
     "barcode": "9100000218588",
     "name": "샤인머스켓(2kg/1박스)",
-    "normalPrice": 22800,
+    "normalPrice": 17800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
