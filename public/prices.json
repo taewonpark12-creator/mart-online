@@ -23771,7 +23771,7 @@
   {
     "barcode": "8801043021913",
     "name": "농심)감고꿀자4번들*8입",
-    "normalPrice": 26800,
+    "normalPrice": 28500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24030,27 +24030,9 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801043030199",
-    "name": "농심)꿀꽈배기70g*24입",
-    "normalPrice": 28000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801043030229",
-    "name": "농심)조청유과75g*24입",
-    "normalPrice": 28000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801043030236",
     "name": "농심)누룽지팝142g",
-    "normalPrice": 2900,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24059,7 +24041,7 @@
   {
     "barcode": "8801043030243",
     "name": "농심)누룽지팝142g*16입",
-    "normalPrice": 44000,
+    "normalPrice": 46500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24230,7 +24212,7 @@
   {
     "barcode": "8801043036092",
     "name": "농심)고구마깡83g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24239,7 +24221,7 @@
   {
     "barcode": "8801043036122",
     "name": "농심)고구마깡83g*16입",
-    "normalPrice": 23000,
+    "normalPrice": 24500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24248,7 +24230,7 @@
   {
     "barcode": "8801043036139",
     "name": "농심)감자깡75g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24257,7 +24239,7 @@
   {
     "barcode": "8801043036160",
     "name": "농심)감자깡75g*16입",
-    "normalPrice": 23000,
+    "normalPrice": 24500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24266,7 +24248,7 @@
   {
     "barcode": "8801043036177",
     "name": "농심)꿀꽈배기90g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24275,7 +24257,7 @@
   {
     "barcode": "8801043036238",
     "name": "농심)자갈치90g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24284,7 +24266,7 @@
   {
     "barcode": "8801043036245",
     "name": "농심)자갈치90g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24293,7 +24275,7 @@
   {
     "barcode": "8801043036313",
     "name": "농심)벌집핏자90g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24302,7 +24284,7 @@
   {
     "barcode": "8801043036337",
     "name": "농심)오징어집78g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24311,7 +24293,7 @@
   {
     "barcode": "8801043036344",
     "name": "농심)오징어집83g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24320,7 +24302,7 @@
   {
     "barcode": "8801043036399",
     "name": "농심)알새우칩68g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24329,7 +24311,7 @@
   {
     "barcode": "8801043036405",
     "name": "농심)알새우칩68g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24338,7 +24320,7 @@
   {
     "barcode": "8801043036436",
     "name": "농심)포스틱84g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24347,7 +24329,7 @@
   {
     "barcode": "8801043036443",
     "name": "농심)포스틱84g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24356,7 +24338,7 @@
   {
     "barcode": "8801043036498",
     "name": "농심)양파깡83g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24401,7 +24383,7 @@
   {
     "barcode": "8801043036597",
     "name": "농심)양파링80g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24410,7 +24392,7 @@
   {
     "barcode": "8801043036603",
     "name": "농심)양파링84g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24419,7 +24401,7 @@
   {
     "barcode": "8801043036634",
     "name": "농심)바나나킥75g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24428,7 +24410,7 @@
   {
     "barcode": "8801043036641",
     "name": "농심)바나나킥75g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24437,7 +24419,7 @@
   {
     "barcode": "8801043036672",
     "name": "농심)인디안밥83g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24446,7 +24428,7 @@
   {
     "barcode": "8801043036719",
     "name": "농심)조청유과96g",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24455,7 +24437,7 @@
   {
     "barcode": "8801043036726",
     "name": "농심)조청유과96g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24525,15 +24507,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801043039567",
-    "name": "농심)양파링50g*20입",
-    "normalPrice": 24000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801043039949",
     "name": "멘토스필링베리굿37g",
     "normalPrice": 700,
@@ -24545,7 +24518,7 @@
   {
     "barcode": "8801043041171",
     "name": "농심)벌집핏자90g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24554,7 +24527,7 @@
   {
     "barcode": "8801043041188",
     "name": "농심)양파깡83g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24572,7 +24545,7 @@
   {
     "barcode": "8801043041348",
     "name": "농심)인디안밥83g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24581,7 +24554,7 @@
   {
     "barcode": "8801043041362",
     "name": "농심)꿀꽈배기90g*20입",
-    "normalPrice": 29000,
+    "normalPrice": 30500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24671,7 +24644,7 @@
   {
     "barcode": "8801043046428",
     "name": "농심)누룽지팝매콤142g",
-    "normalPrice": 2900,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24680,7 +24653,7 @@
   {
     "barcode": "8801043046435",
     "name": "농심)누룽지팝매콤142g*16입",
-    "normalPrice": 44000,
+    "normalPrice": 46500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
