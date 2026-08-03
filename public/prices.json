@@ -23357,7 +23357,7 @@
   {
     "barcode": "8801043015684",
     "name": "농심)육개장사발면소컵6입",
-    "normalPrice": 6500,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23402,7 +23402,7 @@
   {
     "barcode": "8801043015738",
     "name": "농심)신라면소컵6입",
-    "normalPrice": 7000,
+    "normalPrice": 7700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23429,9 +23429,9 @@
   {
     "barcode": "8801043015769",
     "name": "농심)오징어짬뽕소컵6입",
-    "normalPrice": 7000,
+    "normalPrice": 7700,
     "eventPrice": 4980,
-    "discountRate": 29,
+    "discountRate": 35,
     "saleStartDate": "2026-07-21",
     "saleEndDate": "2026-08-04"
   },
@@ -23456,9 +23456,9 @@
   {
     "barcode": "8801043015806",
     "name": "농심)새우탕소컵6입",
-    "normalPrice": 7000,
+    "normalPrice": 7700,
     "eventPrice": 4980,
-    "discountRate": 29,
+    "discountRate": 35,
     "saleStartDate": "2026-07-21",
     "saleEndDate": "2026-08-04"
   },
@@ -23492,25 +23492,25 @@
   {
     "barcode": "8801043015875",
     "name": "농심)너구리소컵6입",
-    "normalPrice": 7000,
+    "normalPrice": 7700,
     "eventPrice": 4980,
-    "discountRate": 29,
+    "discountRate": 35,
     "saleStartDate": "2026-07-21",
     "saleEndDate": "2026-08-04"
   },
   {
     "barcode": "8801043015929",
     "name": "농심)김치큰사발",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": 1350,
-    "discountRate": 10,
+    "discountRate": 16,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043015936",
     "name": "농심)김치큰사발16입/1박스",
-    "normalPrice": 23000,
+    "normalPrice": 24000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23573,16 +23573,16 @@
   {
     "barcode": "8801043016025",
     "name": "농심)육개장큰사발",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": 1350,
-    "discountRate": 10,
+    "discountRate": 16,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043016032",
     "name": "농심)육개장큰사발16입/1박스",
-    "normalPrice": 23000,
+    "normalPrice": 24000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23591,7 +23591,7 @@
   {
     "barcode": "8801043016049",
     "name": "농심)짜파게티큰사발",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23600,7 +23600,7 @@
   {
     "barcode": "8801043016063",
     "name": "농심)짜파게티큰사발16입/1박스",
-    "normalPrice": 23000,
+    "normalPrice": 24000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23609,7 +23609,7 @@
   {
     "barcode": "8801043016070",
     "name": "농심)튀김우동큰사발",
-    "normalPrice": 1500,
+    "normalPrice": 1600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -23762,7 +23762,7 @@
   {
     "barcode": "8801043021128",
     "name": "농심)김치사발면소컵6입",
-    "normalPrice": 6500,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24212,7 +24212,7 @@
   {
     "barcode": "8801043036061",
     "name": "농심)쌀새우깡80g*20입",
-    "normalPrice": 25500,
+    "normalPrice": 27000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24563,7 +24563,7 @@
   {
     "barcode": "8801043041331",
     "name": "농심)매운새우깡90g*20입",
-    "normalPrice": 25500,
+    "normalPrice": 27000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24590,7 +24590,7 @@
   {
     "barcode": "8801043041379",
     "name": "농심)새우깡90g*20입",
-    "normalPrice": 25500,
+    "normalPrice": 27000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24599,7 +24599,7 @@
   {
     "barcode": "8801043041447",
     "name": "농심)신라면블랙큰사발",
-    "normalPrice": 1800,
+    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24608,7 +24608,7 @@
   {
     "barcode": "8801043041454",
     "name": "농심)신라면블랙큰사발16입/1박스",
-    "normalPrice": 27000,
+    "normalPrice": 28500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24644,7 +24644,7 @@
   {
     "barcode": "8801043044493",
     "name": "농심)와사비새우깡70g*20입",
-    "normalPrice": 26000,
+    "normalPrice": 27000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -24806,7 +24806,7 @@
   {
     "barcode": "8801043056144",
     "name": "농심)앵그리짜파구리큰사발16입/1박스",
-    "normalPrice": 27000,
+    "normalPrice": 27500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25175,7 +25175,7 @@
   {
     "barcode": "8801043067379",
     "name": "농심)사리곰탕소컵6입",
-    "normalPrice": 7000,
+    "normalPrice": 7700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25427,9 +25427,9 @@
   {
     "barcode": "8801043812160",
     "name": "농심)튀김우동소컵6입",
-    "normalPrice": 7000,
+    "normalPrice": 7700,
     "eventPrice": 4980,
-    "discountRate": 29,
+    "discountRate": 35,
     "saleStartDate": "2026-07-21",
     "saleEndDate": "2026-08-04"
   },
