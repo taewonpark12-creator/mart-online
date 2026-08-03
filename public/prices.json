@@ -11694,10 +11694,10 @@
     "barcode": "8801007034980",
     "name": "백설)숯불갈비후랑크120g",
     "normalPrice": 1800,
-    "eventPrice": 1550,
-    "discountRate": 14,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007035215",
@@ -13259,11 +13259,11 @@
   {
     "barcode": "8801007237824",
     "name": "백설)한입쏙비엔나90g",
-    "normalPrice": 1900,
-    "eventPrice": 1700,
-    "discountRate": 11,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 1950,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007240619",
@@ -15401,7 +15401,7 @@
   {
     "barcode": "8801007842530",
     "name": "백설)굿베이컨110g*2입",
-    "normalPrice": 5200,
+    "normalPrice": 5700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -15797,20 +15797,20 @@
   {
     "barcode": "8801007917030",
     "name": "비비고)순살고등어구이60g",
-    "normalPrice": 5800,
-    "eventPrice": 3980,
-    "discountRate": 31,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 8200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007917320",
     "name": "비비고)순살삼치구이60g",
-    "normalPrice": 5800,
-    "eventPrice": 3980,
-    "discountRate": 31,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 6900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007918310",
@@ -72993,10 +72993,10 @@
     "barcode": "8801242645750",
     "name": "백설)주부초밥왕280g",
     "normalPrice": 5200,
-    "eventPrice": 4200,
-    "discountRate": 19,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801250001289",
@@ -76736,11 +76736,11 @@
   {
     "barcode": "8801392080913",
     "name": "비비고)순살임연수구이60g",
-    "normalPrice": 5800,
-    "eventPrice": 3980,
-    "discountRate": 31,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 6900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392083372",
