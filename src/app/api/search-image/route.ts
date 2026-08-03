@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { sanitizeInput } from "@/lib/security";
 
-const GOOGLE_SEARCH_API_KEY = process.env.GOOGLE_SEARCH_API_KEY;
-const GOOGLE_SEARCH_ENGINE_ID = process.env.GOOGLE_SEARCH_ENGINE_ID;
+const NAVER_API_HUB_CLIENT_ID = process.env.NAVER_API_HUB_CLIENT_ID;
+const NAVER_API_HUB_CLIENT_SECRET = process.env.NAVER_API_HUB_CLIENT_SECRET;
 
 export async function GET(req: Request) {
   if (!(await isAdminAuthenticated())) {
@@ -17,27 +17,26 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "검색어가 없습니다." }, { status: 400 });
   }
 
-  console.log("[search-image] typeof GOOGLE_SEARCH_API_KEY:", typeof GOOGLE_SEARCH_API_KEY);
-  console.log("[search-image] GOOGLE_SEARCH_API_KEY length exists:", !!GOOGLE_SEARCH_API_KEY?.length);
-  console.log("[search-image] typeof GOOGLE_SEARCH_ENGINE_ID:", typeof GOOGLE_SEARCH_ENGINE_ID);
-  console.log("[search-image] GOOGLE_SEARCH_ENGINE_ID length exists:", !!GOOGLE_SEARCH_ENGINE_ID?.length);
-
-  if (!GOOGLE_SEARCH_API_KEY || !GOOGLE_SEARCH_ENGINE_ID) {
-    console.error("Google Search API credentials not configured");
+  if (!NAVER_API_HUB_CLIENT_ID || !NAVER_API_HUB_CLIENT_SECRET) {
+    console.error("NAVER API HUB credentials not configured");
     return NextResponse.json({ error: "이미지 검색 설정이 필요합니다." }, { status: 500 });
   }
 
   try {
-    const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_SEARCH_API_KEY}&cx=${GOOGLE_SEARCH_ENGINE_ID}&q=${encodeURIComponent(query)}&searchType=image&num=10`;
+    const url = `https://naverapihub.apigw.ntruss.com/search/v1/image?query=${encodeURIComponent(query)}&display=10&format=json`;
 
     const response = await fetch(url, {
       method: "GET",
+      headers: {
+        "X-NCP-APIGW-API-KEY-ID": NAVER_API_HUB_CLIENT_ID,
+        "X-NCP-APIGW-API-KEY": NAVER_API_HUB_CLIENT_SECRET,
+      },
     });
 
     if (!response.ok) {
-      console.error("Google image search failed:", response.status);
+      console.error("NAVER image search failed:", response.status);
       const errorText = await response.text();
-      console.error("Google Search API error response:", errorText);
+      console.error("NAVER API HUB error response:", errorText);
       return NextResponse.json({ error: "이미지 검색에 실패했습니다." }, { status: 500 });
     }
 
