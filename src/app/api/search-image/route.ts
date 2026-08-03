@@ -46,6 +46,9 @@ export async function GET(req: Request) {
         ?.map((item: { link?: unknown }) => item.link)
         .filter((img: unknown): img is string => typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://"))) || [];
 
+    console.log("[search-image] NAVER API returned items:", data?.items?.length || 0);
+    console.log("[search-image] Candidate images after filtering:", candidateImages.length);
+
     const validateImage = async (imageUrl: string): Promise<boolean> => {
       try {
         const imgResponse = await fetch(imageUrl, {
@@ -64,6 +67,9 @@ export async function GET(req: Request) {
         valid: await validateImage(img),
       }))
     );
+
+    const validCount = validatedImages.filter(({ valid }) => valid).length;
+    console.log("[search-image] Validated images:", validCount, "/", candidateImages.length);
 
     const images = validatedImages
       .filter(({ valid }) => valid)

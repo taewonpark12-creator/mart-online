@@ -653,11 +653,11 @@ function ProductImagePicker({
 
           {uploading && <p className="mt-3 text-sm font-semibold text-blue-700">선택한 이미지 저장 중...</p>}
           {!searching && candidates.length === 0 && (
-            <p className="mt-3 text-xs text-gray-500">검색하면 최대 5개의 이미지 후보가 표시됩니다.</p>
+            <p className="mt-3 text-xs text-gray-500">검색하면 최대 10개의 이미지 후보가 표시됩니다.</p>
           )}
           {candidates.length > 0 && (
             <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
-              {candidates.slice(0, 5).map((candidate, index) => (
+              {candidates.slice(0, 10).map((candidate, index) => (
                 <div
                   key={`${candidate}-${index}`}
                   className="overflow-hidden rounded-lg border bg-white p-1"
