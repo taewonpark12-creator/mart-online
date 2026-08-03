@@ -17820,6 +17820,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801019901171",
+    "name": "해태)김치만두김치가득378g",
+    "normalPrice": 4800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801019998041",
+    "name": "해)고향만두450g",
+    "normalPrice": 3650,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801021083520",
     "name": "카프리330ml",
     "normalPrice": 1900,
