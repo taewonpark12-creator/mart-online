@@ -23,7 +23,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const url = `https://naverapihub.apigw.ntruss.com/search/v1/image?query=${encodeURIComponent(query)}&display=10&format=json`;
+    const url = `https://naverapihub.apigw.ntruss.com/search/v1/image?query=${encodeURIComponent(query)}&display=20&format=json`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -41,16 +41,40 @@ export async function GET(req: Request) {
     }
 
     const data = await response.json();
-    const images =
+    const candidateImages =
       data?.items
         ?.map((item: { link?: unknown }) => item.link)
         .filter((img: unknown): img is string => typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://"))) || [];
+
+    const validateImage = async (imageUrl: string): Promise<boolean> => {
+      try {
+        const imgResponse = await fetch(imageUrl, {
+          method: "HEAD",
+          signal: AbortSignal.timeout(5000),
+        });
+        return imgResponse.ok && imgResponse.status >= 200 && imgResponse.status < 300;
+      } catch {
+        return false;
+      }
+    };
+
+    const validatedImages = await Promise.all(
+      candidateImages.map(async (img: string) => ({
+        url: img,
+        valid: await validateImage(img),
+      }))
+    );
+
+    const images = validatedImages
+      .filter(({ valid }) => valid)
+      .map(({ url }) => url)
+      .slice(0, 10);
 
     return NextResponse.json({
       success: true,
       query,
       image: images[0] || null,
-      images: images.slice(0, 5),
+      images,
       count: images.length,
     });
   } catch (error) {
