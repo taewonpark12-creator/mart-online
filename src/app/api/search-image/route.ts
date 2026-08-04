@@ -46,16 +46,19 @@ export async function GET(req: Request) {
         ?.map((item: { link?: unknown }) => item.link)
         .filter((img: unknown): img is string => typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://"))) || [];
 
-    console.log("[search-image] NAVER API returned items:", data?.items?.length || 0);
-    console.log("[search-image] Candidate images after filtering:", candidateImages.length);
+    console.log("[search-image] Candidate images before validation:", candidateImages.length);
 
     const validateImage = async (imageUrl: string): Promise<boolean> => {
       try {
         const imgResponse = await fetch(imageUrl, {
-          method: "HEAD",
+          method: "GET",
           signal: AbortSignal.timeout(5000),
         });
-        return imgResponse.ok && imgResponse.status >= 200 && imgResponse.status < 300;
+        if (!imgResponse.ok || imgResponse.status < 200 || imgResponse.status >= 300) {
+          return false;
+        }
+        const contentType = imgResponse.headers.get("content-type");
+        return contentType ? contentType.startsWith("image/") : false;
       } catch {
         return false;
       }
@@ -69,7 +72,8 @@ export async function GET(req: Request) {
     );
 
     const validCount = validatedImages.filter(({ valid }) => valid).length;
-    console.log("[search-image] Validated images:", validCount, "/", candidateImages.length);
+    const excludedCount = candidateImages.length - validCount;
+    console.log("[search-image] Validation passed:", validCount, "excluded:", excludedCount);
 
     const images = validatedImages
       .filter(({ valid }) => valid)
