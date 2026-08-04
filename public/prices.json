@@ -52704,6 +52704,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801094001773",
+    "name": "코카콜라제로레몬라임500ml",
+    "normalPrice": 2500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801094001780",
+    "name": "코카콜라제로레몬라임350ml",
+    "normalPrice": 1900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801094012403",
     "name": "코카콜라1.5L",
     "normalPrice": 3900,
@@ -118910,7 +118928,7 @@
   {
     "barcode": "9100000112688",
     "name": "천도복숭아(10개/1팩)",
-    "normalPrice": 5980,
+    "normalPrice": 9999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
