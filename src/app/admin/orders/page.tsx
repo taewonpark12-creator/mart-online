@@ -648,6 +648,9 @@ export default function OrdersPage() {
       const data: Order[] = await res.json();
       setOrders(data);
       setSelectedOrderId((currentSelectedId) => {
+        if (silent && currentSelectedId) {
+          return currentSelectedId;
+        }
         if (currentSelectedId && data.some((order) => order.id === currentSelectedId)) {
           return currentSelectedId;
         }
