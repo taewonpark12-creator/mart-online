@@ -20044,7 +20044,7 @@
   },
   {
     "barcode": "8801037020458",
-    "name": "카누마일드",
+    "name": "카누마일드로스트70T",
     "normalPrice": 29000,
     "eventPrice": null,
     "discountRate": null,
@@ -43830,6 +43830,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801056250867",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801056251253",
     "name": "핫식스더킹아이스피치제로355ml",
     "normalPrice": 1800,
@@ -44130,6 +44139,15 @@
     "barcode": "8801056911270",
     "name": "칠성사이다제로유자500ml",
     "normalPrice": 2000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801056912062",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49881,6 +49899,24 @@
     "barcode": "8801068942873",
     "name": "삼립)보름달밀키소다웨이브88g",
     "normalPrice": 1650,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068943429",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068943436",
+    "name": "삼립)딸기크림롤빵166g",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -110460,6 +110496,15 @@
     "barcode": "8809536246652",
     "name": "구운껍질캐슈넛120g",
     "normalPrice": 4800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809536246676",
+    "name": "북어채100g",
+    "normalPrice": 7800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
