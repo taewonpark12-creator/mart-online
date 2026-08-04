@@ -119063,7 +119063,7 @@
   {
     "barcode": "9100000214214",
     "name": "대파(1단)",
-    "normalPrice": 2980,
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119233,8 +119233,8 @@
   },
   {
     "barcode": "9100000214856",
-    "name": "홍고추(10kg/1박스)행사",
-    "normalPrice": 39800,
+    "name": "충주홍고추(20kg/1박스)",
+    "normalPrice": 90000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
