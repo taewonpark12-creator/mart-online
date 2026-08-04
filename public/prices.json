@@ -20043,6 +20043,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801037020458",
+    "name": "카누마일드",
+    "normalPrice": 29000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801037020922",
     "name": "동서)유아용보리차120g",
     "normalPrice": 1800,
