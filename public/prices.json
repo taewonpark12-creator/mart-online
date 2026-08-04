@@ -118325,7 +118325,7 @@
   {
     "barcode": "9100000002095",
     "name": "수박(5kg/1통)",
-    "normalPrice": 19800,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118802,7 +118802,7 @@
   {
     "barcode": "9100000111711",
     "name": "수박(7kg/1통)",
-    "normalPrice": 23800,
+    "normalPrice": 22000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120232,7 +120232,7 @@
   },
   {
     "barcode": "9100000218953",
-    "name": "대부도포도(3kg/1박스)",
+    "name": "금오산포도(3kg/1박스)행",
     "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
