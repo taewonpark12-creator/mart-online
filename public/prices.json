@@ -40249,8 +40249,8 @@
   },
   {
     "barcode": "8801052127101",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "청정원)멸치표고국물내기한알120g",
+    "normalPrice": 14000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40276,8 +40276,8 @@
   },
   {
     "barcode": "8801052127309",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "청정원)한우양지국물내기한알120g",
+    "normalPrice": 14000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40285,8 +40285,8 @@
   },
   {
     "barcode": "8801052127316",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "청정원)꽃게새우국물내기한알120g",
+    "normalPrice": 14000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40673,7 +40673,7 @@
   {
     "barcode": "8801052140360",
     "name": "청정원)저당양파절임소스320g",
-    "normalPrice": 4700,
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40691,7 +40691,7 @@
   {
     "barcode": "8801052140384",
     "name": "청정원)저당데리야끼소스255g",
-    "normalPrice": 4700,
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40709,7 +40709,7 @@
   {
     "barcode": "8801052140407",
     "name": "청정원)저당양념치킨소스250g",
-    "normalPrice": 4700,
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -101891,20 +101891,20 @@
   {
     "barcode": "8809206483820",
     "name": "청정원)안동식간장닭불고기350g",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 7500,
+    "eventPrice": 2480,
+    "discountRate": 67,
+    "saleStartDate": "2026-08-04",
+    "saleEndDate": "2026-08-18"
   },
   {
     "barcode": "8809206483837",
     "name": "청정원)서울식소불고기350g",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 8500,
+    "eventPrice": 3980,
+    "discountRate": 53,
+    "saleStartDate": "2026-08-04",
+    "saleEndDate": "2026-08-18"
   },
   {
     "barcode": "8809206483868",
