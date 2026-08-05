@@ -101718,6 +101718,24 @@
     "saleEndDate": "2026-08-18"
   },
   {
+    "barcode": "8809206483868",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809206483875",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809206520396",
     "name": "크록스",
     "normalPrice": 17900,
