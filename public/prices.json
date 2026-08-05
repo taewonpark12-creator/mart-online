@@ -50060,20 +50060,20 @@
   {
     "barcode": "8801068943429",
     "name": "삼립)고소한땅콩소보루220g",
-    "normalPrice": 3700,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 4500,
+    "eventPrice": 3500,
+    "discountRate": 22,
+    "saleStartDate": "2019-10-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801068943436",
     "name": "삼립)상큼한딸기크림롤빵166g",
-    "normalPrice": 3700,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 4500,
+    "eventPrice": 3500,
+    "discountRate": 22,
+    "saleStartDate": "2019-10-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801069135137",
