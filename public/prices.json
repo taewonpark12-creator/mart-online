@@ -17397,6 +17397,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801019320507",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801019320545",
     "name": "해태)구운나초26g",
     "normalPrice": 1100,
@@ -40239,6 +40248,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801052127101",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801052127163",
     "name": "청정원)저당홍초레드애플900ml",
     "normalPrice": 8000,
@@ -40251,6 +40269,24 @@
     "barcode": "8801052127231",
     "name": "청정원)저당현미고추장500g",
     "normalPrice": 13000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052127309",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052127316",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40386,6 +40422,15 @@
     "barcode": "8801052132044",
     "name": "청정원)저당돈까스소스240g",
     "normalPrice": 4300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052132051",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -40557,6 +40602,114 @@
     "barcode": "8801052135779",
     "name": "청정원)생강매실맛술410ml",
     "normalPrice": 3300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139333",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139357",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139487",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139494",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139579",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139951",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052139968",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052140360",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052140377",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052140384",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052140391",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801052140407",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -52677,6 +52830,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801094000486",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801094001698",
     "name": "조지아오리지널옐로우175ml*6입",
     "normalPrice": 3300,
@@ -59025,6 +59187,15 @@
     "barcode": "8801111962889",
     "name": "크라운)마이쮸토마토44g",
     "normalPrice": 1100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801111962964",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
