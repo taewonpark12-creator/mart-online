@@ -100054,8 +100054,8 @@
   },
   {
     "barcode": "8809140323084",
-    "name": "호박/밤고구마(1.5kg/1박스)행사",
-    "normalPrice": 6980,
+    "name": "밤고구마(1.5kg/1박스)",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120206,7 +120206,7 @@
   {
     "barcode": "9100000218588",
     "name": "샤인머스켓(2kg/1박스)",
-    "normalPrice": 17800,
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
