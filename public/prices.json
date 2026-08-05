@@ -101889,6 +101889,24 @@
     "saleEndDate": "2026-08-18"
   },
   {
+    "barcode": "8809206483820",
+    "name": "청정원)안동식간장닭불고기350g",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809206483837",
+    "name": "청정원)서울식소불고기350g",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809206483868",
     "name": "신상품",
     "normalPrice": 0,
