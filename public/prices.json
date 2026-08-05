@@ -118207,8 +118207,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)",
-    "normalPrice": 2480,
+    "name": "햇양파(소)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118234,7 +118234,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(3봉)",
+    "name": "팽이버섯(4봉)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -118999,8 +118999,8 @@
   },
   {
     "barcode": "9100000113517",
-    "name": "딱딱이복숭아(5개/1팩)행사",
-    "normalPrice": 7980,
+    "name": "딱딱이복숭아(5개/1팩)",
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119306,7 +119306,7 @@
   {
     "barcode": "9100000214801",
     "name": "햇양파(15kg/1망)행사",
-    "normalPrice": 18900,
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119890,8 +119890,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)",
-    "normalPrice": 2980,
+    "name": "바나나(1송이)행사",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120043,8 +120043,8 @@
   },
   {
     "barcode": "9100000218670",
-    "name": "토마토(5kg/1박스)",
-    "normalPrice": 999990,
+    "name": "토마토(5kg/1박스)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
