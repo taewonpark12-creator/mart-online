@@ -103474,8 +103474,8 @@
   },
   {
     "barcode": "8809280980604",
-    "name": "아오리사과(8개/1봉)행사",
-    "normalPrice": 10800,
+    "name": "아오리사과(8개/1봉)",
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -106705,8 +106705,8 @@
   },
   {
     "barcode": "8809415710311",
-    "name": "아오리사과(8~10개/1봉)행사",
-    "normalPrice": 8900,
+    "name": "아오리사과(8~10개/1봉)",
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118135,8 +118135,8 @@
   },
   {
     "barcode": "91000000013",
-    "name": "아오리사과1봉(행사)",
-    "normalPrice": 10800,
+    "name": "아오리사과1봉",
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119368,8 +119368,8 @@
   },
   {
     "barcode": "9100000215280",
-    "name": "햇무(1개)행사",
-    "normalPrice": 1480,
+    "name": "햇무(1개)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
