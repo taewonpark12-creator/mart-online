@@ -82962,6 +82962,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802259030690",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802259030720",
     "name": "롯데)졸음번쩍껌제로제로87g",
     "normalPrice": 5200,
@@ -83079,6 +83088,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802259031925",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802259031949",
     "name": "롯데)빼빼로딸기37g",
     "normalPrice": 1800,
@@ -83127,6 +83145,15 @@
     "barcode": "8802259032724",
     "name": "롯데)롤리팝프루티퐁당젤리수박60g",
     "normalPrice": 1300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259032847",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -111107,7 +111134,7 @@
   {
     "barcode": "8809563780013",
     "name": "햇달걀특란30구",
-    "normalPrice": 11500,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -111116,7 +111143,7 @@
   {
     "barcode": "8809563780020",
     "name": "씨암닭왕란30구",
-    "normalPrice": 12500,
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
