@@ -118441,8 +118441,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)행사",
-    "normalPrice": 1980,
+    "name": "햇양파(소)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118468,7 +118468,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(4봉)행사",
+    "name": "팽이버섯(3봉)",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -119386,8 +119386,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)",
-    "normalPrice": 2480,
+    "name": "대파(1단)행",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
