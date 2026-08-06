@@ -59508,6 +59508,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801114117668",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114117941",
     "name": "풀무원)부추잡채군만두300g*3",
     "normalPrice": 12500,
