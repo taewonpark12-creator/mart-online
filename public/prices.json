@@ -52869,10 +52869,10 @@
     "barcode": "8801094001773",
     "name": "코카콜라제로레몬라임500ml",
     "normalPrice": 2500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1980,
+    "discountRate": 21,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094001780",
@@ -120557,7 +120557,7 @@
   {
     "barcode": "9100000218991",
     "name": "고수1팩",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
