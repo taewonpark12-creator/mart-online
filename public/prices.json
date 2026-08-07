@@ -53382,10 +53382,10 @@
     "barcode": "8801094342609",
     "name": "태양의마테차500ml",
     "normalPrice": 1200,
-    "eventPrice": 900,
-    "discountRate": 25,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801094347208",
@@ -53750,11 +53750,11 @@
   {
     "barcode": "8801094612603",
     "name": "식후비법W차500ml",
-    "normalPrice": 1300,
-    "eventPrice": 900,
-    "discountRate": 31,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 1500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801094642204",
