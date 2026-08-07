@@ -47511,6 +47511,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801066650206",
+    "name": "대림)우엉조림100g",
+    "normalPrice": 3300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801066650305",
     "name": "대림)쌈무새콤350g",
     "normalPrice": 3300,
@@ -119450,7 +119459,7 @@
   {
     "barcode": "9100000214306",
     "name": "오이(3개/1봉)",
-    "normalPrice": 2980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119593,7 +119602,7 @@
   },
   {
     "barcode": "9100000214856",
-    "name": "홍고추(10kg/1박스)",
+    "name": "백학홍고추(10kg/1박스)",
     "normalPrice": 45000,
     "eventPrice": null,
     "discountRate": null,
@@ -120818,7 +120827,7 @@
   {
     "barcode": "9100000219301",
     "name": "대왕버섯(1팩)행사",
-    "normalPrice": 980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
