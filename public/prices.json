@@ -118468,8 +118468,8 @@
   },
   {
     "barcode": "9100000001678",
-    "name": "청양고추(500g/1봉)행사",
-    "normalPrice": 1980,
+    "name": "청양고추(500g/1봉)",
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119791,8 +119791,8 @@
   },
   {
     "barcode": "9100000216249",
-    "name": "오이(5개/1봉)",
-    "normalPrice": 3980,
+    "name": "오이(5개/1봉)행사",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120917,7 +120917,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 980,
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
