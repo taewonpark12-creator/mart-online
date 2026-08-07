@@ -71381,7 +71381,7 @@
   {
     "barcode": "8801173400275",
     "name": "무궁화)표백비누230g",
-    "normalPrice": 1800,
+    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -71444,7 +71444,7 @@
   {
     "barcode": "8801173400992",
     "name": "무궁화)표백비누450g",
-    "normalPrice": 3400,
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75440,7 +75440,7 @@
   {
     "barcode": "8801353005177",
     "name": "산도깨비)아로마수라벤다400ml",
-    "normalPrice": 4800,
+    "normalPrice": 5300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75449,7 +75449,7 @@
   {
     "barcode": "8801353005184",
     "name": "산도깨비)아로마수레몬400ml",
-    "normalPrice": 4800,
+    "normalPrice": 5300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91910,7 +91910,7 @@
   {
     "barcode": "8806325610724",
     "name": "식물나라)히노끼비누4입",
-    "normalPrice": 4700,
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91919,7 +91919,7 @@
   {
     "barcode": "8806325610731",
     "name": "식물나라)라벤더비누4입",
-    "normalPrice": 4700,
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91928,7 +91928,7 @@
   {
     "barcode": "8806325610748",
     "name": "식물나라)캐모마일비누4입",
-    "normalPrice": 4700,
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91955,7 +91955,7 @@
   {
     "barcode": "8806325612223",
     "name": "참그린)매실청정설거지1kg",
-    "normalPrice": 4800,
+    "normalPrice": 5300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -92478,6 +92478,15 @@
     "barcode": "8806325634430",
     "name": "포린스)아로마실크스위트블라썸2.1L",
     "normalPrice": 6200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8806325634737",
+    "name": "식물나라)비누히노끼4입",
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -106553,7 +106562,7 @@
   {
     "barcode": "8809401602927",
     "name": "프릴)베이킹소다퓨어레몬1L",
-    "normalPrice": 6800,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115085,7 +115094,7 @@
   {
     "barcode": "8809803505109",
     "name": "해피바스)스마일바디자몽오렌지900ml",
-    "normalPrice": 8200,
+    "normalPrice": 9000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115094,7 +115103,7 @@
   {
     "barcode": "8809803505116",
     "name": "해피바스)스마일바디워시체리900ml",
-    "normalPrice": 8500,
+    "normalPrice": 9000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
