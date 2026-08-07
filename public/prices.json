@@ -13602,10 +13602,10 @@
     "barcode": "8801007325613",
     "name": "해찬들)태양초고추장200g",
     "normalPrice": 5200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 43,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007327914",
