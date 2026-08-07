@@ -63414,6 +63414,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801117001292",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801117001322",
     "name": "오리온)비쵸비말차쇼콜라5입",
     "normalPrice": 3200,
@@ -63498,6 +63507,15 @@
     "barcode": "8801117001773",
     "name": "오리온)오뜨애플파이350g",
     "normalPrice": 6900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801117002015",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
