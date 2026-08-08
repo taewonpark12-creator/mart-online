@@ -119062,8 +119062,8 @@
   },
   {
     "barcode": "910000000665",
-    "name": "자두(1팩)",
-    "normalPrice": 7980,
+    "name": "자두(1팩)행사",
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119459,7 +119459,7 @@
   {
     "barcode": "9100000214214",
     "name": "대파(1단)",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119863,8 +119863,8 @@
   },
   {
     "barcode": "9100000216553",
-    "name": "미백옥수수(10개/1망)행사",
-    "normalPrice": 3980,
+    "name": "미백옥수수(5개/1망)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120556,8 +120556,8 @@
   },
   {
     "barcode": "9100000218953",
-    "name": "금오산포도(3kg/1박스)행",
-    "normalPrice": 19800,
+    "name": "김천포도(3kg/1박스)행사",
+    "normalPrice": 15800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
