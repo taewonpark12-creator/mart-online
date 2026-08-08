@@ -47646,6 +47646,15 @@
     "saleEndDate": "2026-08-18"
   },
   {
+    "barcode": "8801068033113",
+    "name": "삼립)햄버거번300g",
+    "normalPrice": 2700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801068036060",
     "name": "삼립)미니꿀호떡190g",
     "normalPrice": 1900,
