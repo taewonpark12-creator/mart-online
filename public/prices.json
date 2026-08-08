@@ -103626,6 +103626,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809274517205",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809275380020",
     "name": "소문난광천김재래15g",
     "normalPrice": 1500,
