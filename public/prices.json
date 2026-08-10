@@ -9216,6 +9216,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "7891515501617",
+    "name": "닭다리살",
+    "normalPrice": 19800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "7891515940195",
     "name": "뼈없는닭다리살2kg",
     "normalPrice": 19800,
