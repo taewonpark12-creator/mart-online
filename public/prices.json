@@ -118522,8 +118522,8 @@
   },
   {
     "barcode": "9100000001678",
-    "name": "홍청양고추(10kg/1박스)",
-    "normalPrice": 52000,
+    "name": "고창홍고추(20kg/1박스)",
+    "normalPrice": 75000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119017,8 +119017,8 @@
   },
   {
     "barcode": "9100000003696",
-    "name": "아삭이고추(1팩)행사",
-    "normalPrice": 1980,
+    "name": "꽈리고추(1봉)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119647,8 +119647,8 @@
   },
   {
     "barcode": "9100000214856",
-    "name": "백학홍고추(10kg/1박스)",
-    "normalPrice": 45000,
+    "name": "단양홍고추(20kg/1박스)",
+    "normalPrice": 80000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120034,8 +120034,8 @@
   },
   {
     "barcode": "9100000217000",
-    "name": "제주감귤(1망)",
-    "normalPrice": 5980,
+    "name": "하우스귤(1팩)행사",
+    "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120125,7 +120125,7 @@
   {
     "barcode": "9100000217338",
     "name": "대추방울토마토(1팩)행사",
-    "normalPrice": 3980,
+    "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120899,7 +120899,7 @@
   {
     "barcode": "9100000219332",
     "name": "고구마순(1단)행사",
-    "normalPrice": 999990,
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120907,7 +120907,7 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)",
+    "name": "가지(6개/1봉)행사",
     "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
