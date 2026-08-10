@@ -102033,6 +102033,24 @@
     "saleEndDate": "2026-08-18"
   },
   {
+    "barcode": "8809206483844",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809206483851",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809206483868",
     "name": "신상품",
     "normalPrice": 0,
@@ -119936,7 +119954,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 9800,
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
