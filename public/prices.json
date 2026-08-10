@@ -52221,19 +52221,19 @@
     "barcode": "8801083017327",
     "name": "켈로그)후르트링320g",
     "normalPrice": 8500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 7980,
+    "discountRate": 6,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801083253404",
     "name": "켈로그)첵스초코340g",
     "normalPrice": 7800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 6980,
+    "discountRate": 11,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801083265018",
@@ -52248,10 +52248,10 @@
     "barcode": "8801083293004",
     "name": "캘로그)아몬드푸레이크300g",
     "normalPrice": 5800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 4980,
+    "discountRate": 14,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801083323305",
