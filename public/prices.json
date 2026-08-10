@@ -119845,7 +119845,7 @@
   },
   {
     "barcode": "9100000216249",
-    "name": "오이(5개/1봉)행사",
+    "name": "오이(5개/1봉)",
     "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
@@ -120575,7 +120575,7 @@
   {
     "barcode": "9100000218953",
     "name": "김천포도(3kg/1박스)행사",
-    "normalPrice": 15800,
+    "normalPrice": 17800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
