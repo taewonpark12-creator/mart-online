@@ -52796,11 +52796,11 @@
   {
     "barcode": "8801094000349",
     "name": "미닛메이드)제주감귤1.5L",
-    "normalPrice": 3700,
-    "eventPrice": 2980,
-    "discountRate": 19,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 3900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801094000356",
@@ -53390,7 +53390,7 @@
   {
     "barcode": "8801094332402",
     "name": "미닛메이드)토마토1.5L",
-    "normalPrice": 3000,
+    "normalPrice": 3900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -53525,7 +53525,7 @@
   {
     "barcode": "8801094432409",
     "name": "미닛메이드)알로에1.5L",
-    "normalPrice": 3200,
+    "normalPrice": 3900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
