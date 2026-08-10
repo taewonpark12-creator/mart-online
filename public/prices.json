@@ -118325,7 +118325,7 @@
   {
     "barcode": "9100000000169",
     "name": "천도복숭아1팩",
-    "normalPrice": 5980,
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118334,7 +118334,7 @@
   {
     "barcode": "9100000000176",
     "name": "자두1팩",
-    "normalPrice": 7980,
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118396,8 +118396,8 @@
   },
   {
     "barcode": "9100000000336",
-    "name": "옥수수1망",
-    "normalPrice": 3980,
+    "name": "흑찰옥수수1팩",
+    "normalPrice": 3480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119862,15 +119862,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "9100000216225",
-    "name": "오이(3개/1봉)행사",
-    "normalPrice": 99990,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "9100000216249",
     "name": "오이(4개/1봉)",
     "normalPrice": 2980,
@@ -120628,8 +120619,8 @@
   },
   {
     "barcode": "9100000218984",
-    "name": "어린잎채소1팩",
-    "normalPrice": 1480,
+    "name": "스낵오이1봉",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
