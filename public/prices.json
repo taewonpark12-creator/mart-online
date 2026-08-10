@@ -94269,10 +94269,10 @@
     "barcode": "8808244101079",
     "name": "제주삼다수2L*6입",
     "normalPrice": 7800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 6980,
+    "discountRate": 11,
+    "saleStartDate": "2022-01-13",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8808244101086",
