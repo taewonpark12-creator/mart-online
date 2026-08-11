@@ -120448,7 +120448,7 @@
   },
   {
     "barcode": "9100000218670",
-    "name": "토마토(5kg/1박스)행사",
+    "name": "완숙토마토(5kg/1박스)행사",
     "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
@@ -120925,8 +120925,8 @@
   },
   {
     "barcode": "9100000219271",
-    "name": "요요방울토마토(2kg/1박스)",
-    "normalPrice": 14800,
+    "name": "찰토마토(3kg/1박스)행사",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
