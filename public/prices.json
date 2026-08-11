@@ -118882,8 +118882,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)행사",
-    "normalPrice": 980,
+    "name": "새송이버섯(1봉)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119683,8 +119683,8 @@
   },
   {
     "barcode": "9100000214856",
-    "name": "단양홍고추(20kg/1박스)",
-    "normalPrice": 80000,
+    "name": "단양청양고추(10kg/1박스)",
+    "normalPrice": 65000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119963,7 +119963,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 12000,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
