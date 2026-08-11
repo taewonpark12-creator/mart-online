@@ -9936,6 +9936,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8800346460849",
+    "name": "피코스티커",
+    "normalPrice": 5000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8800346460856",
     "name": "3D스티커",
     "normalPrice": 5000,
@@ -9966,6 +9975,24 @@
     "barcode": "8800346461587",
     "name": "토마토스랑이",
     "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800346461624",
+    "name": "크런치슬랑이",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800346461822",
+    "name": "LED딸깍이세트",
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
