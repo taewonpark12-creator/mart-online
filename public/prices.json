@@ -63966,19 +63966,19 @@
     "barcode": "8801117162306",
     "name": "오리온)한끼바40g",
     "normalPrice": 1300,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 990,
+    "discountRate": 24,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801117162405",
     "name": "오리온)한끼바120g",
     "normalPrice": 3900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1980,
+    "discountRate": 49,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801117162603",
