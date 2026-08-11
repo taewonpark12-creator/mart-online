@@ -118558,8 +118558,8 @@
   },
   {
     "barcode": "9100000001678",
-    "name": "고창홍고추(20kg/1박스)",
-    "normalPrice": 75000,
+    "name": "충주홍고추(20kg/1박스)",
+    "normalPrice": 95000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118658,7 +118658,7 @@
   {
     "barcode": "9100000001944",
     "name": "햇무(1박스)",
-    "normalPrice": 19800,
+    "normalPrice": 23000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119665,8 +119665,8 @@
   },
   {
     "barcode": "9100000214801",
-    "name": "햇양파(15kg/1망)행사",
-    "normalPrice": 19800,
+    "name": "햇양파(15kg/1망)",
+    "normalPrice": 22000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119747,7 +119747,7 @@
   {
     "barcode": "9100000215280",
     "name": "햇무(1개)",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120187,8 +120187,8 @@
   },
   {
     "barcode": "9100000217468",
-    "name": "백학홍고추(20kg/1박스)",
-    "normalPrice": 70000,
+    "name": "고창홍고추(20kg/1박스)",
+    "normalPrice": 45000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
