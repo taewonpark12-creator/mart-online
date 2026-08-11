@@ -85150,8 +85150,8 @@
   },
   {
     "barcode": "8803284603811",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "담터)꿀유자차1kg",
+    "normalPrice": 10000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -85177,8 +85177,8 @@
   },
   {
     "barcode": "8803284604238",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "담터)꿀생강차1kg",
+    "normalPrice": 12500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -85186,8 +85186,8 @@
   },
   {
     "barcode": "8803284604245",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "담터)꿀대추차1kg",
+    "normalPrice": 11500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -103530,6 +103530,15 @@
     "barcode": "8809273670222",
     "name": "800포장지",
     "normalPrice": 800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809274240066",
+    "name": "가야천년수500ml*20입",
+    "normalPrice": 5300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
