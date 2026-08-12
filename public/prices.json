@@ -24723,6 +24723,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801043046497",
+    "name": "농심)바나나킥3번들",
+    "normalPrice": 3800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801043046664",
     "name": "농심)생생납작떡볶이면",
     "normalPrice": 2400,
@@ -24759,15 +24768,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801043052764",
-    "name": "농심)신라면소컵슈퍼스타소컵",
-    "normalPrice": 1300,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801043052801",
     "name": "농심)신라면슈퍼스타소컵30입/1박스",
     "normalPrice": 37000,
@@ -24777,27 +24777,9 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801043053532",
-    "name": "농심)신라면스파이시퀸소컵",
-    "normalPrice": 1300,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801043053716",
     "name": "농심)신라면스파이시퀸소컵30입/1박스",
     "normalPrice": 37000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801043053785",
-    "name": "농심)신라면햄버거소컵",
-    "normalPrice": 1300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -86653,7 +86635,7 @@
   },
   {
     "barcode": "8803712141021",
-    "name": "목우촌)티니핑치즈비엔나160g*2입",
+    "name": "목우촌)티니핑치즈비엔나175g*2입",
     "normalPrice": 9000,
     "eventPrice": 7980,
     "discountRate": 11,
