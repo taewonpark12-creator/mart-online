@@ -25697,7 +25697,7 @@
   {
     "barcode": "8801045031064",
     "name": "오뚜기)밥친구김자반33g",
-    "normalPrice": 3300,
+    "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -26958,8 +26958,8 @@
     "barcode": "8801045290300",
     "name": "오뚜기)3분카레순한맛200g",
     "normalPrice": 2200,
-    "eventPrice": 1750,
-    "discountRate": 20,
+    "eventPrice": 1800,
+    "discountRate": 18,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -26967,8 +26967,8 @@
     "barcode": "8801045290317",
     "name": "오뚜기)3분카레약간매운맛200g",
     "normalPrice": 2200,
-    "eventPrice": 1750,
-    "discountRate": 20,
+    "eventPrice": 1800,
+    "discountRate": 18,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -26976,8 +26976,8 @@
     "barcode": "8801045290324",
     "name": "오뚜기)3분카레매운맛200g",
     "normalPrice": 2200,
-    "eventPrice": 1750,
-    "discountRate": 20,
+    "eventPrice": 1800,
+    "discountRate": 18,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -27066,8 +27066,8 @@
     "barcode": "8801045291307",
     "name": "오뚜기)3분짜장200g",
     "normalPrice": 2200,
-    "eventPrice": 1750,
-    "discountRate": 20,
+    "eventPrice": 1800,
+    "discountRate": 18,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -27075,8 +27075,8 @@
     "barcode": "8801045291314",
     "name": "오뚜기)3분쇠고기짜장200g",
     "normalPrice": 2000,
-    "eventPrice": 1600,
-    "discountRate": 20,
+    "eventPrice": 1800,
+    "discountRate": 10,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -27336,8 +27336,8 @@
     "barcode": "8801045312316",
     "name": "오뚜기)3분쇠고기카레200g",
     "normalPrice": 2000,
-    "eventPrice": 1600,
-    "discountRate": 20,
+    "eventPrice": 1800,
+    "discountRate": 10,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -28793,7 +28793,7 @@
   {
     "barcode": "8801045560038",
     "name": "오뚜기)뿌셔뿌셔불고기",
-    "normalPrice": 1000,
+    "normalPrice": 1100,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -28802,7 +28802,7 @@
   {
     "barcode": "8801045560052",
     "name": "오뚜기)뿌셔뿌셔양념치킨",
-    "normalPrice": 1000,
+    "normalPrice": 1100,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -28811,7 +28811,7 @@
   {
     "barcode": "8801045560076",
     "name": "오뚜기)뿌셔뿌셔바베큐맛",
-    "normalPrice": 1000,
+    "normalPrice": 1100,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
