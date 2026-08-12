@@ -72794,7 +72794,7 @@
   {
     "barcode": "8801235201154",
     "name": "롯)유아용면봉",
-    "normalPrice": 2850,
+    "normalPrice": 3200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73955,7 +73955,7 @@
   {
     "barcode": "8801252042105",
     "name": "크린장갑50매",
-    "normalPrice": 2900,
+    "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -73982,7 +73982,7 @@
   {
     "barcode": "8801252042419",
     "name": "크린장갑200매",
-    "normalPrice": 9200,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -84447,6 +84447,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802739471326",
+    "name": "명진)니트릴장갑L100매",
+    "normalPrice": 15000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802739471982",
     "name": "코팅고무장갑(중)",
     "normalPrice": 2000,
@@ -84656,6 +84665,15 @@
   {
     "barcode": "8802829900439",
     "name": "8고루고무줄",
+    "normalPrice": 1300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802829900446",
+    "name": "포장마루고무줄",
     "normalPrice": 1300,
     "eventPrice": null,
     "discountRate": null,
@@ -84899,7 +84917,7 @@
   {
     "barcode": "8803139030045",
     "name": "행주수세미",
-    "normalPrice": 650,
+    "normalPrice": 750,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -87446,7 +87464,7 @@
   {
     "barcode": "8803733323581",
     "name": "락앤락위생백(소)100매",
-    "normalPrice": 1600,
+    "normalPrice": 2000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -95148,6 +95166,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809009140203",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809009140432",
     "name": "만능위생모10입",
     "normalPrice": 3200,
@@ -95178,6 +95205,15 @@
     "barcode": "8809009143013",
     "name": "커피드리퍼",
     "normalPrice": 4500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809009143044",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -96320,7 +96356,7 @@
   {
     "barcode": "8809031225114",
     "name": "쿨라라직사각10호2L",
-    "normalPrice": 4800,
+    "normalPrice": 5200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -99992,7 +100028,7 @@
   {
     "barcode": "8809117509015",
     "name": "비전샤워줄세트(단종)",
-    "normalPrice": 7900,
+    "normalPrice": 9500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -100001,7 +100037,7 @@
   {
     "barcode": "8809117509039",
     "name": "비전메탈호스",
-    "normalPrice": 10200,
+    "normalPrice": 11500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -100109,7 +100145,7 @@
   {
     "barcode": "8809117511018",
     "name": "코끼리분사기",
-    "normalPrice": 7000,
+    "normalPrice": 8200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -103791,6 +103827,15 @@
     "barcode": "8809275380129",
     "name": "소문난광천돌자반70g",
     "normalPrice": 3900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809275380167",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115041,6 +115086,15 @@
     "barcode": "8809773300452",
     "name": "검정색고무줄8mm",
     "normalPrice": 1100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809773300469",
+    "name": "포장12고무고무줄",
+    "normalPrice": 1400,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
