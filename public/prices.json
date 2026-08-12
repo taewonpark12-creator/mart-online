@@ -83322,9 +83322,27 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802259033004",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802259033189",
     "name": "롯데)마가렛트호두과자352g",
     "normalPrice": 6000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259033356",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -83361,6 +83379,15 @@
     "barcode": "8802259033738",
     "name": "롯데)몽쉘바나나18입",
     "normalPrice": 8800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259034933",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
