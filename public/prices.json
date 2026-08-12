@@ -24714,6 +24714,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801043046480",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801043046664",
     "name": "농심)생생납작떡볶이면",
     "normalPrice": 2400,
@@ -86643,6 +86652,15 @@
     "saleEndDate": "2026-08-18"
   },
   {
+    "barcode": "8803712141021",
+    "name": "목우촌)티니핑치즈비엔나160g*2입",
+    "normalPrice": 9000,
+    "eventPrice": 7980,
+    "discountRate": 11,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
+  },
+  {
     "barcode": "8803712141045",
     "name": "목우촌)티니핑치즈프랑크160g*2입",
     "normalPrice": 9000,
@@ -119908,7 +119926,7 @@
   },
   {
     "barcode": "9100000215914",
-    "name": "참외(6개/1봉)",
+    "name": "참외(5개~6개/1봉)",
     "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
