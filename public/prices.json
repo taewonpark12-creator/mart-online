@@ -115263,6 +115263,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809803130714",
+    "name": "만땅맥주500ml",
+    "normalPrice": 1700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809803505109",
     "name": "해피바스)스마일바디자몽오렌지900ml",
     "normalPrice": 9000,
@@ -119278,8 +119287,8 @@
   },
   {
     "barcode": "9100000111711",
-    "name": "수박(8kg/1통)",
-    "normalPrice": 28900,
+    "name": "수박(7kg/1통)",
+    "normalPrice": 27000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
