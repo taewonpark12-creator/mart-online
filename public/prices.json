@@ -120259,8 +120259,8 @@
   },
   {
     "barcode": "9100000217017",
-    "name": "상주포도(3kg/1박스)",
-    "normalPrice": 27800,
+    "name": "송산포도(3kg/1박스)",
+    "normalPrice": 35000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120367,8 +120367,8 @@
   },
   {
     "barcode": "9100000217444",
-    "name": "하우스귤(3kg/1박스)행사",
-    "normalPrice": 999990,
+    "name": "하우스귤(3kg/1박스)",
+    "normalPrice": 29800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
