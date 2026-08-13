@@ -138,12 +138,14 @@ model Flyer {
 }
 
 model FlyerAnnouncement {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(cuid())
+  title           String
+  content         String
+  isActive        Boolean  @default(false)
+  showOnlineOrder Boolean  @default(true)
+  showPhoneOrder  Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([isActive])
   @@index([updatedAt])

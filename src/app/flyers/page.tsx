@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { GoBackToShoppingButton } from "@/components/GoBackToShoppingButton";
+import { STORE } from "@/lib/store";
 
 type Flyer = {
   id: string;
@@ -14,13 +15,22 @@ type FlyerAnnouncement = {
   id: string;
   title: string;
   content: string;
+  showOnlineOrder?: boolean;
+  showPhoneOrder?: boolean;
 };
+
+function telHref(phone: string) {
+  return `tel:${phone.replace(/\D/g, "")}`;
+}
 
 export default function FlyersPage() {
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [announcement, setAnnouncement] = useState<FlyerAnnouncement | null>(null);
   const [loading, setLoading] = useState(true);
   const [failedImageUrls, setFailedImageUrls] = useState<Set<string>>(new Set());
+  const showOnlineOrder = announcement?.showOnlineOrder ?? true;
+  const showPhoneOrder = announcement?.showPhoneOrder ?? true;
+  const showOrderGuide = Boolean(announcement && (showOnlineOrder || showPhoneOrder));
 
   useEffect(() => {
     setLoading(true);
@@ -72,6 +82,48 @@ export default function FlyersPage() {
                 <p className="mt-2 whitespace-pre-line break-words text-base font-medium leading-7 text-gray-800">
                   {announcement.content}
                 </p>
+                {showOrderGuide && (
+                  <div className="mt-4 space-y-3">
+                    {showOnlineOrder && (
+                      <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-4">
+                        <h3 className="text-base font-extrabold leading-6 text-green-900">
+                          온라인으로 편하게 주문하세요
+                        </h3>
+                        <p className="mt-1 break-keep text-sm font-medium leading-6 text-green-800">
+                          상품을 직접 확인하고 휴대폰으로 바로 주문할 수 있습니다.
+                        </p>
+                        <a
+                          href="/"
+                          className="mt-3 flex min-h-12 w-full items-center justify-center rounded-xl bg-green-600 px-4 py-3 text-base font-extrabold text-white shadow-sm transition hover:bg-green-700"
+                        >
+                          온라인 주문하기
+                        </a>
+                      </div>
+                    )}
+
+                    {showPhoneOrder && (
+                      <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
+                        <h3 className="text-base font-extrabold leading-6 text-gray-900">
+                          전화주문도 가능합니다.
+                        </h3>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          <a
+                            href={telHref(STORE.phone)}
+                            className="flex min-h-12 items-center justify-center rounded-xl bg-white px-4 py-3 text-lg font-extrabold text-gray-900 shadow-sm"
+                          >
+                            {STORE.phone}
+                          </a>
+                          <a
+                            href={telHref(STORE.phoneMobile)}
+                            className="flex min-h-12 items-center justify-center rounded-xl bg-white px-4 py-3 text-lg font-extrabold text-gray-900 shadow-sm"
+                          >
+                            {STORE.phoneMobile}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </section>
             )}
             {flyers.length === 0 ? (

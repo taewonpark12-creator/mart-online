@@ -13,6 +13,22 @@ function normalizeText(value: unknown, maxLength: number) {
     .slice(0, maxLength);
 }
 
+function normalizeBoolean(value: unknown, defaultValue: boolean) {
+  return typeof value === "boolean" ? value : defaultValue;
+}
+
+function serializeAnnouncement<T extends { showOnlineOrder?: boolean | null; showPhoneOrder?: boolean | null } | null>(
+  announcement: T,
+) {
+  if (!announcement) return null;
+
+  return {
+    ...announcement,
+    showOnlineOrder: announcement.showOnlineOrder ?? true,
+    showPhoneOrder: announcement.showPhoneOrder ?? true,
+  };
+}
+
 function jsonNoStore(body: unknown, init?: ResponseInit) {
   const response = NextResponse.json(body, init);
   response.headers.set("Cache-Control", "no-store");
@@ -32,7 +48,7 @@ export async function GET() {
       ],
     });
 
-    return jsonNoStore({ announcement });
+    return jsonNoStore({ announcement: serializeAnnouncement(announcement) });
   } catch (error) {
     console.error("[GET /api/admin/flyer-announcement]", error);
     return jsonNoStore({ error: "홍보문구 조회에 실패했습니다." }, { status: 500 });
@@ -50,6 +66,8 @@ export async function POST(req: NextRequest) {
     const title = normalizeText(body?.title, MAX_TITLE_LENGTH);
     const content = normalizeText(body?.content, MAX_CONTENT_LENGTH);
     const isActive = Boolean(body?.isActive);
+    const showOnlineOrder = normalizeBoolean(body?.showOnlineOrder, true);
+    const showPhoneOrder = normalizeBoolean(body?.showPhoneOrder, true);
 
     if (!title) {
       return jsonNoStore({ error: "제목을 입력해주세요." }, { status: 400 });
@@ -74,6 +92,8 @@ export async function POST(req: NextRequest) {
             title,
             content,
             isActive,
+            showOnlineOrder,
+            showPhoneOrder,
           },
         });
       }
@@ -83,13 +103,15 @@ export async function POST(req: NextRequest) {
           title,
           content,
           isActive,
+          showOnlineOrder,
+          showPhoneOrder,
         },
       });
     });
 
     revalidatePath("/flyers");
 
-    return jsonNoStore({ announcement });
+    return jsonNoStore({ announcement: serializeAnnouncement(announcement) });
   } catch (error) {
     console.error("[POST /api/admin/flyer-announcement]", error);
     return jsonNoStore({ error: "홍보문구 저장에 실패했습니다." }, { status: 500 });
@@ -121,7 +143,7 @@ export async function DELETE(req: NextRequest) {
 
     revalidatePath("/flyers");
 
-    return jsonNoStore({ announcement });
+    return jsonNoStore({ announcement: serializeAnnouncement(announcement) });
   } catch (error) {
     console.error("[DELETE /api/admin/flyer-announcement]", error);
     return jsonNoStore({ error: "홍보문구 숨김 처리에 실패했습니다." }, { status: 500 });

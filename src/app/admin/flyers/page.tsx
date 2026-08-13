@@ -18,6 +18,8 @@ type FlyerAnnouncement = {
   title: string;
   content: string;
   isActive: boolean;
+  showOnlineOrder?: boolean;
+  showPhoneOrder?: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -52,6 +54,8 @@ export default function FlyerManagementPage() {
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementContent, setAnnouncementContent] = useState("");
   const [announcementIsActive, setAnnouncementIsActive] = useState(false);
+  const [announcementShowOnlineOrder, setAnnouncementShowOnlineOrder] = useState(true);
+  const [announcementShowPhoneOrder, setAnnouncementShowPhoneOrder] = useState(true);
   const [announcementLoading, setAnnouncementLoading] = useState(true);
   const [announcementSaving, setAnnouncementSaving] = useState(false);
   const [announcementDeleting, setAnnouncementDeleting] = useState(false);
@@ -111,6 +115,8 @@ export default function FlyerManagementPage() {
       setAnnouncementTitle(announcement?.title ?? "");
       setAnnouncementContent(announcement?.content ?? "");
       setAnnouncementIsActive(Boolean(announcement?.isActive));
+      setAnnouncementShowOnlineOrder(announcement?.showOnlineOrder ?? true);
+      setAnnouncementShowPhoneOrder(announcement?.showPhoneOrder ?? true);
     } catch (error) {
       console.error("홍보문구 로딩 오류:", error);
       setAnnouncementError("홍보문구를 불러오는 중 오류가 발생했습니다.");
@@ -140,6 +146,8 @@ export default function FlyerManagementPage() {
           title: announcementTitle,
           content: announcementContent,
           isActive: announcementIsActive,
+          showOnlineOrder: announcementShowOnlineOrder,
+          showPhoneOrder: announcementShowPhoneOrder,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -154,6 +162,8 @@ export default function FlyerManagementPage() {
       setAnnouncementTitle(announcement?.title ?? "");
       setAnnouncementContent(announcement?.content ?? "");
       setAnnouncementIsActive(Boolean(announcement?.isActive));
+      setAnnouncementShowOnlineOrder(announcement?.showOnlineOrder ?? true);
+      setAnnouncementShowPhoneOrder(announcement?.showPhoneOrder ?? true);
       setAnnouncementMessage("홍보문구를 저장했습니다.");
     } catch (error) {
       console.error("홍보문구 저장 오류:", error);
@@ -417,6 +427,30 @@ export default function FlyerManagementPage() {
                 />
                 고객에게 표시
               </label>
+
+              <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
+                <p className="mb-3 text-sm font-bold text-gray-800">주문 안내</p>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={announcementShowOnlineOrder}
+                      onChange={(e) => setAnnouncementShowOnlineOrder(e.target.checked)}
+                      className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    />
+                    온라인 주문하기
+                  </label>
+                  <label className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={announcementShowPhoneOrder}
+                      onChange={(e) => setAnnouncementShowPhoneOrder(e.target.checked)}
+                      className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    />
+                    전화주문 안내
+                  </label>
+                </div>
+              </div>
 
               {announcementMessage && (
                 <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
