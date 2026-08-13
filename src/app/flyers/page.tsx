@@ -10,17 +10,27 @@ type Flyer = {
   order: number;
 };
 
+type FlyerAnnouncement = {
+  id: string;
+  title: string;
+  content: string;
+};
+
 export default function FlyersPage() {
   const [flyers, setFlyers] = useState<Flyer[]>([]);
+  const [announcement, setAnnouncement] = useState<FlyerAnnouncement | null>(null);
   const [loading, setLoading] = useState(true);
   const [failedImageUrls, setFailedImageUrls] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/flyers")
-      .then((res) => res.json())
-      .then((data) => {
-        setFlyers(Array.isArray(data) ? data : []);
+    Promise.all([
+      fetch("/api/flyers", { cache: "no-store" }).then((res) => res.json()),
+      fetch("/api/flyers/announcement", { cache: "no-store" }).then((res) => res.json()),
+    ])
+      .then(([flyerData, announcementData]) => {
+        setFlyers(Array.isArray(flyerData) ? flyerData : []);
+        setAnnouncement(announcementData?.announcement ?? null);
         setLoading(false);
       })
       .catch((error) => {
@@ -48,12 +58,27 @@ export default function FlyersPage() {
           <div className="flex min-h-[60vh] items-center justify-center rounded-2xl bg-white shadow-sm sm:rounded-3xl">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
           </div>
-        ) : flyers.length === 0 ? (
+        ) : flyers.length === 0 && !announcement ? (
           <div className="flex min-h-[50vh] items-center justify-center rounded-2xl bg-white text-gray-500 shadow-sm sm:rounded-3xl">
             <p>등록된 전단지가 없습니다.</p>
           </div>
         ) : (
           <div className="mx-auto w-full max-w-3xl space-y-3 sm:space-y-4">
+            {announcement && (
+              <section className="rounded-2xl border border-emerald-200 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5">
+                <h2 className="break-keep text-lg font-extrabold leading-7 text-emerald-900 sm:text-xl">
+                  {announcement.title}
+                </h2>
+                <p className="mt-2 whitespace-pre-line break-words text-base font-medium leading-7 text-gray-800">
+                  {announcement.content}
+                </p>
+              </section>
+            )}
+            {flyers.length === 0 ? (
+              <div className="flex min-h-[50vh] items-center justify-center rounded-2xl bg-white text-gray-500 shadow-sm sm:rounded-3xl">
+                <p>등록된 전단지가 없습니다.</p>
+              </div>
+            ) : null}
             {flyers.map((flyer, index) => {
               const imageUrl = flyer.imageUrl;
               const zoomUrl = `/flyers/view?src=${encodeURIComponent(imageUrl)}`;

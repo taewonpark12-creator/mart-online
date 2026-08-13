@@ -9,24 +9,28 @@ function jsonNoStore(body: unknown, init?: ResponseInit) {
 
 export async function GET() {
   try {
-    const flyers = await prisma.flyer.findMany({
+    const announcement = await prisma.flyerAnnouncement.findFirst({
       where: {
         isActive: true,
-        imageUrl: {
+        title: {
+          not: "",
+        },
+        content: {
           not: "",
         },
       },
-      orderBy: { order: "asc" },
+      orderBy: { updatedAt: "desc" },
       select: {
         id: true,
-        imageUrl: true,
-        order: true,
+        title: true,
+        content: true,
+        updatedAt: true,
       },
     });
 
-    return jsonNoStore(flyers);
+    return jsonNoStore({ announcement });
   } catch (error) {
-    console.error("[GET /api/flyers]", error);
-    return jsonNoStore({ error: "Failed to load flyers." }, { status: 500 });
+    console.error("[GET /api/flyers/announcement]", error);
+    return jsonNoStore({ error: "Failed to load flyer announcement." }, { status: 500 });
   }
 }

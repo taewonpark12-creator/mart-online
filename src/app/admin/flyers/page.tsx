@@ -13,6 +13,15 @@ type Flyer = {
   updatedAt: string;
 };
 
+type FlyerAnnouncement = {
+  id: string;
+  title: string;
+  content: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 const MAX_FLYER_UPLOAD_BYTES = 20 * 1024 * 1024;
 const ALLOWED_FLYER_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
@@ -39,6 +48,15 @@ export default function FlyerManagementPage() {
   const [fileUploading, setFileUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [announcementId, setAnnouncementId] = useState("");
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementContent, setAnnouncementContent] = useState("");
+  const [announcementIsActive, setAnnouncementIsActive] = useState(false);
+  const [announcementLoading, setAnnouncementLoading] = useState(true);
+  const [announcementSaving, setAnnouncementSaving] = useState(false);
+  const [announcementDeleting, setAnnouncementDeleting] = useState(false);
+  const [announcementMessage, setAnnouncementMessage] = useState("");
+  const [announcementError, setAnnouncementError] = useState("");
 
   const fetchFlyers = async () => {
     try {
@@ -74,9 +92,104 @@ export default function FlyerManagementPage() {
     }
   };
 
+  const fetchAnnouncement = async () => {
+    try {
+      const res = await fetch("/api/admin/flyer-announcement", { cache: "no-store" });
+      if (!res.ok) {
+        if (res.status === 401) {
+          router.replace("/admin");
+          return;
+        }
+        setAnnouncementError("홍보문구를 불러오지 못했습니다.");
+        return;
+      }
+
+      const data = await res.json();
+      const announcement = data?.announcement as FlyerAnnouncement | null;
+
+      setAnnouncementId(announcement?.id ?? "");
+      setAnnouncementTitle(announcement?.title ?? "");
+      setAnnouncementContent(announcement?.content ?? "");
+      setAnnouncementIsActive(Boolean(announcement?.isActive));
+    } catch (error) {
+      console.error("홍보문구 로딩 오류:", error);
+      setAnnouncementError("홍보문구를 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setAnnouncementLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchFlyers();
+    fetchAnnouncement();
   }, []);
+
+  const handleAnnouncementSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setAnnouncementSaving(true);
+    setAnnouncementMessage("");
+    setAnnouncementError("");
+
+    try {
+      const res = await fetch("/api/admin/flyer-announcement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: announcementId || undefined,
+          title: announcementTitle,
+          content: announcementContent,
+          isActive: announcementIsActive,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setAnnouncementError(data?.error || data?.message || "홍보문구 저장에 실패했습니다.");
+        return;
+      }
+
+      const announcement = data?.announcement as FlyerAnnouncement | null;
+      setAnnouncementId(announcement?.id ?? "");
+      setAnnouncementTitle(announcement?.title ?? "");
+      setAnnouncementContent(announcement?.content ?? "");
+      setAnnouncementIsActive(Boolean(announcement?.isActive));
+      setAnnouncementMessage("홍보문구를 저장했습니다.");
+    } catch (error) {
+      console.error("홍보문구 저장 오류:", error);
+      setAnnouncementError("홍보문구 저장 중 네트워크 오류가 발생했습니다.");
+    } finally {
+      setAnnouncementSaving(false);
+    }
+  };
+
+  const handleAnnouncementHide = async () => {
+    if (!announcementId || announcementDeleting) return;
+
+    setAnnouncementDeleting(true);
+    setAnnouncementMessage("");
+    setAnnouncementError("");
+
+    try {
+      const res = await fetch(`/api/admin/flyer-announcement?id=${encodeURIComponent(announcementId)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setAnnouncementError(data?.error || data?.message || "홍보문구 숨김 처리에 실패했습니다.");
+        return;
+      }
+
+      setAnnouncementIsActive(false);
+      setAnnouncementMessage("고객 페이지에서 홍보문구를 숨겼습니다.");
+    } catch (error) {
+      console.error("홍보문구 숨김 오류:", error);
+      setAnnouncementError("홍보문구 숨김 처리 중 네트워크 오류가 발생했습니다.");
+    } finally {
+      setAnnouncementDeleting(false);
+    }
+  };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -247,6 +360,96 @@ export default function FlyerManagementPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-6">전단지 관리</h1>
 
         {/* 전단지 업로드 */}
+        <div className="bg-white rounded-2xl border p-6 mb-6">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="font-semibold text-gray-800">고객 페이지 홍보문구</h2>
+            <span
+              className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${
+                announcementIsActive
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {announcementIsActive ? "표시 중" : "숨김"}
+            </span>
+          </div>
+
+          {announcementLoading ? (
+            <div className="h-40 rounded-xl bg-gray-100 animate-pulse" />
+          ) : (
+            <form onSubmit={handleAnnouncementSave} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  제목
+                </label>
+                <input
+                  type="text"
+                  value={announcementTitle}
+                  onChange={(e) => setAnnouncementTitle(e.target.value)}
+                  maxLength={80}
+                  placeholder="예: 이번 주 온라인 주문 특가"
+                  className="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  내용
+                </label>
+                <textarea
+                  value={announcementContent}
+                  onChange={(e) => setAnnouncementContent(e.target.value)}
+                  maxLength={1000}
+                  placeholder={"전단지 위에 표시할 안내문을 입력하세요.\n줄바꿈은 고객 페이지에서도 그대로 표시됩니다."}
+                  rows={5}
+                  className="w-full resize-y border rounded-xl px-4 py-3 text-sm leading-6 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  required
+                />
+              </div>
+
+              <label className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={announcementIsActive}
+                  onChange={(e) => setAnnouncementIsActive(e.target.checked)}
+                  className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                />
+                고객에게 표시
+              </label>
+
+              {announcementMessage && (
+                <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
+                  {announcementMessage}
+                </div>
+              )}
+              {announcementError && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                  {announcementError}
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="submit"
+                  disabled={announcementSaving || announcementDeleting}
+                  className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
+                >
+                  {announcementSaving ? "저장 중..." : "저장"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAnnouncementHide}
+                  disabled={!announcementId || announcementDeleting || announcementSaving}
+                  className="bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 font-semibold py-3 px-6 rounded-xl transition"
+                >
+                  {announcementDeleting ? "숨김 처리 중..." : "숨김 처리"}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+
         <div className="bg-white rounded-2xl border p-6 mb-6">
           <h2 className="font-semibold text-gray-800 mb-4">전단지 이미지 업로드</h2>
           
