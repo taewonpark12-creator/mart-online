@@ -35850,10 +35850,10 @@
     "barcode": "8801051206654",
     "name": "한입베이킹소다2kg",
     "normalPrice": 9500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 7980,
+    "discountRate": 16,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801051207989",
@@ -35904,10 +35904,10 @@
     "barcode": "8801051209631",
     "name": "한입100%과탄산소다1kg",
     "normalPrice": 9400,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 7980,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801051210460",
