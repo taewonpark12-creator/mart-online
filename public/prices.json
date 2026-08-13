@@ -109137,10 +109137,10 @@
     "barcode": "8809526501501",
     "name": "펄세스)단백질스테비아커피20T",
     "normalPrice": 11000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 4980,
+    "discountRate": 55,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809527213700",
