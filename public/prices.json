@@ -93404,7 +93404,7 @@
   {
     "barcode": "8807354219445",
     "name": "단짝믹스넛450g",
-    "normalPrice": 6000,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -94799,7 +94799,7 @@
   {
     "barcode": "8809001455145",
     "name": "한입육포40g",
-    "normalPrice": 3500,
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119395,8 +119395,8 @@
   },
   {
     "barcode": "910000000665",
-    "name": "자두(1팩)행사",
-    "normalPrice": 6980,
+    "name": "자두(1팩)",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
