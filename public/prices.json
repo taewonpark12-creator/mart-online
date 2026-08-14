@@ -79956,6 +79956,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801656000121",
+    "name": "신상품",
+    "normalPrice": 1600,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801656000169",
     "name": "딸기에반한막걸리650ml",
     "normalPrice": 2800,
