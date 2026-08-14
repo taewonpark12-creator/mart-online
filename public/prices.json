@@ -68229,6 +68229,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801147121885",
+    "name": "보해/복분자세트375ml*3",
+    "normalPrice": 23000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801147122776",
     "name": "보해복분자375ml*12입",
     "normalPrice": 105600,
@@ -84276,6 +84285,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802521110310",
+    "name": "백세주375ml*6입",
+    "normalPrice": 25800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802521129893",
     "name": "★국순당)쌀막걸리750ml",
     "normalPrice": 2000,
@@ -96636,6 +96654,15 @@
     "barcode": "8809031524439",
     "name": "늘봄막걸리750ml",
     "normalPrice": 2950,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809031526761",
+    "name": "산사춘375ml*6입",
+    "normalPrice": 23000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115065,6 +115092,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809714123959",
+    "name": "믹스야채스틱256g",
+    "normalPrice": 4700,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809724040963",
     "name": "지니)소프트그립S",
     "normalPrice": 3500,
@@ -120430,8 +120466,8 @@
   },
   {
     "barcode": "9100000217338",
-    "name": "대추방울토마토(1팩)행사",
-    "normalPrice": 3980,
+    "name": "대추방울토마토(1팩)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
