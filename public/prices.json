@@ -119467,8 +119467,8 @@
   },
   {
     "barcode": "9100000111810",
-    "name": "메론(1통)행사",
-    "normalPrice": 7980,
+    "name": "메론(1통)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119639,7 +119639,7 @@
   {
     "barcode": "9100000113517",
     "name": "딱딱이복숭아(5개/1팩)행사",
-    "normalPrice": 7980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119791,8 +119791,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)행사",
-    "normalPrice": 1980,
+    "name": "대파(1단)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120520,8 +120520,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)",
-    "normalPrice": 2980,
+    "name": "바나나(1송이)행사",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
