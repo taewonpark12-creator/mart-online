@@ -14852,7 +14852,7 @@
   {
     "barcode": "8801007742168",
     "name": "이코노5kg",
-    "normalPrice": 13800,
+    "normalPrice": 15500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -71471,7 +71471,7 @@
   {
     "barcode": "8801173400107",
     "name": "무궁화)점보비누450g",
-    "normalPrice": 3200,
+    "normalPrice": 3500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -92215,10 +92215,10 @@
   },
   {
     "barcode": "8806325612247",
-    "name": "참그린)매실청정설거지1kg",
+    "name": "참그린)매실1kg",
     "normalPrice": 3500,
-    "eventPrice": 2480,
-    "discountRate": 29,
+    "eventPrice": 2980,
+    "discountRate": 15,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -92485,10 +92485,10 @@
   },
   {
     "barcode": "8806325623649",
-    "name": "참그린)청귤설거지1kg",
+    "name": "참그린)청귤1kg",
     "normalPrice": 3500,
-    "eventPrice": 2480,
-    "discountRate": 29,
+    "eventPrice": 2980,
+    "discountRate": 15,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -92559,8 +92559,8 @@
     "barcode": "8806325625544",
     "name": "참그린)베이킹소다&구연산1kg",
     "normalPrice": 3500,
-    "eventPrice": 2480,
-    "discountRate": 29,
+    "eventPrice": 2980,
+    "discountRate": 15,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -119855,7 +119855,7 @@
   {
     "barcode": "9100000214306",
     "name": "오이(3개/1봉)",
-    "normalPrice": 2480,
+    "normalPrice": 3480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
