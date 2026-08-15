@@ -118900,8 +118900,8 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)행사",
-    "normalPrice": 1980,
+    "name": "햇양파(소)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119387,7 +119387,7 @@
   {
     "barcode": "9100000003696",
     "name": "청양고추(500g/1봉)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120574,8 +120574,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
-    "normalPrice": 2480,
+    "name": "바나나(1송이)",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121330,8 +121330,8 @@
   },
   {
     "barcode": "9101003821",
-    "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 980,
+    "name": "팩느타리버섯(1팩)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
