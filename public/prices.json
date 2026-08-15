@@ -119215,8 +119215,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)",
-    "normalPrice": 1480,
+    "name": "새송이버섯(1봉)행사",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119386,8 +119386,8 @@
   },
   {
     "barcode": "9100000003696",
-    "name": "청양고추(500g/1봉)행사",
-    "normalPrice": 999990,
+    "name": "꽈리고추(1봉)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119873,7 +119873,7 @@
   {
     "barcode": "9100000214306",
     "name": "오이(3개/1봉)",
-    "normalPrice": 3480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120206,7 +120206,7 @@
   {
     "barcode": "9100000216249",
     "name": "오이(5개/1봉)행사",
-    "normalPrice": 999990,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120700,8 +120700,8 @@
   },
   {
     "barcode": "9100000218588",
-    "name": "샤인머스켓(2kg/1박스)",
-    "normalPrice": 19800,
+    "name": "샤인머스켓(2kg/1박스)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
