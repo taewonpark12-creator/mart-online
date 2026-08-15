@@ -120817,8 +120817,8 @@
   },
   {
     "barcode": "9100000218823",
-    "name": "호박고구마100g",
-    "normalPrice": 800,
+    "name": "호박고구마1개",
+    "normalPrice": 1000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120844,8 +120844,8 @@
   },
   {
     "barcode": "9100000218854",
-    "name": "당근100g",
-    "normalPrice": 300,
+    "name": "당근1개",
+    "normalPrice": 1000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120853,8 +120853,8 @@
   },
   {
     "barcode": "9100000218861",
-    "name": "감자100g",
-    "normalPrice": 300,
+    "name": "감자1개",
+    "normalPrice": 600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120889,8 +120889,8 @@
   },
   {
     "barcode": "9100000218908",
-    "name": "밤고구마100g",
-    "normalPrice": 600,
+    "name": "밤고구마1개",
+    "normalPrice": 1000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
