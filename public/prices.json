@@ -48422,9 +48422,9 @@
   {
     "barcode": "8801068405590",
     "name": "삼립)탕종빅땅콩샌드160g",
-    "normalPrice": 1000,
-    "eventPrice": null,
-    "discountRate": null,
+    "normalPrice": 1650,
+    "eventPrice": 1000,
+    "discountRate": 39,
     "saleStartDate": "2019-10-20",
     "saleEndDate": "2026-12-31"
   },
