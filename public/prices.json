@@ -23121,15 +23121,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801043010016",
-    "name": "농심)짜파게티블랙4입",
-    "normalPrice": 6200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801043011341",
     "name": "농심)꿀꽈배기3번들*8입",
     "normalPrice": 26000,
@@ -66366,15 +66357,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801119240415",
-    "name": "필라이트355ml",
-    "normalPrice": 1100,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801119240439",
     "name": "필라이트355ml*6입",
     "normalPrice": 6600,
@@ -81396,15 +81378,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801858045258",
-    "name": "카스제로355ml",
-    "normalPrice": 1100,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801858045265",
     "name": "카스제로355ml*24",
     "normalPrice": 25000,
@@ -81435,15 +81408,6 @@
     "barcode": "8801858045975",
     "name": "카스화이트473ml",
     "normalPrice": 2400,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801858046149",
-    "name": "카스제로500ml",
-    "normalPrice": 1800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
