@@ -119404,8 +119404,8 @@
   },
   {
     "barcode": "910000000665",
-    "name": "자두(1팩)",
-    "normalPrice": 7980,
+    "name": "자두(1팩)행사",
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119648,7 +119648,7 @@
   {
     "barcode": "9100000113517",
     "name": "딱딱이복숭아(5개/1팩)행사",
-    "normalPrice": 8900,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120161,7 +120161,7 @@
   {
     "barcode": "9100000216249",
     "name": "오이(5개/1봉)행사",
-    "normalPrice": 2980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120529,8 +120529,8 @@
   },
   {
     "barcode": "9100000217956",
-    "name": "바나나(1송이)행사",
-    "normalPrice": 2480,
+    "name": "바나나(1송이)",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121195,8 +121195,8 @@
   },
   {
     "barcode": "9100000219301",
-    "name": "대왕버섯(1팩)행사",
-    "normalPrice": 980,
+    "name": "대왕버섯(1팩)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121223,7 +121223,7 @@
   {
     "barcode": "9100000219332",
     "name": "고구마순(1단)행사",
-    "normalPrice": 999990,
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121231,8 +121231,8 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(5개/1봉)행사",
-    "normalPrice": 1480,
+    "name": "가지(6개/1봉)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
