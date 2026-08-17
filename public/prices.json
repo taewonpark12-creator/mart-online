@@ -14411,7 +14411,7 @@
   {
     "barcode": "8801007616179",
     "name": "백설)오리지날후랑크460g",
-    "normalPrice": 6500,
+    "normalPrice": 7300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -78190,6 +78190,15 @@
     "discountRate": null,
     "saleStartDate": "",
     "saleEndDate": ""
+  },
+  {
+    "barcode": "8801392195440",
+    "name": "CJ)저당양념치킨닭가슴살120g",
+    "normalPrice": 3200,
+    "eventPrice": 2700,
+    "discountRate": 16,
+    "saleStartDate": "2019-09-30",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "88014128",
