@@ -47810,7 +47810,7 @@
   {
     "barcode": "8801068087024",
     "name": "삼립)에그볼230g",
-    "normalPrice": 3500,
+    "normalPrice": 3900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -47819,7 +47819,7 @@
   {
     "barcode": "8801068087130",
     "name": "삼립)저온숙성식빵420g",
-    "normalPrice": 4000,
+    "normalPrice": 3900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -47873,7 +47873,7 @@
   {
     "barcode": "8801068101164",
     "name": "삼립)로만밀통밀식빵420g",
-    "normalPrice": 4000,
+    "normalPrice": 3900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48278,7 +48278,7 @@
   {
     "barcode": "8801068405521",
     "name": "삼립)주종크림단팥빵240g",
-    "normalPrice": 4500,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48791,11 +48791,11 @@
   {
     "barcode": "8801068919981",
     "name": "삼립)소화우유생크림빵190g",
-    "normalPrice": 4500,
-    "eventPrice": 3480,
-    "discountRate": 23,
-    "saleStartDate": "2019-10-20",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 5000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801068920970",
@@ -49050,15 +49050,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068928587",
-    "name": "삼립)생크림보름달3입",
-    "normalPrice": 4500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068929003",
     "name": "삼립)시그니처카스테라4입",
     "normalPrice": 3900,
@@ -49124,7 +49115,7 @@
   {
     "barcode": "8801068930221",
     "name": "삼립)땅콩카라멜샌드192g",
-    "normalPrice": 8000,
+    "normalPrice": 7900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49133,7 +49124,7 @@
   {
     "barcode": "8801068930238",
     "name": "삼립)통단팥도라야끼360g",
-    "normalPrice": 7500,
+    "normalPrice": 7900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49574,7 +49565,7 @@
   {
     "barcode": "8801068938173",
     "name": "삼립)시그니처흑당카스테라125g",
-    "normalPrice": 4000,
+    "normalPrice": 3900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
