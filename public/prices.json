@@ -47675,7 +47675,7 @@
   {
     "barcode": "8801068036060",
     "name": "삼립)미니꿀호떡190g",
-    "normalPrice": 1900,
+    "normalPrice": 2400,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -47772,15 +47772,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068086003",
-    "name": "삼립)정통크림빵70g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068086867",
     "name": "삼립)정통크림빵240g",
     "normalPrice": 5000,
@@ -47837,7 +47828,7 @@
   {
     "barcode": "8801068087130",
     "name": "삼립)저온숙성식빵420g",
-    "normalPrice": 3300,
+    "normalPrice": 4000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -47871,15 +47862,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068091632",
-    "name": "삼립)단팥빵85g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068094435",
     "name": "삼립)젤리뽀360g",
     "normalPrice": 2300,
@@ -47900,7 +47882,7 @@
   {
     "barcode": "8801068101164",
     "name": "삼립)로만밀통밀식빵420g",
-    "normalPrice": 3500,
+    "normalPrice": 4000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48033,15 +48015,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068376999",
-    "name": "삼립)초코소라빵",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068382600",
     "name": "삼립)미니사과쿠키320g",
     "normalPrice": 5000,
@@ -48063,15 +48036,6 @@
     "barcode": "8801068384024",
     "name": "삼립)버터휘낭시에360g",
     "normalPrice": 6500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068386868",
-    "name": "삼립)허쉬초코롤85g",
-    "normalPrice": 1650,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48179,7 +48143,7 @@
   {
     "barcode": "8801068399783",
     "name": "삼립)옥수수꿀호떡요요192g",
-    "normalPrice": 1900,
+    "normalPrice": 2400,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48198,15 +48162,6 @@
     "barcode": "8801068400670",
     "name": "누네띠네오리지날120g",
     "normalPrice": 2900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068400786",
-    "name": "허쉬초코샌드95g",
-    "normalPrice": 1650,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48314,7 +48269,7 @@
   {
     "barcode": "8801068405453",
     "name": "삼립)주종단팥크림빵115g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48323,7 +48278,7 @@
   {
     "barcode": "8801068405460",
     "name": "삼립)주종카스타드소보루130g",
-    "normalPrice": 1650,
+    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48332,7 +48287,7 @@
   {
     "barcode": "8801068405484",
     "name": "삼립)주종슈크림빵90g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48341,7 +48296,7 @@
   {
     "barcode": "8801068405491",
     "name": "삼립)주종카스타드단팥빵105g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48359,16 +48314,7 @@
   {
     "barcode": "8801068405545",
     "name": "삼립)밀크요팡65g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068405552",
-    "name": "삼립)고구마팡90g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48377,7 +48323,7 @@
   {
     "barcode": "8801068405569",
     "name": "삼립)연유요팡80g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48386,16 +48332,7 @@
   {
     "barcode": "8801068405576",
     "name": "삼립)완듀완듀팡110g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068405583",
-    "name": "삼립)순수우유밀키앙코팡100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48404,25 +48341,16 @@
   {
     "barcode": "8801068405590",
     "name": "삼립)탕종빅땅콩샌드160g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": 1000,
-    "discountRate": 39,
+    "discountRate": 49,
     "saleStartDate": "2019-10-20",
     "saleEndDate": "2026-12-31"
   },
   {
-    "barcode": "8801068405606",
-    "name": "삼립)탕종땅콩미니샌드80g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068405613",
     "name": "삼립)탕종상큼딸기샌드95g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48431,7 +48359,7 @@
   {
     "barcode": "8801068405620",
     "name": "삼립)탕종우유연유샌드95g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48440,7 +48368,7 @@
   {
     "barcode": "8801068405637",
     "name": "삼립)더블치즈후레쉬팡98g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48449,7 +48377,7 @@
   {
     "barcode": "8801068405644",
     "name": "삼립)초당옥수수소보루105g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48458,7 +48386,7 @@
   {
     "barcode": "8801068405651",
     "name": "삼립)초당옥수수크림빵100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48467,7 +48395,7 @@
   {
     "barcode": "8801068406290",
     "name": "삼립)촉촉한우유식빵330g",
-    "normalPrice": 3000,
+    "normalPrice": 3300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48566,7 +48494,7 @@
   {
     "barcode": "8801068409055",
     "name": "삼립)우유카스테라95g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48575,7 +48503,7 @@
   {
     "barcode": "8801068409062",
     "name": "삼립)풍미촉촉치즈케익95g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48584,7 +48512,7 @@
   {
     "barcode": "8801068409208",
     "name": "삼립)아시나요99g",
-    "normalPrice": 1650,
+    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48593,7 +48521,7 @@
   {
     "barcode": "8801068409215",
     "name": "삼립)옥수수이야기110g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48602,7 +48530,7 @@
   {
     "barcode": "8801068409222",
     "name": "삼립)클래식카스테라95g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48636,15 +48564,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068912395",
-    "name": "삼립)땅콩호떡138g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068912449",
     "name": "삼립)발효따베페스츄리320g",
     "normalPrice": 5000,
@@ -48656,7 +48575,7 @@
   {
     "barcode": "8801068912456",
     "name": "삼립)따베패스츄리100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48665,7 +48584,7 @@
   {
     "barcode": "8801068912463",
     "name": "삼립)빅스위트데니쉬100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48674,7 +48593,7 @@
   {
     "barcode": "8801068912470",
     "name": "삼립)발효버터빅패스츄리105g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48683,7 +48602,7 @@
   {
     "barcode": "8801068912487",
     "name": "삼립)발효꿀데니쉬100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48692,7 +48611,7 @@
   {
     "barcode": "8801068912494",
     "name": "삼립)발효스트로베리데니쉬100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48746,7 +48665,7 @@
   {
     "barcode": "8801068912876",
     "name": "삼립)생크림보름달80g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -48755,20 +48674,11 @@
   {
     "barcode": "8801068912906",
     "name": "삼립)보름달198g",
-    "normalPrice": 4200,
-    "eventPrice": 3500,
-    "discountRate": 17,
+    "normalPrice": 5000,
+    "eventPrice": 4200,
+    "discountRate": 16,
     "saleStartDate": "2019-10-20",
     "saleEndDate": "2026-12-31"
-  },
-  {
-    "barcode": "8801068913811",
-    "name": "삼립)꿀씨앗호떡120g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
   },
   {
     "barcode": "8801068913934",
@@ -48998,7 +48908,7 @@
   {
     "barcode": "8801068923001",
     "name": "삼립)달콤한애플케익90g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49158,15 +49068,6 @@
     "saleEndDate": "2026-12-31"
   },
   {
-    "barcode": "8801068926132",
-    "name": "삼립)단밤보름달85g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068927474",
     "name": "삼립)정통보름달붓세6입",
     "normalPrice": 7000,
@@ -49194,15 +49095,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068928921",
-    "name": "삼립)생크림팬케익60g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068929003",
     "name": "삼립)시그니처카스테라4입",
     "normalPrice": 4000,
@@ -49214,16 +49106,7 @@
   {
     "barcode": "8801068929232",
     "name": "삼립)쑥이야기110g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068929447",
-    "name": "삼립)순우유통통팥팥팡110g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49242,15 +49125,6 @@
     "barcode": "8801068929911",
     "name": "삼립)미니꿀호떡오리지널192g",
     "normalPrice": 1900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068929935",
-    "name": "삼립)크림치즈패스츄리100g",
-    "normalPrice": 1650,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49331,7 +49205,7 @@
   {
     "barcode": "8801068930917",
     "name": "삼립)완듀앙금소보루95g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49340,7 +49214,7 @@
   {
     "barcode": "8801068930924",
     "name": "삼립)초코크림소보루85g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49536,24 +49410,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068932096",
-    "name": "삼립)땅콩보름달85g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068932348",
-    "name": "삼립)통밀곡물크림빵90g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068932409",
     "name": "삼립)얼려먹는젤리뽀제로16입",
     "normalPrice": 1980,
@@ -49575,33 +49431,6 @@
     "barcode": "8801068932775",
     "name": "삼립)매콤칼칼라볶이2인",
     "normalPrice": 5500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068933321",
-    "name": "허쉬초코바나나샌드케익85g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068933826",
-    "name": "삼립)카이막꿀치즈케익100g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068933871",
-    "name": "삼립)흑임자이야기110g",
-    "normalPrice": 1650,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49653,36 +49482,9 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068934205",
-    "name": "삼립)크림치즈미니파운드72g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068934212",
-    "name": "삼립)크림치즈벨기에와플68g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068934243",
     "name": "삼립)미니꿀약과초당옥수수500g",
     "normalPrice": 5300,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068934434",
-    "name": "삼립)정통크림샌드99g",
-    "normalPrice": 1650,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49700,7 +49502,7 @@
   {
     "barcode": "8801068935165",
     "name": "삼립)카스타드크림빵100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49770,15 +49572,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068935516",
-    "name": "삼립)옥수수카스테라95g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068935523",
     "name": "삼립)버터모닝롤클래식12입",
     "normalPrice": 2980,
@@ -49824,18 +49617,9 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068936100",
-    "name": "삼립)커스타드보름달88g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068936827",
     "name": "삼립)보름달당근당근90g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49869,15 +49653,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068937442",
-    "name": "삼립)우유샌드케익85g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068937473",
     "name": "삼립)밀배아발표토스트식빵730g",
     "normalPrice": 4500,
@@ -49889,20 +49664,11 @@
   {
     "barcode": "8801068937480",
     "name": "삼립)밀배아발효샌드위치식빵790g",
-    "normalPrice": 4500,
-    "eventPrice": 3500,
-    "discountRate": 22,
+    "normalPrice": 5000,
+    "eventPrice": 3980,
+    "discountRate": 20,
     "saleStartDate": "2019-10-20",
     "saleEndDate": "2026-12-31"
-  },
-  {
-    "barcode": "8801068937923",
-    "name": "삼립)연단팥보름달88g",
-    "normalPrice": 1650,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
   },
   {
     "barcode": "8801068938173",
@@ -49925,7 +49691,7 @@
   {
     "barcode": "8801068939316",
     "name": "삼립)주종발효캇타드초코크림85g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49934,7 +49700,7 @@
   {
     "barcode": "8801068939415",
     "name": "삼립)순우유꿀고구마팡110g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49970,7 +49736,7 @@
   {
     "barcode": "8801068940077",
     "name": "삼립)땅콩크림꿀호떡100g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49988,7 +49754,7 @@
   {
     "barcode": "8801068940480",
     "name": "삼립)보름달쑥임자88g",
-    "normalPrice": 1650,
+    "normalPrice": 1950,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -50033,7 +49799,7 @@
   {
     "barcode": "8801068941487",
     "name": "삼립)초당옥수수꿀호떡228g",
-    "normalPrice": 2400,
+    "normalPrice": 2700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
