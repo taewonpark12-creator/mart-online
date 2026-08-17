@@ -77466,10 +77466,10 @@
     "barcode": "8801392137174",
     "name": "비비고)진한소고기미역국500g",
     "normalPrice": 4500,
-    "eventPrice": 3980,
-    "discountRate": 12,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392137952",
