@@ -31797,6 +31797,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801047161523",
+    "name": "양반)진전복죽287.5g",
+    "normalPrice": 4000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801047161530",
     "name": "양반)진쇠고기죽287g",
     "normalPrice": 3300,
@@ -32654,7 +32663,7 @@
   {
     "barcode": "8801047512035",
     "name": "동원)알래스카크랩스144g+72g",
-    "normalPrice": 4200,
+    "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -32825,7 +32834,7 @@
   {
     "barcode": "8801047558668",
     "name": "동원)부산어묵알뜰사각800g",
-    "normalPrice": 4200,
+    "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
