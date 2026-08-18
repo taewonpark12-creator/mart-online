@@ -48150,15 +48150,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801068402261",
-    "name": "삼립)피카츄촉촉치즈케익",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068402278",
     "name": "삼립)고오스초코케익",
     "normalPrice": 1950,
@@ -49014,15 +49005,6 @@
     "saleEndDate": "2026-12-31"
   },
   {
-    "barcode": "8801068925975",
-    "name": "포켓몬)피카츄콘버터롱스틱파이72g",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068926019",
     "name": "삼립)포차칼국수사골2인",
     "normalPrice": 4800,
@@ -49682,7 +49664,7 @@
   {
     "barcode": "8801068941456",
     "name": "삼립)포켓몬야도란슈크림쏙빵95g",
-    "normalPrice": 1800,
+    "normalPrice": 2100,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
