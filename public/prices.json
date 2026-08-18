@@ -49203,87 +49203,6 @@
     "saleEndDate": "2026-08-18"
   },
   {
-    "barcode": "8801068931259",
-    "name": "KBO이글스빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931266",
-    "name": "KBO랜더스빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931273",
-    "name": "KBO히어로즈빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931280",
-    "name": "KBO다이노스빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931297",
-    "name": "KBO위즈빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931303",
-    "name": "KBO라이온즈빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931310",
-    "name": "KBO베어스빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931327",
-    "name": "KBO트윈스빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068931334",
-    "name": "KBO타이거즈빵",
-    "normalPrice": 1800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801068931488",
     "name": "삼립)촉촉한바닐라롤케익430g",
     "normalPrice": 7500,
@@ -49647,15 +49566,6 @@
     "barcode": "8801068941425",
     "name": "삼립)포켓몬피카츄롱파운드150g",
     "normalPrice": 2100,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801068941432",
-    "name": "삼립)포켓몬이상해꽃솔티카라멜롤",
-    "normalPrice": 1800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
