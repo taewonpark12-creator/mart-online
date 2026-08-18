@@ -624,6 +624,14 @@ export default function OrdersPage() {
         throw new Error("주문 상세를 불러오지 못했습니다.");
       }
       const data = await res.json();
+      console.log("[ORDER_DETAIL_DEBUG]", {
+        requestedOrderId: orderId,
+        responseId: data?.id,
+        orderNumber: data?.orderNumber,
+        hasItems: Array.isArray(data?.items),
+        itemCount: Array.isArray(data?.items) ? data.items.length : null,
+        items: data?.items,
+      });
       setSelectedOrderDetail(data);
     } catch (error) {
       // Ignore AbortError - it's expected when cancelling previous requests
