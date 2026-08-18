@@ -27,7 +27,7 @@ import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort"
 // Keep order-list fetching separate from notification checks and sound repeat timers.
 const ORDER_LIST_AUTO_REFRESH_MS = 5 * 60 * 1000;
 const ORDER_NOTIFICATION_POLL_MS = 30000;
-const TODAY_SUMMARY_REFRESH_MS = 60000;
+const TODAY_SUMMARY_REFRESH_MS = 3600000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_SESSION_ENABLED_STORAGE_KEY = "adminOrderNotificationSessionEnabled";
 const ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY = "adminOrderNotificationKnownPendingIds";
