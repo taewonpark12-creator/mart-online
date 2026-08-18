@@ -59763,10 +59763,10 @@
     "barcode": "8801114152942",
     "name": "풀무원)요리육수사골1L",
     "normalPrice": 5200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 4500,
+    "discountRate": 13,
+    "saleStartDate": "2019-11-13",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801114152959",
@@ -74116,8 +74116,8 @@
   },
   {
     "barcode": "8801253005024",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "일가)양념우엉120g",
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
