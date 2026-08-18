@@ -74115,6 +74115,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801253005024",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801253121366",
     "name": "일가집)치자단무지350g",
     "normalPrice": 5200,
@@ -119900,7 +119909,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 9800,
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
