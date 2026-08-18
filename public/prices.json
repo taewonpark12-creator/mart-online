@@ -119477,7 +119477,7 @@
   {
     "barcode": "9100000214306",
     "name": "오이(4개/1봉)",
-    "normalPrice": 2980,
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119620,8 +119620,8 @@
   },
   {
     "barcode": "9100000214856",
-    "name": "단양청양고추(10kg/1박스)",
-    "normalPrice": 999990,
+    "name": "홍청양고추(10kg/1박스)",
+    "normalPrice": 59800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120124,8 +120124,8 @@
   },
   {
     "barcode": "9100000217468",
-    "name": "고창홍고추(10kg/1박스)",
-    "normalPrice": 999990,
+    "name": "홍고추(10kg/1박스)",
+    "normalPrice": 45000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
