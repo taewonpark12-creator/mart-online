@@ -59826,8 +59826,8 @@
     "barcode": "8801114157503",
     "name": "풀무원)매콤떡볶이2인",
     "normalPrice": 4500,
-    "eventPrice": 3480,
-    "discountRate": 23,
+    "eventPrice": 3980,
+    "discountRate": 12,
     "saleStartDate": "2019-11-13",
     "saleEndDate": "2026-12-31"
   },
@@ -59898,8 +59898,8 @@
     "barcode": "8801114163689",
     "name": "풀무원)우리동네짜장떡볶이2인",
     "normalPrice": 4500,
-    "eventPrice": 3480,
-    "discountRate": 23,
+    "eventPrice": 3980,
+    "discountRate": 12,
     "saleStartDate": "2019-11-13",
     "saleEndDate": "2026-12-31"
   },
@@ -118883,7 +118883,7 @@
   {
     "barcode": "9100000003306",
     "name": "알배기배추(1통)행사",
-    "normalPrice": 999990,
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118919,7 +118919,7 @@
   {
     "barcode": "9100000003474",
     "name": "햇장아찌양파(1망)행사",
-    "normalPrice": 3980,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119720,7 +119720,7 @@
   {
     "barcode": "9100000215440",
     "name": "브로컬리(1개)행사",
-    "normalPrice": 999990,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120872,7 +120872,7 @@
   {
     "barcode": "9100000219332",
     "name": "고구마순(1단)행사",
-    "normalPrice": 2480,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120880,7 +120880,7 @@
   },
   {
     "barcode": "910000055",
-    "name": "가지(6개/1봉)행사",
+    "name": "가지(5개/1봉)",
     "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
