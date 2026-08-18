@@ -263,6 +263,7 @@ function StatusActions({
 function OrderDetailPanel({
   order,
   updating,
+  loading,
   onUpdateStatus,
   onCancel,
   onCancelItem,
@@ -271,6 +272,7 @@ function OrderDetailPanel({
 }: {
   order: Order | null;
   updating: boolean;
+  loading?: boolean;
   onUpdateStatus: (status: OrderStatus) => void;
   onCancel: () => void;
   onCancelItem: (item: OrderItem) => void;
@@ -334,6 +336,14 @@ function OrderDetailPanel({
       <aside className="h-full rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-gray-400">
         <p className="font-semibold">주문을 선택해주세요.</p>
         <p className="mt-2 text-sm">왼쪽 목록에서 주문을 선택하면 상세 처리 패널이 열립니다.</p>
+      </aside>
+    );
+  }
+
+  if (loading) {
+    return (
+      <aside className="h-full rounded-2xl border border-gray-200 bg-white p-8 text-center text-gray-400">
+        <p className="font-semibold">상세 정보를 불러오는 중...</p>
       </aside>
     );
   }
@@ -553,6 +563,7 @@ export default function OrdersPage() {
   const knownPendingOrderIdsRef = useRef<Set<string>>(new Set());
   const pendingPollInitializedRef = useRef(false);
   const lastResumeRefreshAtRef = useRef(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -594,14 +605,31 @@ export default function OrdersPage() {
 
   const fetchOrderDetail = useCallback(async (orderId: string) => {
     setLoadingOrderDetail(true);
+    
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new AbortController for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}`, { cache: "no-store" });
+      const res = await fetch(`/api/admin/orders/${orderId}`, { 
+        cache: "no-store",
+        signal: abortController.signal
+      });
       if (!res.ok) {
         throw new Error("주문 상세를 불러오지 못했습니다.");
       }
       const data = await res.json();
       setSelectedOrderDetail(data);
     } catch (error) {
+      // Ignore AbortError - it's expected when cancelling previous requests
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
       console.error("[admin/orders] order detail fetch failed", error);
       setSelectedOrderDetail(null);
     } finally {
@@ -611,6 +639,8 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (selectedOrderId) {
+      // Clear previous detail immediately to avoid showing wrong order's items
+      setSelectedOrderDetail(null);
       void fetchOrderDetail(selectedOrderId);
     } else {
       setSelectedOrderDetail(null);
@@ -1405,6 +1435,7 @@ export default function OrdersPage() {
                         <OrderDetailPanel
                           order={selectedOrderDetail}
                           updating={updatingOrderId === selectedOrderId}
+                          loading={loadingOrderDetail}
                           onUpdateStatus={updateStatus}
                           onCancel={cancelOrder}
                           onCancelItem={cancelOrderItem}
@@ -1423,6 +1454,7 @@ export default function OrdersPage() {
                 <OrderDetailPanel
                   order={selectedOrderDetail}
                   updating={updatingOrderId === selectedOrderId}
+                  loading={loadingOrderDetail}
                   onUpdateStatus={updateStatus}
                   onCancel={cancelOrder}
                   onCancelItem={cancelOrderItem}
