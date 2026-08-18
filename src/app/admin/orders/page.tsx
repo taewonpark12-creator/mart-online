@@ -26,8 +26,7 @@ import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort"
 
 // Keep order-list fetching separate from notification checks and sound repeat timers.
 const ORDER_LIST_AUTO_REFRESH_MS = 5 * 60 * 1000;
-const ORDER_NOTIFICATION_VISIBLE_POLL_MS = 15000;
-const ORDER_NOTIFICATION_HIDDEN_POLL_MS = 60000;
+const ORDER_NOTIFICATION_POLL_MS = 30000;
 const TODAY_SUMMARY_REFRESH_MS = 60000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_SESSION_ENABLED_STORAGE_KEY = "adminOrderNotificationSessionEnabled";
@@ -624,14 +623,6 @@ export default function OrdersPage() {
         throw new Error("주문 상세를 불러오지 못했습니다.");
       }
       const data = await res.json();
-      console.log("[ORDER_DETAIL_DEBUG]", {
-        requestedOrderId: orderId,
-        responseId: data?.id,
-        orderNumber: data?.orderNumber,
-        hasItems: Array.isArray(data?.items),
-        itemCount: Array.isArray(data?.items) ? data.items.length : null,
-        items: data?.items,
-      });
       setSelectedOrderDetail(data);
     } catch (error) {
       // Ignore AbortError - it's expected when cancelling previous requests
@@ -977,7 +968,7 @@ export default function OrdersPage() {
     return () => clearInterval(interval);
   }, [fetchTodaySummary]);
 
-  const notificationPollIntervalMs = isPageHidden ? ORDER_NOTIFICATION_HIDDEN_POLL_MS : ORDER_NOTIFICATION_VISIBLE_POLL_MS;
+  const notificationPollIntervalMs = ORDER_NOTIFICATION_POLL_MS;
 
   useEffect(() => {
     void pollPendingOrders();

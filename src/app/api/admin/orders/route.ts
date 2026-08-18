@@ -104,41 +104,29 @@ export async function GET(req: NextRequest) {
     }
 
     const orderWhere = Object.keys(where).length > 0 ? where : undefined;
-    const [orders, totalOrderCount, statusCounts] = await Promise.all([
-      prisma.order.findMany({
-        where: orderWhere,
-        select: {
-          id: true,
-          customerName: true,
-          customerPhone: true,
-          fulfillmentType: true,
-          status: true,
-          totalAmount: true,
-          createdAt: true,
-          items: {
-            select: {
-              itemStatus: true,
-            },
+    const orders = await prisma.order.findMany({
+      where: orderWhere,
+      select: {
+        id: true,
+        customerName: true,
+        customerPhone: true,
+        fulfillmentType: true,
+        status: true,
+        totalAmount: true,
+        createdAt: true,
+        items: {
+          select: {
+            itemStatus: true,
           },
         },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.order.count(),
-      prisma.order.groupBy({
-        by: ["status"],
-        _count: { _all: true },
-      }),
-    ]);
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
     const serializedOrders = orders.map((order) => serializeOrder(order));
     logSafeOrderEvent("admin.orders.list.succeeded", {
       requestId,
       count: serializedOrders.length,
-      totalOrderCount,
-      filteredOutByOrderWhere: Math.max(totalOrderCount - orders.length, 0),
-      statusCounts: Object.fromEntries(
-        statusCounts.map((row) => [row.status, row._count._all]),
-      ),
       statusFilter: status || null,
       hasDateFilter: Boolean(startDate || endDate),
       elapsedMs: Date.now() - startedAt,

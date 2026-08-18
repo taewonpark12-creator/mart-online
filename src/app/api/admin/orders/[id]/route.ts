@@ -47,13 +47,6 @@ export async function GET(_req: NextRequest, { params }: Params) {
     include: { items: { include: { product: true } } },
   });
 
-  console.log("[ORDER_DETAIL_API_DEBUG]", {
-    id,
-    found: !!order,
-    itemCount: order?.items?.length ?? null,
-    itemIds: order?.items?.map((item) => item.id) ?? [],
-  });
-
   if (!order) {
     return NextResponse.json({ error: "주문을 찾을 수 없습니다." }, { status: 404 });
   }
