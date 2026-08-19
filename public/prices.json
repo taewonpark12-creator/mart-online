@@ -118199,7 +118199,7 @@
   {
     "barcode": "9100000000169",
     "name": "천도복숭아1팩",
-    "normalPrice": 4980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118208,7 +118208,7 @@
   {
     "barcode": "9100000000176",
     "name": "자두1팩",
-    "normalPrice": 5980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118225,8 +118225,8 @@
   },
   {
     "barcode": "9100000000206",
-    "name": "복숭아1팩",
-    "normalPrice": 13500,
+    "name": "신비복숭아1팩",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118406,7 +118406,7 @@
   {
     "barcode": "9100000001524",
     "name": "아삭이고추1팩",
-    "normalPrice": 2500,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
