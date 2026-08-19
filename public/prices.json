@@ -118505,7 +118505,7 @@
   {
     "barcode": "9100000001944",
     "name": "햇무(1박스)",
-    "normalPrice": 23000,
+    "normalPrice": 20000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118828,8 +118828,8 @@
   },
   {
     "barcode": "9100000003474",
-    "name": "햇장아찌양파(1망)행사",
-    "normalPrice": 2980,
+    "name": "햇장아찌양파(1망)",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119810,7 +119810,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 11000,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
