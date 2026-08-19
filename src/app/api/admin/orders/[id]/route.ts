@@ -144,6 +144,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     const order = await prisma.order.update({
       where: { id },
       data: { status },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
 
     logSafeOrderEvent("admin.order.status_change.succeeded", {
