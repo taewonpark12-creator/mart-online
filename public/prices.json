@@ -88578,6 +88578,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8804888003571",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8804905113870",
     "name": "적끈(대)",
     "normalPrice": 4100,
@@ -106374,6 +106383,15 @@
     "barcode": "8809395750512",
     "name": "광천)명란맛김자반60g",
     "normalPrice": 3500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809395750598",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
