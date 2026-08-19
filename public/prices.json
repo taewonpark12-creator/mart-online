@@ -53883,6 +53883,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801097824324",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801097913097",
     "name": "마신다샘물500ml*20입",
     "normalPrice": 5300,
