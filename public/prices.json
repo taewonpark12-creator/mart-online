@@ -50643,42 +50643,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801073144316",
-    "name": "삼양)맵탱흑후추소고기4입",
-    "normalPrice": 5500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801073144323",
-    "name": "삼양)맵탱마늘조개4입",
-    "normalPrice": 5500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801073144330",
-    "name": "삼양)맵탱청양고추대파4입",
-    "normalPrice": 5500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801073144859",
-    "name": "삼양)탱글머쉬룸크림파스타4입",
-    "normalPrice": 8500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801073145085",
     "name": "삼양1963_4입",
     "normalPrice": 6000,
@@ -113763,15 +113727,6 @@
     "barcode": "8809695252419",
     "name": "팔도)남자라면4입",
     "normalPrice": 4000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8809695253171",
-    "name": "팔도)비빔면2_4입",
-    "normalPrice": 5300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
