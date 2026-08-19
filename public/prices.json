@@ -99946,8 +99946,8 @@
   },
   {
     "barcode": "8809140323084",
-    "name": "밤/호박고구마(1.5kg/1박스)",
-    "normalPrice": 9800,
+    "name": "호박고구마(1.5kg/1박스)행사",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118793,7 +118793,7 @@
   {
     "barcode": "9100000003306",
     "name": "알배기배추(1통)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118900,8 +118900,8 @@
   },
   {
     "barcode": "9100000003696",
-    "name": "꽈리고추(1봉)행사",
-    "normalPrice": 9999990,
+    "name": "청양고추(500g/1봉)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118963,8 +118963,8 @@
   },
   {
     "barcode": "910000000665",
-    "name": "자두(1팩)행사",
-    "normalPrice": 5980,
+    "name": "자두(1팩)",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119152,8 +119152,8 @@
   },
   {
     "barcode": "9100000112688",
-    "name": "천도복숭아(10개/1팩)",
-    "normalPrice": 9999990,
+    "name": "천도/신비복숭아(10개/1팩)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119206,8 +119206,8 @@
   },
   {
     "barcode": "9100000113517",
-    "name": "딱딱이복숭아(5개/1팩)행사",
-    "normalPrice": 7980,
+    "name": "딱딱이복숭아(5개/1팩)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119359,8 +119359,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)",
-    "normalPrice": 2980,
+    "name": "대파(1단)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120457,7 +120457,7 @@
   },
   {
     "barcode": "9100000218953",
-    "name": "영동포도(3kg/1박스)",
+    "name": "영동포도(3kg/1박스)행사",
     "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
