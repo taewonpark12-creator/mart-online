@@ -52977,10 +52977,10 @@
     "barcode": "8801094342609",
     "name": "태양의마테차500ml",
     "normalPrice": 1400,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 990,
+    "discountRate": 29,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801094347208",
@@ -53319,10 +53319,10 @@
     "barcode": "8801094602703",
     "name": "파워에이드스칼렛스톰600ml",
     "normalPrice": 2000,
-    "eventPrice": 1480,
-    "discountRate": 26,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": 990,
+    "discountRate": 51,
+    "saleStartDate": "2026-08-18",
+    "saleEndDate": "2026-09-01"
   },
   {
     "barcode": "8801094603403",
