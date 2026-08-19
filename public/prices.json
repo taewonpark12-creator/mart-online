@@ -46686,10 +46686,10 @@
     "barcode": "8801066054899",
     "name": "대림)부어스트콤비320g",
     "normalPrice": 5400,
-    "eventPrice": 4980,
-    "discountRate": 8,
-    "saleStartDate": "2021-05-01",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": 3980,
+    "discountRate": 26,
+    "saleStartDate": "2026-08-18",
+    "saleEndDate": "2026-09-01"
   },
   {
     "barcode": "8801066055438",
@@ -88579,8 +88579,8 @@
   },
   {
     "barcode": "8804888003571",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "코주보육포150g",
+    "normalPrice": 22000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -101656,8 +101656,8 @@
   },
   {
     "barcode": "8809200447521",
-    "name": "황태실채70g",
-    "normalPrice": 5500,
+    "name": "황태실채60g",
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -106390,8 +106390,8 @@
   },
   {
     "barcode": "8809395750598",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "광천)간장에찍어먹는구운김6입",
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -108875,7 +108875,7 @@
   {
     "barcode": "8809536240452",
     "name": "조미건쥐치포1미",
-    "normalPrice": 1900,
+    "normalPrice": 2000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -109117,8 +109117,8 @@
   },
   {
     "barcode": "8809536242579",
-    "name": "황태채80g",
-    "normalPrice": 5500,
+    "name": "황태채70g",
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -109946,7 +109946,7 @@
   {
     "barcode": "8809536245297",
     "name": "황태채330g",
-    "normalPrice": 23000,
+    "normalPrice": 24000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
