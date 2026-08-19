@@ -118432,7 +118432,7 @@
   },
   {
     "barcode": "9100000001722",
-    "name": "햇양파(소)",
+    "name": "양파(소)",
     "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
@@ -118441,7 +118441,7 @@
   },
   {
     "barcode": "9100000001739",
-    "name": "햇양파(중)",
+    "name": "양파(중)",
     "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
@@ -118846,7 +118846,7 @@
   },
   {
     "barcode": "9100000003474",
-    "name": "햇장아찌양파(1망)",
+    "name": "장아찌양파(1망)",
     "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
@@ -119413,7 +119413,7 @@
   },
   {
     "barcode": "9100000214313",
-    "name": "햇양파(특대/1망)행사",
+    "name": "양파(특대/1망)행사",
     "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
@@ -119530,7 +119530,7 @@
   },
   {
     "barcode": "9100000214801",
-    "name": "햇양파(15kg/1망)",
+    "name": "양파(15kg/1망)",
     "normalPrice": 22000,
     "eventPrice": null,
     "discountRate": null,
