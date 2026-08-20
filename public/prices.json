@@ -118883,7 +118883,7 @@
   {
     "barcode": "9100000003696",
     "name": "청양고추(500g/1봉)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119341,8 +119341,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)행사",
-    "normalPrice": 1980,
+    "name": "대파(1단)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119836,8 +119836,8 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(1개)",
-    "normalPrice": 1480,
+    "name": "인큐호박(1개)행사",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
