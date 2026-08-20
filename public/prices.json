@@ -11396,20 +11396,20 @@
   {
     "barcode": "8801007013466",
     "name": "다담)바지락순두부양념140g",
-    "normalPrice": 2000,
-    "eventPrice": 1750,
-    "discountRate": 13,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 2100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007013473",
     "name": "다담)냉이된장찌개양념140g",
-    "normalPrice": 2000,
-    "eventPrice": 1750,
-    "discountRate": 13,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 2100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007013589",
@@ -11478,10 +11478,10 @@
     "barcode": "8801007023373",
     "name": "다담)부대찌개양념140g",
     "normalPrice": 2100,
-    "eventPrice": 1750,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007026381",
@@ -12126,10 +12126,10 @@
     "barcode": "8801007059624",
     "name": "다담)쇠고기우렁된장양념140g",
     "normalPrice": 2100,
-    "eventPrice": 1750,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007067520",
@@ -12387,10 +12387,10 @@
     "barcode": "8801007117126",
     "name": "다담)청국장찌개양념130g",
     "normalPrice": 2100,
-    "eventPrice": 1750,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007117515",
@@ -13394,11 +13394,11 @@
   {
     "barcode": "8801007250397",
     "name": "다담)전통된장찌개양념140g",
-    "normalPrice": 2000,
-    "eventPrice": 1750,
-    "discountRate": 13,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 2100,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007251530",
