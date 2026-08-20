@@ -11477,9 +11477,9 @@
   {
     "barcode": "8801007023373",
     "name": "다담)부대찌개양념140g",
-    "normalPrice": 2000,
+    "normalPrice": 2100,
     "eventPrice": 1750,
-    "discountRate": 13,
+    "discountRate": 17,
     "saleStartDate": "2019-09-30",
     "saleEndDate": "2026-12-31"
   },
@@ -12125,9 +12125,9 @@
   {
     "barcode": "8801007059624",
     "name": "다담)쇠고기우렁된장양념140g",
-    "normalPrice": 2000,
+    "normalPrice": 2100,
     "eventPrice": 1750,
-    "discountRate": 13,
+    "discountRate": 17,
     "saleStartDate": "2019-09-30",
     "saleEndDate": "2026-12-31"
   },
@@ -12386,9 +12386,9 @@
   {
     "barcode": "8801007117126",
     "name": "다담)청국장찌개양념130g",
-    "normalPrice": 2000,
+    "normalPrice": 2100,
     "eventPrice": 1750,
-    "discountRate": 13,
+    "discountRate": 17,
     "saleStartDate": "2019-09-30",
     "saleEndDate": "2026-12-31"
   },
@@ -13178,7 +13178,7 @@
   {
     "barcode": "8801007218298",
     "name": "CJ)까르보나라스파게티2인",
-    "normalPrice": 9900,
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
