@@ -119018,7 +119018,7 @@
   {
     "barcode": "9100000111711",
     "name": "수박(7kg/1통)",
-    "normalPrice": 27000,
+    "normalPrice": 24800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120421,8 +120421,8 @@
   },
   {
     "barcode": "9100000218922",
-    "name": "양배추(3통/1망)",
-    "normalPrice": 9800,
+    "name": "양배추(3통/1박스)",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
