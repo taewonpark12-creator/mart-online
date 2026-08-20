@@ -56757,8 +56757,8 @@
     "barcode": "8801105914337",
     "name": "미닛메이드)자몽에이드탄산350ml",
     "normalPrice": 1400,
-    "eventPrice": 990,
-    "discountRate": 29,
+    "eventPrice": null,
+    "discountRate": null,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
