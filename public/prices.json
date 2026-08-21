@@ -62875,8 +62875,17 @@
   },
   {
     "barcode": "8801116062713",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "레종블랙1보루",
+    "normalPrice": 45000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801116062720",
+    "name": "레종블랙",
+    "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
