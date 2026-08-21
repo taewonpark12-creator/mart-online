@@ -119180,7 +119180,7 @@
   {
     "barcode": "9100000112688",
     "name": "천도/신비복숭아(10개/1팩)행사",
-    "normalPrice": 3980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119657,7 +119657,7 @@
   {
     "barcode": "9100000215440",
     "name": "브로컬리(1개)행사",
-    "normalPrice": 980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119881,8 +119881,8 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(1개)행사",
-    "normalPrice": 980,
+    "name": "인큐호박(1개)",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
