@@ -118244,7 +118244,7 @@
   {
     "barcode": "9100000000015",
     "name": "포도1팩",
-    "normalPrice": 8000,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118262,7 +118262,7 @@
   {
     "barcode": "9100000000169",
     "name": "천도복숭아1팩",
-    "normalPrice": 6980,
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118289,7 +118289,7 @@
   {
     "barcode": "9100000000206",
     "name": "신비복숭아1팩",
-    "normalPrice": 3980,
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118306,7 +118306,7 @@
   },
   {
     "barcode": "9100000000237",
-    "name": "딱딱이복숭아1팩",
+    "name": "말랑이복숭아1팩",
     "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
@@ -118343,7 +118343,7 @@
   {
     "barcode": "9100000000343",
     "name": "샤인머스켓1팩",
-    "normalPrice": 6000,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118460,7 +118460,7 @@
   {
     "barcode": "9100000001517",
     "name": "피자두1팩",
-    "normalPrice": 5500,
+    "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
