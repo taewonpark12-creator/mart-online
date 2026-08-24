@@ -75746,7 +75746,7 @@
   {
     "barcode": "8801382151470",
     "name": "초록매실제로1.5L",
-    "normalPrice": 0,
+    "normalPrice": 3600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120313,8 +120313,8 @@
   },
   {
     "barcode": "9100000218588",
-    "name": "샤인머스켓(2kg/1박스)",
-    "normalPrice": 17800,
+    "name": "샤인머스켓(2kg/1박스)행사",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120449,7 +120449,7 @@
   {
     "barcode": "9100000218830",
     "name": "대부도포도(3kg/1박스)",
-    "normalPrice": 29800,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120557,7 +120557,7 @@
   {
     "barcode": "9100000218953",
     "name": "영동포도(3kg/1박스)행사",
-    "normalPrice": 19800,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120827,7 +120827,7 @@
   {
     "barcode": "9100000219271",
     "name": "찰토마토(3kg/1박스)행사",
-    "normalPrice": 7980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
