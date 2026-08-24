@@ -106338,10 +106338,10 @@
     "barcode": "8809384591683",
     "name": "한양)삼계오리백숙재료100g",
     "normalPrice": 2200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1800,
+    "discountRate": 18,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809384591706",
