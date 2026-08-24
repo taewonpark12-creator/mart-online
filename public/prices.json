@@ -101622,10 +101622,10 @@
     "barcode": "8809200445046",
     "name": "좋은세상)왕약과450g",
     "normalPrice": 6200,
-    "eventPrice": 4980,
-    "discountRate": 20,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-01"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809200445084",
