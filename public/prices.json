@@ -118253,7 +118253,7 @@
   {
     "barcode": "9100000000145",
     "name": "메론1통",
-    "normalPrice": 8900,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118280,7 +118280,7 @@
   {
     "barcode": "9100000000183",
     "name": "황도복숭아1팩",
-    "normalPrice": 12000,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118361,7 +118361,7 @@
   {
     "barcode": "9100000000497",
     "name": "부추1단",
-    "normalPrice": 3500,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120683,7 +120683,7 @@
   {
     "barcode": "9100000219110",
     "name": "브로콜리(국내산)1개",
-    "normalPrice": 1980,
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
