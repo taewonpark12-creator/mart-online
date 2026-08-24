@@ -48161,7 +48161,7 @@
   {
     "barcode": "8801068394603",
     "name": "삼립)호두파이240g",
-    "normalPrice": 8000,
+    "normalPrice": 9000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -70779,6 +70779,15 @@
     "barcode": "8801166259682",
     "name": "스타일패드초슬림안심대용량12입",
     "normalPrice": 9000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801166259903",
+    "name": "디펜드)스타일언더웨어여성슬림중형9+1입",
+    "normalPrice": 16500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
