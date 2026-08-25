@@ -45,7 +45,7 @@ function getProductWhere(options: ProductListOptions): Prisma.ProductWhereInput 
     includeOutOfStock = false,
   } = options;
 
-  return {
+  const where = {
     ...(activeOnly ? { isActive: true } : {}),
     ...(recommendedOnly ? { isRecommended: true } : {}),
     ...(excludeRecommended ? { isRecommended: false } : {}),
@@ -57,13 +57,15 @@ function getProductWhere(options: ProductListOptions): Prisma.ProductWhereInput 
     ...(q
       ? {
           OR: [
-            { name: { contains: q } },
-            { description: { contains: q } },
-            { barcode: { contains: q } },
+            { name: { contains: q, mode: "insensitive" as const } },
+            { description: { contains: q, mode: "insensitive" as const } },
+            { barcode: { contains: q, mode: "insensitive" as const } },
           ],
         }
       : {}),
   };
+
+  return where;
 }
 
 function getProductOrderBy(options: ProductListOptions): Prisma.ProductOrderByWithRelationInput[] {
