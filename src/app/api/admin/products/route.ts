@@ -58,11 +58,21 @@ export async function GET(req: NextRequest) {
     });
 
     // 검색어가 있는 경우 prices.json의 이름도 검색 대상에 포함
+    let debugInfo: any = null;
     if (q) {
       const prices = await getPricesJson();
       const matchedBarcodes = prices
         .filter(p => p.name.toLowerCase().includes(q.toLowerCase()))
         .map(p => p.barcode);
+
+      debugInfo = {
+        q,
+        totalPriceItems: prices.length,
+        matchedBarcodesCount: matchedBarcodes.length,
+        matchedBarcodes: matchedBarcodes.slice(0, 10),
+        target8801117001636_inPrices: matchedBarcodes.includes("8801117001636"),
+        target9100000003139_inPrices: matchedBarcodes.includes("9100000003139"),
+      };
 
       if (matchedBarcodes.length > 0) {
         const priceMatchedProducts = await prisma.product.findMany({
@@ -77,6 +87,10 @@ export async function GET(req: NextRequest) {
           take: 100,
         });
 
+        debugInfo.priceMatchedCount = priceMatchedProducts.length;
+        debugInfo.target8801117001636_inDB = priceMatchedProducts.find(p => p.barcode === "8801117001636");
+        debugInfo.target9100000003139_inDB = priceMatchedProducts.find(p => p.barcode === "9100000003139");
+
         // DB 검색 결과와 prices.json 검색 결과 병합 (barcode 기준 중복 제거)
         const dbBarcodes = new Set(result.products.map(p => p.barcode));
         const newProducts = priceMatchedProducts
@@ -85,11 +99,21 @@ export async function GET(req: NextRequest) {
 
         const mergedProducts = [...result.products, ...newProducts];
         
-        result = {
+        debugInfo.dbResultCount = result.products.length;
+        debugInfo.newProductsCount = newProducts.length;
+        debugInfo.mergedCount = mergedProducts.length;
+        debugInfo.target8801117001636_inMerged = mergedProducts.find(p => p.barcode === "8801117001636");
+        debugInfo.target9100000003139_inMerged = mergedProducts.find(p => p.barcode === "9100000003139");
+        
+        const finalResult = {
           products: mergedProducts,
           hasMore: false,
           total: mergedProducts.length,
-        };
+          _debug: debugInfo,
+        } as any;
+        result = finalResult;
+      } else {
+        (result as any)._debug = debugInfo;
       }
     }
 
