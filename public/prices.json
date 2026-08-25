@@ -56865,10 +56865,10 @@
     "barcode": "8801105916447",
     "name": "미닛메이드)레몬에이드탄산500ml",
     "normalPrice": 1500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 990,
+    "discountRate": 34,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801105916515",
