@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
     });
 
     // 검색어가 있는 경우 prices.json의 이름도 검색 대상에 포함
-    if (q && result.products.length === 0) {
+    if (q) {
       const prices = await getPricesJson();
       const matchedBarcodes = prices
         .filter(p => p.name.toLowerCase().includes(q.toLowerCase()))
@@ -77,10 +77,18 @@ export async function GET(req: NextRequest) {
           take: 100,
         });
 
+        // DB 검색 결과와 prices.json 검색 결과 병합 (barcode 기준 중복 제거)
+        const dbBarcodes = new Set(result.products.map(p => p.barcode));
+        const newProducts = priceMatchedProducts
+          .filter(p => !dbBarcodes.has(p.barcode))
+          .map(serializeProduct);
+
+        const mergedProducts = [...result.products, ...newProducts];
+        
         result = {
-          products: priceMatchedProducts.map(serializeProduct),
+          products: mergedProducts,
           hasMore: false,
-          total: priceMatchedProducts.length,
+          total: mergedProducts.length,
         };
       }
     }
