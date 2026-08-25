@@ -71334,27 +71334,9 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8801173801959",
-    "name": "무궁화)샤워랑비누핑크로즈130g",
-    "normalPrice": 1900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8801173801966",
     "name": "무궁화)샤워랑비누핑로즈3입",
     "normalPrice": 5800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8801173801973",
-    "name": "무궁화)샤워랑화이트플로랄130g",
-    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75277,8 +75259,8 @@
   },
   {
     "barcode": "8801353006235",
-    "name": "산도깨비)아로마디퓨저피치200ml",
-    "normalPrice": 4500,
+    "name": "산도깨비)아로마디퓨져피치200ml",
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75295,8 +75277,8 @@
   },
   {
     "barcode": "8801353006266",
-    "name": "산도깨비)아로마디퓨저망고쟈스민200ml",
-    "normalPrice": 4500,
+    "name": "산도깨비)아로마디퓨져망고쟈스민200ml",
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75304,8 +75286,8 @@
   },
   {
     "barcode": "8801353006273",
-    "name": "산도깨비주방용세정제650ml",
-    "normalPrice": 2980,
+    "name": "산도깨비)주방용세정제650ml",
+    "normalPrice": 3200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75376,8 +75358,8 @@
   },
   {
     "barcode": "8801353006532",
-    "name": "산도깨비베이킹세정제650ml",
-    "normalPrice": 2980,
+    "name": "산도깨비)베이킹세정제650ml",
+    "normalPrice": 3200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
