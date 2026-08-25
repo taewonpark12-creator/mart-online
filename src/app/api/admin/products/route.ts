@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { sanitizeInput, validateAmount } from "@/lib/security";
 import { findProductsForAdmin, serializeProduct } from "@/lib/product-query";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 function toNonNegativeInt(value: unknown, fallback = 0) {
   const next = Number(value);
@@ -11,10 +13,9 @@ function toNonNegativeInt(value: unknown, fallback = 0) {
 
 async function getPricesJson(): Promise<Array<{ barcode: string; name: string }>> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/prices.json`, { cache: 'no-store' });
-    if (!response.ok) return [];
-    const prices = await response.json();
+    const pricesJsonPath = join(process.cwd(), "public", "prices.json");
+    const pricesJsonContent = readFileSync(pricesJsonPath, "utf-8");
+    const prices = JSON.parse(pricesJsonContent);
     if (!Array.isArray(prices)) return [];
     return prices.map((p: any) => ({
       barcode: String(p.barcode || ''),
