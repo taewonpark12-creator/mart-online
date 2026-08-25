@@ -31,7 +31,7 @@ export const RECEIPT_LAYOUT = {
   paperWidthMm: 78
   ,
   colQty: 48,
-  colUnit: 50,
+  colUnit: 75,
   colAmount: 70,
 };
 
