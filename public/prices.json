@@ -31115,18 +31115,18 @@
   {
     "barcode": "8801046400364",
     "name": "리큐)프레시일반1.6L*2입",
-    "normalPrice": 11900,
-    "eventPrice": 9900,
-    "discountRate": 17,
+    "normalPrice": 13000,
+    "eventPrice": 11500,
+    "discountRate": 12,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801046400371",
     "name": "리큐)프레시드럼1.6L*2입",
-    "normalPrice": 11900,
-    "eventPrice": 9900,
-    "discountRate": 17,
+    "normalPrice": 13000,
+    "eventPrice": 11500,
+    "discountRate": 12,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -71345,7 +71345,7 @@
   {
     "barcode": "8801173801966",
     "name": "무궁화)샤워랑비누핑로즈3입",
-    "normalPrice": 5500,
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -71363,7 +71363,7 @@
   {
     "barcode": "8801173801980",
     "name": "무궁화)샤워랑비누플로랄화이트3입",
-    "normalPrice": 5500,
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75287,7 +75287,7 @@
   {
     "barcode": "8801353006259",
     "name": "산도깨비)아로마디퓨져라벤더200ml",
-    "normalPrice": 4500,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75313,8 +75313,8 @@
   },
   {
     "barcode": "8801353006280",
-    "name": "산도깨비욕실용세정제650ml",
-    "normalPrice": 2980,
+    "name": "산도깨비)욕실용세정제650ml",
+    "normalPrice": 3200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -92307,10 +92307,10 @@
     "barcode": "8806325631064",
     "name": "비트액체2.7L",
     "normalPrice": 10000,
-    "eventPrice": 8980,
-    "discountRate": 10,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8806325632337",
