@@ -3,8 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { sanitizeInput, validateAmount } from "@/lib/security";
 import { findProductsForAdmin, serializeProduct } from "@/lib/product-query";
-import { readFileSync } from "fs";
-import { join } from "path";
 
 function toNonNegativeInt(value: unknown, fallback = 0) {
   const next = Number(value);
@@ -13,9 +11,10 @@ function toNonNegativeInt(value: unknown, fallback = 0) {
 
 async function getPricesJson(): Promise<Array<{ barcode: string; name: string }>> {
   try {
-    const pricesJsonPath = join(process.cwd(), "public", "prices.json");
-    const pricesJsonContent = readFileSync(pricesJsonPath, "utf-8");
-    const prices = JSON.parse(pricesJsonContent);
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://lovemart.kr';
+    const response = await fetch(`${baseUrl}/prices.json`, { cache: 'no-store' });
+    if (!response.ok) return [];
+    const prices = await response.json();
     if (!Array.isArray(prices)) return [];
     return prices.map((p: any) => ({
       barcode: String(p.barcode || ''),
@@ -59,21 +58,11 @@ export async function GET(req: NextRequest) {
     });
 
     // 검색어가 있는 경우 prices.json의 이름도 검색 대상에 포함
-    let debugInfo: any = null;
     if (q) {
       const prices = await getPricesJson();
       const matchedBarcodes = prices
-        .filter(p => p.name.toLowerCase().includes(q.toLowerCase()))
+        .filter(p => p.name && p.name.toLowerCase().includes(q.toLowerCase()))
         .map(p => p.barcode);
-
-      debugInfo = {
-        q,
-        totalPriceItems: prices.length,
-        matchedBarcodesCount: matchedBarcodes.length,
-        matchedBarcodes: matchedBarcodes.slice(0, 10),
-        target8801117001636_inPrices: matchedBarcodes.includes("8801117001636"),
-        target9100000003139_inPrices: matchedBarcodes.includes("9100000003139"),
-      };
 
       if (matchedBarcodes.length > 0) {
         const priceMatchedProducts = await prisma.product.findMany({
@@ -88,10 +77,6 @@ export async function GET(req: NextRequest) {
           take: 100,
         });
 
-        debugInfo.priceMatchedCount = priceMatchedProducts.length;
-        debugInfo.target8801117001636_inDB = priceMatchedProducts.find(p => p.barcode === "8801117001636");
-        debugInfo.target9100000003139_inDB = priceMatchedProducts.find(p => p.barcode === "9100000003139");
-
         // DB 검색 결과와 prices.json 검색 결과 병합 (barcode 기준 중복 제거)
         const dbBarcodes = new Set(result.products.map(p => p.barcode));
         const newProducts = priceMatchedProducts
@@ -100,21 +85,11 @@ export async function GET(req: NextRequest) {
 
         const mergedProducts = [...result.products, ...newProducts];
         
-        debugInfo.dbResultCount = result.products.length;
-        debugInfo.newProductsCount = newProducts.length;
-        debugInfo.mergedCount = mergedProducts.length;
-        debugInfo.target8801117001636_inMerged = mergedProducts.find(p => p.barcode === "8801117001636");
-        debugInfo.target9100000003139_inMerged = mergedProducts.find(p => p.barcode === "9100000003139");
-        
-        const finalResult = {
+        result = {
           products: mergedProducts,
           hasMore: false,
           total: mergedProducts.length,
-          _debug: debugInfo,
-        } as any;
-        result = finalResult;
-      } else {
-        (result as any)._debug = debugInfo;
+        };
       }
     }
 

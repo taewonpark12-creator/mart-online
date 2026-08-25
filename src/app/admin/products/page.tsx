@@ -946,17 +946,6 @@ export default function ProductsPage() {
 
       const data = await res.json();
       const productsArray = data.products || [];
-      
-      console.log("=== ADMIN_PRODUCTS_RESPONSE START ===");
-      console.log("searchInput:", searchInput);
-      console.log("searchQuery:", searchQuery);
-      console.log("total:", data.total);
-      console.log("productCount:", productsArray.length);
-      console.log("_debug:", data._debug);
-      console.log("target8801117001636 (오리온)미쯔황치즈52g):", productsArray.find((p: any) => p.barcode === "8801117001636"));
-      console.log("target9100000003139 (<특가>부추1단):", productsArray.find((p: any) => p.barcode === "9100000003139"));
-      console.log("=== ADMIN_PRODUCTS_RESPONSE END ===");
-      
       const normalizedProducts = productsArray.map(normalizeProduct);
       setProducts(normalizedProducts);
       setActiveProductId((current) => current ?? normalizedProducts[0]?.id ?? null);
