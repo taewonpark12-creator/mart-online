@@ -25643,7 +25643,7 @@
   {
     "barcode": "8801045010915",
     "name": "오뚜기)3일숙성카레순한맛80g",
-    "normalPrice": 3800,
+    "normalPrice": 4200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -25652,7 +25652,7 @@
   {
     "barcode": "8801045010922",
     "name": "오뚜기)3일숙성카레약간매운맛80g",
-    "normalPrice": 3800,
+    "normalPrice": 4200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -26300,9 +26300,9 @@
   {
     "barcode": "8801045152479",
     "name": "오뚜기)진라면약간매운맛5입",
-    "normalPrice": 4300,
-    "eventPrice": 2980,
-    "discountRate": 31,
+    "normalPrice": 4500,
+    "eventPrice": 3980,
+    "discountRate": 12,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -27758,7 +27758,7 @@
   {
     "barcode": "8801045370095",
     "name": "오뚜기)옛날사리당면100g",
-    "normalPrice": 2000,
+    "normalPrice": 2300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -29027,7 +29027,7 @@
   {
     "barcode": "8801045572857",
     "name": "오뚜기)참깨라면소컵6입",
-    "normalPrice": 8200,
+    "normalPrice": 8800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
