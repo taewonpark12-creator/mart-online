@@ -106553,9 +106553,9 @@
   {
     "barcode": "8809395756446",
     "name": "광천)곱창김1봉",
-    "normalPrice": 2000,
+    "normalPrice": 2300,
     "eventPrice": 1000,
-    "discountRate": 50,
+    "discountRate": 57,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -115077,6 +115077,15 @@
     "barcode": "8809791140023",
     "name": "부각마을)다시마튀각55g",
     "normalPrice": 2800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809797610001",
+    "name": "신선란(미국산)30구/1판",
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
