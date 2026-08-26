@@ -119125,8 +119125,8 @@
   },
   {
     "barcode": "910000000665",
-    "name": "자두(1팩)",
-    "normalPrice": 6980,
+    "name": "자두(1팩)행사",
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119998,8 +119998,8 @@
   },
   {
     "barcode": "9100000216669",
-    "name": "샤인머스켓(4kg/1박스)",
-    "normalPrice": 29800,
+    "name": "샤인머스켓(4kg/1박스)행사",
+    "normalPrice": 24800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
