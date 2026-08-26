@@ -101242,8 +101242,8 @@
   },
   {
     "barcode": "8809191089045",
-    "name": "통계피70g",
-    "normalPrice": 1500,
+    "name": "자른계피70g",
+    "normalPrice": 1700,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -106549,6 +106549,15 @@
     "discountRate": null,
     "saleStartDate": "",
     "saleEndDate": ""
+  },
+  {
+    "barcode": "8809395756446",
+    "name": "광천)곱창김1봉",
+    "normalPrice": 2000,
+    "eventPrice": 1000,
+    "discountRate": 50,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809401600589",
