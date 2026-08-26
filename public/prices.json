@@ -119683,8 +119683,8 @@
   },
   {
     "barcode": "9100000214849",
-    "name": "건고추(6kg/1봉)",
-    "normalPrice": 999990,
+    "name": "건고추(3kg/1봉)",
+    "normalPrice": 120000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120106,8 +120106,8 @@
   },
   {
     "barcode": "9100000217086",
-    "name": "경북사과(18개/1봉)행사",
-    "normalPrice": 99990,
+    "name": "사과(10개/1봉)행사",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
