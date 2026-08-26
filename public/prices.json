@@ -9855,6 +9855,15 @@
     "saleEndDate": "2026-09-01"
   },
   {
+    "barcode": "8800336690201",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8800342490055",
     "name": "구운옥수수하루콘250g",
     "normalPrice": 4000,
@@ -49707,6 +49716,33 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801068943245",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068943252",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068943269",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801068943429",
     "name": "삼립)고소한땅콩소보루220g",
     "normalPrice": 4500,
@@ -60255,6 +60291,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801114185247",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114185254",
     "name": "풀무원)저당스위트칠리소스280g",
     "normalPrice": 4200,
@@ -60267,6 +60312,15 @@
     "barcode": "8801114185261",
     "name": "풀무원)저당스테이크소스280g",
     "normalPrice": 4200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801114185278",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -67048,6 +67102,15 @@
     "discountRate": 17,
     "saleStartDate": "2026-08-18",
     "saleEndDate": "2026-09-01"
+  },
+  {
+    "barcode": "8801123002740",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801123101184",
