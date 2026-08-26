@@ -9856,8 +9856,8 @@
   },
   {
     "barcode": "8800336690201",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "아워홈)갓석박지800g",
+    "normalPrice": 10500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49717,8 +49717,8 @@
   },
   {
     "barcode": "8801068943245",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "삼립)탕종베지또띠아225g",
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49726,8 +49726,8 @@
   },
   {
     "barcode": "8801068943252",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "삼립)탕종통밀또띠아225g",
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -49735,8 +49735,8 @@
   },
   {
     "barcode": "8801068943269",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "삼립)탕종우유또띠아225g",
+    "normalPrice": 3800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -67105,12 +67105,12 @@
   },
   {
     "barcode": "8801123002740",
-    "name": "신상품",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "name": "롯데)에쎈뽀득더블리치280g",
+    "normalPrice": 10000,
+    "eventPrice": 6980,
+    "discountRate": 30,
+    "saleStartDate": "2021-05-01",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801123101184",
