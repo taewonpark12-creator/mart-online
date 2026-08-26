@@ -94170,10 +94170,10 @@
     "barcode": "8808244101079",
     "name": "제주삼다수2L*6입",
     "normalPrice": 7800,
-    "eventPrice": 6980,
-    "discountRate": 11,
-    "saleStartDate": "2022-01-13",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8808244101086",
@@ -120044,7 +120044,7 @@
   {
     "barcode": "9100000216720",
     "name": "인큐호박(1개)",
-    "normalPrice": 1480,
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
