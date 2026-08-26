@@ -27189,6 +27189,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801045299419",
+    "name": "오뚜기)옛날사골곰탕350g",
+    "normalPrice": 1200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801045303000",
     "name": "오뚜기)전복죽285g",
     "normalPrice": 3300,
@@ -29388,6 +29397,15 @@
     "barcode": "8801045691718",
     "name": "오뚜기)삼겹살제주식멜젓소스325g",
     "normalPrice": 4900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801045695075",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
