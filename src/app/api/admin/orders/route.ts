@@ -124,12 +124,6 @@ export async function GET(req: NextRequest) {
         },
       },
       orderBy: { createdAt: "desc" },
-    }).catch((error) => {
-      // If the error is related to cancelledQuantity column not existing, provide a clear message
-      if (error instanceof Error && error.message.includes('cancelledQuantity')) {
-        throw new Error("DATABASE_SCHEMA_MISMATCH: cancelledQuantity column does not exist. Please run the migration: ALTER TABLE \"OrderItem\" ADD COLUMN \"cancelledQuantity\" INTEGER NOT NULL DEFAULT 0");
-      }
-      throw error;
     });
 
     const serializedOrders = orders.map((order) => serializeOrder(order));
