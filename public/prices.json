@@ -18561,10 +18561,10 @@
     "barcode": "8801024050802",
     "name": "청정원)참나무훈연그릴바베큐600g",
     "normalPrice": 11500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 9900,
+    "discountRate": 14,
+    "saleStartDate": "2019-10-11",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801024050857",
