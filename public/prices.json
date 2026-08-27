@@ -118603,8 +118603,8 @@
   },
   {
     "barcode": "9100000001678",
-    "name": "충주홍고추(20kg/1박스)",
-    "normalPrice": 999990,
+    "name": "건고추^B급^(3kg/1봉)",
+    "normalPrice": 98000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119719,7 +119719,7 @@
   },
   {
     "barcode": "9100000214849",
-    "name": "건고추(3kg/1봉)",
+    "name": "건고추^A급^(3kg/1봉)",
     "normalPrice": 120000,
     "eventPrice": null,
     "discountRate": null,
@@ -119729,7 +119729,7 @@
   {
     "barcode": "9100000214856",
     "name": "홍청양고추(10kg/1박스)",
-    "normalPrice": 38000,
+    "normalPrice": 39800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
