@@ -119854,7 +119854,7 @@
   },
   {
     "barcode": "9100000215891",
-    "name": "참외(5개/7개/1봉)",
+    "name": "참외(1봉)",
     "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
@@ -120440,7 +120440,7 @@
   {
     "barcode": "9100000218670",
     "name": "완숙토마토(5kg/1박스)행사",
-    "normalPrice": 14800,
+    "normalPrice": 9999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
