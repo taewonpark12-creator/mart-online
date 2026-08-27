@@ -100,16 +100,26 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
     </colgroup>`;
 
   const sortedItems = sortOrderItemsByProductCategory(order.items);
-  const activeItems = sortedItems.filter((item) => item.itemStatus !== "CANCELLED");
-  const cancelledItems = sortedItems.filter((item) => item.itemStatus === "CANCELLED");
+  
+  // Calculate active quantities and separate fully cancelled items
+  // For fully cancelled items (itemStatus = CANCELLED), active quantity is always 0 regardless of cancelledQuantity
+  const activeItems = sortedItems
+    .map((item) => ({
+      ...item,
+      activeQuantity: item.itemStatus === "CANCELLED" ? 0 : (item.quantity ?? 0) - (item.cancelledQuantity ?? 0),
+    }))
+    .filter((item) => item.activeQuantity > 0);
+  
+  const fullyCancelledItems = sortedItems.filter((item) => item.itemStatus === "CANCELLED");
+  
   const activeTotalAmount = activeItems.reduce(
-    (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+    (sum, item) => sum + Number(item.unitPrice ?? 0) * item.activeQuantity,
     0,
   );
 
   const itemsHtml = activeItems
     .map((item, index) => {
-      const lineTotal = item.unitPrice * item.quantity;
+      const lineTotal = item.unitPrice * item.activeQuantity;
       const barcode = orderItemBarcode(item) || item.product?.barcode || "";
       const barcodeRow = barcode
         ? `<tr class="item-barcode"><td colspan="4" style="padding-left:4px;"><b>${esc(barcode)}</b></td></tr>`
@@ -123,18 +133,30 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
         ${barcodeRow}
         <tr class="item-values">
           <td></td>
-          <td class="v-qty">${item.quantity}</td>
+          <td class="v-qty">${item.activeQuantity}</td>
           <td class="v-unit">${formatPrice(item.unitPrice)}</td>
           <td class="v-amt">${formatPrice(lineTotal)}</td>
         </tr>
       </tbody>`;
     })
     .join("");
-  const cancelledItemsHtml = cancelledItems.length
+  
+  const cancelledItemsHtml = fullyCancelledItems.length
     ? `
   <div class="cancelled-items">
     <p><b>품절취소 상품</b></p>
-    ${cancelledItems.map((item) => `<p>- ${esc(orderItemName(item))} ${item.quantity}개</p>`).join("")}
+    ${fullyCancelledItems.map((item) => `<p>- ${esc(orderItemName(item))} ${item.quantity}개</p>`).join("")}
+  </div>`
+    : "";
+  
+  const partialCancelledHtml = sortedItems.some((item) => (item.cancelledQuantity ?? 0) > 0 && item.itemStatus !== "CANCELLED")
+    ? `
+  <div class="cancelled-items">
+    <p><b>부분 품절취소</b></p>
+    ${sortedItems
+      .filter((item) => (item.cancelledQuantity ?? 0) > 0 && item.itemStatus !== "CANCELLED")
+      .map((item) => `<p>- ${esc(orderItemName(item))} 취소 ${item.cancelledQuantity}개 / 판매 ${item.quantity - (item.cancelledQuantity ?? 0)}개</p>`)
+      .join("")}
   </div>`
     : "";
 
@@ -257,6 +279,8 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
   <div class="total">합계 ${formatPrice(activeTotalAmount)}</div>
 
   ${cancelledItemsHtml}
+
+  ${partialCancelledHtml}
 
   <hr class="hr" />
   <div class="footer">

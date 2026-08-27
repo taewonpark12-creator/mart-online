@@ -21,9 +21,10 @@ function serializeOrder(order: {
   createdAt: Date;
   items?: Array<{
     itemStatus?: string | null;
+    cancelledQuantity?: number | null;
   }>;
 }) {
-  const hasCancelledItems = (order.items || []).some((item) => item.itemStatus === "CANCELLED");
+  const hasCancelledItems = (order.items || []).some((item) => item.itemStatus === "CANCELLED" || (item.cancelledQuantity ?? 0) > 0);
 
   return {
     id: order.id,
@@ -46,6 +47,7 @@ function serializeOrder(order: {
       productName: "",
       unitPrice: 0,
       quantity: 0,
+      cancelledQuantity: Number(item.cancelledQuantity ?? 0),
       itemStatus: item.itemStatus === "CANCELLED" ? "CANCELLED" : "ACTIVE",
       product: undefined,
     })),
@@ -117,6 +119,7 @@ export async function GET(req: NextRequest) {
         items: {
           select: {
             itemStatus: true,
+            cancelledQuantity: true,
           },
         },
       },

@@ -27,6 +27,13 @@ export async function GET(req: NextRequest) {
       itemStatus: "ACTIVE" as const,
     };
 
+    // Helper function to calculate active quantity (total - cancelled)
+    // For fully cancelled items, this should return 0 regardless of cancelledQuantity value
+    const getActiveQuantity = (quantity: number, cancelledQuantity: number | null, itemStatus?: string | null) => {
+      if (itemStatus === "CANCELLED") return 0;
+      return quantity - (cancelledQuantity ?? 0);
+    };
+
     const [pendingOrders, todayOrders, totalProducts, lowStock, approvedOrders, deliveredOrders, cancelledOrders] =
       await Promise.all([
         prisma.order.count({
@@ -76,11 +83,13 @@ export async function GET(req: NextRequest) {
       select: {
         unitPrice: true,
         quantity: true,
+        cancelledQuantity: true,
+        itemStatus: true,
       },
     });
 
     const todaySales = activeSalesItems.reduce(
-      (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+      (sum, item) => sum + Number(item.unitPrice ?? 0) * getActiveQuantity(Number(item.quantity ?? 0), item.cancelledQuantity, item.itemStatus),
       0,
     );
 
@@ -115,6 +124,8 @@ export async function GET(req: NextRequest) {
             select: {
               unitPrice: true,
               quantity: true,
+              cancelledQuantity: true,
+              itemStatus: true,
             },
           },
         },
@@ -123,7 +134,7 @@ export async function GET(req: NextRequest) {
       const totalSales = orders.reduce(
         (sum, order) =>
           sum + order.items.reduce(
-            (itemSum, item) => itemSum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+            (itemSum, item) => itemSum + Number(item.unitPrice ?? 0) * getActiveQuantity(Number(item.quantity ?? 0), item.cancelledQuantity, item.itemStatus),
             0,
           ),
         0,
@@ -143,17 +154,8 @@ export async function GET(req: NextRequest) {
     }> = [];
 
     try {
-      const popularProducts = await prisma.orderItem.groupBy({
-        by: ["productId"],
-        _sum: {
-          quantity: true,
-        },
-        orderBy: {
-          _sum: {
-            quantity: "desc",
-          },
-        },
-        take: 10,
+      // Get all active items with cancelledQuantity to calculate actual sold quantities
+      const allActiveItems = await prisma.orderItem.findMany({
         where: {
           ...activeItemWhere,
           order: {
@@ -162,7 +164,28 @@ export async function GET(req: NextRequest) {
             },
           },
         },
+        select: {
+          productId: true,
+          quantity: true,
+          cancelledQuantity: true,
+          itemStatus: true,
+        },
       });
+
+      // Group by productId and sum active quantities
+      const productQuantityMap = new Map<string, number>();
+      allActiveItems.forEach((item) => {
+        const productId = item.productId ?? "";
+        const activeQuantity = getActiveQuantity(Number(item.quantity ?? 0), item.cancelledQuantity, item.itemStatus);
+        const current = productQuantityMap.get(productId) ?? 0;
+        productQuantityMap.set(productId, current + activeQuantity);
+      });
+
+      // Convert to array and sort by quantity
+      const popularProducts = Array.from(productQuantityMap.entries())
+        .map(([productId, quantity]) => ({ productId, _sum: { quantity } }))
+        .sort((a, b) => b._sum.quantity - a._sum.quantity)
+        .slice(0, 10);
 
       popularProductDetails = await Promise.all(
         popularProducts.map(async (item) => {

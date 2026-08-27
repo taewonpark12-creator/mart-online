@@ -22,6 +22,7 @@ function serializeOrderDetail(order: any) {
     items: order.items?.map((item: any) => ({
       ...item,
       unitPrice: Number(item.unitPrice ?? 0),
+      cancelledQuantity: Number(item.cancelledQuantity ?? 0),
       product: item.product ? {
         ...item.product,
         price: item.product.price?.toString() ?? "0",

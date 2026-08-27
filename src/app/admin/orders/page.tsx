@@ -36,6 +36,7 @@ const ORDER_NOTIFICATION_REPEAT_MS = 10000;
 type OrderItem = {
   id: string;
   quantity: number;
+  cancelledQuantity: number;
   unitPrice: number;
   productName: string;
   productId: string | null;
@@ -89,8 +90,10 @@ function getElapsedTime(createdAt: string): { text: string; minutes: number } {
 
 function toReceiptOrder(order: Order): ReceiptOrder {
   const activeTotalAmount = (order.items || []).reduce((sum, item) => {
+    // For fully cancelled items (itemStatus = CANCELLED), active quantity is always 0 regardless of cancelledQuantity
     if (item.itemStatus === "CANCELLED") return sum;
-    return sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0);
+    const activeQuantity = Number(item.quantity ?? 0) - Number(item.cancelledQuantity ?? 0);
+    return sum + Number(item.unitPrice ?? 0) * activeQuantity;
   }, 0);
 
   return {
@@ -109,6 +112,7 @@ function toReceiptOrder(order: Order): ReceiptOrder {
     createdAt: order.createdAt,
     items: sortOrderItemsByProductCategory(order.items || []).map((item) => ({
       quantity: item.quantity,
+      cancelledQuantity: item.cancelledQuantity,
       unitPrice: Number(item.unitPrice),
       productName: item.productName,
       itemStatus: item.itemStatus === "CANCELLED" ? "CANCELLED" : "ACTIVE",
@@ -118,7 +122,7 @@ function toReceiptOrder(order: Order): ReceiptOrder {
 }
 
 function hasCancelledItems(order: Order) {
-  return Boolean(order.items?.some((item) => item.itemStatus === "CANCELLED"));
+  return Boolean(order.items?.some((item) => item.itemStatus === "CANCELLED" || (item.cancelledQuantity ?? 0) > 0));
 }
 
 function getStatusPriority(status: OrderStatus): number {
@@ -466,6 +470,11 @@ function OrderDetailPanel({
               sortOrderItemsByProductCategory(order.items).map((item) => {
                 const barcode = item.product?.barcode || "";
                 const isItemCancelled = item.itemStatus === "CANCELLED";
+                const cancelledQty = item.cancelledQuantity ?? 0;
+                const totalQty = item.quantity ?? 0;
+                const activeQty = totalQty - cancelledQty;
+                const hasPartialCancel = cancelledQty > 0 && !isItemCancelled;
+
                 return (
                   <div
                     key={item.id}
@@ -483,15 +492,27 @@ function OrderDetailPanel({
                             품절취소
                           </span>
                         )}
+                        {hasPartialCancel && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">
+                            부분취소
+                          </span>
+                        )}
                       </div>
                       {barcode && <p className="text-xs text-gray-500">바코드: {barcode}</p>}
-                      <p className="text-xs text-gray-500">{formatPrice(item.unitPrice || 0)} x {item.quantity || 0}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatPrice(item.unitPrice || 0)} x {totalQty}개
+                        {hasPartialCancel && (
+                          <span className="text-amber-600 ml-1">
+                            (취소 {cancelledQty}개 / 판매 {activeQty}개)
+                          </span>
+                        )}
+                      </p>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-2">
                       <p className={`font-semibold ${isItemCancelled ? "text-gray-400 line-through" : "text-gray-900"}`}>
-                        {formatPrice((item.unitPrice || 0) * (item.quantity || 0))}
+                        {formatPrice((item.unitPrice || 0) * activeQty)}
                       </p>
-                      {!isItemCancelled && (
+                      {!isItemCancelled && activeQty > 0 && (
                         <button
                           type="button"
                           onClick={() => onCancelItem(item)}
@@ -1090,19 +1111,57 @@ export default function OrdersPage() {
   async function cancelOrderItem(item: OrderItem) {
     if (!selectedOrderId) return;
     if (item.itemStatus === "CANCELLED") return;
-    if (!confirm(`${item.productName || "상품"} 상품 1개만 품절취소 처리할까요?`)) return;
+
+    const currentCancelled = item.cancelledQuantity ?? 0;
+    const totalQuantity = item.quantity ?? 0;
+    const remainingActive = totalQuantity - currentCancelled;
+
+    if (remainingActive <= 0) {
+      alert("이미 모든 수량이 취소되었습니다.");
+      return;
+    }
+
+    const cancelQuantityInput = prompt(
+      `${item.productName || "상품"}의 품절취소 수량을 입력해주세요.\n\n주문 수량: ${totalQuantity}개\n이미 취소된 수량: ${currentCancelled}개\n취소 가능한 수량: ${remainingActive}개`,
+      remainingActive.toString()
+    );
+
+    if (cancelQuantityInput === null) return;
+
+    const cancelQuantity = parseInt(cancelQuantityInput, 10);
+
+    // Validate input is a valid positive integer
+    if (isNaN(cancelQuantity) || !Number.isInteger(cancelQuantity) || cancelQuantity <= 0) {
+      alert("유효한 양의 정수 수량을 입력해주세요.");
+      return;
+    }
+
+    if (cancelQuantity > remainingActive) {
+      alert(`취소 가능한 수량을 초과했습니다. 최대 ${remainingActive}개까지 취소할 수 있습니다.`);
+      return;
+    }
+
+    const confirmMessage = cancelQuantity === remainingActive
+      ? `${item.productName || "상품"} ${cancelQuantity}개를 전체 품절취소 처리할까요?`
+      : `${item.productName || "상품"} ${cancelQuantity}개를 품절취소 처리할까요?\n(나머지 ${remainingActive - cancelQuantity}개는 정상 판매됩니다)`;
+
+    if (!confirm(confirmMessage)) return;
 
     setUpdatingOrderId(selectedOrderId);
     try {
       const res = await fetch(`/api/admin/orders/${selectedOrderId}/items/${item.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ itemStatus: "CANCELLED" }),
+        body: JSON.stringify({ itemStatus: "CANCELLED", cancelledQuantity: cancelQuantity }),
       });
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error ?? "상품 품절취소 처리에 실패했습니다.");
+        if (data.error === "CANCEL_QUANTITY_EXCEEDS_ACTIVE") {
+          alert("취소 가능한 수량을 초과했습니다.");
+        } else {
+          alert(data.error ?? "상품 품절취소 처리에 실패했습니다.");
+        }
         return;
       }
 
@@ -1110,13 +1169,23 @@ export default function OrdersPage() {
         current.map((order) => {
           if (order.id !== selectedOrderId) return order;
 
-          const nextItems = (order.items || []).map((orderItem) =>
-            orderItem.id === item.id ? { ...orderItem, itemStatus: "CANCELLED" } : orderItem,
-          );
+          const nextItems = (order.items || []).map((orderItem) => {
+            if (orderItem.id !== item.id) return orderItem;
+
+            const newCancelledQuantity = (orderItem.cancelledQuantity ?? 0) + cancelQuantity;
+            const isFullyCancelled = newCancelledQuantity >= orderItem.quantity;
+            return {
+              ...orderItem,
+              cancelledQuantity: newCancelledQuantity,
+              itemStatus: isFullyCancelled ? "CANCELLED" : "ACTIVE",
+            };
+          });
 
           const nextTotalAmount = nextItems.reduce((sum, orderItem) => {
+            // For fully cancelled items (itemStatus = CANCELLED), active quantity is always 0 regardless of cancelledQuantity
             if (orderItem.itemStatus === "CANCELLED") return sum;
-            return sum + Number(orderItem.unitPrice ?? 0) * Number(orderItem.quantity ?? 0);
+            const activeQuantity = Number(orderItem.quantity ?? 0) - Number(orderItem.cancelledQuantity ?? 0);
+            return sum + Number(orderItem.unitPrice ?? 0) * activeQuantity;
           }, 0);
 
           return {
@@ -1126,6 +1195,7 @@ export default function OrdersPage() {
           };
         }),
       );
+      setSelectedOrderDetail(data);
       fetchTodaySummary();
       void fetchOrders({ silent: true });
     } catch (error) {

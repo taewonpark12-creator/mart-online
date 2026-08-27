@@ -29,6 +29,7 @@ export type ReceiptOrder = {
   createdAt: string;
   items: {
     quantity: number;
+    cancelledQuantity: number;
     unitPrice: number;
     productName: string;
     itemStatus?: "ACTIVE" | "CANCELLED" | string | null;
@@ -61,10 +62,20 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
   const dateStr = `${date.getFullYear()}.${p(date.getMonth() + 1)}.${p(date.getDate())} ${p(date.getHours())}:${p(date.getMinutes())}:${p(date.getSeconds())}`;
   const isPickup = order.fulfillmentType === "PICKUP";
   const sortedItems = sortOrderItemsByProductCategory(order.items);
-  const activeItems = sortedItems.filter((item) => item.itemStatus !== "CANCELLED");
-  const cancelledItems = sortedItems.filter((item) => item.itemStatus === "CANCELLED");
+  
+  // Calculate active quantities and separate fully cancelled items
+  // For fully cancelled items (itemStatus = CANCELLED), active quantity is always 0 regardless of cancelledQuantity
+  const activeItems = sortedItems
+    .map((item) => ({
+      ...item,
+      activeQuantity: item.itemStatus === "CANCELLED" ? 0 : (item.quantity ?? 0) - (item.cancelledQuantity ?? 0),
+    }))
+    .filter((item) => item.activeQuantity > 0);
+  
+  const fullyCancelledItems = sortedItems.filter((item) => item.itemStatus === "CANCELLED");
+  
   const activeTotalAmount = activeItems.reduce(
-    (sum, item) => sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0),
+    (sum, item) => sum + Number(item.unitPrice ?? 0) * item.activeQuantity,
     0,
   );
 
@@ -158,12 +169,12 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
             )}
             <tr>
               <td />
-              <td className="text-left whitespace-nowrap pb-2.5">{item.quantity}</td>
+              <td className="text-left whitespace-nowrap pb-2.5">{item.activeQuantity}</td>
               <td className="text-right whitespace-nowrap pb-2.5">
                 {formatPrice(item.unitPrice)}
               </td>
               <td className="text-right whitespace-nowrap pb-2.5">
-                {formatPrice(item.unitPrice * item.quantity)}
+                {formatPrice(item.unitPrice * item.activeQuantity)}
               </td>
             </tr>
           </tbody>
@@ -178,14 +189,27 @@ export function OrderReceipt({ order }: { order: ReceiptOrder }) {
         합계 {formatPrice(activeTotalAmount)}
       </p>
 
-      {cancelledItems.length > 0 && (
+      {fullyCancelledItems.length > 0 && (
         <div className="mt-2 border-t border-dashed border-black pt-2 text-[10px] leading-snug">
           <p className="font-bold">품절취소 상품</p>
-          {cancelledItems.map((item, index) => (
+          {fullyCancelledItems.map((item, index) => (
             <p key={`${item.productName}-${index}`}>
               - {orderItemName(item)} {item.quantity}개
             </p>
           ))}
+        </div>
+      )}
+
+      {sortedItems.some((item) => (item.cancelledQuantity ?? 0) > 0 && item.itemStatus !== "CANCELLED") && (
+        <div className="mt-2 border-t border-dashed border-black pt-2 text-[10px] leading-snug">
+          <p className="font-bold">부분 품절취소</p>
+          {sortedItems
+            .filter((item) => (item.cancelledQuantity ?? 0) > 0 && item.itemStatus !== "CANCELLED")
+            .map((item, index) => (
+              <p key={`${item.productName}-${index}`}>
+                - {orderItemName(item)} 취소 {item.cancelledQuantity}개 / 판매 {item.quantity - (item.cancelledQuantity ?? 0)}개
+              </p>
+            ))}
         </div>
       )}
 

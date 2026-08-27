@@ -8,10 +8,13 @@ type Params = { params: Promise<{ id: string; itemId: string }> };
 const ACTIVE_ITEM_STATUS = "ACTIVE";
 const CANCELLED_ITEM_STATUS = "CANCELLED";
 
-function activeItemTotal(items: Array<{ unitPrice: number; quantity: number; itemStatus?: string | null }>) {
+function activeItemTotal(items: Array<{ unitPrice: number; quantity: number; cancelledQuantity?: number; itemStatus?: string | null }>) {
   return items.reduce((sum, item) => {
+    // For fully cancelled items (itemStatus = CANCELLED), active quantity is always 0 regardless of cancelledQuantity value
+    // This ensures compatibility with legacy data where cancelledQuantity might be 0 for fully cancelled items
     if (item.itemStatus === CANCELLED_ITEM_STATUS) return sum;
-    return sum + Number(item.unitPrice ?? 0) * Number(item.quantity ?? 0);
+    const activeQuantity = Number(item.quantity ?? 0) - Number(item.cancelledQuantity ?? 0);
+    return sum + Number(item.unitPrice ?? 0) * activeQuantity;
   }, 0);
 }
 
@@ -35,6 +38,7 @@ function serializeOrder(order: {
     productId: string | null;
     productName: string;
     quantity: number;
+    cancelledQuantity: number;
     unitPrice: number;
     itemStatus?: string | null;
     product: { name: string; barcode: string | null; category: string | null } | null;
@@ -60,6 +64,7 @@ function serializeOrder(order: {
       productId: item.productId,
       productName: item.productName,
       quantity: Number(item.quantity ?? 0),
+      cancelledQuantity: Number(item.cancelledQuantity ?? 0),
       unitPrice: Number(item.unitPrice ?? 0),
       itemStatus: item.itemStatus === CANCELLED_ITEM_STATUS ? CANCELLED_ITEM_STATUS : ACTIVE_ITEM_STATUS,
       product: item.product
@@ -86,13 +91,21 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
 
+  const { id, itemId } = await params;
+  
   try {
-    const { id, itemId } = await params;
     const body = await req.json().catch(() => ({}));
     const nextStatus = body?.itemStatus === CANCELLED_ITEM_STATUS ? CANCELLED_ITEM_STATUS : "";
+    const cancelQuantity = body?.cancelledQuantity ? Number(body.cancelledQuantity) : 0;
 
     if (nextStatus !== CANCELLED_ITEM_STATUS) {
       return NextResponse.json({ error: "INVALID_ITEM_STATUS" }, { status: 400 });
+    }
+
+    // Validate cancellation quantity before transaction
+    // Must be a positive integer (reject 0, negative, decimals, NaN, non-numeric strings)
+    if (!Number.isInteger(cancelQuantity) || cancelQuantity <= 0) {
+      return NextResponse.json({ error: "INVALID_CANCEL_QUANTITY" }, { status: 400 });
     }
 
     const order = await prisma.$transaction(async (tx) => {
@@ -103,24 +116,40 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         },
         select: {
           id: true,
+          quantity: true,
+          cancelledQuantity: true,
           itemStatus: true,
         },
       });
 
       if (!item) return null;
 
-      if (item.itemStatus !== CANCELLED_ITEM_STATUS) {
-        await tx.orderItem.update({
-          where: { id: item.id },
-          data: { itemStatus: CANCELLED_ITEM_STATUS },
-        });
+      const currentCancelled = Number(item.cancelledQuantity ?? 0);
+      const totalQuantity = Number(item.quantity ?? 0);
+      const remainingActive = totalQuantity - currentCancelled;
+
+      if (cancelQuantity > remainingActive) {
+        throw new Error("CANCEL_QUANTITY_EXCEEDS_ACTIVE");
       }
+
+      // If cancelling all remaining items, set status to CANCELLED
+      const newCancelledQuantity = currentCancelled + cancelQuantity;
+      const isFullyCancelled = newCancelledQuantity >= totalQuantity;
+
+      await tx.orderItem.update({
+        where: { id: item.id },
+        data: {
+          cancelledQuantity: newCancelledQuantity,
+          itemStatus: isFullyCancelled ? CANCELLED_ITEM_STATUS : ACTIVE_ITEM_STATUS,
+        },
+      });
 
       const items = await tx.orderItem.findMany({
         where: { orderId: id },
         select: {
           unitPrice: true,
           quantity: true,
+          cancelledQuantity: true,
           itemStatus: true,
         },
       });
@@ -162,11 +191,22 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       orderId: id,
       orderItemId: itemId,
       nextItemStatus: CANCELLED_ITEM_STATUS,
+      cancelQuantity,
       elapsedMs: Date.now() - startedAt,
     });
 
     return NextResponse.json(serializeOrder(order));
   } catch (error) {
+    if (error instanceof Error && error.message === "CANCEL_QUANTITY_EXCEEDS_ACTIVE") {
+      logSafeOrderEvent("admin.order.item_status_change.failed", {
+        requestId,
+        orderId: id,
+        orderItemId: itemId,
+        reason: "CANCEL_QUANTITY_EXCEEDS_ACTIVE",
+        elapsedMs: Date.now() - startedAt,
+      }, "warn");
+      return NextResponse.json({ error: "CANCEL_QUANTITY_EXCEEDS_ACTIVE" }, { status: 400 });
+    }
     logSafeOrderError("admin.order.item_status_change.failed", {
       requestId,
       reason: "SERVER_ERROR",
