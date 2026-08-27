@@ -12591,6 +12591,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801007143545",
+    "name": "해찬들국산8가지양념쌈장500g",
+    "normalPrice": 6000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801007144641",
     "name": "백설)갈색설탕5kg",
     "normalPrice": 15500,
@@ -13617,6 +13626,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801007303871",
+    "name": "수라상약고추장500g/p",
+    "normalPrice": 8400,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801007310572",
     "name": "햇반210g",
     "normalPrice": 2000,
@@ -13971,6 +13989,15 @@
     "barcode": "8801007418025",
     "name": "해찬들)구수한집된장1kg",
     "normalPrice": 15800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801007418049",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -77697,6 +77724,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801392150272",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801392151071",
     "name": "백설)미풍100g",
     "normalPrice": 2400,
@@ -78174,9 +78210,36 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801392183454",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801392183478",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801392183874",
     "name": "햇반)루피니빈보리차500ml",
     "normalPrice": 1200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801392185380",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -78271,6 +78334,24 @@
     "discountRate": 16,
     "saleStartDate": "2019-09-30",
     "saleEndDate": "2026-12-31"
+  },
+  {
+    "barcode": "8801392199417",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801392199431",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "88014128",
