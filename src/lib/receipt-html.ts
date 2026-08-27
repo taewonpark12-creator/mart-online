@@ -201,7 +201,8 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
     .items-table thead .h-name { text-align:left; }
     .items-table thead .h-unit {
       text-align:right;
-      padding-right:30px;
+      position:relative;
+      left:-20px;
     }
 
     .items-table thead .h-amt {
@@ -230,7 +231,8 @@ export function buildReceiptPrintHtml(order: ReceiptOrder) {
     .item-values .v-unit {
       text-align:right;
       white-space:nowrap;
-      padding-right:30px;
+      position:relative;
+      left:-20px;
     }
 
     .item-values .v-amt {
