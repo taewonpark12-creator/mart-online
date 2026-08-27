@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const category = sanitizeInput(searchParams.get("category") ?? "");
-    const q = sanitizeInput(searchParams.get("q")?.trim() ?? "").slice(0, 100);
+    const q = (searchParams.get("q")?.trim() ?? "").slice(0, 100);
     const page = toNonNegativeInt(searchParams.get("page"), 1);
     const activeOnly = searchParams.get("activeOnly") !== "false";
     const recommendedOnly = searchParams.get("recommended") === "true";
