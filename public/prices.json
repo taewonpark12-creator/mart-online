@@ -119099,7 +119099,7 @@
   {
     "barcode": "9100000003696",
     "name": "청양고추(500g/1봉)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119557,8 +119557,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)행사",
-    "normalPrice": 1980,
+    "name": "대파(1단)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119584,8 +119584,8 @@
   },
   {
     "barcode": "9100000214306",
-    "name": "오이(5개/1봉)행사",
-    "normalPrice": 2980,
+    "name": "오이(5개/1봉)",
+    "normalPrice": 3480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119791,8 +119791,8 @@
   },
   {
     "barcode": "9100000215280",
-    "name": "햇무(1개)",
-    "normalPrice": 2980,
+    "name": "햇무(1개)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119882,7 +119882,7 @@
   {
     "barcode": "9100000216027",
     "name": "미니단호박(1박스)행사",
-    "normalPrice": 7980,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120052,8 +120052,8 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(1개)",
-    "normalPrice": 1980,
+    "name": "인큐호박(1개)행사",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120628,8 +120628,8 @@
   },
   {
     "barcode": "9100000218922",
-    "name": "양배추(3통/1박스)",
-    "normalPrice": 9800,
+    "name": "양배추(4통/1박스)",
+    "normalPrice": 11000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
