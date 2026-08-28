@@ -100089,6 +100089,15 @@
     "saleEndDate": "2026-09-01"
   },
   {
+    "barcode": "8809128358541",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809130261648",
     "name": "한빛)후지카좌석용세라믹히터",
     "normalPrice": 55000,
