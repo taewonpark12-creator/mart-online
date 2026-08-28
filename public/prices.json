@@ -32744,18 +32744,18 @@
   {
     "barcode": "8801047511588",
     "name": "동원)더킹크랩스오리지널70g",
-    "normalPrice": 1550,
+    "normalPrice": 1700,
     "eventPrice": 1300,
-    "discountRate": 16,
+    "discountRate": 24,
     "saleStartDate": "2023-08-01",
     "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047511595",
     "name": "동원)더킹랍스터맛70g",
-    "normalPrice": 1550,
+    "normalPrice": 1700,
     "eventPrice": 1300,
-    "discountRate": 16,
+    "discountRate": 24,
     "saleStartDate": "2023-08-01",
     "saleEndDate": "2026-12-31"
   },
@@ -101962,12 +101962,12 @@
   },
   {
     "barcode": "8809200449075",
-    "name": "봉지깨400g",
+    "name": "해동)볶음참깨400g",
     "normalPrice": 6900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 5500,
+    "discountRate": 20,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809200449181",
