@@ -70722,6 +70722,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801166249041",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801166250573",
     "name": "디펜드)라이너바이올렛향롱28입",
     "normalPrice": 5900,
