@@ -48423,10 +48423,10 @@
     "barcode": "8801068405590",
     "name": "삼립)탕종빅땅콩샌드160g",
     "normalPrice": 1900,
-    "eventPrice": 1000,
-    "discountRate": 47,
-    "saleStartDate": "2019-10-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801068405613",
@@ -100099,12 +100099,12 @@
   },
   {
     "barcode": "8809128358541",
-    "name": "신상품",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "name": "핑크소금파래돌김자반300g",
+    "normalPrice": 10000,
+    "eventPrice": 8500,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809130261648",
