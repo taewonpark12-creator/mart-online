@@ -54558,6 +54558,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801101891779",
+    "name": "피죤)고농축써니가든1L",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801101891786",
     "name": "피죤)초고농축오션후레쉬1L",
     "normalPrice": 7500,
@@ -91775,7 +91784,7 @@
   {
     "barcode": "8806325601074",
     "name": "비트2.7kg",
-    "normalPrice": 9200,
+    "normalPrice": 9900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -92305,8 +92314,8 @@
   },
   {
     "barcode": "8806325625162",
-    "name": "비트액체화이트일반2L",
-    "normalPrice": 9000,
+    "name": "비트)액체화이트일반2L",
+    "normalPrice": 9900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -92314,8 +92323,8 @@
   },
   {
     "barcode": "8806325625179",
-    "name": "비트액체화이트드럼2L",
-    "normalPrice": 9000,
+    "name": "비트)액체화이트드럼2L",
+    "normalPrice": 9900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -116274,6 +116283,15 @@
     "barcode": "8809878062170",
     "name": "프릴)베이킹소다베리700ml",
     "normalPrice": 7500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809878064082",
+    "name": "퍼실)파워젤딥클린2L",
+    "normalPrice": 20000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
