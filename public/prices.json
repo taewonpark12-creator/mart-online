@@ -42626,11 +42626,11 @@
   {
     "barcode": "8801052752631",
     "name": "청정원)닭볶음탕양념270g",
-    "normalPrice": 3800,
-    "eventPrice": 3300,
-    "discountRate": 13,
-    "saleStartDate": "2019-10-11",
-    "saleEndDate": "2026-12-31"
+    "normalPrice": 4000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801052753287",
