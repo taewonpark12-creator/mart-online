@@ -54559,12 +54559,12 @@
   },
   {
     "barcode": "8801101891779",
-    "name": "피죤)고농축써니가든1L",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "name": "피죤)초고농축써니가든1L",
+    "normalPrice": 7500,
+    "eventPrice": 5980,
+    "discountRate": 20,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801101891786",
@@ -77707,12 +77707,12 @@
   },
   {
     "barcode": "8801392148644",
-    "name": "CJ핫도그400g",
-    "normalPrice": 0,
+    "name": "CJ오리지널핫도그400g",
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
-    "saleStartDate": "2019-09-30",
-    "saleEndDate": "2026-12-31"
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392149870",
