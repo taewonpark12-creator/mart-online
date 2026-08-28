@@ -119810,7 +119810,7 @@
   {
     "barcode": "9100000214856",
     "name": "홍청양고추(10kg/1박스)",
-    "normalPrice": 39800,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120277,8 +120277,8 @@
   },
   {
     "barcode": "9100000217338",
-    "name": "대추방울토마토(1팩)행사",
-    "normalPrice": 3980,
+    "name": "대추방울토마토(1팩)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
