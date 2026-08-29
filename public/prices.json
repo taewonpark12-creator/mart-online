@@ -120546,6 +120546,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218625",
+    "name": "<특가>코카콜라215ml*6입",
+    "normalPrice": 2980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218663",
     "name": "황진이배(13~14과)1박스",
     "normalPrice": 45000,
@@ -120648,6 +120657,15 @@
     "barcode": "9100000218809",
     "name": "파프리카(6개/1봉)",
     "normalPrice": 99990,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218816",
+    "name": "<특가>레쓰비마일드175ml*6입",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
