@@ -44174,11 +44174,11 @@
   {
     "barcode": "8801056290061",
     "name": "레쓰비마일드175ml*6입",
-    "normalPrice": 3000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 3500,
+    "eventPrice": 3000,
+    "discountRate": 14,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801056297015",
