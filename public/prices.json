@@ -33401,20 +33401,20 @@
   {
     "barcode": "8801047865094",
     "name": "동원)살코기참치90g*10입",
-    "normalPrice": 24800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 29000,
+    "eventPrice": 24800,
+    "discountRate": 14,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047865148",
     "name": "동원)고추참치90g*8입",
-    "normalPrice": 19800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 23200,
+    "eventPrice": 19800,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047865162",
@@ -54164,7 +54164,7 @@
   {
     "barcode": "8801101156960",
     "name": "피죤핑크20L",
-    "normalPrice": 29000,
+    "normalPrice": 29800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
