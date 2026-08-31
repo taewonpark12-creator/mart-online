@@ -26921,9 +26921,9 @@
   {
     "barcode": "8801045233444",
     "name": "오뚜기)살코기참치135g",
-    "normalPrice": 2500,
-    "eventPrice": 2200,
-    "discountRate": 12,
+    "normalPrice": 2900,
+    "eventPrice": 2300,
+    "discountRate": 21,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -28559,9 +28559,9 @@
   {
     "barcode": "8801045501895",
     "name": "오뚜기)마일드참치135g",
-    "normalPrice": 2500,
-    "eventPrice": 2200,
-    "discountRate": 12,
+    "normalPrice": 2900,
+    "eventPrice": 2300,
+    "discountRate": 21,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
   },
@@ -99529,6 +99529,15 @@
     "discountRate": 45,
     "saleStartDate": "2019-09-20",
     "saleEndDate": "2026-12-31"
+  },
+  {
+    "barcode": "8809100351010",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809102327525",
