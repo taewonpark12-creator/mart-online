@@ -25283,7 +25283,7 @@
   {
     "barcode": "8801043068321",
     "name": "농심)먹태깡60g*16입",
-    "normalPrice": 23500,
+    "normalPrice": 24500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -74217,6 +74217,15 @@
     "barcode": "8801253121366",
     "name": "일가집)치자단무지350g",
     "normalPrice": 5200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801253121458",
+    "name": "일)김밥치자단무지240g",
+    "normalPrice": 2400,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
