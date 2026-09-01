@@ -118541,7 +118541,7 @@
   {
     "barcode": "9100000000183",
     "name": "황도복숭아1팩",
-    "normalPrice": 8900,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120519,6 +120519,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218304",
+    "name": "파프리카1봉",
+    "normalPrice": 2980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218328",
     "name": "깻잎(1봉)",
     "normalPrice": 1500,
@@ -120546,6 +120555,33 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218489",
+    "name": "양배추반통",
+    "normalPrice": 2000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218496",
+    "name": "깐마늘1봉",
+    "normalPrice": 1980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218533",
+    "name": "알배기1통",
+    "normalPrice": 3980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218564",
     "name": "오이지오이(50개/1포)행사",
     "normalPrice": 999990,
@@ -120558,6 +120594,15 @@
     "barcode": "9100000218588",
     "name": "샤인머스켓(2kg/1박스)행사",
     "normalPrice": 14800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218595",
+    "name": "브로콜리(수입산)1개",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
