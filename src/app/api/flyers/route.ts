@@ -24,7 +24,12 @@ export async function GET() {
       },
     });
 
-    return jsonNoStore(flyers);
+    const response = NextResponse.json(flyers);
+    response.headers.set(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=600"
+    );
+    return response;
   } catch (error) {
     console.error("[GET /api/flyers]", error);
     return jsonNoStore({ error: "Failed to load flyers." }, { status: 500 });

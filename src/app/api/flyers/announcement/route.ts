@@ -42,7 +42,14 @@ export async function GET() {
       },
     });
 
-    return jsonNoStore({ announcement: serializeAnnouncement(announcement) });
+    const response = NextResponse.json({
+      announcement: serializeAnnouncement(announcement),
+    });
+    response.headers.set(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=600"
+    );
+    return response;
   } catch (error) {
     console.error("[GET /api/flyers/announcement]", error);
     return jsonNoStore({ error: "Failed to load flyer announcement." }, { status: 500 });

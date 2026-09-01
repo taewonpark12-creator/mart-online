@@ -35,8 +35,8 @@ export default function FlyersPage() {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch("/api/flyers", { cache: "no-store" }).then((res) => res.json()),
-      fetch("/api/flyers/announcement", { cache: "no-store" }).then((res) => res.json()),
+      fetch("/api/flyers").then((res) => res.json()),
+      fetch("/api/flyers/announcement").then((res) => res.json()),
     ])
       .then(([flyerData, announcementData]) => {
         setFlyers(Array.isArray(flyerData) ? flyerData : []);
