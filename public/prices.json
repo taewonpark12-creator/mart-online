@@ -118847,7 +118847,7 @@
   {
     "barcode": "9100000001944",
     "name": "햇무(1박스)",
-    "normalPrice": 14800,
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119728,7 +119728,7 @@
   },
   {
     "barcode": "9100000214306",
-    "name": "오이(4개/1봉)",
+    "name": "오이(4개/5개/1봉)",
     "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
@@ -119855,7 +119855,7 @@
   {
     "barcode": "9100000214801",
     "name": "양파(15kg/1망)",
-    "normalPrice": 22000,
+    "normalPrice": 22800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120152,7 +120152,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 11000,
+    "normalPrice": 13000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
