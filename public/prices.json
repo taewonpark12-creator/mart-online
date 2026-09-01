@@ -118855,8 +118855,8 @@
   },
   {
     "barcode": "9100000001951",
-    "name": "고구마순1단",
-    "normalPrice": 2480,
+    "name": "찰옥수수1팩",
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120573,9 +120573,27 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "9100000218618",
+    "name": "아스파라거스1팩",
+    "normalPrice": 3980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "9100000218625",
     "name": "<특가>코카콜라215ml*6입",
     "normalPrice": 2980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "9100000218632",
+    "name": "파인애플1통",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
