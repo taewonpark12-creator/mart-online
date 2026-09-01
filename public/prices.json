@@ -30727,7 +30727,7 @@
   },
   {
     "barcode": "8801046351468",
-    "name": "랩신)홈백신욕실용600ml",
+    "name": "홈백신)욕실용세정제600ml",
     "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
@@ -30736,7 +30736,7 @@
   },
   {
     "barcode": "8801046351475",
-    "name": "랩신)홈백신주방용600ml",
+    "name": "홈백신)주방용세정제600ml",
     "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
@@ -31375,7 +31375,7 @@
   },
   {
     "barcode": "8801046868713",
-    "name": "홈백신세제하나로750ml",
+    "name": "홈백신)락스세제하나로750ml",
     "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
@@ -78724,8 +78724,8 @@
   },
   {
     "barcode": "8801441012223",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "우유비누90g",
+    "normalPrice": 1500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
