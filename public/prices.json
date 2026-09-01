@@ -9849,10 +9849,10 @@
     "barcode": "8800335705784",
     "name": "퐁퐁)마일드레몬1L",
     "normalPrice": 3000,
-    "eventPrice": 1980,
-    "discountRate": 34,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 2480,
+    "discountRate": 17,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8800336690201",
@@ -15042,10 +15042,10 @@
     "barcode": "8801007769745",
     "name": "백설)고소함가득참기름450ml",
     "normalPrice": 8500,
-    "eventPrice": 6980,
-    "discountRate": 18,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": 5980,
+    "discountRate": 30,
+    "saleStartDate": "2026-08-18",
+    "saleEndDate": "2026-09-08"
   },
   {
     "barcode": "8801007769868",
@@ -28047,10 +28047,10 @@
     "barcode": "8801045440040",
     "name": "오뚜기)옛날참기름450ml",
     "normalPrice": 8500,
-    "eventPrice": 5980,
-    "discountRate": 30,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 7480,
+    "discountRate": 12,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801045440101",
@@ -35967,10 +35967,10 @@
     "barcode": "8801051206654",
     "name": "한입100%베이킹소다2kg",
     "normalPrice": 9500,
-    "eventPrice": 6980,
-    "discountRate": 27,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 7980,
+    "discountRate": 16,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801051207989",
@@ -51699,10 +51699,10 @@
     "barcode": "8801075015409",
     "name": "사조)마일드참치200g",
     "normalPrice": 3500,
-    "eventPrice": 2750,
-    "discountRate": 21,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 2980,
+    "discountRate": 15,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801075015614",
@@ -51780,10 +51780,10 @@
     "barcode": "8801075017694",
     "name": "사조)살코기참치200g",
     "normalPrice": 3500,
-    "eventPrice": 2750,
-    "discountRate": 21,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 2980,
+    "discountRate": 15,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801077285701",
@@ -76215,10 +76215,10 @@
     "barcode": "8801392011887",
     "name": "비비고)왕교자315g*2입",
     "normalPrice": 7480,
-    "eventPrice": 5980,
-    "discountRate": 20,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392011962",
@@ -108498,10 +108498,10 @@
     "barcode": "8809461571539",
     "name": "들깨삼계탕800g",
     "normalPrice": 10000,
-    "eventPrice": 5980,
-    "discountRate": 40,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 6980,
+    "discountRate": 30,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809463390008",
@@ -116706,19 +116706,19 @@
     "barcode": "8809925196087",
     "name": "해피바스)생귤비타민바디워시750g",
     "normalPrice": 6500,
-    "eventPrice": 4980,
-    "discountRate": 23,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 5500,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809925196094",
     "name": "해피바스)유채꽃비타민바디워시750g",
     "normalPrice": 6500,
-    "eventPrice": 4980,
-    "discountRate": 23,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 5500,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809925196131",
@@ -117696,19 +117696,19 @@
     "barcode": "8809971320009",
     "name": "립톤)아이스티복숭아770g",
     "normalPrice": 11900,
-    "eventPrice": 9900,
-    "discountRate": 17,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809971320016",
     "name": "립톤)아이스티레몬770g",
     "normalPrice": 11900,
-    "eventPrice": 9900,
-    "discountRate": 17,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809971460026",
