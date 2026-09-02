@@ -59760,6 +59760,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801114148181",
+    "name": "풀무원)모짜렐라치즈볼360g",
+    "normalPrice": 9000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114149089",
     "name": "풀무원)넓은두부면100g",
     "normalPrice": 3300,
@@ -60446,7 +60455,7 @@
   {
     "barcode": "8801114187708",
     "name": "풀무원)본격쌀떡볶이2인",
-    "normalPrice": 7500,
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -60455,7 +60464,7 @@
   {
     "barcode": "8801114187715",
     "name": "풀무원)본격밀떡볶이2인",
-    "normalPrice": 7500,
+    "normalPrice": 5800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
