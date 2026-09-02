@@ -9522,27 +9522,9 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8712000018948",
-    "name": "하이네켄500ml*4입",
-    "normalPrice": 12900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8712000018955",
     "name": "하이네켄500ml*24",
     "normalPrice": 77000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
-    "barcode": "8712000900045",
-    "name": "하이네켄500ml",
-    "normalPrice": 3300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
