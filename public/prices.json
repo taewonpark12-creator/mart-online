@@ -115308,6 +115308,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8809788012470",
+    "name": "산리오캔디자판",
+    "normalPrice": 5000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809788300041",
     "name": "황금돼지장갑",
     "normalPrice": 2250,
@@ -118479,6 +118488,15 @@
     "barcode": "8990800003597",
     "name": "후르트텔라요구르트590g",
     "normalPrice": 12000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8996001321188",
+    "name": "코피코)캔디블리스터32g",
+    "normalPrice": 1200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
