@@ -25,7 +25,7 @@ import type { ReceiptOrder } from "@/lib/receipt-html";
 import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort";
 
 // Keep order-list fetching separate from notification checks and sound repeat timers.
-const ORDER_LIST_AUTO_REFRESH_MS = 5 * 60 * 1000;
+const ORDER_LIST_AUTO_REFRESH_MS = 10 * 60 * 1000;
 const ORDER_NOTIFICATION_POLL_MS = 60000;
 const TODAY_SUMMARY_REFRESH_MS = 3600000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
@@ -563,7 +563,7 @@ export default function OrdersPage() {
     type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom";
     startDate: string | null;
     endDate: string | null;
-  }>({ type: "all", startDate: null, endDate: null });
+  }>({ type: "today", startDate: getKoreaTodayString(), endDate: getKoreaTodayString() });
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isPageHidden, setIsPageHidden] = useState(false);
   const [soundBlocked, setSoundBlocked] = useState(false);
@@ -584,6 +584,8 @@ export default function OrdersPage() {
   const pendingPollInitializedRef = useRef(false);
   const lastResumeRefreshAtRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const isFetchingOrdersRef = useRef(false);
+  const pendingRefreshOrdersRef = useRef(false);
 
   const handleDateFilterChange = (type: "all" | "today" | "yesterday" | "last7days" | "thismonth" | "custom", startDate?: string, endDate?: string) => {
     let newStartDate: string | null = null;
@@ -616,7 +618,10 @@ export default function OrdersPage() {
         break;
     }
 
-    setDateFilter({ type, startDate: newStartDate, endDate: newEndDate });
+    const newDateFilter = { type, startDate: newStartDate, endDate: newEndDate };
+    setDateFilter(newDateFilter);
+    // 필터 변경 시 즉시 갱신 (overrideDateFilter로 React state 비동기 업데이트 문제 해결)
+    void fetchOrders({ force: true, overrideDateFilter: newDateFilter });
   };
 
   const selectedOrder = selectedOrderId
@@ -675,17 +680,52 @@ export default function OrdersPage() {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-  const fetchOrders = useCallback(async ({ silent = false }: { silent?: boolean } = {}) => {
+  const fetchOrders = useCallback(async ({ silent = false, fromPendingRefresh = false, force = false, overrideFilter, overrideDateFilter }: { silent?: boolean; fromPendingRefresh?: boolean; force?: boolean; overrideFilter?: OrderStatus | ""; overrideDateFilter?: { type: string; startDate: string | null; endDate: string | null } } = {}) => {
+    // 중복 요청 방지 (force 옵션 또는 fromPendingRefresh 옵션이 있는 경우 처리)
+    if (isFetchingOrdersRef.current) {
+      if (force) {
+        // 사용자 명시적 동작(필터 변경 등)인 경우 기존 요청 중단 후 새 요청
+        console.log("[admin/orders] fetchOrders forced - cancelling previous request");
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+        isFetchingOrdersRef.current = false;
+      } else if (fromPendingRefresh) {
+        // 신규 주문 감지로 인한 요청이면 pending 플래그 설정
+        pendingRefreshOrdersRef.current = true;
+        console.log("[admin/orders] fetchOrders skipped - already fetching, pending refresh scheduled");
+        return;
+      } else {
+        console.log("[admin/orders] fetchOrders skipped - already fetching");
+        return;
+      }
+    }
+
     if (!silent) {
       setLoading(true);
     }
+
+    isFetchingOrdersRef.current = true;
+
+    // Create new AbortController for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
       const params = new URLSearchParams();
-      if (filter) params.append("status", filter);
-      if (dateFilter.startDate) params.append("startDate", dateFilter.startDate);
-      if (dateFilter.endDate) params.append("endDate", dateFilter.endDate);
+      // overrideFilter가 있으면 사용, 없으면 현재 filter 사용
+      const currentFilter = overrideFilter !== undefined ? overrideFilter : filter;
+      if (currentFilter) params.append("status", currentFilter);
+      // overrideDateFilter가 있으면 사용, 없으면 현재 dateFilter 사용
+      const currentStartDate = overrideDateFilter?.startDate ?? dateFilter.startDate;
+      const currentEndDate = overrideDateFilter?.endDate ?? dateFilter.endDate;
+      if (currentStartDate) params.append("startDate", currentStartDate);
+      if (currentEndDate) params.append("endDate", currentEndDate);
       const queryString = params.toString();
-      const res = await fetch(`/api/admin/orders${queryString ? `?${queryString}` : ""}`, { cache: "no-store" });
+      const res = await fetch(`/api/admin/orders${queryString ? `?${queryString}` : ""}`, {
+        cache: "no-store",
+        signal: abortController.signal,
+      });
 
       if (!res.ok) {
         if (res.status === 401) {
@@ -707,10 +747,31 @@ export default function OrdersPage() {
         return data[0]?.id ?? null;
       });
     } catch (error) {
+      // AbortError는 정상적인 취소이므로 에러로 처리하지 않음
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log("[admin/orders] fetchOrders aborted");
+        return;
+      }
       console.error("[admin/orders] load failed", error);
     } finally {
       if (!silent) {
         setLoading(false);
+      }
+
+      // Check if this is still the current request before cleanup
+      const isCurrentRequest = abortControllerRef.current === abortController;
+
+      // Clean up abort controller if it's still the current one
+      if (isCurrentRequest) {
+        abortControllerRef.current = null;
+        isFetchingOrdersRef.current = false;
+      }
+
+      // pending refresh가 예약되어 있으면 추가 갱신 실행 (현재 요청 소유권이 있는 경우만)
+      if (pendingRefreshOrdersRef.current && isCurrentRequest) {
+        pendingRefreshOrdersRef.current = false;
+        console.log("[admin/orders] executing pending refresh");
+        void fetchOrders({ silent: true });
       }
     }
   }, [dateFilter.endDate, dateFilter.startDate, filter, router]);
@@ -893,6 +954,8 @@ export default function OrdersPage() {
 
       if (hasNewPending) {
         setShowNewOrderAlert(true);
+        // 신규 주문 감지 시 주문 목록 즉시 갱신
+        void fetchOrders({ silent: true, fromPendingRefresh: true });
       }
 
       if (nextHasPendingOrders && notificationEnabledRef.current) {
@@ -903,7 +966,7 @@ export default function OrdersPage() {
     } catch (error) {
       console.error("[admin/orders] pending orders poll failed", error);
     }
-  }, [router, startNotificationRepeat, stopNotificationRepeat]);
+  }, [router, startNotificationRepeat, stopNotificationRepeat, fetchOrders]);
 
   const fetchTodaySummary = useCallback(async () => {
     try {
@@ -979,6 +1042,11 @@ export default function OrdersPage() {
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
+      }
+      // Abort any in-flight fetchOrders requests on unmount
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
       }
     };
   }, [stopNotificationRepeat]);
@@ -1063,7 +1131,7 @@ export default function OrdersPage() {
         return nextOrders;
       });
       fetchTodaySummary();
-      void fetchOrders({ silent: true });
+      void fetchOrders({ silent: true, force: true });
       void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] status update failed", error);
@@ -1098,7 +1166,7 @@ export default function OrdersPage() {
         return nextOrders;
       });
       fetchTodaySummary();
-      void fetchOrders({ silent: true });
+      void fetchOrders({ silent: true, force: true });
       void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] cancel failed", error);
@@ -1453,7 +1521,10 @@ export default function OrdersPage() {
         <div className="flex flex-col gap-3 mb-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex gap-2 flex-wrap">
             <button
-              onClick={() => setFilter("")}
+              onClick={() => {
+                setFilter("");
+                void fetchOrders({ force: true, overrideFilter: "" });
+              }}
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
                 !filter ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
               }`}
@@ -1463,7 +1534,10 @@ export default function OrdersPage() {
             {(["PENDING", "APPROVED", "DELIVERED", "CANCELLED"] as OrderStatus[]).map((status) => (
               <button
                 key={status}
-                onClick={() => setFilter(status)}
+                onClick={() => {
+                  setFilter(status);
+                  void fetchOrders({ force: true, overrideFilter: status });
+                }}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
                   filter === status ? "bg-green-600 text-white shadow-md" : "bg-white border text-gray-600 hover:bg-gray-100"
                 }`}
