@@ -27840,10 +27840,10 @@
     "barcode": "8801045375021",
     "name": "오뚜기)옛날자른당면300g",
     "normalPrice": 5300,
-    "eventPrice": 4980,
-    "discountRate": 6,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801045375038",
@@ -28352,7 +28352,7 @@
   {
     "barcode": "8801045480107",
     "name": "오뚜기)옛날당면300g",
-    "normalPrice": 4950,
+    "normalPrice": 5300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -28362,10 +28362,10 @@
     "barcode": "8801045480206",
     "name": "오뚜기)옛날당면500g",
     "normalPrice": 7950,
-    "eventPrice": 7480,
-    "discountRate": 6,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801045480244",
