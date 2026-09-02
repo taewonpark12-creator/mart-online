@@ -49654,8 +49654,8 @@
   },
   {
     "barcode": "8801068938814",
-    "name": "신상품",
-    "normalPrice": 0,
+    "name": "삼립)프로틴에그식빵400g",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -103989,8 +103989,8 @@
     "barcode": "8809275382109",
     "name": "광천김)유기농전장20g",
     "normalPrice": 2000,
-    "eventPrice": 990,
-    "discountRate": 51,
+    "eventPrice": 1000,
+    "discountRate": 50,
     "saleStartDate": "2026-08-18",
     "saleEndDate": "2026-09-08"
   },
