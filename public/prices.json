@@ -63144,6 +63144,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801116062683",
+    "name": "레종블루",
+    "normalPrice": 4500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801116062690",
+    "name": "레종블루 1보루",
+    "normalPrice": 45000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801116062713",
     "name": "레종블랙1보루",
     "normalPrice": 45000,
