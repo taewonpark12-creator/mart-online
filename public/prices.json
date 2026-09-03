@@ -24213,10 +24213,10 @@
     "barcode": "8801043032148",
     "name": "농심)짜왕4입",
     "normalPrice": 6200,
-    "eventPrice": 3980,
-    "discountRate": 36,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801043032155",
@@ -32240,7 +32240,7 @@
   {
     "barcode": "8801047228929",
     "name": "양반)들기름김세트",
-    "normalPrice": 12500,
+    "normalPrice": 12900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -32249,7 +32249,7 @@
   {
     "barcode": "8801047228936",
     "name": "양반)참기름김세트",
-    "normalPrice": 12500,
+    "normalPrice": 12900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -33510,6 +33510,15 @@
     "barcode": "8801047866275",
     "name": "동원)프리미엄62호",
     "normalPrice": 36000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801047867203",
+    "name": "동원S11호",
+    "normalPrice": 35000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
