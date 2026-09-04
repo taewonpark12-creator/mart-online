@@ -31872,19 +31872,19 @@
     "barcode": "8801047141938",
     "name": "동원)번데기130g",
     "normalPrice": 1500,
-    "eventPrice": 1250,
-    "discountRate": 17,
-    "saleStartDate": "2023-08-01",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801047146285",
     "name": "동원)자연산골뱅이300g",
     "normalPrice": 8900,
-    "eventPrice": 7500,
-    "discountRate": 16,
-    "saleStartDate": "2023-08-01",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801047154167",
