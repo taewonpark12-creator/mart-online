@@ -60507,6 +60507,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801114187364",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801114187371",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114187708",
     "name": "풀무원)본격쌀떡볶이2인",
     "normalPrice": 5800,
@@ -86160,6 +86178,15 @@
     "barcode": "8803560011361",
     "name": "송학)구멍난쌀떡볶이300g",
     "normalPrice": 2200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8803560011835",
+    "name": "송학)밀떡볶이떡400g",
+    "normalPrice": 2600,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
