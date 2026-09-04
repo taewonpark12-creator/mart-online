@@ -56772,6 +56772,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801104954556",
+    "name": "요맘때초코크러쉬플레인",
+    "normalPrice": 1000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801105000535",
     "name": "해태)갈아만든배238ml",
     "normalPrice": 1000,
@@ -60517,7 +60526,7 @@
   },
   {
     "barcode": "8801114187371",
-    "name": "풀무원)콩나물국얼큰한맛200g",
+    "name": "풀무원)콩나물국얼큰한맛230g",
     "normalPrice": 2200,
     "eventPrice": null,
     "discountRate": null,
