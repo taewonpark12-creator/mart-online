@@ -27183,19 +27183,19 @@
     "barcode": "8801045295206",
     "name": "오뚜기)3분햄버그스테이크140g",
     "normalPrice": 3000,
-    "eventPrice": 2480,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801045296203",
     "name": "오뚜기)3분미트볼150g",
     "normalPrice": 3000,
-    "eventPrice": 2480,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801045299402",
