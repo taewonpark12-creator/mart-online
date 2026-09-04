@@ -63477,6 +63477,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801117002688",
+    "name": "오리온)포카칩황치즈83g",
+    "normalPrice": 2900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801117034801",
     "name": "오리온)아이셔4번들",
     "normalPrice": 3900,
@@ -120773,7 +120782,7 @@
   {
     "barcode": "9100000218328",
     "name": "깻잎(1봉)",
-    "normalPrice": 1500,
+    "normalPrice": 2000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
