@@ -119819,7 +119819,7 @@
   {
     "barcode": "9100000113517",
     "name": "딱딱이복숭아(5개/1팩)행사",
-    "normalPrice": 7980,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120530,7 +120530,7 @@
   {
     "barcode": "9100000217017",
     "name": "송산포도(3kg/1박스)",
-    "normalPrice": 24800,
+    "normalPrice": 29800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121123,8 +121123,8 @@
   },
   {
     "barcode": "9100000218922",
-    "name": "양배추(3통/1망)",
-    "normalPrice": 7980,
+    "name": "양배추(3통/1망)행사",
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
