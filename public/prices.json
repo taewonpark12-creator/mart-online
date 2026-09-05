@@ -48675,10 +48675,10 @@
     "barcode": "8801068409215",
     "name": "삼립)옥수수이야기110g",
     "normalPrice": 1900,
-    "eventPrice": 1000,
-    "discountRate": 47,
-    "saleStartDate": "2019-10-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801068409222",
@@ -94962,8 +94962,8 @@
     "barcode": "8809003991443",
     "name": "명품)광천김16입",
     "normalPrice": 6000,
-    "eventPrice": 3980,
-    "discountRate": 34,
+    "eventPrice": 3300,
+    "discountRate": 45,
     "saleStartDate": "2026-08-18",
     "saleEndDate": "2026-09-08"
   },
@@ -106815,6 +106815,15 @@
     "barcode": "8809385940015",
     "name": "참프레)백숙용통닭6호",
     "normalPrice": 6900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809385940589",
+    "name": "참프레토종닭1.8kg",
+    "normalPrice": 23000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
