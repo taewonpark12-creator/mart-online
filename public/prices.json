@@ -119989,8 +119989,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)행사",
-    "normalPrice": 2980,
+    "name": "표고버섯(500g/1봉)",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119998,7 +119998,7 @@
   },
   {
     "barcode": "9100000214306",
-    "name": "오이(4개/5개/1봉)행사",
+    "name": "오이(4개/1봉)",
     "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
