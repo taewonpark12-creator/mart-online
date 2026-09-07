@@ -23322,10 +23322,10 @@
     "barcode": "8801043015264",
     "name": "농심)올리브짜파게티5입",
     "normalPrice": 6500,
-    "eventPrice": 4980,
-    "discountRate": 23,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801043015271",
@@ -23448,10 +23448,10 @@
     "barcode": "8801043015684",
     "name": "농심)육개장사발면소컵6입",
     "normalPrice": 7000,
-    "eventPrice": 5500,
-    "discountRate": 21,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801043015691",
@@ -23853,10 +23853,10 @@
     "barcode": "8801043021128",
     "name": "농심)김치사발면소컵6입",
     "normalPrice": 7000,
-    "eventPrice": 5500,
-    "discountRate": 21,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801043021913",
@@ -25023,10 +25023,10 @@
     "barcode": "8801043060370",
     "name": "농심)배홍동비빔면4입",
     "normalPrice": 4700,
-    "eventPrice": 2980,
-    "discountRate": 37,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": 3980,
+    "discountRate": 15,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801043062435",
