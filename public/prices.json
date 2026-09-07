@@ -67250,7 +67250,7 @@
   {
     "barcode": "8801121768136",
     "name": "매일)소화가잘되는우유190ml*6입",
-    "normalPrice": 7000,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -93639,6 +93639,15 @@
     "barcode": "8807603000015",
     "name": "임금님표이천쌀4kg",
     "normalPrice": 29800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8807603004051",
+    "name": "임금님표이천쌀(햅쌀)4kg",
+    "normalPrice": 33000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
