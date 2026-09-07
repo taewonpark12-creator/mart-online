@@ -100809,6 +100809,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809153041067",
+    "name": "냉동아보카도500g",
+    "normalPrice": 9000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809153049384",
     "name": "냉동블루베리1kg@",
     "normalPrice": 11900,
