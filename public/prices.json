@@ -11774,7 +11774,7 @@
   {
     "barcode": "8801007038346",
     "name": "백설)정말맛있는소시지160g",
-    "normalPrice": 1600,
+    "normalPrice": 2000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -12369,19 +12369,19 @@
     "barcode": "8801007112480",
     "name": "CJ)찌개두부300g",
     "normalPrice": 1500,
-    "eventPrice": 1150,
-    "discountRate": 23,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007112497",
     "name": "CJ)부침두부300g",
     "normalPrice": 1500,
-    "eventPrice": 1150,
-    "discountRate": 23,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801007117126",
@@ -13736,7 +13736,7 @@
   {
     "barcode": "8801007339641",
     "name": "CJ)맥스봉치즈13입",
-    "normalPrice": 6800,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -67241,7 +67241,7 @@
   {
     "barcode": "8801121768129",
     "name": "매일)소화가잘되는우유190ml",
-    "normalPrice": 1200,
+    "normalPrice": 1300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -76925,7 +76925,7 @@
   {
     "barcode": "8801392068478",
     "name": "CJ)맥스봉오리지널13입",
-    "normalPrice": 6800,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
