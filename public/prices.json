@@ -119269,8 +119269,8 @@
   },
   {
     "barcode": "9100000002095",
-    "name": "수박(5kg/1통)",
-    "normalPrice": 999990,
+    "name": "수박(1통)",
+    "normalPrice": 14800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119386,8 +119386,8 @@
   },
   {
     "barcode": "9100000002958",
-    "name": "머루포도(3kg/1박스)행사",
-    "normalPrice": 14800,
+    "name": "머루포도(3kg/1박스)",
+    "normalPrice": 17800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120008,7 +120008,7 @@
   {
     "barcode": "9100000214023",
     "name": "애플수박(3통/1봉)행사",
-    "normalPrice": 5980,
+    "normalPrice": 9999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121150,8 +121150,8 @@
   },
   {
     "barcode": "9100000218830",
-    "name": "대부도포도(3kg/1박스)",
-    "normalPrice": 999990,
+    "name": "상주포도(3kg/1박스)행사",
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
