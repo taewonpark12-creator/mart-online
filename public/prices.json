@@ -53940,10 +53940,10 @@
     "barcode": "8801097150034",
     "name": "포카리스웨트1.5L",
     "normalPrice": 3200,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 7,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801097150096",
