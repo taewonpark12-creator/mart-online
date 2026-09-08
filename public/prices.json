@@ -97859,7 +97859,7 @@
   {
     "barcode": "8809058625270",
     "name": "해맑음)통쌀산자200g",
-    "normalPrice": 4300,
+    "normalPrice": 4800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -102152,7 +102152,7 @@
   {
     "barcode": "8809200444070",
     "name": "좋은세상)황태포(특대)",
-    "normalPrice": 8000,
+    "normalPrice": 8500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -102170,7 +102170,7 @@
   {
     "barcode": "8809200445046",
     "name": "좋은세상)왕약과450g",
-    "normalPrice": 6200,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -102179,7 +102179,7 @@
   {
     "barcode": "8809200445084",
     "name": "좋은세상)호박약과350g",
-    "normalPrice": 6200,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -103348,8 +103348,8 @@
   },
   {
     "barcode": "8809245361103",
-    "name": "해맑음)통강정210g",
-    "normalPrice": 8600,
+    "name": "해맑음)통강정200g",
+    "normalPrice": 9500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -103368,10 +103368,10 @@
     "barcode": "8809245363497",
     "name": "해맑음)찹쌀한과300g",
     "normalPrice": 6500,
-    "eventPrice": 4980,
-    "discountRate": 23,
-    "saleStartDate": "2026-08-18",
-    "saleEndDate": "2026-09-08"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809245418050",
@@ -112556,7 +112556,7 @@
   {
     "barcode": "8809622432327",
     "name": "좋은세상)황태포(대)",
-    "normalPrice": 6900,
+    "normalPrice": 7200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
