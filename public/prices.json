@@ -105032,11 +105032,11 @@
   {
     "barcode": "8809294010809",
     "name": "펭귄)번데기130g",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "normalPrice": 1500,
+    "eventPrice": 1250,
+    "discountRate": 17,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8809294010816",
