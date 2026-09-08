@@ -378,6 +378,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "18801037063223",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "18801045522255",
     "name": "오뚜기)진라면순한맛5입/1박스",
     "normalPrice": 23500,
@@ -105021,6 +105030,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809294010809",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809294010816",
     "name": "펭귄)황도400g",
     "normalPrice": 2500,
@@ -118847,7 +118865,7 @@
   {
     "barcode": "9100000000013",
     "name": "토마토1팩",
-    "normalPrice": 6000,
+    "normalPrice": 7000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118964,7 +118982,7 @@
   {
     "barcode": "9100000000343",
     "name": "샤인머스켓1팩",
-    "normalPrice": 5000,
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -118973,7 +118991,7 @@
   {
     "barcode": "9100000000350",
     "name": "거봉1팩",
-    "normalPrice": 6000,
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119090,7 +119108,7 @@
   {
     "barcode": "9100000001524",
     "name": "아삭이고추1팩",
-    "normalPrice": 3000,
+    "normalPrice": 2500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119099,7 +119117,7 @@
   {
     "barcode": "9100000001531",
     "name": "청양고추1봉",
-    "normalPrice": 2500,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120646,8 +120664,8 @@
   },
   {
     "barcode": "9100000217086",
-    "name": "홍로사과(15개/1봉)행사",
-    "normalPrice": 9800,
+    "name": "홍로사과(10개/1봉)행사",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120917,7 +120935,7 @@
   {
     "barcode": "9100000218489",
     "name": "양배추1/4통",
-    "normalPrice": 980,
+    "normalPrice": 1250,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120935,7 +120953,7 @@
   {
     "barcode": "9100000218533",
     "name": "알배기1통",
-    "normalPrice": 4500,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121277,7 +121295,7 @@
   {
     "barcode": "9100000218991",
     "name": "고수1팩",
-    "normalPrice": 5980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
