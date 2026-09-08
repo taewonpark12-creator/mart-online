@@ -115326,6 +115326,15 @@
     "saleEndDate": "2026-09-08"
   },
   {
+    "barcode": "8809732220067",
+    "name": "메뚜기쌀(햅쌀)10kg",
+    "normalPrice": 45000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809734300460",
     "name": "예식장갑",
     "normalPrice": 1100,
