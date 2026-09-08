@@ -6156,6 +6156,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "3457345001099",
+    "name": "양반집밥상(햅쌀)10kg",
+    "normalPrice": 23000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "3563490013754",
     "name": "홀그레인머스타드190g",
     "normalPrice": 7900,
@@ -93717,6 +93726,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8807603004167",
+    "name": "이천쌀(햅쌀)10kg",
+    "normalPrice": 62000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8807711000006",
     "name": "커피여과지",
     "normalPrice": 2200,
@@ -106373,9 +106391,9 @@
   {
     "barcode": "8809358337668",
     "name": "깨끗한무형광키친타올6롤",
-    "normalPrice": 0,
-    "eventPrice": null,
-    "discountRate": null,
+    "normalPrice": 5500,
+    "eventPrice": 3980,
+    "discountRate": 28,
     "saleStartDate": "2026-08-18",
     "saleEndDate": "2026-09-08"
   },
