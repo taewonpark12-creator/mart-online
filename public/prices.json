@@ -9846,6 +9846,24 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8800336697101",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8800336698696",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8800342490055",
     "name": "구운옥수수하루콘250g",
     "normalPrice": 4000,
@@ -17811,6 +17829,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801019611018",
+    "name": "해태)맛동산3번들",
+    "normalPrice": 3800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801019611049",
     "name": "해태)구운양파60g",
     "normalPrice": 1500,
@@ -17913,6 +17940,15 @@
     "barcode": "8801019613326",
     "name": "해태)맛동산밤2번들",
     "normalPrice": 6980,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801019613876",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -59202,6 +59238,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801111965545",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114101568",
     "name": "풀무원)국산순두부350g",
     "normalPrice": 2300,
@@ -79090,6 +79135,15 @@
     "discountRate": 15,
     "saleStartDate": "2021-05-01",
     "saleEndDate": "2026-12-31"
+  },
+  {
+    "barcode": "8801448366121",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801448383869",
@@ -115410,6 +115464,15 @@
     "barcode": "8809777561309",
     "name": "썬)오로라액화방지RT18",
     "normalPrice": 17500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8809778497720",
+    "name": "신상품",
+    "normalPrice": 0,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
