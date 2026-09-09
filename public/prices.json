@@ -31689,6 +31689,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801047111283",
+    "name": "동원)살코기참치1.88kg",
+    "normalPrice": 25000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801047111719",
     "name": "동원)살코기참치90g",
     "normalPrice": 2900,
@@ -88202,7 +88211,7 @@
   {
     "barcode": "8804127010926",
     "name": "삼양)더블함박스테이크1kg",
-    "normalPrice": 14500,
+    "normalPrice": 15000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
