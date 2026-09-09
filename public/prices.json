@@ -83574,9 +83574,63 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8802259033936",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259034629",
+    "name": "롯데)짱매워요떡볶이젤리착한맛52g",
+    "normalPrice": 1300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8802259034933",
     "name": "롯데)꼬깔콘쌈장삼겹살134g",
     "normalPrice": 3000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259035084",
+    "name": "롯데)제로초코파이애플시나몬336g",
+    "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259035091",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259035329",
+    "name": "롯데)몽쉘생크림케이크애플408g",
+    "normalPrice": 6900,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8802259035343",
+    "name": "롯데)군위사과애플315g",
+    "normalPrice": 4300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -91451,7 +91505,7 @@
   {
     "barcode": "8806080013174",
     "name": "3M베이직폴리수세미",
-    "normalPrice": 2900,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -98579,7 +98633,7 @@
   {
     "barcode": "8809071468717",
     "name": "실리콘총",
-    "normalPrice": 3100,
+    "normalPrice": 3300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
