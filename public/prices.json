@@ -100576,8 +100576,8 @@
   },
   {
     "barcode": "8809140323084",
-    "name": "호박/밤고구마(1.5kg/1박스)",
-    "normalPrice": 8900,
+    "name": "호박/밤고구마(1.5kg/1박스)행사",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120106,8 +120106,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)",
-    "normalPrice": 2480,
+    "name": "대파(1단)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120124,8 +120124,8 @@
   },
   {
     "barcode": "9100000214290",
-    "name": "표고버섯(500g/1봉)",
-    "normalPrice": 4980,
+    "name": "표고버섯(500g/1봉)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120341,7 +120341,7 @@
   {
     "barcode": "9100000215280",
     "name": "햇무(1개)",
-    "normalPrice": 2480,
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120772,8 +120772,8 @@
   },
   {
     "barcode": "9100000217444",
-    "name": "하우스귤(3kg/1박스)",
-    "normalPrice": 24800,
+    "name": "하우스귤(3kg/1박스)행사",
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120998,7 +120998,7 @@
   {
     "barcode": "9100000218588",
     "name": "샤인머스켓(2kg/1박스)행사",
-    "normalPrice": 14800,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121069,8 +121069,8 @@
   },
   {
     "barcode": "9100000218687",
-    "name": "단호박(1통)",
-    "normalPrice": 2980,
+    "name": "단호박(1통)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
