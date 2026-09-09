@@ -48897,6 +48897,15 @@
     "saleEndDate": "2026-12-31"
   },
   {
+    "barcode": "8801068912913",
+    "name": "삼립)정통보름달85g",
+    "normalPrice": 1900,
+    "eventPrice": 1000,
+    "discountRate": 47,
+    "saleStartDate": "2019-10-20",
+    "saleEndDate": "2026-12-31"
+  },
+  {
     "barcode": "8801068913934",
     "name": "삼립)홍비빔냉면2인",
     "normalPrice": 6900,
@@ -78969,6 +78978,15 @@
     "barcode": "8801441012254",
     "name": "크리오)마르셀450g",
     "normalPrice": 3300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801441016818",
+    "name": "마르쉘)가루세제10kg",
+    "normalPrice": 12500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115540,6 +115558,15 @@
     "discountRate": 30,
     "saleStartDate": "2026-09-08",
     "saleEndDate": "2026-09-25"
+  },
+  {
+    "barcode": "8809778498987",
+    "name": "하림)볶음짜장면",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809781070354",
