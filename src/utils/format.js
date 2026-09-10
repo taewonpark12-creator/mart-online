@@ -33,7 +33,7 @@ export function buildOrderMessage(order, items, total) {
     '▶ 주문 상품',
     ...lines,
     '',
-    `총 결제예정: ${total.toLocaleString()}원 (현장 결제)`,
+    `총 결제예정: ${total.toLocaleString()}원 (만나서결제)`,
   ]
     .filter(Boolean)
     .join('\n');

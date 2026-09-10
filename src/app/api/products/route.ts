@@ -30,7 +30,7 @@ async function getPricesJson(): Promise<Array<{ barcode: string; name: string }>
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const category = sanitizeInput(searchParams.get("category") ?? "");
+    const category = sanitizeInput(searchParams.get("category") ?? "").trim();
     const q = (searchParams.get("q")?.trim() ?? "").slice(0, 100);
     const page = toNonNegativeInt(searchParams.get("page"), 1);
     const activeOnly = searchParams.get("activeOnly") !== "false";
@@ -72,6 +72,10 @@ export async function GET(req: NextRequest) {
           where: {
             barcode: { in: matchedBarcodes },
             ...(activeOnly ? { isActive: true } : {}),
+            ...(recommendedOnly ? { isRecommended: true } : {}),
+            ...(excludeRecommended ? { isRecommended: false } : {}),
+            ...(popularOnly ? { isPopular: true } : {}),
+            ...(onlineExclusiveOnly ? { isOnlineExclusive: true } : {}),
             ...(outOfStockOnly ? { isOutOfStock: true } : {}),
             ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
             ...(category && category !== "전체" ? { category } : {}),

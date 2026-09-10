@@ -45,27 +45,39 @@ function getProductWhere(options: ProductListOptions): Prisma.ProductWhereInput 
     includeOutOfStock = false,
   } = options;
 
-  const where = {
+  // Trim category to handle potential whitespace issues
+  const trimmedCategory = category.trim();
+
+  const baseConditions = {
     ...(activeOnly ? { isActive: true } : {}),
     ...(recommendedOnly ? { isRecommended: true } : {}),
     ...(excludeRecommended ? { isRecommended: false } : {}),
     ...(popularOnly ? { isPopular: true } : {}),
     ...(onlineExclusiveOnly ? { isOnlineExclusive: true } : {}),
-    ...(category && category !== "전체" ? { category } : {}),
     ...(outOfStockOnly ? { isOutOfStock: true } : {}),
     ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
-    ...(q
-      ? {
+  };
+
+  if (q) {
+    return {
+      ...baseConditions,
+      AND: [
+        ...(trimmedCategory && trimmedCategory !== "전체" ? [{ category: trimmedCategory }] : []),
+        {
           OR: [
             { name: { contains: q, mode: "insensitive" as const } },
             { description: { contains: q, mode: "insensitive" as const } },
             { barcode: { contains: q, mode: "insensitive" as const } },
           ],
-        }
-      : {}),
-  };
+        },
+      ],
+    };
+  }
 
-  return where;
+  return {
+    ...baseConditions,
+    ...(trimmedCategory && trimmedCategory !== "전체" ? { category: trimmedCategory } : {}),
+  };
 }
 
 function getProductOrderBy(options: ProductListOptions): Prisma.ProductOrderByWithRelationInput[] {
@@ -122,17 +134,31 @@ export async function findProductsForAdmin(options: Omit<ProductListOptions, 'cu
   const page = Math.max(1, options.page ?? 1);
   const skip = (page - 1) * PAGE_SIZE;
 
+  const whereClause = getProductWhere(options);
+  const orderBy = getProductOrderBy(options);
+
+  console.log('[DEBUG] findProductsForAdmin - Options:', options);
+  console.log('[DEBUG] findProductsForAdmin - Where clause:', JSON.stringify(whereClause, null, 2));
+  console.log('[DEBUG] findProductsForAdmin - OrderBy:', JSON.stringify(orderBy, null, 2));
+  console.log('[DEBUG] findProductsForAdmin - Pagination:', { page, skip, take: PAGE_SIZE });
+
   const [products, totalCount] = await Promise.all([
     prisma.product.findMany({
-      where: getProductWhere(options),
-      orderBy: getProductOrderBy(options),
+      where: whereClause,
+      orderBy: orderBy,
       skip,
       take: PAGE_SIZE,
     }),
     prisma.product.count({
-      where: getProductWhere(options),
+      where: whereClause,
     }),
   ]);
+
+  console.log('[DEBUG] findProductsForAdmin - Result:', {
+    productsReturned: products.length,
+    totalCount,
+    hasMore: skip + products.length < totalCount,
+  });
 
   return {
     products: products.map(serializeProduct),

@@ -84,8 +84,8 @@
   export type OutOfStockPolicy = "SUBSTITUTE" | "CANCEL_ONLY" | "CONTACT";
 
   export const PAYMENT_METHOD_OPTIONS: { value: PaymentMethod; label: string }[] = [
-    { value: "ONSITE_CARD", label: "현장결제(카드)" },
-    { value: "ONSITE_CASH", label: "현장결제(현금)" },
+    { value: "ONSITE_CARD", label: "만나서결제(카드)" },
+    { value: "ONSITE_CASH", label: "만나서결제(현금)" },
     { value: "BANK_TRANSFER", label: "계좌이체" },
   ];
 
@@ -96,8 +96,8 @@
   ];
 
   export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
-    ONSITE_CARD: "카드(현장결제)",
-    ONSITE_CASH: "현금(현장결제)",
+    ONSITE_CARD: "카드(만나서결제)",
+    ONSITE_CASH: "현금(만나서결제)",
     BANK_TRANSFER: "계좌이체",
   };
 

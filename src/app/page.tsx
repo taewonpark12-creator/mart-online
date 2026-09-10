@@ -364,7 +364,7 @@ export default function HomePage() {
             </a>
 
             <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
-              숭의동, 용현동 배달
+              숭의동, 용현동 및 인근지역 배달
             </div>
 
             <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">

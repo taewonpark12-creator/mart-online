@@ -59,7 +59,7 @@ export default function CartDrawer() {
               </div>
               <div className="summary-row">
                 <span>결제</span>
-                <span className="onsite">현장 결제</span>
+                <span className="onsite">만나서 결제</span>
               </div>
               <div className="summary-row total">
                 <span>총 결제금액</span>
