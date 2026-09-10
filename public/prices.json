@@ -119296,7 +119296,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(2봉)",
+    "name": "팽이버섯(3봉)행사",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -120214,8 +120214,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)행사",
-    "normalPrice": 1480,
+    "name": "대파(1단)",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120709,8 +120709,8 @@
   },
   {
     "barcode": "9100000216720",
-    "name": "인큐호박(1개)",
-    "normalPrice": 2980,
+    "name": "인큐호박(1개)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120889,8 +120889,8 @@
   },
   {
     "barcode": "9100000217468",
-    "name": "꽈리고추(1봉)행사",
-    "normalPrice": 999990,
+    "name": "아삭이고추(1팩)행사",
+    "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121177,8 +121177,8 @@
   },
   {
     "barcode": "9100000218687",
-    "name": "단호박(1통)행사",
-    "normalPrice": 1980,
+    "name": "단호박(1통)",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121790,7 +121790,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(1팩)",
-    "normalPrice": 1480,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
