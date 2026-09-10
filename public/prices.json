@@ -119027,7 +119027,7 @@
   {
     "barcode": "9100000000013",
     "name": "토마토1팩",
-    "normalPrice": 7000,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119144,7 +119144,7 @@
   {
     "barcode": "9100000000343",
     "name": "샤인머스켓1팩",
-    "normalPrice": 6000,
+    "normalPrice": 5500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119153,7 +119153,7 @@
   {
     "barcode": "9100000000350",
     "name": "거봉1팩",
-    "normalPrice": 5500,
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
