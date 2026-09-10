@@ -81732,10 +81732,10 @@
     "barcode": "8801861130118",
     "name": "가야)당근농장1.5L",
     "normalPrice": 3500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 15,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
   },
   {
     "barcode": "8801861130439",
