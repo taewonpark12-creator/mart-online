@@ -59762,7 +59762,7 @@
   {
     "barcode": "8801114136577",
     "name": "풀무원)무항생제특란10구",
-    "normalPrice": 8500,
+    "normalPrice": 7900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -59807,7 +59807,7 @@
   {
     "barcode": "8801114139882",
     "name": "풀무원)목초특란15구",
-    "normalPrice": 12500,
+    "normalPrice": 11500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115616,6 +115616,15 @@
   {
     "barcode": "8809778497720",
     "name": "하림)맥시칸크리스피순살350g",
+    "normalPrice": 10000,
+    "eventPrice": 6980,
+    "discountRate": 30,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
+  },
+  {
+    "barcode": "8809778497751",
+    "name": "하림)맥시칸핫크리스피순살350g",
     "normalPrice": 10000,
     "eventPrice": 6980,
     "discountRate": 30,
