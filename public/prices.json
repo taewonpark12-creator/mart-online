@@ -76692,10 +76692,10 @@
     "barcode": "8801392032998",
     "name": "비비고)소고기듬뿍미역국460g",
     "normalPrice": 6000,
-    "eventPrice": 4980,
-    "discountRate": 17,
-    "saleStartDate": "2019-09-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801392033018",
