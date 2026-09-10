@@ -53967,10 +53967,10 @@
     "barcode": "8801097150034",
     "name": "포카리스웨트1.5L",
     "normalPrice": 3200,
-    "eventPrice": 2980,
-    "discountRate": 7,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801097150096",
@@ -53993,9 +53993,9 @@
   {
     "barcode": "8801097150164",
     "name": "포카리스웨트1.5L*2입",
-    "normalPrice": 5800,
+    "normalPrice": 6400,
     "eventPrice": 5500,
-    "discountRate": 5,
+    "discountRate": 14,
     "saleStartDate": "2019-07-31",
     "saleEndDate": "2026-12-31"
   },
@@ -119683,8 +119683,8 @@
   },
   {
     "barcode": "9100000003368",
-    "name": "골드키위(10개/1팩)행사",
-    "normalPrice": 99990,
+    "name": "골드키위(1박스)",
+    "normalPrice": 34800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
