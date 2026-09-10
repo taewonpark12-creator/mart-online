@@ -12270,10 +12270,10 @@
     "barcode": "8801007093444",
     "name": "백설)포도씨유500ml",
     "normalPrice": 10800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 5980,
+    "discountRate": 45,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007093451",
