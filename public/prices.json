@@ -93629,7 +93629,7 @@
   {
     "barcode": "8807354219780",
     "name": "골든고구마칩200g",
-    "normalPrice": 6900,
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -111526,6 +111526,15 @@
     "discountRate": 23,
     "saleStartDate": "2026-09-08",
     "saleEndDate": "2026-09-25"
+  },
+  {
+    "barcode": "8809536246683",
+    "name": "마른황태채250g",
+    "normalPrice": 16000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8809539462103",
