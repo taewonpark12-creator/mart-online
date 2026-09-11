@@ -434,10 +434,7 @@ export async function POST(req: NextRequest) {
           customerPhone,
           fulfillmentType,
           deliveryAddress:
-            fulfillmentType === "DELIVERY" ? deliveryAddress : "
-            
-            
-            픽업",
+            fulfillmentType === "DELIVERY" ? deliveryAddress : "매장 픽업",
           pickupTime: fulfillmentType === "PICKUP" ? pickupTime : null,
           memo: memo || null,
           paymentMethod,
