@@ -103554,6 +103554,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809245620361",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809245621368",
     "name": "세종)바나나막걸리750ml",
     "normalPrice": 1900,
