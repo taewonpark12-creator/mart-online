@@ -48900,10 +48900,10 @@
     "barcode": "8801068912913",
     "name": "삼립)정통보름달85g",
     "normalPrice": 1900,
-    "eventPrice": 1000,
-    "discountRate": 47,
-    "saleStartDate": "2019-10-20",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801068913934",
@@ -49980,6 +49980,15 @@
     "barcode": "8801068943931",
     "name": "삼립)포켓몬초코칩브라운쿠키62g",
     "normalPrice": 1800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801068944211",
+    "name": "삼립)달콤한옥수수케익90g",
+    "normalPrice": 1900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
