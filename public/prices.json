@@ -14699,7 +14699,7 @@
   {
     "barcode": "8801007656694",
     "name": "참그린)녹차뽀드득1kg",
-    "normalPrice": 5950,
+    "normalPrice": 6500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -31061,7 +31061,7 @@
   {
     "barcode": "8801046387023",
     "name": "트리오)베이킹라임1.2L",
-    "normalPrice": 4500,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -31457,7 +31457,7 @@
   {
     "barcode": "8801046877012",
     "name": "트리오)곡물우리밀1.2L",
-    "normalPrice": 4800,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -31466,7 +31466,7 @@
   {
     "barcode": "8801046877029",
     "name": "트리오)곡물현미1.2L",
-    "normalPrice": 4800,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -31565,7 +31565,7 @@
   {
     "barcode": "8801046891001",
     "name": "트리오)향균피톤치드1.2L",
-    "normalPrice": 4800,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75656,7 +75656,7 @@
   {
     "barcode": "8801353006167",
     "name": "산도깨비)디퓨져피치130ml",
-    "normalPrice": 5950,
+    "normalPrice": 6900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -75673,8 +75673,8 @@
   },
   {
     "barcode": "8801353006198",
-    "name": "산도깨비)디퓨져망고&자스민130ml",
-    "normalPrice": 5950,
+    "name": "산도깨비)디퓨져망고자스민130ml",
+    "normalPrice": 6900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
