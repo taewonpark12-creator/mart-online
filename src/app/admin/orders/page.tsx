@@ -25,13 +25,10 @@ import type { ReceiptOrder } from "@/lib/receipt-html";
 import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort";
 
 // Keep order-list fetching separate from notification checks and sound repeat timers.
-const ORDER_LIST_AUTO_REFRESH_MS = 10 * 60 * 1000;
-const ORDER_NOTIFICATION_POLL_MS = 60000;
-const TODAY_SUMMARY_REFRESH_MS = 3600000;
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_SESSION_ENABLED_STORAGE_KEY = "adminOrderNotificationSessionEnabled";
 const ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY = "adminOrderNotificationKnownPendingIds";
-const ORDER_NOTIFICATION_REPEAT_MS = 10000;
+const ORDER_NOTIFICATION_REPEAT_MS = 60000;
 const NEW_ORDER_PUSH_MESSAGE_TYPE = "NEW_ORDER_PUSH";
 
 type OrderItem = {
@@ -601,7 +598,6 @@ export default function OrdersPage() {
   const hasPendingOrdersRef = useRef(false);
   const pendingCountRef = useRef(0);
   const knownPendingOrderIdsRef = useRef<Set<string>>(new Set());
-  const pendingPollInitializedRef = useRef(false);
   const lastResumeRefreshAtRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
   const isFetchingOrdersRef = useRef(false);
@@ -756,7 +752,35 @@ export default function OrdersPage() {
       }
 
       const data: Order[] = await res.json();
+      const nextPendingIds = new Set(
+        data.filter((order) => order.status === "PENDING").map((order) => order.id),
+      );
+      const nextPendingCount = nextPendingIds.size;
+      const nextHasPendingOrders = nextPendingCount > 0;
+
       setOrders(data);
+      setPendingCount(nextPendingCount);
+      setHasPendingOrders(nextHasPendingOrders);
+      pendingCountRef.current = nextPendingCount;
+      hasPendingOrdersRef.current = nextHasPendingOrders;
+      knownPendingOrderIdsRef.current = nextPendingIds;
+
+      if (typeof window !== "undefined") {
+        if (nextHasPendingOrders) {
+          window.localStorage.setItem(
+            ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY,
+            JSON.stringify([...nextPendingIds]),
+          );
+        } else {
+          window.localStorage.removeItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY);
+          if (notificationRepeatIntervalRef.current) {
+            clearInterval(notificationRepeatIntervalRef.current);
+            notificationRepeatIntervalRef.current = null;
+          }
+          setNotificationRepeatActive(false);
+        }
+      }
+
       setSelectedOrderId((currentSelectedId) => {
         if (silent && currentSelectedId) {
           return currentSelectedId;
@@ -1012,56 +1036,6 @@ export default function OrdersPage() {
     }
   }, [playOrderNotificationSound]);
 
-  const pollPendingOrders = useCallback(async () => {
-    try {
-      const res = await fetch("/api/admin/orders/pending-count", { cache: "no-store" });
-      if (!res.ok) {
-        if (res.status === 401) router.replace("/admin");
-        return;
-      }
-
-      const data = await res.json();
-      const nextPendingCount = Number(data?.pendingCount) || 0;
-      const nextHasPendingOrders = nextPendingCount > 0;
-      const previousPendingCount = pendingCountRef.current;
-
-      console.log("[ORDER_NOTIFICATION_POLL_SUCCESS]", nextPendingCount);
-      setPendingCount(nextPendingCount);
-      setHasPendingOrders(nextHasPendingOrders);
-      pendingCountRef.current = nextPendingCount;
-      hasPendingOrdersRef.current = nextHasPendingOrders;
-
-      if (!nextHasPendingOrders) {
-        stopNotificationRepeat();
-        try {
-          window.localStorage.removeItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY);
-        } catch {
-          /* ignore */
-        }
-      }
-
-      const hasNewPending =
-        nextPendingCount > previousPendingCount &&
-        (pendingPollInitializedRef.current ||
-          previousPendingCount > 0 ||
-          notificationEnabledRef.current);
-
-      if (hasNewPending) {
-        setShowNewOrderAlert(true);
-        // 신규 주문 감지 시 주문 목록 즉시 갱신
-        void fetchOrders({ silent: true, fromPendingRefresh: true });
-      }
-
-      if (nextHasPendingOrders && notificationEnabledRef.current) {
-        startNotificationRepeat(hasNewPending);
-      }
-
-      pendingPollInitializedRef.current = true;
-    } catch (error) {
-      console.error("[admin/orders] pending orders poll failed", error);
-    }
-  }, [router, startNotificationRepeat, stopNotificationRepeat, fetchOrders]);
-
   const fetchTodaySummary = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/orders/today-summary", { cache: "no-store" });
@@ -1079,7 +1053,6 @@ export default function OrdersPage() {
     lastResumeRefreshAtRef.current = now;
 
     void fetchOrders({ silent: true });
-    void pollPendingOrders();
     void fetchTodaySummary();
 
     if (playSoundIfPending && notificationEnabledRef.current && hasPendingOrdersRef.current) {
@@ -1088,7 +1061,7 @@ export default function OrdersPage() {
     } else if (notificationEnabledRef.current && hasPendingOrdersRef.current) {
       startNotificationRepeat();
     }
-  }, [fetchOrders, fetchTodaySummary, playOrderNotificationSound, pollPendingOrders, startNotificationRepeat]);
+  }, [fetchOrders, fetchTodaySummary, playOrderNotificationSound, startNotificationRepeat]);
 
   const handleNewOrderPush = useCallback((message: NewOrderPushMessage) => {
     if (!message || message.type !== NEW_ORDER_PUSH_MESSAGE_TYPE) return;
@@ -1125,13 +1098,6 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, [fetchOrders]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchOrders({ silent: true });
-    }, ORDER_LIST_AUTO_REFRESH_MS);
-    return () => clearInterval(interval);
   }, [fetchOrders]);
 
   useEffect(() => {
@@ -1180,19 +1146,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchTodaySummary();
-    const interval = setInterval(fetchTodaySummary, TODAY_SUMMARY_REFRESH_MS);
-    return () => clearInterval(interval);
   }, [fetchTodaySummary]);
-
-  const notificationPollIntervalMs = ORDER_NOTIFICATION_POLL_MS;
-
-  useEffect(() => {
-    void pollPendingOrders();
-    const interval = setInterval(() => {
-      void pollPendingOrders();
-    }, notificationPollIntervalMs);
-    return () => clearInterval(interval);
-  }, [notificationPollIntervalMs, pollPendingOrders]);
 
   useEffect(() => {
     notificationEnabledRef.current = notificationEnabled;
@@ -1270,7 +1224,6 @@ export default function OrdersPage() {
       });
       fetchTodaySummary();
       void fetchOrders({ silent: true, force: true });
-      void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] status update failed", error);
       alert("상태 변경 중 오류가 발생했습니다.");
@@ -1305,7 +1258,6 @@ export default function OrdersPage() {
       });
       fetchTodaySummary();
       void fetchOrders({ silent: true, force: true });
-      void pollPendingOrders();
     } catch (error) {
       console.error("[admin/orders] cancel failed", error);
       alert("주문 취소 중 오류가 발생했습니다.");
@@ -1434,7 +1386,6 @@ export default function OrdersPage() {
       setSelectedOrderId(null);
       fetchTodaySummary();
       void fetchOrders({ silent: true });
-      void pollPendingOrders();
       alert("주문이 삭제되었습니다.");
     } catch (error) {
       console.error("[admin/orders] delete failed", error);
