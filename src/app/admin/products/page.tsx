@@ -96,6 +96,7 @@ const CLIENT_PRODUCT_IMAGE_MAX_BYTES = 10 * 1024 * 1024;
 const CLIENT_PRODUCT_IMAGE_ACCEPT = ".jpg,.jpeg,.png,.webp";
 const CLIENT_PRODUCT_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const CLIENT_PRODUCT_IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
+const ADMIN_PRODUCTS_PAGE_SIZE = 100;
 
 const emptyForm = (): ProductForm => ({
   name: "",
@@ -852,6 +853,8 @@ export default function ProductsPage() {
   const pathname = usePathname();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -871,6 +874,7 @@ export default function ProductsPage() {
   const [bulkBarcodeResult, setBulkBarcodeResult] = useState<BulkBarcodeResult | null>(null);
   const [bulkImageLoading, setBulkImageLoading] = useState(false);
   const [bulkImageResult, setBulkImageResult] = useState<BulkImageResult | null>(null);
+  const fetchRequestIdRef = useRef(0);
 
   const activeProduct = useMemo(
     () => products.find((product) => product.id === activeProductId) ?? products[0] ?? null,
@@ -885,6 +889,11 @@ export default function ProductsPage() {
   const displayedProducts = useMemo(() => {
     return products.filter((product) => matchesStatus(product, statusFilter));
   }, [products, statusFilter]);
+
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(totalProducts / ADMIN_PRODUCTS_PAGE_SIZE)),
+    [totalProducts],
+  );
 
   const isDirty = useMemo(() => {
     if (showCreateForm) {
@@ -911,11 +920,14 @@ export default function ProductsPage() {
   }, [products, selectedIds]);
 
   const fetchProducts = useCallback(async () => {
+    const requestId = fetchRequestIdRef.current + 1;
+    fetchRequestIdRef.current = requestId;
     setLoading(true);
     try {
       const params = new URLSearchParams({
         activeOnly: "false",
         includeOutOfStock: "true",
+        page: currentPage.toString(),
         ...(searchQuery ? { q: searchQuery } : {}),
         ...(categoryFilter ? { category: categoryFilter } : {}),
       });
@@ -945,26 +957,42 @@ export default function ProductsPage() {
       }
 
       const data = await res.json();
+      if (fetchRequestIdRef.current !== requestId) return;
       const productsArray = data.products || [];
       const normalizedProducts = productsArray.map(normalizeProduct);
       setProducts(normalizedProducts);
-      setActiveProductId((current) => current ?? normalizedProducts[0]?.id ?? null);
+      setTotalProducts(Number.isFinite(data.total) ? data.total : normalizedProducts.length);
+      setSelectedIds(new Set());
+      setActiveProductId((current) =>
+        current && normalizedProducts.some((product: Product) => product.id === current)
+          ? current
+          : normalizedProducts[0]?.id ?? null,
+      );
     } catch (error) {
+      if (fetchRequestIdRef.current !== requestId) return;
       console.error("[admin/products] load failed", error);
       setToast("상품 목록을 불러오지 못했습니다.");
     } finally {
-      setLoading(false);
+      if (fetchRequestIdRef.current === requestId) setLoading(false);
     }
-  }, [categoryFilter, pathname, router, searchQuery]);
+  }, [categoryFilter, currentPage, pathname, router, searchQuery]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSearchQuery(searchInput.trim()), 300);
+    const timer = setTimeout(() => {
+      const nextQuery = searchInput.trim();
+      setCurrentPage(1);
+      setSearchQuery(nextQuery);
+    }, 300);
     return () => clearTimeout(timer);
   }, [searchInput]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
 
   useEffect(() => {
     if (!toast) return;
@@ -1422,11 +1450,15 @@ export default function ProductsPage() {
           <ProductFilterBar
             statusFilter={statusFilter}
             categoryFilter={categoryFilter}
-            onStatusChange={setStatusFilter}
+            onStatusChange={(filter) => {
+              setStatusFilter(filter);
+              setCurrentPage(1);
+            }}
             onCategoryChange={(category) => {
               setCategoryFilter(category);
               setSearchInput("");
               setSearchQuery("");
+              setCurrentPage(1);
             }}
           />
 
@@ -1541,6 +1573,32 @@ export default function ProductsPage() {
                 />
               ))
             )}
+            <div className="flex flex-col gap-3 border-t bg-gray-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs font-semibold text-gray-500">
+                전체 {totalProducts.toLocaleString("ko-KR")}개 · 페이지 {currentPage} / {totalPages}
+              </p>
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={loading || currentPage <= 1}
+                  className="rounded-lg border bg-white px-3 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  이전
+                </button>
+                <span className="min-w-16 text-center text-sm font-black text-gray-900">
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  disabled={loading || currentPage >= totalPages}
+                  className="rounded-lg border bg-white px-3 py-2 text-sm font-bold text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  다음
+                </button>
+              </div>
+            </div>
           </section>
 
           <ProductStatusController
