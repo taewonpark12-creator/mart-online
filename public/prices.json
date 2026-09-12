@@ -119134,8 +119134,8 @@
   },
   {
     "barcode": "9100000000005",
-    "name": "애플수박1통",
-    "normalPrice": 3000,
+    "name": "토란1팩",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119206,8 +119206,8 @@
   },
   {
     "barcode": "9100000000206",
-    "name": "신비복숭아1팩",
-    "normalPrice": 4980,
+    "name": "단감1팩",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121178,7 +121178,7 @@
   {
     "barcode": "9100000218304",
     "name": "파프리카1봉",
-    "normalPrice": 2980,
+    "normalPrice": 3480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
