@@ -24,26 +24,6 @@ if (process.env.VERCEL && process.env.NODE_ENV === "production" && !globalForPri
 
   console.info("[vercel-prisma-diagnostics]", JSON.stringify({
     ...baseDiagnostics,
-    connectionStatus: process.env.DATABASE_URL ? "checking" : "DATABASE_URL_MISSING",
+    connectionStatus: process.env.DATABASE_URL ? "lazy" : "DATABASE_URL_MISSING",
   }));
-
-  if (process.env.DATABASE_URL) {
-    void prisma.$connect()
-      .then(() => {
-        console.info("[vercel-prisma-diagnostics]", JSON.stringify({
-          ...baseDiagnostics,
-          connectionStatus: "connected",
-        }));
-      })
-      .catch((error: unknown) => {
-        console.error("[vercel-prisma-diagnostics]", JSON.stringify({
-          ...baseDiagnostics,
-          connectionStatus: "connection_failed",
-          error:
-            error instanceof Error
-              ? { name: error.name, message: error.message, stack: error.stack }
-              : error,
-        }));
-      });
-  }
 }

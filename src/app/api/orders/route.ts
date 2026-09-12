@@ -11,6 +11,7 @@ import {
 import { createRequestId, logSafeOrderError, logSafeOrderEvent } from "@/lib/order-observability";
 import { firstMeaningfulProductName } from "@/lib/order-item";
 import { getMinimumOrderAmount } from "@/lib/min-order";
+import { sendNewOrderWebPush } from "@/lib/web-push";
 
 export const runtime = "nodejs";
 
@@ -500,6 +501,19 @@ export async function POST(req: NextRequest) {
       await sendNewOrderTelegramAlert();
     } catch (error) {
       logSafeOrderError("order.create.telegram_alert_failed", {
+        requestId,
+        orderId: order.id,
+      }, error);
+    }
+
+    try {
+      await sendNewOrderWebPush({
+        type: "NEW_ORDER",
+        orderId: order.id,
+        createdAt: order.createdAt.toISOString(),
+      });
+    } catch (error) {
+      logSafeOrderError("order.create.web_push_failed", {
         requestId,
         orderId: order.id,
       }, error);

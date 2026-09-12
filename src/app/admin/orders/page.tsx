@@ -32,6 +32,7 @@ const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_SESSION_ENABLED_STORAGE_KEY = "adminOrderNotificationSessionEnabled";
 const ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY = "adminOrderNotificationKnownPendingIds";
 const ORDER_NOTIFICATION_REPEAT_MS = 10000;
+const NEW_ORDER_PUSH_MESSAGE_TYPE = "NEW_ORDER_PUSH";
 
 type OrderItem = {
   id: string;
@@ -61,6 +62,25 @@ type Order = {
   paymentMethod: PaymentMethod | null;
   outOfStockPolicy?: string | null;
 };
+
+type NewOrderPushMessage = {
+  type?: string;
+  orderId?: string | null;
+  createdAt?: string | null;
+};
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = `${base64String}${padding}`.replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; i += 1) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
 
 function getOrderTime(order: Order) {
   return new Date(order.createdAt).toLocaleString("ko-KR");
@@ -884,6 +904,78 @@ export default function OrdersPage() {
     }, ORDER_NOTIFICATION_REPEAT_MS);
   }, [playOrderNotificationSound, stopNotificationRepeat]);
 
+  const registerAdminPushSubscription = useCallback(async () => {
+    if (typeof window === "undefined") return false;
+
+    const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!publicKey) {
+      setNotificationFeedback({
+        tone: "gray",
+        message: "Web Push 공개키가 설정되지 않아 현재는 화면 알림음으로 신규주문을 확인합니다.",
+      });
+      return false;
+    }
+
+    if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+      setNotificationFeedback({
+        tone: "gray",
+        message: "이 브라우저는 Web Push를 지원하지 않아 화면 알림음으로 신규주문을 확인합니다.",
+      });
+      return false;
+    }
+
+    const permission =
+      Notification.permission === "default"
+        ? await Notification.requestPermission()
+        : Notification.permission;
+
+    if (permission !== "granted") {
+      setNotificationFeedback({
+        tone: "gray",
+        message: "브라우저 알림 권한이 허용되지 않아 화면 알림음으로 신규주문을 확인합니다.",
+      });
+      return false;
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      const readyRegistration = await navigator.serviceWorker.ready;
+      const existingSubscription = await readyRegistration.pushManager.getSubscription();
+      const subscription =
+        existingSubscription ??
+        await readyRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicKey),
+        });
+
+      const res = await fetch("/api/admin/push-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(subscription.toJSON()),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Push subscription save failed: ${res.status}`);
+      }
+
+      console.log("[ORDER_WEB_PUSH_SUBSCRIBED]", {
+        scope: registration.scope,
+      });
+      setNotificationFeedback({
+        tone: "green",
+        message: "알림 작동 중입니다. Web Push와 화면 알림음이 함께 준비되었습니다.",
+      });
+      return true;
+    } catch (error) {
+      console.error("[ORDER_WEB_PUSH_SUBSCRIBE_FAILED]", error);
+      setNotificationFeedback({
+        tone: "gray",
+        message: "Web Push 등록에 실패했습니다. 기존 화면 알림음과 Telegram 알림은 계속 작동합니다.",
+      });
+      return false;
+    }
+  }, []);
+
   const startOrderNotifications = useCallback(async () => {
     const soundAllowed = await playOrderNotificationSound();
     if (soundAllowed) {
@@ -902,11 +994,13 @@ export default function OrdersPage() {
       }
       console.log("[ORDER_NOTIFICATION_ENABLED]");
 
+      void registerAdminPushSubscription();
+
       if (hasPendingOrdersRef.current) {
         startNotificationRepeat(true);
       }
     }
-  }, [playOrderNotificationSound, startNotificationRepeat]);
+  }, [playOrderNotificationSound, registerAdminPushSubscription, startNotificationRepeat]);
 
   const testOrderNotification = useCallback(async () => {
     const soundAllowed = await playOrderNotificationSound();
@@ -995,6 +1089,39 @@ export default function OrdersPage() {
       startNotificationRepeat();
     }
   }, [fetchOrders, fetchTodaySummary, playOrderNotificationSound, pollPendingOrders, startNotificationRepeat]);
+
+  const handleNewOrderPush = useCallback((message: NewOrderPushMessage) => {
+    if (!message || message.type !== NEW_ORDER_PUSH_MESSAGE_TYPE) return;
+
+    const nextPendingIds = new Set(knownPendingOrderIdsRef.current);
+    if (message.orderId) {
+      nextPendingIds.add(message.orderId);
+    }
+
+    const nextPendingCount = Math.max(pendingCountRef.current, nextPendingIds.size, 1);
+    knownPendingOrderIdsRef.current = nextPendingIds;
+    pendingCountRef.current = nextPendingCount;
+    hasPendingOrdersRef.current = true;
+    setPendingCount(nextPendingCount);
+    setHasPendingOrders(true);
+    setShowNewOrderAlert(true);
+
+    try {
+      window.localStorage.setItem(
+        ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY,
+        JSON.stringify([...nextPendingIds]),
+      );
+    } catch {
+      /* ignore */
+    }
+
+    void fetchOrders({ silent: true, fromPendingRefresh: true });
+    void fetchTodaySummary();
+
+    if (notificationEnabledRef.current) {
+      startNotificationRepeat();
+    }
+  }, [fetchOrders, fetchTodaySummary, startNotificationRepeat]);
 
   useEffect(() => {
     fetchOrders();
@@ -1106,6 +1233,17 @@ export default function OrdersPage() {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+
+    const handleServiceWorkerMessage = (event: MessageEvent<NewOrderPushMessage>) => {
+      handleNewOrderPush(event.data);
+    };
+
+    navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
+    return () => navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+  }, [handleNewOrderPush]);
 
   async function updateStatus(status: OrderStatus) {
     if (!selectedOrderId) return;
