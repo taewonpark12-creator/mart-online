@@ -119422,7 +119422,7 @@
   },
   {
     "barcode": "9100000001760",
-    "name": "팽이버섯(3봉)행사",
+    "name": "팽이버섯(2봉)",
     "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
@@ -120791,7 +120791,7 @@
   {
     "barcode": "9100000216621",
     "name": "배추(2포기/1단)",
-    "normalPrice": 11000,
+    "normalPrice": 12000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121493,7 +121493,7 @@
   {
     "barcode": "9100000218922",
     "name": "양배추(3통/1망)행사",
-    "normalPrice": 9800,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121916,7 +121916,7 @@
   {
     "barcode": "9101003821",
     "name": "팩느타리버섯(1팩)",
-    "normalPrice": 980,
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
