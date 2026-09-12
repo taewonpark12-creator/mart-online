@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { HOME_PRODUCTS_CACHE_TAG } from "@/lib/home-products-cache";
 import { prisma } from "@/lib/prisma";
@@ -23,6 +23,21 @@ type ProductWithPrice = {
   price: bigint | number;
   createdAt?: Date | null;
   updatedAt?: Date | null;
+};
+
+type CustomerCategoryProductRow = ProductWithPrice & {
+  id: string;
+  name: string;
+  barcode: string | null;
+  category: string;
+  imageUrl: string | null;
+  isRecommended: boolean;
+  isOnlineExclusive: boolean;
+  isPopular: boolean;
+  isOutOfStock: boolean;
+  recommendedOrder: number;
+  popularOrder: number;
+  maxOrderQuantity: number | null;
 };
 
 export function serializeProduct<T extends ProductWithPrice>(product: T) {
@@ -90,9 +105,72 @@ function getProductOrderBy(options: ProductListOptions): Prisma.ProductOrderByWi
   return [{ category: "asc" }, { name: "asc" }];
 }
 
+function shouldUseCustomerCategoryPrioritySort(options: ProductListOptions) {
+  const category = options.category?.trim() ?? "";
+
+  return (
+    Boolean(category) &&
+    category !== "전체" &&
+    !options.q &&
+    options.customerSearchFieldsOnly === true &&
+    options.activeOnly !== false &&
+    !options.recommendedOnly &&
+    !options.excludeRecommended &&
+    !options.popularOnly &&
+    !options.onlineExclusiveOnly &&
+    !options.outOfStockOnly &&
+    !options.includeOutOfStock
+  );
+}
+
 export async function findProducts(options: ProductListOptions = {}) {
   const page = options.page ?? 1;
   const skip = (page - 1) * PAGE_SIZE;
+
+  if (shouldUseCustomerCategoryPrioritySort(options)) {
+    const category = options.category?.trim() ?? "";
+    const [products, totalCount] = await Promise.all([
+      prisma.$queryRaw<CustomerCategoryProductRow[]>(Prisma.sql`
+        SELECT
+          "id",
+          "name",
+          "barcode",
+          "price",
+          "category",
+          "imageUrl",
+          "isRecommended",
+          "isOnlineExclusive",
+          "isPopular",
+          "isOutOfStock",
+          "recommendedOrder",
+          "popularOrder",
+          "maxOrderQuantity"
+        FROM "Product"
+        WHERE
+          "isActive" = true
+          AND "isOutOfStock" = false
+          AND "category" = ${category}
+        ORDER BY
+          CASE
+            WHEN "isRecommended" = true THEN 1
+            WHEN "isPopular" = true THEN 2
+            ELSE 3
+          END ASC,
+          "name" ASC
+        OFFSET ${skip}
+        LIMIT ${PAGE_SIZE}
+      `),
+      prisma.product.count({
+        where: getProductWhere(options),
+      }),
+    ]);
+
+    return {
+      products: products.map(serializeProduct),
+      hasMore: skip + products.length < totalCount,
+      total: totalCount,
+    };
+  }
 
   const [products, totalCount] = await Promise.all([
     prisma.product.findMany({
