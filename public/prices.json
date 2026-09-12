@@ -10161,6 +10161,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801001237882",
+    "name": "테라제로350ml",
+    "normalPrice": 1200,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801001238810",
     "name": "하이트제로포멜로350ml",
     "normalPrice": 1350,
