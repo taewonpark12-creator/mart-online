@@ -7,6 +7,7 @@ import { deleteProductById } from "@/lib/product-delete";
 import { isProductImagePath } from "@/lib/upload";
 import { createAuditLog } from "@/lib/audit";
 import { sanitizeInput, validateAmount } from "@/lib/security";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -120,6 +121,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       }
     }
 
+    revalidateHomeProductsCache();
+
     return NextResponse.json({
       ...product,
       price: product.price.toString(),
@@ -150,6 +153,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || undefined,
     userAgent: req.headers.get("user-agent") || undefined,
   });
+
+  revalidateHomeProductsCache();
 
   return NextResponse.json({ success: true, id: result.id, name: result.name });
 }

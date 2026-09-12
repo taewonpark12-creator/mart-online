@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { PRODUCT_CATEGORIES } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -31,6 +32,10 @@ export async function POST(req: NextRequest) {
       where: { id: { in: uniqueIds } },
       data: { category },
     });
+
+    if (result.count > 0) {
+      revalidateHomeProductsCache();
+    }
 
     return NextResponse.json({
       updatedCount: result.count,

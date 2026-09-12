@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { deleteProductById } from "@/lib/product-delete";
 
 export async function POST(req: NextRequest) {
@@ -25,6 +26,10 @@ export async function POST(req: NextRequest) {
 
     const deleted = results.filter((r) => r.ok);
     const failed = results.filter((r) => !r.ok);
+
+    if (deleted.length > 0) {
+      revalidateHomeProductsCache();
+    }
 
     return NextResponse.json({
       deletedCount: deleted.length,

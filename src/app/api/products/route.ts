@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { sanitizeInput, validateAmount } from "@/lib/security";
 import { findProducts, serializeProduct } from "@/lib/product-query";
 
@@ -155,6 +156,8 @@ export async function POST(req: NextRequest) {
       ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || undefined,
       userAgent: req.headers.get("user-agent") || undefined,
     });
+
+    revalidateHomeProductsCache();
 
     return NextResponse.json(serializeProduct(product), { status: 201 });
   } catch (error) {

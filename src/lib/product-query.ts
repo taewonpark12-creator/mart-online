@@ -1,4 +1,6 @@
 import type { Prisma } from "@prisma/client";
+import { unstable_cache } from "next/cache";
+import { HOME_PRODUCTS_CACHE_TAG } from "@/lib/home-products-cache";
 import { prisma } from "@/lib/prisma";
 
 const PAGE_SIZE = 100;
@@ -186,7 +188,7 @@ export function getHomeProductCollections<T extends { isRecommended: boolean; is
   };
 }
 
-export async function getHomeProducts() {
+async function queryHomeProducts() {
   const [recommendedProducts, popularProducts, onlineExclusiveProducts] = await Promise.all([
     prisma.product.findMany({
       where: {
@@ -265,3 +267,8 @@ export async function getHomeProducts() {
     onlineExclusiveProducts: onlineExclusiveProducts.map(serializeProduct),
   };
 }
+
+export const getHomeProducts = unstable_cache(queryHomeProducts, [HOME_PRODUCTS_CACHE_TAG], {
+  tags: [HOME_PRODUCTS_CACHE_TAG],
+  revalidate: false,
+});

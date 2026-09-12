@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticated())) {
@@ -26,6 +27,10 @@ export async function POST(req: NextRequest) {
       where: { id: { in: uniqueIds } },
       data: { isRecommended },
     });
+
+    if (result.count > 0) {
+      revalidateHomeProductsCache();
+    }
 
     return NextResponse.json({
       updatedCount: result.count,

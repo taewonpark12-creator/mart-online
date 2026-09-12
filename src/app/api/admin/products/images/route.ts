@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAuditLog } from "@/lib/audit";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { prisma } from "@/lib/prisma";
 import { sanitizeInput } from "@/lib/security";
 
@@ -97,6 +98,8 @@ export async function POST(req: NextRequest) {
       ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || undefined,
       userAgent: req.headers.get("user-agent") || undefined,
     });
+
+    revalidateHomeProductsCache();
 
     return NextResponse.json({ status: "success", imageUrl, replacedCloudinary: replacingCloudinary });
   } catch (error) {

@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { sanitizeInput } from "@/lib/security";
 
 type PriceItem = {
@@ -141,6 +142,10 @@ export async function POST(req: NextRequest) {
         },
       });
       createdCount++;
+    }
+
+    if (createdCount + updatedCount > 0) {
+      revalidateHomeProductsCache();
     }
 
     return NextResponse.json({
