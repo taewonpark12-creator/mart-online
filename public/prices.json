@@ -120196,7 +120196,7 @@
   },
   {
     "barcode": "9100000113517",
-    "name": "딱딱이복숭아(5개/1팩)행사",
+    "name": "딱딱이복숭아(5개/1팩)",
     "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
@@ -121241,7 +121241,7 @@
   {
     "barcode": "9100000218588",
     "name": "샤인머스켓(2kg/1박스)행사",
-    "normalPrice": 12800,
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121762,7 +121762,7 @@
   },
   {
     "barcode": "9100000219226",
-    "name": "배(3개/1봉)행사",
+    "name": "햇배(3개/1봉)",
     "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
