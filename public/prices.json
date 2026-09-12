@@ -120907,8 +120907,8 @@
   },
   {
     "barcode": "9100000217017",
-    "name": "송산포도(3kg/1박스)",
-    "normalPrice": 19800,
+    "name": "화동명산포도(3kg/1박스)",
+    "normalPrice": 24800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121420,8 +121420,8 @@
   },
   {
     "barcode": "9100000218830",
-    "name": "상주포도(3kg/1박스)행사",
-    "normalPrice": 999990,
+    "name": "송산포도(3kg/1박스)",
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121528,7 +121528,7 @@
   },
   {
     "barcode": "9100000218953",
-    "name": "상주포도(3kg/1박스)",
+    "name": "모동백화명산포도(3kg/1박스)",
     "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
