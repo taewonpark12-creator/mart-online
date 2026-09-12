@@ -28,7 +28,9 @@ import { sortOrderItemsByProductCategory } from "@/lib/order-item-category-sort"
 const ORDER_NOTIFICATION_ENABLED_STORAGE_KEY = "adminOrderNotificationEnabled";
 const ORDER_NOTIFICATION_SESSION_ENABLED_STORAGE_KEY = "adminOrderNotificationSessionEnabled";
 const ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY = "adminOrderNotificationKnownPendingIds";
-const ORDER_NOTIFICATION_REPEAT_MS = 60000;
+const ORDER_NOTIFICATION_REPEAT_MS = 30000;
+const ORDER_NOTIFICATION_BURST_COUNT = 3;
+const ORDER_NOTIFICATION_BURST_DELAY_MS = 2000;
 const NEW_ORDER_PUSH_MESSAGE_TYPE = "NEW_ORDER_PUSH";
 
 type OrderItem = {
@@ -594,6 +596,7 @@ export default function OrdersPage() {
   const [loadingOrderDetail, setLoadingOrderDetail] = useState(false);
   const orderNotificationAudioRef = useRef<HTMLAudioElement | null>(null);
   const notificationRepeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const notificationBurstTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const notificationEnabledRef = useRef(false);
   const hasPendingOrdersRef = useRef(false);
   const pendingCountRef = useRef(0);
@@ -773,6 +776,8 @@ export default function OrdersPage() {
           );
         } else {
           window.localStorage.removeItem(ORDER_NOTIFICATION_KNOWN_PENDING_IDS_STORAGE_KEY);
+          notificationBurstTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+          notificationBurstTimeoutsRef.current = [];
           if (notificationRepeatIntervalRef.current) {
             clearInterval(notificationRepeatIntervalRef.current);
             notificationRepeatIntervalRef.current = null;
@@ -832,6 +837,11 @@ export default function OrdersPage() {
     return orderNotificationAudioRef.current;
   }, []);
 
+  const clearNotificationBurstTimeouts = useCallback(() => {
+    notificationBurstTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+    notificationBurstTimeoutsRef.current = [];
+  }, []);
+
   const playOrderNotificationSound = useCallback(async () => {
     const audio = getOrderNotificationAudio();
     if (!audio) return false;
@@ -848,6 +858,7 @@ export default function OrdersPage() {
       setSoundBlocked(true);
       notificationEnabledRef.current = false;
       setNotificationEnabled(false);
+      clearNotificationBurstTimeouts();
       if (notificationRepeatIntervalRef.current) {
         clearInterval(notificationRepeatIntervalRef.current);
         notificationRepeatIntervalRef.current = null;
@@ -865,16 +876,39 @@ export default function OrdersPage() {
       });
       return false;
     }
-  }, [getOrderNotificationAudio]);
+  }, [clearNotificationBurstTimeouts, getOrderNotificationAudio]);
 
   const stopNotificationRepeat = useCallback(() => {
+    clearNotificationBurstTimeouts();
     if (notificationRepeatIntervalRef.current) {
       clearInterval(notificationRepeatIntervalRef.current);
       notificationRepeatIntervalRef.current = null;
     }
     setNotificationRepeatActive(false);
     console.log("[ORDER_NOTIFICATION_REPEAT_STOP]");
-  }, []);
+  }, [clearNotificationBurstTimeouts]);
+
+  const playNotificationBurst = useCallback((count = 1) => {
+    clearNotificationBurstTimeouts();
+
+    if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) return;
+
+    void playOrderNotificationSound();
+
+    for (let index = 1; index < count; index += 1) {
+      const timeout = setTimeout(() => {
+        notificationBurstTimeoutsRef.current = notificationBurstTimeoutsRef.current.filter(
+          (currentTimeout) => currentTimeout !== timeout,
+        );
+
+        if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) return;
+
+        void playOrderNotificationSound();
+      }, ORDER_NOTIFICATION_BURST_DELAY_MS * index);
+
+      notificationBurstTimeoutsRef.current.push(timeout);
+    }
+  }, [clearNotificationBurstTimeouts, playOrderNotificationSound]);
 
   const syncPendingNotificationState = useCallback((nextOrders: Order[]) => {
     const nextPendingIds = new Set(
@@ -905,7 +939,7 @@ export default function OrdersPage() {
     }
   }, [stopNotificationRepeat]);
 
-  const startNotificationRepeat = useCallback((restart = false) => {
+  const startNotificationRepeat = useCallback((restart = false, burstCount = 1) => {
     if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) return;
 
     if (notificationRepeatIntervalRef.current) {
@@ -916,7 +950,7 @@ export default function OrdersPage() {
 
     setNotificationRepeatActive(true);
     console.log("[ORDER_NOTIFICATION_REPEAT_START]");
-    void playOrderNotificationSound();
+    playNotificationBurst(burstCount);
 
     notificationRepeatIntervalRef.current = setInterval(() => {
       if (!notificationEnabledRef.current || !hasPendingOrdersRef.current) {
@@ -924,9 +958,9 @@ export default function OrdersPage() {
         return;
       }
 
-      void playOrderNotificationSound();
+      playNotificationBurst(1);
     }, ORDER_NOTIFICATION_REPEAT_MS);
-  }, [playOrderNotificationSound, stopNotificationRepeat]);
+  }, [playNotificationBurst, stopNotificationRepeat]);
 
   const registerAdminPushSubscription = useCallback(async () => {
     if (typeof window === "undefined") return false;
@@ -1092,7 +1126,7 @@ export default function OrdersPage() {
     void fetchTodaySummary();
 
     if (notificationEnabledRef.current) {
-      startNotificationRepeat();
+      startNotificationRepeat(true, ORDER_NOTIFICATION_BURST_COUNT);
     }
   }, [fetchOrders, fetchTodaySummary, startNotificationRepeat]);
 
@@ -1411,7 +1445,7 @@ export default function OrdersPage() {
         ? {
             tone: "yellow",
             title: "알림 작동 중",
-            description: `주문접수 ${pendingCount}건이 남아 있어 10초마다 알림음을 재생합니다.`,
+            description: `주문접수 ${pendingCount}건이 남아 있어 30초마다 알림음을 재생합니다.`,
           }
         : {
             tone: "green",
