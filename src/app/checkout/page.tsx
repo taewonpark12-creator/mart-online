@@ -52,7 +52,6 @@ const INITIAL_FORM = {
   memo: "",
   outOfStockPolicy: "CONTACT",
   paymentMethod: "ONSITE_CARD",
-  saveInfo: false,
 };
 
 type CheckoutForm = typeof INITIAL_FORM;
@@ -274,6 +273,43 @@ export default function CheckoutPage() {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
+  const saveDeliveryInfoAfterOrderSuccess = () => {
+    let previousDeliveryAddress = "";
+
+    try {
+      const savedInfo = localStorage.getItem("deliveryInfo");
+      if (savedInfo) {
+        const parsed = JSON.parse(savedInfo);
+        previousDeliveryAddress = parsed.deliveryAddress || "";
+      }
+    } catch {
+      /* ignore */
+    }
+
+    try {
+      localStorage.setItem(
+        "deliveryInfo",
+        JSON.stringify({
+          customerName: form.customerName.trim(),
+          customerPhone: form.customerPhone.trim(),
+          deliveryAddress: isDelivery ? form.deliveryAddress.trim() : previousDeliveryAddress,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleDeleteSavedInfo = () => {
+    if (!window.confirm("저장된 주문자 정보를 삭제하시겠습니까?")) return;
+
+    try {
+      localStorage.removeItem("deliveryInfo");
+    } catch {
+      /* ignore */
+    }
+  };
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!canSubmit || submitLockRef.current) return;
@@ -288,22 +324,6 @@ export default function CheckoutPage() {
     setSubmitting(true);
     setIsOrderSuccess(false);
     setError("");
-
-    // Save delivery info if requested
-    if (isDelivery && form.saveInfo) {
-      try {
-        localStorage.setItem(
-          "deliveryInfo",
-          JSON.stringify({
-            customerName: form.customerName.trim(),
-            customerPhone: form.customerPhone.trim(),
-            deliveryAddress: form.deliveryAddress.trim(),
-          }),
-        );
-      } catch {
-        /* ignore */
-      }
-    }
 
     const payload = {
       customerName: form.customerName.trim(),
@@ -332,6 +352,7 @@ export default function CheckoutPage() {
 
       const orderNumber = result.orderNumber;
 
+      saveDeliveryInfoAfterOrderSuccess();
       setIsOrderSuccess(true);
       setSkipEmptyCartCheck(true);
       try {
@@ -431,6 +452,18 @@ export default function CheckoutPage() {
               placeholder="전화번호"
               className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
             />
+            <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs font-semibold text-gray-500">
+                입력한 정보는 다음 주문 편의를 위해 이 기기에 저장됩니다.
+              </p>
+              <button
+                type="button"
+                onClick={handleDeleteSavedInfo}
+                className="shrink-0 text-xs font-semibold text-gray-500 underline underline-offset-2"
+              >
+                저장정보 삭제
+              </button>
+            </div>
           </fieldset>
 
           {isDelivery ? (
@@ -449,15 +482,6 @@ export default function CheckoutPage() {
                   주문은 {formatPrice(minimumOrderAmount)} 이상이어야 합니다.
                 </p>
               )}
-              <label className="flex min-h-[48px] items-center gap-3 text-base">
-                <input
-                  type="checkbox"
-                  checked={form.saveInfo}
-                  onChange={(event) => update("saveInfo", event.target.checked)}
-                  className="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-400"
-                />
-                <span className="text-gray-700">기본정보 저장</span>
-              </label>
             </fieldset>
           ) : (
             <fieldset className="space-y-3">
