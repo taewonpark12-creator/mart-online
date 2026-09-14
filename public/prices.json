@@ -19434,10 +19434,10 @@
     "barcode": "8801030995401",
     "name": "백화수복1.8L",
     "normalPrice": 12800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 11900,
+    "discountRate": 7,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
   },
   {
     "barcode": "8801030995418",
@@ -19452,10 +19452,10 @@
     "barcode": "8801030995425",
     "name": "백화수복700ml",
     "normalPrice": 6000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 5500,
+    "discountRate": 8,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
   },
   {
     "barcode": "8801030995470",
@@ -98346,10 +98346,10 @@
     "barcode": "8809065313047",
     "name": "전통민속차례주700ml",
     "normalPrice": 4300,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 3980,
+    "discountRate": 7,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
   },
   {
     "barcode": "8809065655116",
