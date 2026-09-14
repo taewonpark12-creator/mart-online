@@ -59889,10 +59889,10 @@
     "barcode": "8801114141748",
     "name": "풀무원)가쓰오생우동4인",
     "normalPrice": 10500,
-    "eventPrice": 8980,
-    "discountRate": 14,
-    "saleStartDate": "2019-11-13",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801114142158",
@@ -87032,8 +87032,8 @@
   {
     "barcode": "8803712140871",
     "name": "목우촌)빅라운드햄600g",
-    "normalPrice": 9000,
-    "eventPrice": 7980,
+    "normalPrice": 9500,
+    "eventPrice": 8500,
     "discountRate": 11,
     "saleStartDate": "2021-05-01",
     "saleEndDate": "2026-12-31"
