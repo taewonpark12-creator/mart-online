@@ -16713,6 +16713,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801019209499",
+    "name": "해태)자유시간로얄밀크티30g",
+    "normalPrice": 1300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801019307089",
     "name": "해태)크림웨하스40g",
     "normalPrice": 900,
@@ -17598,6 +17607,24 @@
     "barcode": "8801019320620",
     "name": "해태)오예스우베라떼360g",
     "normalPrice": 6800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801019320743",
+    "name": "해태)오예스베이크하우스280g",
+    "normalPrice": 5800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801019320767",
+    "name": "해태)샌드에이스크림라떼204g",
+    "normalPrice": 5200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -59322,6 +59349,15 @@
     "barcode": "8801111965439",
     "name": "크라운)빅파이살구324g",
     "normalPrice": 4800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801111965538",
+    "name": "크라운)홍삼밤양갱150g",
+    "normalPrice": 4500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
