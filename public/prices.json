@@ -119737,8 +119737,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)행사",
-    "normalPrice": 980,
+    "name": "새송이버섯(1봉)",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119972,7 +119972,7 @@
   {
     "barcode": "910000000665",
     "name": "자두(1팩)행사",
-    "normalPrice": 6980,
+    "normalPrice": 5980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120916,8 +120916,8 @@
   },
   {
     "barcode": "9100000217000",
-    "name": "하우스귤(1팩)",
-    "normalPrice": 4980,
+    "name": "하우스귤(3팩)행사",
+    "normalPrice": 9800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121556,7 +121556,7 @@
   {
     "barcode": "9100000218960",
     "name": "양배추(1통)행사",
-    "normalPrice": 999990,
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
