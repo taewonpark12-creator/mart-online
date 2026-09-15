@@ -69,7 +69,18 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    let result = await findProducts({
+    const prices = q ? await getPricesJson() : [];
+    const normalizedQuery = q.toLowerCase();
+    const currentNameMatchedBarcodes = Array.from(
+      new Set(
+        prices
+          .filter(p => p.name && p.name.toLowerCase().includes(normalizedQuery))
+          .map(p => p.barcode),
+      ),
+    );
+    const syncedNameBarcodes = Array.from(new Set(prices.map(p => p.barcode)));
+
+    const result = await findProducts({
       category,
       q,
       activeOnly,
@@ -80,48 +91,10 @@ export async function GET(req: NextRequest) {
       outOfStockOnly,
       includeOutOfStock,
       customerSearchFieldsOnly: !requiresAdmin,
+      currentNameMatchedBarcodes,
+      syncedNameBarcodes,
       page,
     });
-
-    // 검색어가 있는 경우 prices.json의 이름도 검색 대상에 포함
-    if (q) {
-      const prices = await getPricesJson();
-      const matchedBarcodes = prices
-        .filter(p => p.name && p.name.toLowerCase().includes(q.toLowerCase()))
-        .map(p => p.barcode);
-
-      if (matchedBarcodes.length > 0) {
-        const priceMatchedProducts = await prisma.product.findMany({
-          where: {
-            barcode: { in: matchedBarcodes },
-            ...(activeOnly ? { isActive: true } : {}),
-            ...(recommendedOnly ? { isRecommended: true } : {}),
-            ...(excludeRecommended ? { isRecommended: false } : {}),
-            ...(popularOnly ? { isPopular: true } : {}),
-            ...(onlineExclusiveOnly ? { isOnlineExclusive: true } : {}),
-            ...(outOfStockOnly ? { isOutOfStock: true } : {}),
-            ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
-            ...(category && category !== "전체" ? { category } : {}),
-          },
-          orderBy: [{ category: "asc" }, { name: "asc" }],
-          take: 100,
-        });
-
-        // DB 검색 결과와 prices.json 검색 결과 병합 (barcode 기준 중복 제거)
-        const dbBarcodes = new Set(result.products.map(p => p.barcode));
-        const newProducts = priceMatchedProducts
-          .filter(p => !dbBarcodes.has(p.barcode))
-          .map(serializeProduct);
-
-        const mergedProducts = [...result.products, ...newProducts];
-        
-        result = {
-          products: mergedProducts,
-          hasMore: false,
-          total: mergedProducts.length,
-        };
-      }
-    }
 
     return NextResponse.json(result);
   } catch (error) {
