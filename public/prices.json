@@ -13854,10 +13854,10 @@
     "barcode": "8801007356273",
     "name": "비비고)한입떡갈비282g*2",
     "normalPrice": 12000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 11000,
+    "discountRate": 8,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
   },
   {
     "barcode": "8801007359694",
@@ -76574,7 +76574,7 @@
   {
     "barcode": "8801392011887",
     "name": "비비고)왕교자315g*2입",
-    "normalPrice": 7480,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
