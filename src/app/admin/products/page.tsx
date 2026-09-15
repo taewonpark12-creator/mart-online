@@ -207,7 +207,7 @@ const ProductListItem = memo(function ProductListItem({
   onDelete: () => void;
 }) {
   const { priceData } = usePriceData(product.barcode);
-  const displayName = product.name;
+  const displayName = priceData?.name || product.name;
   const displayPrice = priceData?.eventPrice && priceData.eventPrice > 0 ? priceData.eventPrice : priceData?.normalPrice || Number(product.price) || 0;
 
   return (
@@ -329,7 +329,7 @@ function ProductStatusController({
     );
   }
 
-  const displayName = product.name;
+  const displayName = priceData?.name || product.name;
   const displayPrice = priceData?.eventPrice && priceData.eventPrice > 0 ? priceData.eventPrice : priceData?.normalPrice || Number(product.price) || 0;
 
   return (

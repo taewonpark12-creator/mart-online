@@ -8,6 +8,23 @@ function toNonNegativeInt(value: unknown, fallback = 0) {
   return Number.isFinite(next) && next >= 0 ? Math.floor(next) : fallback;
 }
 
+async function getPricesJson(): Promise<Array<{ barcode: string; name: string }>> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://lovemart.kr';
+    const response = await fetch(`${baseUrl}/prices.json`, { cache: 'no-store' });
+    if (!response.ok) return [];
+    const prices = await response.json();
+    if (!Array.isArray(prices)) return [];
+    return prices.map((p: any) => ({
+      barcode: String(p.barcode || ''),
+      name: String(p.name || ''),
+    })).filter(p => p.barcode && p.name);
+  } catch (error) {
+    console.error('prices.json load error:', error);
+    return [];
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     if (!(await isAdminAuthenticated())) {
@@ -26,6 +43,17 @@ export async function GET(req: NextRequest) {
     const outOfStockOnly = searchParams.get("outOfStock") === "true";
     const includeOutOfStock = searchParams.get("includeOutOfStock") === "true";
 
+    const prices = q ? await getPricesJson() : [];
+    const normalizedQuery = q.toLowerCase();
+    const currentNameMatchedBarcodes = Array.from(
+      new Set(
+        prices
+          .filter(p => p.name && p.name.toLowerCase().includes(normalizedQuery))
+          .map(p => p.barcode),
+      ),
+    );
+    const syncedNameBarcodes = Array.from(new Set(prices.map(p => p.barcode)));
+
     const result = await findProductsForAdmin({
       category,
       q,
@@ -36,6 +64,8 @@ export async function GET(req: NextRequest) {
       onlineExclusiveOnly,
       outOfStockOnly,
       includeOutOfStock,
+      currentNameMatchedBarcodes,
+      syncedNameBarcodes,
       page,
     });
 

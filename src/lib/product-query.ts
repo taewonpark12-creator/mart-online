@@ -16,6 +16,8 @@ type ProductListOptions = {
   outOfStockOnly?: boolean;
   includeOutOfStock?: boolean;
   customerSearchFieldsOnly?: boolean;
+  currentNameMatchedBarcodes?: string[];
+  syncedNameBarcodes?: string[];
   page?: number;
 };
 
@@ -60,6 +62,8 @@ function getProductWhere(options: ProductListOptions): Prisma.ProductWhereInput 
     onlineExclusiveOnly = false,
     outOfStockOnly = false,
     includeOutOfStock = false,
+    currentNameMatchedBarcodes = [],
+    syncedNameBarcodes = [],
   } = options;
 
   // Trim category to handle potential whitespace issues
@@ -76,13 +80,34 @@ function getProductWhere(options: ProductListOptions): Prisma.ProductWhereInput 
   };
 
   if (q) {
+    const currentNameConditions: Prisma.ProductWhereInput[] =
+      currentNameMatchedBarcodes.length > 0
+        ? [{ barcode: { in: currentNameMatchedBarcodes } }]
+        : [];
+    const dbNameCondition: Prisma.ProductWhereInput =
+      syncedNameBarcodes.length > 0
+        ? {
+            AND: [
+              { name: { contains: q, mode: "insensitive" as const } },
+              {
+                OR: [
+                  { barcode: null },
+                  { barcode: "" },
+                  { NOT: { barcode: { in: syncedNameBarcodes } } },
+                ],
+              },
+            ],
+          }
+        : { name: { contains: q, mode: "insensitive" as const } };
+
     return {
       ...baseConditions,
       AND: [
         ...(trimmedCategory && trimmedCategory !== "전체" ? [{ category: trimmedCategory }] : []),
         {
           OR: [
-            { name: { contains: q, mode: "insensitive" as const } },
+            dbNameCondition,
+            ...currentNameConditions,
             { description: { contains: q, mode: "insensitive" as const } },
             { barcode: { contains: q, mode: "insensitive" as const } },
           ],
