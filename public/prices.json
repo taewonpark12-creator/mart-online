@@ -102627,15 +102627,6 @@
     "saleEndDate": ""
   },
   {
-    "barcode": "8809206335068",
-    "name": "햇미소)점보롤4입",
-    "normalPrice": 8500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
-  },
-  {
     "barcode": "8809206336355",
     "name": "햇이슬)점보롤4입",
     "normalPrice": 8500,
@@ -113456,7 +113447,7 @@
   {
     "barcode": "8809653990605",
     "name": "식탁보(절약형)250매",
-    "normalPrice": 19000,
+    "normalPrice": 19500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
