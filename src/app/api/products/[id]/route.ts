@@ -27,6 +27,27 @@ function toOptionalPositiveInt(value: unknown): number | null {
   return Math.floor(next);
 }
 
+function shouldClearCopiedDescription({
+  existingName,
+  existingDescription,
+  nextName,
+  nextDescription,
+}: {
+  existingName: string;
+  existingDescription: string | null;
+  nextName: string | undefined;
+  nextDescription: string | null | undefined;
+}) {
+  return (
+    nextName !== undefined &&
+    nextDescription !== undefined &&
+    nextName !== existingName &&
+    existingDescription !== null &&
+    existingDescription === existingName &&
+    nextDescription === existingDescription
+  );
+}
+
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     if (!(await isAdminAuthenticated())) {
@@ -60,9 +81,18 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: "카테고리를 입력해주세요." }, { status: 400 });
     }
 
+    const resolvedDescription = shouldClearCopiedDescription({
+      existingName: existing.name,
+      existingDescription: existing.description,
+      nextName,
+      nextDescription,
+    })
+      ? null
+      : nextDescription;
+
     const updateData: any = {
       ...(nextName !== undefined && { name: nextName }),
-      ...(nextDescription !== undefined && { description: nextDescription }),
+      ...(resolvedDescription !== undefined && { description: resolvedDescription }),
       ...(nextBarcode !== undefined && { barcode: nextBarcode }),
       ...(nextCategory !== undefined && { category: nextCategory }),
       ...(body.imageUrl !== undefined && { imageUrl: nextImageUrl }),
