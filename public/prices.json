@@ -31971,10 +31971,10 @@
     "barcode": "8801047129035",
     "name": "동원)고추참치135g",
     "normalPrice": 3500,
-    "eventPrice": 2980,
-    "discountRate": 15,
-    "saleStartDate": "2019-07-31",
-    "saleEndDate": "2026-12-31"
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
   },
   {
     "barcode": "8801047141167",
