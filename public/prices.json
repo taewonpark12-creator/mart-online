@@ -31953,10 +31953,10 @@
     "barcode": "8801047123750",
     "name": "동원)고추참치150g",
     "normalPrice": 3800,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 22,
+    "saleStartDate": "2019-07-31",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801047123774",
@@ -63660,6 +63660,24 @@
     "barcode": "8801117002145",
     "name": "오리온)그래놀라미쯔스모어215g",
     "normalPrice": 5500,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801117002589",
+    "name": "오리온)듀얼바이오틱스왕꿈틀이63g",
+    "normalPrice": 1300,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
+    "barcode": "8801117002602",
+    "name": "오리온)듀얼바이오틱스왕꿈틀이367g",
+    "normalPrice": 7500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
