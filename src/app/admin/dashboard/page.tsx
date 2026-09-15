@@ -384,14 +384,16 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={item.date}
-                      className="flex-1 flex flex-col items-center gap-1"
+                      className="flex-1 h-full flex flex-col items-center gap-1"
                     >
-                      <div
-                        className="w-full bg-green-500 rounded-t hover:bg-green-600 transition cursor-pointer relative group"
-                        style={{ height: `${Math.max(height, 1)}%` }}
-                      >
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">
-                          {item.sales.toLocaleString()}원 ({item.orderCount}건)
+                      <div className="flex-1 w-full flex items-end">
+                        <div
+                          className="w-full bg-green-500 rounded-t hover:bg-green-600 transition cursor-pointer relative group"
+                          style={{ height: `${Math.max(height, 1)}%` }}
+                        >
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">
+                            {item.sales.toLocaleString()}원 ({item.orderCount}건)
+                          </div>
                         </div>
                       </div>
 

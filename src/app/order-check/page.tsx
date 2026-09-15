@@ -17,8 +17,8 @@ const FULFILLMENT_TYPE_LABEL: Record<string, string> = {
 };
 
 const PAYMENT_METHOD_LABEL: Record<string, string> = {
-  ONSITE_CARD: "매장 카드결제",
-  ONSITE_CASH: "매장 현금결제",
+  ONSITE_CARD: "만나서 카드결제",
+  ONSITE_CASH: "만나서 현금결제",
   BANK_TRANSFER: "계좌이체",
 };
 
