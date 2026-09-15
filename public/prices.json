@@ -50904,6 +50904,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801069424156",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801069424163",
     "name": "악마의유혹바닐라라떼200ml",
     "normalPrice": 1300,
