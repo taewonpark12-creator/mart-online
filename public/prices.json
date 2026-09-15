@@ -119819,7 +119819,7 @@
   {
     "barcode": "9100000003306",
     "name": "알배기배추(1통)행사",
-    "normalPrice": 999990,
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121574,7 +121574,7 @@
   {
     "barcode": "9100000218960",
     "name": "양배추(1통)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121960,7 +121960,7 @@
   },
   {
     "barcode": "9101003821",
-    "name": "팩느타리버섯(1팩)",
+    "name": "팩느타리버섯(2팩)행사",
     "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
