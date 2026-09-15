@@ -199,9 +199,6 @@ function OrderCompleteContent() {
             {order.outOfStockPolicy && (
               <p><span className="font-semibold text-gray-600">품절 시 처리방법:</span> {OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || "-"}</p>
             )}
-            {order.memo && (
-              <p><span className="font-semibold text-gray-600">요청사항:</span> {order.memo}</p>
-            )}
           </div>
         </section>
 

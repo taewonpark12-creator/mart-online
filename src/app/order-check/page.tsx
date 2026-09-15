@@ -64,7 +64,6 @@ type Order = {
   status: string;
   totalAmount: number;
   createdAt: string;
-  memo: string | null;
   paymentMethod: string | null;
   outOfStockPolicy: string | null;
   items: OrderItem[];
@@ -180,9 +179,6 @@ export default function OrderCheckPage() {
                 )}
                 {order.outOfStockPolicy && (
                   <p><span className="font-semibold text-gray-600">품절 시 처리:</span> {OUT_OF_STOCK_POLICY_LABEL[order.outOfStockPolicy] || order.outOfStockPolicy}</p>
-                )}
-                {order.memo && (
-                  <p><span className="font-semibold text-gray-600">요청사항:</span> {order.memo}</p>
                 )}
               </div>
 

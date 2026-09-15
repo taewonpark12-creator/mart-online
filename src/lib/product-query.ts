@@ -217,11 +217,6 @@ export async function findProductsForAdmin(options: Omit<ProductListOptions, 'cu
   const whereClause = getProductWhere(options);
   const orderBy = getProductOrderBy(options);
 
-  console.log('[DEBUG] findProductsForAdmin - Options:', options);
-  console.log('[DEBUG] findProductsForAdmin - Where clause:', JSON.stringify(whereClause, null, 2));
-  console.log('[DEBUG] findProductsForAdmin - OrderBy:', JSON.stringify(orderBy, null, 2));
-  console.log('[DEBUG] findProductsForAdmin - Pagination:', { page, skip, take: PAGE_SIZE });
-
   const [products, totalCount] = await Promise.all([
     prisma.product.findMany({
       where: whereClause,
@@ -233,12 +228,6 @@ export async function findProductsForAdmin(options: Omit<ProductListOptions, 'cu
       where: whereClause,
     }),
   ]);
-
-  console.log('[DEBUG] findProductsForAdmin - Result:', {
-    productsReturned: products.length,
-    totalCount,
-    hasMore: skip + products.length < totalCount,
-  });
 
   return {
     products: products.map(serializeProduct),

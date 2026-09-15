@@ -1,7 +1,7 @@
 ﻿import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { getKoreaDateRangeUtc } from "@/lib/korea-date";
+import { getKoreaDateRangeUtc, getKoreaDaysAgoString, getKoreaTodayString } from "@/lib/korea-date";
 
 export async function GET(req: NextRequest) {
   try {
@@ -26,6 +26,8 @@ export async function GET(req: NextRequest) {
     const activeItemWhere = {
       itemStatus: "ACTIVE" as const,
     };
+
+    const getKoreaDayRangeUtc = (dateString: string) => getKoreaDateRangeUtc(dateString, dateString);
 
     // Helper function to calculate active quantity (total - cancelled)
     // For fully cancelled items, this should return 0 regardless of cancelledQuantity value
@@ -100,23 +102,27 @@ export async function GET(req: NextRequest) {
     }> = [];
 
     const days = period === "daily" ? 7 : 30;
+    const chartEndDate = endDate || getKoreaTodayString();
 
     for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      date.setHours(0, 0, 0, 0);
+      const date = new Date(`${chartEndDate}T00:00:00.000+09:00`);
+      date.setUTCDate(date.getUTCDate() - i);
 
-      const nextDate = new Date(date);
-      nextDate.setDate(nextDate.getDate() + 1);
+      const dateString = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(date);
+      const { startUtc: dayStartUtc, endUtc: dayEndUtc } = getKoreaDayRangeUtc(dateString);
 
       const orders = await prisma.order.findMany({
         where: {
           createdAt: {
-            gte: date,
-            lt: nextDate,
+            gte: dayStartUtc ?? undefined,
+            lte: dayEndUtc ?? undefined,
           },
           status: "DELIVERED",
-          ...(startUtc && endUtc ? { createdAt: { gte: startUtc, lte: endUtc } } : {}),
         },
         include: {
           items: {
@@ -141,7 +147,7 @@ export async function GET(req: NextRequest) {
       );
 
       salesData.push({
-        date: date.toISOString().split("T")[0],
+        date: dateString,
         sales: totalSales,
         orderCount: orders.length,
       });
@@ -154,6 +160,11 @@ export async function GET(req: NextRequest) {
     }> = [];
 
     try {
+      const { startUtc: popularStartUtc, endUtc: popularEndUtc } = getKoreaDateRangeUtc(
+        getKoreaDaysAgoString(29),
+        getKoreaTodayString(),
+      );
+
       // Get all active items with cancelledQuantity to calculate actual sold quantities
       const allActiveItems = await prisma.orderItem.findMany({
         where: {
@@ -161,6 +172,10 @@ export async function GET(req: NextRequest) {
           order: {
             status: {
               not: "CANCELLED",
+            },
+            createdAt: {
+              gte: popularStartUtc ?? undefined,
+              lte: popularEndUtc ?? undefined,
             },
           },
         },

@@ -19,7 +19,6 @@ function serializeOrder(order: {
   status: string;
   totalAmount: number;
   createdAt: Date;
-  memo: string | null;
   paymentMethod: string | null;
   outOfStockPolicy: string | null;
   items: Array<{
@@ -43,7 +42,6 @@ function serializeOrder(order: {
     status: order.status,
     totalAmount: Number(order.totalAmount ?? 0),
     createdAt: order.createdAt.toISOString(),
-    memo: order.memo ?? null,
     paymentMethod: order.paymentMethod ?? null,
     outOfStockPolicy: order.outOfStockPolicy ?? null,
     items: order.items.map((item) => ({
@@ -179,9 +177,26 @@ export async function GET(req: NextRequest) {
             : []),
         ],
       },
-      include: {
+      select: {
+        id: true,
+        orderNumber: true,
+        customerName: true,
+        customerPhone: true,
+        fulfillmentType: true,
+        deliveryAddress: true,
+        pickupTime: true,
+        status: true,
+        totalAmount: true,
+        createdAt: true,
+        paymentMethod: true,
+        outOfStockPolicy: true,
         items: {
-          include: {
+          select: {
+            id: true,
+            productId: true,
+            productName: true,
+            unitPrice: true,
+            quantity: true,
             product: {
               select: {
                 barcode: true,

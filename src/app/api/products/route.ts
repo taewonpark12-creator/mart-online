@@ -6,26 +6,48 @@ import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { sanitizeInput, validateAmount } from "@/lib/security";
 import { findProducts, serializeProduct } from "@/lib/product-query";
 
+type SearchPriceRow = {
+  barcode: string;
+  name: string;
+};
+
+let cachedPricesJsonPromise: Promise<SearchPriceRow[]> | null = null;
+
 function toNonNegativeInt(value: unknown, fallback = 0) {
   const next = Number(value);
   return Number.isFinite(next) && next >= 0 ? Math.floor(next) : fallback;
 }
 
-async function getPricesJson(): Promise<Array<{ barcode: string; name: string }>> {
-  try {
+function getPricesJson(): Promise<SearchPriceRow[]> {
+  if (!cachedPricesJsonPromise) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://lovemart.kr';
-    const response = await fetch(`${baseUrl}/prices.json`, { cache: 'no-store' });
-    if (!response.ok) return [];
-    const prices = await response.json();
-    if (!Array.isArray(prices)) return [];
-    return prices.map((p: any) => ({
-      barcode: String(p.barcode || ''),
-      name: String(p.name || ''),
-    })).filter(p => p.barcode && p.name);
-  } catch (error) {
-    console.error('prices.json load error:', error);
-    return [];
+
+    cachedPricesJsonPromise = fetch(`${baseUrl}/prices.json`, { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`prices.json load failed: ${response.status}`);
+        }
+
+        const prices = await response.json();
+        if (!Array.isArray(prices)) {
+          throw new Error("prices.json must contain an array");
+        }
+
+        return prices
+          .map((p: any) => ({
+            barcode: String(p.barcode || ''),
+            name: String(p.name || ''),
+          }))
+          .filter(p => p.barcode && p.name);
+      })
+      .catch((error) => {
+        cachedPricesJsonPromise = null;
+        console.error('prices.json load error:', error);
+        return [];
+      });
   }
+
+  return cachedPricesJsonPromise;
 }
 
 export async function GET(req: NextRequest) {

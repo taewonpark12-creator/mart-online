@@ -44,19 +44,6 @@ export async function GET(req: NextRequest) {
     const outOfStockOnly = searchParams.get("outOfStock") === "true";
     const includeOutOfStock = searchParams.get("includeOutOfStock") === "true";
 
-    console.log('[DEBUG] API Parameters:', {
-      category,
-      q,
-      page,
-      activeOnly,
-      recommendedOnly,
-      excludeRecommended,
-      popularOnly,
-      onlineExclusiveOnly,
-      outOfStockOnly,
-      includeOutOfStock,
-    });
-
     let result = await findProductsForAdmin({
       category,
       q,
@@ -69,85 +56,6 @@ export async function GET(req: NextRequest) {
       includeOutOfStock,
       page,
     });
-
-    console.log('[DEBUG] Query Result:', {
-      total: result.total,
-      hasMore: result.hasMore,
-      productCount: result.products.length,
-    });
-
-    // Check if 포도 and 찰옥수수 are in the result
-    const 포도InResult = result.products.some(p => p.name.includes('포도'));
-    const 찰옥수수InResult = result.products.some(p => p.name.includes('찰옥수수'));
-    console.log('[DEBUG] Problematic products in result:', {
-      포도: 포도InResult,
-      찰옥수수: 찰옥수수InResult,
-    });
-
-    // Check actual DB values of problematic products
-    const problematicProducts = await prisma.product.findMany({
-      where: {
-        OR: [
-          { name: { contains: '포도' } },
-          { name: { contains: '찰옥수수' } },
-        ],
-      },
-      select: {
-        id: true,
-        name: true,
-        category: true,
-        isActive: true,
-        isOutOfStock: true,
-        isRecommended: true,
-        isPopular: true,
-        isOnlineExclusive: true,
-      },
-    });
-
-    console.log('[DEBUG] Problematic products in DB:', JSON.stringify(problematicProducts, null, 2));
-
-    // Compare: Query with category only vs query without category
-    if (category && category !== "전체") {
-      const withCategory = await prisma.product.findMany({
-        where: {
-          OR: [
-            { name: { contains: '포도' } },
-            { name: { contains: '찰옥수수' } },
-          ],
-          category: category,
-          ...(activeOnly ? { isActive: true } : {}),
-          ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
-        },
-        select: {
-          id: true,
-          name: true,
-          category: true,
-          isActive: true,
-          isOutOfStock: true,
-        },
-      });
-
-      const withoutCategory = await prisma.product.findMany({
-        where: {
-          OR: [
-            { name: { contains: '포도' } },
-            { name: { contains: '찰옥수수' } },
-          ],
-          ...(activeOnly ? { isActive: true } : {}),
-          ...(!outOfStockOnly && !includeOutOfStock ? { isOutOfStock: false } : {}),
-        },
-        select: {
-          id: true,
-          name: true,
-          category: true,
-          isActive: true,
-          isOutOfStock: true,
-        },
-      });
-
-      console.log('[DEBUG] Comparison - With category filter:', JSON.stringify(withCategory, null, 2));
-      console.log('[DEBUG] Comparison - Without category filter:', JSON.stringify(withoutCategory, null, 2));
-    }
 
     // 검색어가 있는 경우 prices.json의 이름도 검색 대상에 포함
     if (q) {

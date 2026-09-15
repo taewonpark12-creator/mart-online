@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   isAdminPasswordConfigured,
+  isAdminSessionSecretConfigured,
+  createAdminSessionCookieValue,
   verifyAdminPassword,
   ADMIN_COOKIE_NAME,
   ADMIN_LAST_LOGIN_COOKIE_NAME,
@@ -19,6 +21,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!isAdminSessionSecretConfigured()) {
+      return NextResponse.json(
+        { error: "관리자 세션 보안 설정이 필요합니다." },
+        { status: 503 },
+      );
+    }
+
     if (!verifyAdminPassword(password)) {
       return NextResponse.json(
         { error: "비밀번호가 올바르지 않습니다. 다시 시도해주세요." },
@@ -27,6 +36,15 @@ export async function POST(req: NextRequest) {
     }
 
     const loginAt = new Date().toISOString();
+    const sessionCookieValue = createAdminSessionCookieValue();
+
+    if (!sessionCookieValue) {
+      return NextResponse.json(
+        { error: "관리자 세션을 생성하지 못했습니다." },
+        { status: 503 },
+      );
+    }
+
     const res = NextResponse.json({ success: true, lastLoginAt: loginAt });
     const cookieOptions = {
       httpOnly: true,
@@ -36,7 +54,7 @@ export async function POST(req: NextRequest) {
       path: "/",
     };
 
-    res.cookies.set(ADMIN_COOKIE_NAME, "authenticated", cookieOptions);
+    res.cookies.set(ADMIN_COOKIE_NAME, sessionCookieValue, cookieOptions);
     res.cookies.set(ADMIN_LAST_LOGIN_COOKIE_NAME, loginAt, cookieOptions);
 
     return res;

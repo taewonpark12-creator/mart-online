@@ -5,17 +5,22 @@ import { revalidateHomeProductsCache } from "@/lib/home-products-cache";
 import { prisma } from "@/lib/prisma";
 import { sanitizeInput } from "@/lib/security";
 
-const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID ?? "5CTXJMXh6ZfTnjgxw5og";
-const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET ?? "Pmg86kSmBd";
+const NAVER_API_HUB_CLIENT_ID = process.env.NAVER_API_HUB_CLIENT_ID;
+const NAVER_API_HUB_CLIENT_SECRET = process.env.NAVER_API_HUB_CLIENT_SECRET;
 
 async function searchProductImages(query: string): Promise<string[]> {
-  const url = `https://openapi.naver.com/v1/search/shop.json?query=${encodeURIComponent(
+  if (!NAVER_API_HUB_CLIENT_ID || !NAVER_API_HUB_CLIENT_SECRET) {
+    throw new Error("Naver API Hub credentials are not configured");
+  }
+
+  const url = `https://naverapihub.apigw.ntruss.com/search/v1/image?query=${encodeURIComponent(
     query,
-  )}&display=10&sort=sim`;
+  )}&display=10&format=json`;
   const response = await fetch(url, {
+    method: "GET",
     headers: {
-      "X-Naver-Client-Id": NAVER_CLIENT_ID,
-      "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
+      "X-NCP-APIGW-API-KEY-ID": NAVER_API_HUB_CLIENT_ID,
+      "X-NCP-APIGW-API-KEY": NAVER_API_HUB_CLIENT_SECRET,
     },
     signal: AbortSignal.timeout(10000),
   });
@@ -27,7 +32,7 @@ async function searchProductImages(query: string): Promise<string[]> {
   const data = await response.json();
   return (
     data?.items
-      ?.map((item: { image?: unknown }) => item.image)
+      ?.map((item: { link?: unknown }) => item.link)
       .filter((image: unknown): image is string =>
         typeof image === "string" &&
         /^https?:\/\//.test(image) &&
