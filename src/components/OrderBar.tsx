@@ -16,13 +16,11 @@ export function OrderBar({ itemCount, totalAmount, onOrderClick }: Props) {
   const eventActive = isMinOrderEventActive();
   const remainingAmount = Math.max(minimumOrderAmount - totalAmount, 0);
   const minimumOrderMessage =
-    eventActive && remainingAmount > 0
-      ? `온라인 주문 오픈 이벤트! ${formatPrice(minimumOrderAmount)} 이상 주문 가능`
-      : remainingAmount === 0
-      ? "주문 가능"
-      : totalAmount === 0
-        ? `${formatPrice(minimumOrderAmount)} 이상 배송`
-        : `${formatPrice(remainingAmount)} 남음`;
+    remainingAmount > 0
+      ? `${formatPrice(remainingAmount)} 더 담으면 주문할 수 있어요.`
+      : eventActive
+        ? `오픈 이벤트 최소 ${formatPrice(minimumOrderAmount)} 주문 가능`
+        : "주문 가능";
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-green-600 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">

@@ -1283,6 +1283,8 @@ export default function OrdersPage() {
         return;
       }
 
+      const updatedOrder = await res.json();
+      setSelectedOrderDetail(updatedOrder);
       setOrders((current) => {
         const nextOrders: Order[] = current.map((order) =>
           order.id === selectedOrderId ? { ...order, status: "CANCELLED" } : order,
@@ -1315,15 +1317,15 @@ export default function OrdersPage() {
 
     const cancelQuantityInput = prompt(
       `${item.productName || "상품"}의 품절취소 수량을 입력해주세요.\n\n주문 수량: ${totalQuantity}개\n이미 취소된 수량: ${currentCancelled}개\n취소 가능한 수량: ${remainingActive}개`,
-      remainingActive.toString()
+      "1"
     );
 
     if (cancelQuantityInput === null) return;
 
-    const cancelQuantity = parseInt(cancelQuantityInput, 10);
+    const cancelQuantity = Number(cancelQuantityInput);
 
     // Validate input is a valid positive integer
-    if (isNaN(cancelQuantity) || !Number.isInteger(cancelQuantity) || cancelQuantity <= 0) {
+    if (!Number.isFinite(cancelQuantity) || !Number.isInteger(cancelQuantity) || cancelQuantity <= 0) {
       alert("유효한 양의 정수 수량을 입력해주세요.");
       return;
     }

@@ -13,42 +13,10 @@ import {
 } from "@/lib/types";
 import { getMinimumOrderAmount } from "@/lib/min-order";
 
-const PICKUP_TIMES = [
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "12:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-  "19:00",
-  "19:30",
-  "20:00",
-  "20:30",
-  "21:00",
-  "21:30",
-  "22:00",
-  "22:30",
-];
-
 const INITIAL_FORM = {
   customerName: "",
   customerPhone: "",
-  fulfillmentType: "DELIVERY",
   deliveryAddress: "",
-  pickupTime: "09:30",
   memo: "",
   outOfStockPolicy: "CONTACT",
   paymentMethod: "ONSITE_CARD",
@@ -114,8 +82,8 @@ function getOrderErrorMessage(status: number, result: any) {
     return "배송 주소를 입력해주세요.";
   }
 
-  if (code === "MISSING_PICKUP_TIME") {
-    return "픽업 시간을 선택해주세요.";
+  if (code === "PICKUP_ORDER_DISABLED") {
+    return "현재 온라인 주문은 배송만 가능합니다.";
   }
 
   if (code === "INVALID_ITEMS") {
@@ -134,14 +102,6 @@ function getOrderErrorMessage(status: number, result: any) {
   }
 
   return SERVER_ERROR_MESSAGE;
-}
-
-function pickupLabel(value: string) {
-  const [hourText, minute] = value.split(":");
-  const hour = Number(hourText);
-  const period = hour >= 12 ? "오후" : "오전";
-  const displayHour = hour > 12 ? hour - 12 : hour;
-  return `${period} ${String(displayHour).padStart(2, "0")}:${minute}`;
 }
 
 function toOrderItem(item: any) {
@@ -254,10 +214,9 @@ export default function CheckoutPage() {
     };
   }, [items, loaded, replaceItems]);
 
-  const isDelivery = form.fulfillmentType === "DELIVERY";
   const minimumOrderAmount = getMinimumOrderAmount();
   const minimumOrderBlocked = totalAmount < minimumOrderAmount;
-  const shouldShowMinimumOrderNotice = minimumOrderBlocked && !submitting && !isOrderSuccess;
+  const amountShort = Math.max(minimumOrderAmount - totalAmount, 0);
   const canSubmit = Boolean(
     !submitting &&
     !isOrderSuccess &&
@@ -266,33 +225,31 @@ export default function CheckoutPage() {
     items.length > 0 &&
     form.customerName.trim() &&
     form.customerPhone.trim() &&
-    (isDelivery ? form.deliveryAddress.trim() : form.pickupTime)
+    form.deliveryAddress.trim()
   );
+  const submitDisabledReason = (() => {
+    if (canSubmit || submitting || isOrderSuccess) return "";
+    if (!form.customerName.trim()) return "이름을 입력해주세요.";
+    if (!form.customerPhone.trim()) return "연락처를 입력해주세요.";
+    if (!form.deliveryAddress.trim()) return "배송 주소를 입력해주세요.";
+    if (minimumOrderBlocked) return `${formatPrice(amountShort)} 더 담으면 주문할 수 있어요.`;
+    if (syncingPrices) return "상품 가격을 확인하고 있습니다.";
+    if (items.length === 0) return "장바구니에 상품을 담아주세요.";
+    return "";
+  })();
 
   const update = <K extends keyof CheckoutForm>(key: K, value: CheckoutForm[K]) => {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
   const saveDeliveryInfoAfterOrderSuccess = () => {
-    let previousDeliveryAddress = "";
-
-    try {
-      const savedInfo = localStorage.getItem("deliveryInfo");
-      if (savedInfo) {
-        const parsed = JSON.parse(savedInfo);
-        previousDeliveryAddress = parsed.deliveryAddress || "";
-      }
-    } catch {
-      /* ignore */
-    }
-
     try {
       localStorage.setItem(
         "deliveryInfo",
         JSON.stringify({
           customerName: form.customerName.trim(),
           customerPhone: form.customerPhone.trim(),
-          deliveryAddress: isDelivery ? form.deliveryAddress.trim() : previousDeliveryAddress,
+          deliveryAddress: form.deliveryAddress.trim(),
         }),
       );
     } catch {
@@ -328,12 +285,11 @@ export default function CheckoutPage() {
     const payload = {
       customerName: form.customerName.trim(),
       customerPhone: form.customerPhone.trim(),
-      fulfillmentType: form.fulfillmentType,
-      deliveryAddress: isDelivery ? form.deliveryAddress.trim() : undefined,
-      pickupTime: !isDelivery ? form.pickupTime : undefined,
+      fulfillmentType: "DELIVERY",
+      deliveryAddress: form.deliveryAddress.trim(),
       memo: form.memo.trim() || undefined,
       outOfStockPolicy: form.outOfStockPolicy,
-      paymentMethod: isDelivery ? form.paymentMethod : undefined,
+      paymentMethod: form.paymentMethod,
       items: orderItems,
     };
 
@@ -410,29 +366,6 @@ export default function CheckoutPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <fieldset className="space-y-3">
-            <legend className="text-base font-bold text-gray-900">수령 방법</legend>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: "배송", value: "DELIVERY" },
-                { label: "픽업", value: "PICKUP" },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => update("fulfillmentType", option.value)}
-                  className={`min-h-[52px] rounded-xl border p-3 text-base font-bold ${
-                    form.fulfillmentType === option.value
-                      ? "border-green-500 bg-green-50 text-green-900"
-                      : "border-gray-200 bg-white text-gray-600"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset className="space-y-3">
             <legend className="text-base font-bold text-gray-900">고객 정보</legend>
             <input
               required
@@ -466,40 +399,17 @@ export default function CheckoutPage() {
             </div>
           </fieldset>
 
-          {isDelivery ? (
-            <fieldset className="space-y-3">
-              <legend className="text-base font-bold text-gray-900">배송 정보</legend>
-              <input
-                required
-                value={form.deliveryAddress}
-                onChange={(event) => update("deliveryAddress", event.target.value)}
-                placeholder="배송 주소"
-                autoComplete="street-address"
-                className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
-              />
-              {shouldShowMinimumOrderNotice && (
-                <p className="text-sm font-semibold text-red-500">
-                  주문은 {formatPrice(minimumOrderAmount)} 이상이어야 합니다.
-                </p>
-              )}
-            </fieldset>
-          ) : (
-            <fieldset className="space-y-3">
-              <legend className="text-base font-bold text-gray-900">픽업 정보</legend>
-              <select
-                required
-                value={form.pickupTime}
-                onChange={(event) => update("pickupTime", event.target.value)}
-                className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
-              >
-                {PICKUP_TIMES.map((time) => (
-                  <option key={time} value={time}>
-                    {pickupLabel(time)}
-                  </option>
-                ))}
-              </select>
-            </fieldset>
-          )}
+          <fieldset className="space-y-3">
+            <legend className="text-base font-bold text-gray-900">배송 정보</legend>
+            <input
+              required
+              value={form.deliveryAddress}
+              onChange={(event) => update("deliveryAddress", event.target.value)}
+              placeholder="배송 주소"
+              autoComplete="street-address"
+              className="w-full min-h-[52px] rounded-xl border border-gray-200 px-4 py-3 text-base outline-none focus:ring-2 focus:ring-green-400"
+            />
+          </fieldset>
 
           <fieldset className="space-y-3">
             <legend className="text-base font-bold text-gray-900">품절 시 처리방법</legend>
@@ -527,40 +437,38 @@ export default function CheckoutPage() {
             </div>
           </fieldset>
 
-          {isDelivery && (
-            <fieldset className="space-y-3">
-              <legend className="text-base font-bold text-gray-900">결제 방법</legend>
-              <div className="grid gap-2">
-                {PAYMENT_METHOD_OPTIONS.map((option) => (
-                  <label
-                    key={option.value}
-                    className={`flex min-h-[54px] cursor-pointer items-center rounded-xl border px-4 py-3 text-base font-bold transition ${
-                      form.paymentMethod === option.value
-                        ? "border-green-500 bg-green-50 text-green-900"
-                        : "border-gray-200 bg-white text-gray-700"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value={option.value}
-                      checked={form.paymentMethod === option.value}
-                      onChange={(event) => update("paymentMethod", event.target.value)}
-                      className="sr-only"
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
+          <fieldset className="space-y-3">
+            <legend className="text-base font-bold text-gray-900">결제 방법</legend>
+            <div className="grid gap-2">
+              {PAYMENT_METHOD_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className={`flex min-h-[54px] cursor-pointer items-center rounded-xl border px-4 py-3 text-base font-bold transition ${
+                    form.paymentMethod === option.value
+                      ? "border-green-500 bg-green-50 text-green-900"
+                      : "border-gray-200 bg-white text-gray-700"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={option.value}
+                    checked={form.paymentMethod === option.value}
+                    onChange={(event) => update("paymentMethod", event.target.value)}
+                    className="sr-only"
+                  />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+            {form.paymentMethod === "BANK_TRANSFER" && (
+              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3 space-y-2">
+                <p className="text-xs text-blue-800 font-semibold">계좌번호</p>
+                <p className="text-sm text-blue-900 font-bold">국민은행 654937-01-011941 한사랑마트</p>
+                <p className="text-xs text-blue-700 mt-2">품절 상품이 있을 수 있으니 매장에서 연락드린 후 계좌이체해주세요.</p>
               </div>
-              {form.paymentMethod === "BANK_TRANSFER" && (
-                <div className="rounded-xl bg-blue-50 border border-blue-100 p-3 space-y-2">
-                  <p className="text-xs text-blue-800 font-semibold">계좌번호</p>
-                  <p className="text-sm text-blue-900 font-bold">국민은행 654937-01-011941 한사랑마트</p>
-                  <p className="text-xs text-blue-700 mt-2">품절 상품이 있을 수 있으니 매장에서 연락드린 후 계좌이체해주세요.</p>
-                </div>
-              )}
-            </fieldset>
-          )}
+            )}
+          </fieldset>
 
           <fieldset className="space-y-3">
             <legend className="text-base font-bold text-gray-900">요청사항</legend>
@@ -600,9 +508,12 @@ export default function CheckoutPage() {
                   {error}
                 </p>
               )}
-              {shouldShowMinimumOrderNotice && (
-                <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm font-bold text-amber-800">
-                  {formatPrice(minimumOrderAmount)} 이상 주문 가능합니다.
+              {submitDisabledReason && (
+                <p
+                  className="rounded-xl bg-amber-50 px-3 py-2 text-sm font-bold leading-5 text-amber-800"
+                  role="status"
+                >
+                  {submitDisabledReason}
                 </p>
               )}
               <button

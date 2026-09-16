@@ -170,9 +170,7 @@ export async function GET(req: NextRequest) {
         where: {
           ...activeItemWhere,
           order: {
-            status: {
-              not: "CANCELLED",
-            },
+            status: "DELIVERED",
             createdAt: {
               gte: popularStartUtc ?? undefined,
               lte: popularEndUtc ?? undefined,

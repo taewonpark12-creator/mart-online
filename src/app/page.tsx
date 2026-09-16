@@ -234,6 +234,28 @@ export default function HomePage() {
     });
   }, [addItem]);
 
+  const clearSearch = useCallback(() => {
+    setSearch("");
+    setDebouncedSearch("");
+    setCategory(CATEGORIES[0]);
+    setHasCategorySelection(false);
+    setCategoryProducts([]);
+    setCategoryPage(1);
+    setCategoryHasMore(false);
+  }, []);
+
+  const handleSearchChange = useCallback((nextSearch: string) => {
+    setSearch(nextSearch);
+
+    if (nextSearch.trim()) {
+      setCategory(CATEGORIES[0]);
+      setHasCategorySelection(false);
+      setCategoryProducts([]);
+      setCategoryPage(1);
+      setCategoryHasMore(false);
+    }
+  }, []);
+
   const handleCategoryChange = useCallback((nextCategory: string) => {
     if (nextCategory === "홈") {
       setCategory(CATEGORIES[0]);
@@ -270,7 +292,19 @@ export default function HomePage() {
 
     if (isSearchMode) {
       if (searchResults.length === 0) {
-        return <div className="py-20 text-center text-gray-400">검색 결과가 없습니다.</div>;
+        return (
+          <div className="py-20 text-center">
+            <p className="text-base font-semibold text-gray-600">검색 결과가 없습니다.</p>
+            <p className="mt-2 text-sm text-gray-400">검색어를 조금 다르게 입력해보세요.</p>
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="mt-5 min-h-[44px] rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700"
+            >
+              검색 초기화
+            </button>
+          </div>
+        );
       }
 
       return (
@@ -353,7 +387,7 @@ export default function HomePage() {
         <Header cartCount={totalCount} showInstallButton />
 
         <main className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-24 sm:pb-28">
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
+          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-4">
             <a
               href="https://open.kakao.com/o/sdPlnVxi"
               target="_blank"
@@ -363,14 +397,14 @@ export default function HomePage() {
               카카오톡 1:1 문의
             </a>
 
-            <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
-              숭의동, 용현동 및 인근지역 배달
+            <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-700">
+              숭의동·용현동 인근 배달
             </div>
 
-            <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-emerald-700">
+            <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-700">
               {minimumOrderEventActive
-                ? `오픈 이벤트 ${formatPrice(minimumOrderAmount)} 이상`
-                : `${formatPrice(minimumOrderAmount)} 이상`}
+                ? `오픈 이벤트 최소 ${formatPrice(minimumOrderAmount)}`
+                : `최소 주문 ${formatPrice(minimumOrderAmount)}`}
             </div>
           </div>
 
@@ -393,7 +427,7 @@ export default function HomePage() {
               autoCapitalize="none"
               spellCheck={false}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="상품명 검색"
               className="w-full h-10 sm:h-12 pl-14 sm:pl-16 pr-10 sm:pr-12 bg-gray-50 border-none rounded-xl sm:rounded-2xl text-gray-800 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 transition-all"
               aria-label="상품 검색"
@@ -401,10 +435,7 @@ export default function HomePage() {
             {search && (
               <button
                 type="button"
-                onClick={() => {
-                  setSearch("");
-                  setDebouncedSearch("");
-                }}
+                onClick={clearSearch}
                 className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg min-w-[32px] min-h-[32px] flex items-center justify-center"
                 aria-label="검색어 지우기"
               >

@@ -239,12 +239,21 @@ export default function CartPage() {
               </div>
 
               {!meetsMinimum && (
-                <p className="text-xs sm:text-sm text-amber-700 bg-amber-50 rounded-xl px-3 py-2 sm:py-3">
-                  {minimumOrderEventActive
-                    ? `온라인 주문 오픈 이벤트! ${formatPrice(minimumOrderAmount)} 이상 주문 가능`
-                    : `${formatPrice(minimumOrderAmount)} 이상 주문 가능합니다.`}{" "}
-                  <span className="font-medium">{formatPrice(amountShort)}</span> 더 담아주세요.
-                </p>
+                <div className="flex items-center justify-between gap-2 text-xs sm:text-sm text-amber-700 bg-amber-50 rounded-xl px-3 py-2 sm:block sm:py-3">
+                  <p>
+                    {minimumOrderEventActive
+                      ? `온라인 주문 오픈 이벤트! ${formatPrice(minimumOrderAmount)} 이상 주문 가능`
+                      : `${formatPrice(minimumOrderAmount)} 이상 주문 가능합니다.`}{" "}
+                    <span className="font-medium">{formatPrice(amountShort)}</span> 더 담아주세요.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/")}
+                    className="shrink-0 rounded-lg bg-white px-3 py-2 text-xs font-bold text-amber-800 shadow-sm ring-1 ring-amber-200 sm:hidden"
+                  >
+                    상품 더 담기
+                  </button>
+                </div>
               )}
 
 

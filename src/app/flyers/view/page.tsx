@@ -18,7 +18,7 @@ function FlyerImageViewerContent() {
         <a href="/flyers" className="rounded-lg px-3 py-2 text-sm font-bold text-gray-700">
           닫기
         </a>
-        <p className="hidden text-xs font-semibold text-gray-500 sm:block">손가락으로 확대해서 볼 수 있습니다</p>
+        <p className="text-right text-xs font-semibold text-gray-500">손가락으로 확대해서 볼 수 있습니다</p>
       </div>
 
       {imageUrl ? (

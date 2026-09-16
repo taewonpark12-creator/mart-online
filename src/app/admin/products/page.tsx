@@ -156,6 +156,14 @@ function matchesStatus(product: Product, filter: StatusFilter) {
   return true;
 }
 
+function getStatusFilterParams(filter: StatusFilter): Record<string, string> {
+  if (filter === "POPULAR") return { popular: "true" };
+  if (filter === "RECOMMENDED") return { recommended: "true" };
+  if (filter === "LIMITED") return { onlineExclusive: "true" };
+  if (filter === "OUT_OF_STOCK") return { outOfStock: "true" };
+  return {};
+}
+
 function highlightText(text: string, query: string) {
   const safeQuery = query.trim();
   if (!safeQuery) return text;
@@ -928,6 +936,7 @@ export default function ProductsPage() {
         activeOnly: "false",
         includeOutOfStock: "true",
         page: currentPage.toString(),
+        ...getStatusFilterParams(statusFilter),
         ...(searchQuery ? { q: searchQuery } : {}),
         ...(categoryFilter ? { category: categoryFilter } : {}),
       });
@@ -975,7 +984,7 @@ export default function ProductsPage() {
     } finally {
       if (fetchRequestIdRef.current === requestId) setLoading(false);
     }
-  }, [categoryFilter, currentPage, pathname, router, searchQuery]);
+  }, [categoryFilter, currentPage, pathname, router, searchQuery, statusFilter]);
 
   useEffect(() => {
     fetchProducts();
@@ -1128,6 +1137,9 @@ export default function ProductsPage() {
       if (!res.ok) throw new Error(data.error ?? "상태 변경 실패");
       updateProductInState(data);
       setToast(`${STATUS_META[flag].label} 상태가 변경되었습니다.`);
+      if (statusFilter !== "ALL" && !matchesStatus(normalizeProduct(data), statusFilter)) {
+        await fetchProducts();
+      }
     } catch (error) {
       console.error("[admin/products] status toggle failed", error);
       setProducts((current) => current.map((item) => (item.id === previousProduct.id ? previousProduct : item)));
@@ -1203,6 +1215,9 @@ export default function ProductsPage() {
     } else {
       setSelectedIds(new Set());
       setToast(message);
+      if (statusFilter !== "ALL") {
+        await fetchProducts();
+      }
     }
   }
 

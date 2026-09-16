@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
 
 function isSafeImageUrl(imageUrl: string): boolean {
-  return (
-    imageUrl.startsWith("/") ||
-    imageUrl.startsWith("https://") ||
-    imageUrl.startsWith("http://")
-  );
+  try {
+    return new URL(imageUrl).protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 export async function GET() {
@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
       .slice(0, 2000);
 
     if (!imageUrl || !isSafeImageUrl(imageUrl)) {
-      return NextResponse.json({ error: "올바른 이미지 URL이 필요합니다." }, { status: 400 });
+      return NextResponse.json(
+        { error: "전단 이미지 주소는 https:// 주소만 등록할 수 있습니다." },
+        { status: 400 },
+      );
     }
 
     const maxOrderFlyer = await prisma.flyer.findFirst({

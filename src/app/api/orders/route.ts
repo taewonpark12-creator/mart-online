@@ -106,7 +106,6 @@ export async function POST(req: NextRequest) {
     const customerPhone = asString(body.customerPhone);
     const fulfillmentType = body.fulfillmentType as FulfillmentType;
     const deliveryAddress = asString(body.deliveryAddress);
-    const pickupTime = asString(body.pickupTime);
     const memo = asString(body.memo);
     const outOfStockPolicy = (body.outOfStockPolicy as OutOfStockPolicy) || "CONTACT";
     const submittedPaymentMethod = asPaymentMethod(body.paymentMethod);
@@ -131,7 +130,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "INVALID_FULFILLMENT_TYPE" }, { status: 400 });
     }
 
-    if (fulfillmentType === "DELIVERY" && !deliveryAddress) {
+    if (fulfillmentType === "PICKUP") {
+      logSafeOrderEvent("order.create.failed", {
+        requestId,
+        reason: "PICKUP_ORDER_DISABLED",
+        fulfillmentType,
+        elapsedMs: Date.now() - startedAt,
+      }, "warn");
+      return NextResponse.json(
+        {
+          error: "PICKUP_ORDER_DISABLED",
+          message: "현재 온라인 주문은 배송만 가능합니다.",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (!deliveryAddress) {
       logSafeOrderEvent("order.create.failed", {
         requestId,
         reason: "MISSING_DELIVERY_ADDRESS",
@@ -139,16 +154,6 @@ export async function POST(req: NextRequest) {
         elapsedMs: Date.now() - startedAt,
       }, "warn");
       return NextResponse.json({ error: "MISSING_DELIVERY_ADDRESS" }, { status: 400 });
-    }
-
-    if (fulfillmentType === "PICKUP" && !pickupTime) {
-      logSafeOrderEvent("order.create.failed", {
-        requestId,
-        reason: "MISSING_PICKUP_TIME",
-        fulfillmentType,
-        elapsedMs: Date.now() - startedAt,
-      }, "warn");
-      return NextResponse.json({ error: "MISSING_PICKUP_TIME" }, { status: 400 });
     }
 
     if (!Array.isArray(body.items) || body.items.length === 0) {
@@ -434,9 +439,8 @@ export async function POST(req: NextRequest) {
           customerName,
           customerPhone,
           fulfillmentType,
-          deliveryAddress:
-            fulfillmentType === "DELIVERY" ? deliveryAddress : "매장 픽업",
-          pickupTime: fulfillmentType === "PICKUP" ? pickupTime : null,
+          deliveryAddress,
+          pickupTime: null,
           memo: memo || null,
           paymentMethod,
           outOfStockPolicy,

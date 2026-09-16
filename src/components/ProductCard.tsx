@@ -99,7 +99,7 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
         <button
           onClick={() => onAdd(cartProduct)}
           disabled={product.isOutOfStock || loadingPrice}
-          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-green-600 font-bold text-white shadow-md transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:bottom-2 sm:right-2 ${compact ? "min-h-[34px] px-2.5 py-1.5 text-xs sm:min-h-[36px]" : "min-h-[38px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
+          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-green-600 font-bold text-white shadow-md transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:bottom-2 sm:right-2 ${compact ? "min-h-[40px] px-3 py-2 text-sm sm:min-h-[40px] sm:px-3.5" : "min-h-[38px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
         >
           {product.isOutOfStock ? "품절" : loadingPrice ? "확인중" : "+ 담기"}
         </button>

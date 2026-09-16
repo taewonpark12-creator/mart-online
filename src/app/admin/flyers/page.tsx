@@ -24,30 +24,12 @@ type FlyerAnnouncement = {
   updatedAt: string;
 };
 
-const MAX_FLYER_UPLOAD_BYTES = 20 * 1024 * 1024;
-const ALLOWED_FLYER_UPLOAD_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
-
-function getFlyerUploadErrorMessage(status: number, data: unknown) {
-  const response = data && typeof data === "object" ? data as Record<string, unknown> : {};
-  const message = String(response.message || response.error || "전단 이미지 업로드에 실패했습니다.");
-  const code = typeof response.code === "string" ? response.code : "";
-  const requestId = typeof response.requestId === "string" ? response.requestId : "";
-
-  return [
-    message,
-    code ? `오류 코드: ${code}` : "",
-    requestId ? `요청 ID: ${requestId}` : "",
-    `HTTP 상태: ${status}`,
-  ].filter(Boolean).join("\n");
-}
-
 export default function FlyerManagementPage() {
   const router = useRouter();
   const pathname = usePathname();
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [fileUploading, setFileUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [announcementId, setAnnouncementId] = useState("");
@@ -61,6 +43,9 @@ export default function FlyerManagementPage() {
   const [announcementDeleting, setAnnouncementDeleting] = useState(false);
   const [announcementMessage, setAnnouncementMessage] = useState("");
   const [announcementError, setAnnouncementError] = useState("");
+  const [updatingFlyerId, setUpdatingFlyerId] = useState<string | null>(null);
+  const [deletingFlyerId, setDeletingFlyerId] = useState<string | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
 
   const fetchFlyers = async () => {
     try {
@@ -231,60 +216,11 @@ export default function FlyerManagementPage() {
     }
   };
 
-  const handleFileUpload = async (file: File | undefined) => {
-    if (!file) return;
-
-    if (file.size > MAX_FLYER_UPLOAD_BYTES) {
-      setUploadError("전단 이미지는 20MB 이하만 업로드할 수 있습니다.");
-      return;
-    }
-
-    if (!ALLOWED_FLYER_UPLOAD_TYPES.has(file.type)) {
-      setUploadError("JPG, PNG, WebP 전단 이미지만 업로드할 수 있습니다.");
-      return;
-    }
-
-    setFileUploading(true);
-    setUploadError("");
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const uploadData = await uploadRes.json().catch(() => ({}));
-
-      if (!uploadRes.ok || !uploadData?.url) {
-        setUploadError(getFlyerUploadErrorMessage(uploadRes.status, uploadData));
-        return;
-      }
-
-      const createRes = await fetch("/api/admin/flyers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: uploadData.url }),
-      });
-      const createData = await createRes.json().catch(() => ({}));
-
-      if (!createRes.ok) {
-        setUploadError(createData?.error || createData?.message || "전단지 등록에 실패했습니다.");
-        return;
-      }
-
-      fetchFlyers();
-    } catch (error) {
-      console.error("전단지 파일 업로드 오류:", error);
-      setUploadError("전단 이미지 업로드 중 네트워크 오류가 발생했습니다.");
-    } finally {
-      setFileUploading(false);
-    }
-  };
-
   const handleDelete = async (id: string) => {
+    if (deletingFlyerId) return;
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
+    setDeletingFlyerId(id);
     try {
       const res = await fetch(`/api/admin/flyers/${id}`, {
         method: "DELETE",
@@ -295,14 +231,19 @@ export default function FlyerManagementPage() {
         return;
       }
 
-      fetchFlyers();
+      await fetchFlyers();
     } catch (error) {
       console.error("전단지 삭제 오류:", error);
       alert("삭제 실패");
+    } finally {
+      setDeletingFlyerId(null);
     }
   };
 
   const handleToggleActive = async (id: string, isActive: boolean) => {
+    if (updatingFlyerId) return;
+
+    setUpdatingFlyerId(id);
     try {
       const res = await fetch(`/api/admin/flyers/${id}`, {
         method: "PATCH",
@@ -315,15 +256,17 @@ export default function FlyerManagementPage() {
         return;
       }
 
-      fetchFlyers();
+      await fetchFlyers();
     } catch (error) {
       console.error("상태 변경 오류:", error);
       alert("상태 변경 실패");
+    } finally {
+      setUpdatingFlyerId(null);
     }
   };
 
   const handleMoveUp = async (index: number) => {
-    if (index === 0) return;
+    if (index === 0 || isReordering) return;
 
     const newFlyers = [...flyers];
     const temp = newFlyers[index];
@@ -334,7 +277,7 @@ export default function FlyerManagementPage() {
   };
 
   const handleMoveDown = async (index: number) => {
-    if (index === flyers.length - 1) return;
+    if (index === flyers.length - 1 || isReordering) return;
 
     const newFlyers = [...flyers];
     const temp = newFlyers[index];
@@ -345,8 +288,9 @@ export default function FlyerManagementPage() {
   };
 
   const updateOrders = async (newFlyers: Flyer[]) => {
+    setIsReordering(true);
     try {
-      await Promise.all(
+      const responses = await Promise.all(
         newFlyers.map((flyer, index) =>
           fetch(`/api/admin/flyers/${flyer.id}`, {
             method: "PATCH",
@@ -355,10 +299,21 @@ export default function FlyerManagementPage() {
           })
         )
       );
-      fetchFlyers();
+
+      const failedResponse = responses.find((res) => !res.ok);
+      if (failedResponse) {
+        alert("순서 변경 실패");
+        await fetchFlyers();
+        return;
+      }
+
+      await fetchFlyers();
     } catch (error) {
       console.error("순서 변경 오류:", error);
       alert("순서 변경 실패");
+      await fetchFlyers();
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -485,41 +440,12 @@ export default function FlyerManagementPage() {
         </div>
 
         <div className="bg-white rounded-2xl border p-6 mb-6">
-          <h2 className="font-semibold text-gray-800 mb-4">전단지 이미지 업로드</h2>
-          
-          {/* 업로드 방식 선택 */}
-          <div className="flex gap-2 mb-4">
-            <button
-              type="button"
-              className="flex-1 py-2 px-4 rounded-lg bg-green-600 text-sm font-medium text-white"
-            >
-              URL 입력
-            </button>
-            <label
-              className={`flex-1 cursor-pointer rounded-lg px-4 py-2 text-center text-sm font-medium transition ${
-                fileUploading
-                  ? "bg-gray-100 text-gray-400"
-                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-              }`}
-            >
-              {fileUploading ? "파일 업로드 중..." : "파일 업로드"}
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                disabled={fileUploading}
-                onChange={(event) => {
-                  void handleFileUpload(event.target.files?.[0]);
-                  event.currentTarget.value = "";
-                }}
-                className="sr-only"
-              />
-            </label>
-          </div>
+          <h2 className="font-semibold text-gray-800 mb-4">전단지 이미지 URL 등록</h2>
 
           <form onSubmit={handleUpload} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                이미지 URL
+                전단 이미지 HTTPS URL
               </label>
               <input
                 type="url"
@@ -530,7 +456,7 @@ export default function FlyerManagementPage() {
                 required
               />
               <p className="text-xs text-gray-500 mt-1">
-                외부 이미지 URL을 입력하거나, 위 파일 업로드로 20MB 이하 전단 이미지를 등록하세요.
+                HTTPS 이미지 주소만 등록할 수 있습니다.
               </p>
             </div>
             {uploadError && (
@@ -543,7 +469,7 @@ export default function FlyerManagementPage() {
               disabled={uploading}
               className="bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold py-3 px-6 rounded-xl transition"
             >
-              {uploading ? "업로드 중..." : "업로드"}
+              {uploading ? "등록 중..." : "전단 등록"}
             </button>
           </form>
         </div>
@@ -605,14 +531,14 @@ export default function FlyerManagementPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleMoveUp(index)}
-                        disabled={index === 0}
+                        disabled={index === 0 || isReordering}
                         className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         ↑
                       </button>
                       <button
                         onClick={() => handleMoveDown(index)}
-                        disabled={index === flyers.length - 1}
+                        disabled={index === flyers.length - 1 || isReordering}
                         className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition min-h-[36px] min-w-[36px] flex items-center justify-center"
                       >
                         ↓
@@ -620,15 +546,17 @@ export default function FlyerManagementPage() {
                     </div>
                     <button
                       onClick={() => handleToggleActive(flyer.id, flyer.isActive)}
-                      className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 transition min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      disabled={Boolean(updatingFlyerId)}
+                      className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 disabled:opacity-60 disabled:cursor-not-allowed text-blue-700 transition min-h-[36px] min-w-[36px] flex items-center justify-center"
                     >
-                      {flyer.isActive ? "숨김" : "표시"}
+                      {updatingFlyerId === flyer.id ? "처리 중..." : flyer.isActive ? "숨김" : "표시"}
                     </button>
                     <button
                       onClick={() => handleDelete(flyer.id)}
-                      className="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 transition min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      disabled={Boolean(deletingFlyerId)}
+                      className="p-2 rounded-lg bg-red-100 hover:bg-red-200 disabled:opacity-60 disabled:cursor-not-allowed text-red-700 transition min-h-[36px] min-w-[36px] flex items-center justify-center"
                     >
-                      삭제
+                      {deletingFlyerId === flyer.id ? "삭제 중..." : "삭제"}
                     </button>
                   </div>
                 </div>
@@ -641,8 +569,7 @@ export default function FlyerManagementPage() {
         <div className="mt-6 bg-blue-50 rounded-2xl border border-blue-200 p-4">
           <h3 className="font-semibold text-blue-900 mb-2">사용 방법</h3>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• 이미지 URL을 입력해 전단지를 등록하세요.</li>
-            <li>• 파일 업로드는 JPG, PNG, WebP를 지원하며 서버에서 WebP로 압축됩니다.</li>
+            <li>• HTTPS 이미지 URL을 입력해 전단지를 등록하세요.</li>
             <li>• ↑↓ 버튼으로 전단지 순서를 변경할 수 있습니다.</li>
             <li>• 표시/숨김 버튼으로 전단지 노출 여부를 제어할 수 있습니다.</li>
             <li>• 삭제 버튼으로 전단지를 삭제할 수 있습니다.</li>

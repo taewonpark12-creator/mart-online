@@ -161,6 +161,11 @@ export default function FlyersPage() {
                 </section>
               );
             })}
+            {flyers.length > 0 && (
+              <div className="flex justify-center pt-3 sm:pt-4">
+                <GoBackToShoppingButton />
+              </div>
+            )}
           </div>
         )}
       </div>
