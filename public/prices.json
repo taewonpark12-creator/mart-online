@@ -48621,10 +48621,10 @@
     "barcode": "8801068405590",
     "name": "삼립)탕종빅땅콩샌드160g",
     "normalPrice": 1900,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 1000,
+    "discountRate": 47,
+    "saleStartDate": "2026-09-16",
+    "saleEndDate": "2026-09-16"
   },
   {
     "barcode": "8801068405613",
@@ -54407,7 +54407,7 @@
   {
     "barcode": "8801101123122",
     "name": "피죤블루20L",
-    "normalPrice": 29000,
+    "normalPrice": 29800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "2020-10-13",
