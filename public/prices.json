@@ -119846,7 +119846,7 @@
   {
     "barcode": "9100000003306",
     "name": "알배기배추(1통)행사",
-    "normalPrice": 1980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119881,8 +119881,8 @@
   },
   {
     "barcode": "9100000003474",
-    "name": "장아찌양파(1망)",
-    "normalPrice": 4980,
+    "name": "장아찌양파(1망)행사",
+    "normalPrice": 2980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120017,7 +120017,7 @@
   {
     "barcode": "910000000665",
     "name": "자두(1팩)행사",
-    "normalPrice": 5980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120412,8 +120412,8 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)",
-    "normalPrice": 2480,
+    "name": "대파(1단)행사",
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120683,7 +120683,7 @@
   {
     "barcode": "9100000215440",
     "name": "브로컬리(1개)행사",
-    "normalPrice": 999990,
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121051,8 +121051,8 @@
   },
   {
     "barcode": "9100000217338",
-    "name": "대추방울토마토(1팩)",
-    "normalPrice": 6980,
+    "name": "대추방울토마토(1팩)행사",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121987,8 +121987,8 @@
   },
   {
     "barcode": "9101003821",
-    "name": "팩느타리버섯(2팩)행사",
-    "normalPrice": 1480,
+    "name": "팩느타리버섯(1팩)",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
