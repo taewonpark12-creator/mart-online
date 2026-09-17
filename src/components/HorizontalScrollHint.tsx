@@ -120,14 +120,20 @@ export function HorizontalScrollHint({ children, className }: Props) {
           </button>
         )}
         {canScrollNext && (
-          <button
-            type="button"
-            onClick={() => scrollByPage(1)}
-            className="absolute right-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md ring-1 ring-slate-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700 sm:flex"
-            aria-label="다음 상품 보기"
-          >
-            &gt;
-          </button>
+          <>
+            <span
+              className="pointer-events-none absolute inset-y-0 right-0 z-[5] w-8 bg-gradient-to-l from-white via-white/90 to-transparent sm:w-10"
+              aria-hidden
+            />
+            <button
+              type="button"
+              onClick={() => scrollByPage(1)}
+              className="absolute right-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md ring-1 ring-slate-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700 sm:flex"
+              aria-label="다음 상품 보기"
+            >
+              &gt;
+            </button>
+          </>
         )}
       </div>
 

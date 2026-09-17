@@ -16,19 +16,19 @@ const HOME_PRODUCT_RAIL_CLASS =
 
 const TONE_CLASS = {
   default: {
-    box: "border-emerald-100/80 bg-gradient-to-b from-emerald-50/80 to-white shadow-[0_10px_28px_-24px_rgba(5,150,105,0.55)]",
+    box: "border-emerald-100/70 bg-gradient-to-b from-emerald-50/55 to-white shadow-[0_10px_28px_-24px_rgba(5,150,105,0.38)]",
     point: "bg-emerald-500",
     label: "추천",
     labelClass: "border-emerald-100 bg-white/90 text-emerald-700",
   },
   deal: {
-    box: "border-rose-100/90 bg-gradient-to-b from-rose-50/80 to-white shadow-[0_10px_28px_-24px_rgba(225,29,72,0.45)]",
+    box: "border-rose-100/75 bg-gradient-to-b from-rose-50/55 to-white shadow-[0_10px_28px_-24px_rgba(225,29,72,0.32)]",
     point: "bg-rose-500",
     label: "특가",
     labelClass: "border-rose-100 bg-white/90 text-rose-600",
   },
   popular: {
-    box: "border-amber-100/90 bg-gradient-to-b from-amber-50/75 to-white shadow-[0_10px_28px_-24px_rgba(217,119,6,0.4)]",
+    box: "border-amber-100/75 bg-gradient-to-b from-amber-50/50 to-white shadow-[0_10px_28px_-24px_rgba(217,119,6,0.28)]",
     point: "bg-amber-500",
     label: "인기",
     labelClass: "border-amber-100 bg-white/90 text-amber-700",

@@ -12,7 +12,6 @@ export function FlyerBanner() {
           </span>
           <div className="min-w-0 text-left">
             <h3 className="truncate text-sm font-extrabold tracking-[-0.02em] text-slate-900 sm:text-base">이번 주 세일 전단</h3>
-            <p className="mt-0.5 truncate text-xs font-medium text-slate-500 sm:text-sm">이번 주 행사상품을 한눈에 확인하세요</p>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/90 py-1.5 pl-2.5 pr-1.5 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-100 transition group-hover:bg-emerald-600 group-hover:text-white sm:gap-1.5 sm:pl-3 sm:text-sm">

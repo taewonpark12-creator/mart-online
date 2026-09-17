@@ -109,7 +109,7 @@ function ProductCard({ product, onAdd, compact = false, tone = "default" }: Prop
         <button
           onClick={() => onAdd(cartProduct)}
           disabled={product.isOutOfStock || loadingPrice}
-          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-emerald-600/95 font-extrabold text-white shadow-[0_3px_10px_rgba(5,150,105,0.3)] ring-1 ring-white/80 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none sm:bottom-2 sm:right-2 ${compact ? "min-h-[40px] px-2.5 py-2 text-[13px] sm:px-3" : "min-h-[40px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
+          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-emerald-600/95 font-extrabold text-white shadow-[0_3px_10px_rgba(5,150,105,0.3)] ring-1 ring-white/80 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none sm:bottom-2 sm:right-2 ${compact ? "min-h-[38px] px-2 py-1.5 text-[13px] sm:px-2.5" : "min-h-[38px] px-2.5 py-1.5 text-xs sm:min-h-[42px] sm:px-3.5 sm:py-2 sm:text-sm"}`}
         >
           {product.isOutOfStock ? "품절" : loadingPrice ? "확인중" : "+ 담기"}
         </button>
@@ -117,7 +117,7 @@ function ProductCard({ product, onAdd, compact = false, tone = "default" }: Prop
 
       <div className={`${compact ? "gap-0 px-1.5 py-1.5 sm:gap-0.5 sm:px-2 sm:py-1.5" : "gap-0 px-2 py-2 sm:gap-1 sm:p-3"} flex flex-1 flex-col`}>
         <div className="flex-1 min-w-0">
-          <h3 className={`line-clamp-2 min-h-[2.35em] font-semibold leading-[1.35] tracking-[-0.015em] text-slate-900 ${compact ? "text-[13px] sm:text-sm" : "text-sm sm:text-[17px]"}`}>
+          <h3 className={`line-clamp-2 min-h-[2.35em] font-semibold leading-[1.38] tracking-[-0.005em] text-slate-900 ${compact ? "text-[13px] sm:text-sm" : "text-sm sm:text-[17px]"}`}>
             {displayName}
           </h3>
           {product.description && !compact && (
@@ -129,7 +129,7 @@ function ProductCard({ product, onAdd, compact = false, tone = "default" }: Prop
 
         <div className="mt-auto pt-0.5">
           {loadingPrice ? (
-            <p className={`font-extrabold leading-tight text-emerald-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>...</p>
+            <p className={`font-extrabold leading-tight text-slate-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>...</p>
           ) : hasEvent ? (
             <div className="space-y-0.5">
               <div className={`flex min-w-0 items-center ${compact ? "gap-1" : "gap-2"}`}>
@@ -145,7 +145,7 @@ function ProductCard({ product, onAdd, compact = false, tone = "default" }: Prop
               </p>
             </div>
           ) : (
-            <p className={`font-black leading-tight tracking-[-0.025em] text-emerald-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
+            <p className={`font-black leading-tight tracking-[-0.025em] text-slate-900 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
               {formatPrice(normalPrice)}
             </p>
           )}
