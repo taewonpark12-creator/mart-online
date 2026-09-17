@@ -120439,7 +120439,7 @@
   },
   {
     "barcode": "9100000214214",
-    "name": "대파(1단)행사",
+    "name": "대파(1단)",
     "normalPrice": 2480,
     "eventPrice": null,
     "discountRate": null,
@@ -120673,8 +120673,8 @@
   },
   {
     "barcode": "9100000215280",
-    "name": "햇무(1개)",
-    "normalPrice": 2980,
+    "name": "햇무(1개)행사",
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120710,7 +120710,7 @@
   {
     "barcode": "9100000215440",
     "name": "브로컬리(1개)행사",
-    "normalPrice": 980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
