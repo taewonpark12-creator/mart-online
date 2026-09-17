@@ -104,7 +104,11 @@ export function HorizontalScrollHint({ children, className }: Props) {
           onPointerDown={markHintSeen}
           onTouchStart={markHintSeen}
           onWheel={markHintSeen}
-          className={`${className} pr-4 scrollbar-thin ${!canScrollPrev && !canScrollNext ? "justify-center" : ""}`}
+          className={`${className} pr-4 scrollbar-thin ${
+            canScrollNext
+              ? "[-webkit-mask-image:linear-gradient(to_right,black_0,black_calc(100%_-_2.75rem),transparent_100%)] [mask-image:linear-gradient(to_right,black_0,black_calc(100%_-_2.75rem),transparent_100%)]"
+              : ""
+          } ${!canScrollPrev && !canScrollNext ? "justify-center" : ""}`}
         >
           {children}
         </div>
@@ -120,20 +124,16 @@ export function HorizontalScrollHint({ children, className }: Props) {
           </button>
         )}
         {canScrollNext && (
-          <>
-            <span
-              className="pointer-events-none absolute inset-y-0 right-0 z-[5] w-8 bg-gradient-to-l from-white via-white/90 to-transparent sm:w-10"
-              aria-hidden
-            />
-            <button
-              type="button"
-              onClick={() => scrollByPage(1)}
-              className="absolute right-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md ring-1 ring-slate-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700 sm:flex"
-              aria-label="다음 상품 보기"
-            >
-              &gt;
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={() => scrollByPage(1)}
+            className="absolute -right-1 top-1/3 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-emerald-700 shadow-sm ring-1 ring-emerald-200/80 transition hover:bg-white hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 sm:h-9 sm:w-9"
+            aria-label="다음 상품 보기"
+          >
+            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" aria-hidden>
+              <path d="m7.5 4.5 5 5.5-5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         )}
       </div>
 
