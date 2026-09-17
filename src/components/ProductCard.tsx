@@ -11,6 +11,7 @@ type Props = {
   product: Product;
   onAdd: (product: Omit<CartItem, "quantity">) => void;
   compact?: boolean;
+  tone?: "default" | "deal" | "popular";
 };
 
 function toSafePrice(value: unknown, fallback = 0) {
@@ -20,25 +21,34 @@ function toSafePrice(value: unknown, fallback = 0) {
 
 const BADGE_META = [
   {
+    key: "isOnlineExclusive",
+    label: "특가",
+    className: "bg-rose-500 text-white",
+  },
+  {
     key: "isRecommended",
-    label: "추천상품",
+    label: "추천",
     className: "bg-amber-400 text-amber-950",
   },
   {
-    key: "isOnlineExclusive",
-    label: "한정특가",
-    className: "bg-red-500 text-white",
-  },
-  {
     key: "isPopular",
-    label: "인기상품",
+    label: "인기",
     className: "bg-emerald-500 text-white",
   },
 ] as const;
 
-function ProductCard({ product, onAdd, compact = false }: Props) {
+function ProductCard({ product, onAdd, compact = false, tone = "default" }: Props) {
   const { priceData, loading } = usePriceData(product.barcode);
-  const badges = BADGE_META.filter((badge) => Boolean(product[badge.key]));
+  const sectionBadgeKey = compact
+    ? tone === "deal"
+      ? "isOnlineExclusive"
+      : tone === "popular"
+        ? "isPopular"
+        : "isRecommended"
+    : null;
+  const badges = BADGE_META.filter(
+    (badge) => Boolean(product[badge.key]) && badge.key !== sectionBadgeKey,
+  ).slice(0, 1);
 
   const dbPrice = toSafePrice(product.price);
   const displayName = firstMeaningfulProductName(priceData?.name, product.name) || "상품명 없음";
@@ -76,8 +86,8 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-100 shadow-sm transition hover:shadow-md sm:rounded-xl overflow-hidden flex flex-col h-full">
-      <div className={`relative bg-gray-50 w-full overflow-hidden ${compact ? "aspect-[6/5] sm:aspect-square" : "aspect-[5/3] sm:aspect-[4/3]"}`}>
+    <div className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.06)] transition duration-200 hover:border-emerald-200 hover:shadow-[0_5px_14px_rgba(15,23,42,0.09)]">
+      <div className={`relative w-full overflow-hidden bg-slate-50 ${compact ? "aspect-[6/5] sm:aspect-square" : "aspect-[5/3] sm:aspect-[4/3]"}`}>
         <ProductImage
           src={product.imageUrl}
           alt={displayName}
@@ -89,7 +99,7 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
             {badges.map((badge) => (
               <span
                 key={badge.key}
-                className={`rounded-full px-1.5 py-0.5 font-black shadow-sm sm:px-2 ${compact ? "text-[9px]" : "text-[9px] sm:text-xs"} ${badge.className}`}
+                className={`rounded-md px-1.5 py-1 font-extrabold leading-none shadow-[0_1px_4px_rgba(15,23,42,0.14)] sm:px-2 ${compact ? "text-[9px]" : "text-[9px] sm:text-[11px]"} ${badge.className}`}
               >
                 {badge.label}
               </span>
@@ -99,15 +109,15 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
         <button
           onClick={() => onAdd(cartProduct)}
           disabled={product.isOutOfStock || loadingPrice}
-          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-green-600 font-bold text-white shadow-md transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:bottom-2 sm:right-2 ${compact ? "min-h-[40px] px-3 py-2 text-sm sm:min-h-[40px] sm:px-3.5" : "min-h-[38px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
+          className={`absolute bottom-1.5 right-1.5 rounded-lg bg-emerald-600/95 font-extrabold text-white shadow-[0_3px_10px_rgba(5,150,105,0.3)] ring-1 ring-white/80 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none sm:bottom-2 sm:right-2 ${compact ? "min-h-[40px] px-2.5 py-2 text-[13px] sm:px-3" : "min-h-[40px] px-3 py-2 text-xs sm:min-h-[44px] sm:px-4 sm:py-2.5 sm:text-sm"}`}
         >
           {product.isOutOfStock ? "품절" : loadingPrice ? "확인중" : "+ 담기"}
         </button>
       </div>
 
-      <div className={`${compact ? "p-1 gap-0 sm:p-1.5 sm:gap-0.5" : "p-1.5 gap-0 sm:p-3 sm:gap-1"} flex flex-col flex-1`}>
+      <div className={`${compact ? "gap-0 px-1.5 py-1.5 sm:gap-0.5 sm:px-2 sm:py-1.5" : "gap-0 px-2 py-2 sm:gap-1 sm:p-3"} flex flex-1 flex-col`}>
         <div className="flex-1 min-w-0">
-          <h3 className={`font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[2.35em] ${compact ? "text-[13px] sm:text-sm" : "text-sm sm:text-[17px]"}`}>
+          <h3 className={`line-clamp-2 min-h-[2.35em] font-semibold leading-[1.35] tracking-[-0.015em] text-slate-900 ${compact ? "text-[13px] sm:text-sm" : "text-sm sm:text-[17px]"}`}>
             {displayName}
           </h3>
           {product.description && !compact && (
@@ -119,23 +129,23 @@ function ProductCard({ product, onAdd, compact = false }: Props) {
 
         <div className="mt-auto pt-0.5">
           {loadingPrice ? (
-            <p className={`font-bold text-green-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>...</p>
+            <p className={`font-extrabold leading-tight text-emerald-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>...</p>
           ) : hasEvent ? (
-            <div className="space-y-0 sm:space-y-1">
-              <div className={`flex items-center ${compact ? "gap-1" : "gap-2"}`}>
-                <span className={`${compact ? "text-[10px]" : "text-xs"} text-gray-400 line-through`}>
+            <div className="space-y-0.5">
+              <div className={`flex min-w-0 items-center ${compact ? "gap-1" : "gap-2"}`}>
+                <span className={`${compact ? "text-[9px] sm:text-[10px]" : "text-xs"} truncate text-slate-400 line-through`}>
                   {formatPrice(normalPrice)}
                 </span>
-                <span className={`${compact ? "text-[10px] px-1.5" : "text-xs px-2"} font-bold text-red-500 bg-red-50 py-0.5 rounded-full`}>
-                  {discountRate}% 할인
+                <span className={`${compact ? "px-1 text-[9px] sm:text-[10px]" : "px-1.5 text-xs"} shrink-0 rounded bg-rose-50 py-0.5 font-extrabold text-rose-600`}>
+                  -{discountRate}%
                 </span>
               </div>
-              <p className={`font-black text-green-700 tracking-normal ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
+              <p className={`font-black leading-tight tracking-[-0.025em] text-rose-600 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
                 {formatPrice(eventPrice)}
               </p>
             </div>
           ) : (
-            <p className={`font-black text-green-700 tracking-normal ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
+            <p className={`font-black leading-tight tracking-[-0.025em] text-emerald-700 ${compact ? "text-base sm:text-[17px]" : "text-[17px] sm:text-[21px]"}`}>
               {formatPrice(normalPrice)}
             </p>
           )}

@@ -383,25 +383,25 @@ export default function HomePage() {
 
   return (
     <PriceProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[#f7f9f7]">
         <Header cartCount={totalCount} showInstallButton />
 
         <main className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-24 sm:pb-28">
-          <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-4">
+          <div className="mb-4 flex flex-wrap justify-center gap-1.5 sm:gap-2">
             <a
               href="https://open.kakao.com/o/sdPlnVxi"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-yellow-400 hover:bg-yellow-500 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold text-yellow-900 border border-yellow-500"
+              className="rounded-lg border border-amber-300 bg-amber-300 px-2.5 py-1.5 text-[10px] font-extrabold text-amber-950 transition hover:bg-amber-400 sm:px-3 sm:text-xs"
             >
               카카오톡 1:1 문의
             </a>
 
-            <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-700">
+            <div className="rounded-lg border border-emerald-100 bg-white px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 sm:px-3 sm:text-sm">
               숭의동·용현동 인근 배달
             </div>
 
-            <div className="bg-emerald-50 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-700">
+            <div className="rounded-lg border border-emerald-100 bg-white px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 sm:px-3 sm:text-sm">
               {minimumOrderEventActive
                 ? `오픈 이벤트 최소 ${formatPrice(minimumOrderAmount)}`
                 : `최소 주문 ${formatPrice(minimumOrderAmount)}`}
@@ -409,14 +409,17 @@ export default function HomePage() {
           </div>
 
           <div className="mb-4 sm:mb-6">
-            <Link href="/flyers">
-              <FlyerBanner onOpen={() => {}} />
+            <Link href="/flyers" className="block rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+              <FlyerBanner />
             </Link>
           </div>
 
           <div className="relative mb-4 sm:mb-6">
-            <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">
-              검색
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden>
+              <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
             </span>
             <input
               type="text"
@@ -428,37 +431,37 @@ export default function HomePage() {
               spellCheck={false}
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
-              placeholder="상품명 검색"
-              className="w-full h-10 sm:h-12 pl-14 sm:pl-16 pr-10 sm:pr-12 bg-gray-50 border-none rounded-xl sm:rounded-2xl text-gray-800 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 transition-all"
+              placeholder="상품명을 검색해보세요"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-10 text-sm font-medium text-slate-800 shadow-[0_2px_10px_rgba(15,23,42,0.04)] outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 sm:h-12 sm:rounded-2xl sm:pl-11 sm:pr-12 sm:text-base"
               aria-label="상품 검색"
             />
             {search && (
               <button
                 type="button"
                 onClick={clearSearch}
-                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg min-w-[32px] min-h-[32px] flex items-center justify-center"
+                className="absolute right-2.5 top-1/2 flex min-h-[32px] min-w-[32px] -translate-y-1/2 items-center justify-center rounded-full text-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 sm:right-3.5"
                 aria-label="검색어 지우기"
               >
-                x
+              ×
               </button>
             )}
           </div>
 
-          <div className="sticky top-14 sm:top-16 z-30 -mx-3 sm:-mx-4 mb-4 sm:mb-6 overflow-x-auto bg-white/95 px-3 sm:px-4 py-2 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/80">
-            <div className="flex gap-2 pb-1">
+          <div className="sticky top-14 z-30 -mx-3 mb-4 overflow-x-auto border-y border-slate-100 bg-white/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/85 sm:top-16 sm:-mx-4 sm:mb-6 sm:px-4">
+            <div className="flex gap-1.5 pb-0.5 sm:gap-2">
               {visibleCategories.map((item) => (
                 <button
                   key={item}
                   type="button"
                   onClick={() => handleCategoryChange(item)}
-                  className={`shrink-0 rounded-full border px-4 py-2.5 text-sm font-bold transition min-h-[44px] ${
+                  className={`min-h-[42px] shrink-0 rounded-full border px-3.5 py-2 text-[13px] font-bold transition sm:min-h-[44px] sm:px-4 sm:text-sm ${
                     item === "홈"
                       ? !hasCategorySelection
-                        ? "border-emerald-600 bg-emerald-600 text-white"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
+                        ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
                       : hasCategorySelection && category === item
-                        ? "border-emerald-600 bg-emerald-600 text-white"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-emerald-300 hover:text-emerald-700"
+                        ? "border-emerald-600 bg-emerald-600 text-white shadow-sm"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
                   }`}
                 >
                   {item}

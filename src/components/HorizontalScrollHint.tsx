@@ -104,7 +104,7 @@ export function HorizontalScrollHint({ children, className }: Props) {
           onPointerDown={markHintSeen}
           onTouchStart={markHintSeen}
           onWheel={markHintSeen}
-          className={`${className} pr-4 scrollbar-thin`}
+          className={`${className} pr-4 scrollbar-thin ${!canScrollPrev && !canScrollNext ? "justify-center" : ""}`}
         >
           {children}
         </div>
@@ -113,7 +113,7 @@ export function HorizontalScrollHint({ children, className }: Props) {
           <button
             type="button"
             onClick={() => scrollByPage(-1)}
-            className="hidden sm:flex absolute left-1 top-1/2 z-10 h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-gray-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700"
+            className="absolute left-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md ring-1 ring-slate-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700 sm:flex"
             aria-label="이전 상품 보기"
           >
             &lt;
@@ -123,7 +123,7 @@ export function HorizontalScrollHint({ children, className }: Props) {
           <button
             type="button"
             onClick={() => scrollByPage(1)}
-            className="hidden sm:flex absolute right-1 top-1/2 z-10 h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-gray-700 shadow-lg ring-1 ring-gray-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700"
+            className="absolute right-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md ring-1 ring-slate-200 opacity-0 transition group-hover:opacity-100 hover:bg-emerald-50 hover:text-emerald-700 sm:flex"
             aria-label="다음 상품 보기"
           >
             &gt;
@@ -131,14 +131,16 @@ export function HorizontalScrollHint({ children, className }: Props) {
         )}
       </div>
 
-      <div className="mt-2 flex items-center gap-2">
-        <div className="h-1 flex-1 overflow-hidden rounded-full bg-gray-100">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-200"
-            style={{ width: `${canScrollNext || canScrollPrev ? Math.max(progress, 8) : 100}%` }}
-          />
+      {(canScrollNext || canScrollPrev) && (
+        <div className="mt-2 flex justify-center">
+          <div className="h-1 w-14 overflow-hidden rounded-full bg-slate-200/80 sm:w-16">
+            <div
+              className="h-full rounded-full bg-emerald-500 transition-all duration-200"
+              style={{ width: `${Math.max(progress, 8)}%` }}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

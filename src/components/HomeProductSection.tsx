@@ -12,23 +12,26 @@ type Props = {
 };
 
 const HOME_PRODUCT_RAIL_CLASS =
-  "grid auto-cols-[calc((100%_-_0.5rem)/2.16)] grid-flow-col grid-rows-3 gap-1.5 overflow-x-auto overscroll-x-contain pb-1 snap-x snap-mandatory sm:auto-cols-[calc((100%_-_1.25rem)/3.14)] sm:gap-2 md:auto-cols-[8.25rem]";
+  "grid auto-cols-[calc((100%_-_0.375rem)/2.08)] grid-flow-col grid-rows-3 gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5 snap-x snap-mandatory sm:auto-cols-[calc((100%_-_1rem)/3.12)] sm:gap-2 md:auto-cols-[8.75rem]";
 
 const TONE_CLASS = {
   default: {
-    box: "bg-[#F3FBF4] shadow-[0_8px_22px_rgba(15,23,42,0.05)]",
+    box: "border-emerald-100/80 bg-gradient-to-b from-emerald-50/80 to-white shadow-[0_10px_28px_-24px_rgba(5,150,105,0.55)]",
     point: "bg-emerald-500",
-    label: "",
+    label: "추천",
+    labelClass: "border-emerald-100 bg-white/90 text-emerald-700",
   },
   deal: {
-    box: "bg-[#FFF5F3] shadow-[0_8px_22px_rgba(154,52,18,0.05)]",
-    point: "bg-orange-500",
+    box: "border-rose-100/90 bg-gradient-to-b from-rose-50/80 to-white shadow-[0_10px_28px_-24px_rgba(225,29,72,0.45)]",
+    point: "bg-rose-500",
     label: "특가",
+    labelClass: "border-rose-100 bg-white/90 text-rose-600",
   },
   popular: {
-    box: "bg-[#FFFBEF] shadow-[0_8px_22px_rgba(15,23,42,0.05)]",
-    point: "bg-emerald-500",
-    label: "",
+    box: "border-amber-100/90 bg-gradient-to-b from-amber-50/75 to-white shadow-[0_10px_28px_-24px_rgba(217,119,6,0.4)]",
+    point: "bg-amber-500",
+    label: "인기",
+    labelClass: "border-amber-100 bg-white/90 text-amber-700",
   },
 } as const;
 
@@ -37,23 +40,23 @@ export function HomeProductSection({ title, products, onAdd, tone = "default" }:
   const style = TONE_CLASS[tone];
 
   return (
-    <section className={`mb-14 rounded-[18px] border border-white/70 px-3.5 py-4 sm:mb-12 sm:px-5 sm:py-5 ${style.box}`}>
-      <div className="mb-3 flex items-center justify-between gap-2">
+    <section className={`mb-8 rounded-2xl border px-3 py-3.5 sm:mb-10 sm:px-4 sm:py-4 ${style.box}`}>
+      <div className="mb-2.5 flex items-center justify-between gap-2 sm:mb-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className={`h-5 w-1.5 rounded-full ${style.point}`} aria-hidden />
-          <h2 className="truncate text-base font-bold text-gray-900 sm:text-xl">{title}</h2>
+          <span className={`h-4 w-1 rounded-full sm:h-5 ${style.point}`} aria-hidden />
+          <h2 className="truncate text-[17px] font-extrabold tracking-[-0.02em] text-slate-900 sm:text-xl">
+            {title}
+          </h2>
         </div>
-        {style.label && (
-          <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-black text-orange-700 ring-1 ring-orange-100">
-            {style.label}
-          </span>
-        )}
+        <span className={`rounded-full border px-2 py-0.5 text-[10px] font-extrabold sm:text-[11px] ${style.labelClass}`}>
+          {style.label}
+        </span>
       </div>
 
       <HorizontalScrollHint className={HOME_PRODUCT_RAIL_CLASS}>
         {products.map((product) => (
           <div key={product.id} className="min-w-0 snap-start">
-            <ProductCard product={product} onAdd={onAdd} compact />
+            <ProductCard product={product} onAdd={onAdd} compact tone={tone} />
           </div>
         ))}
       </HorizontalScrollHint>
