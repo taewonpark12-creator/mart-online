@@ -120071,7 +120071,7 @@
   {
     "barcode": "910000000665",
     "name": "자두(1팩)행사",
-    "normalPrice": 6980,
+    "normalPrice": 999990,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120142,8 +120142,8 @@
   },
   {
     "barcode": "9100000111810",
-    "name": "메론(1통)",
-    "normalPrice": 4980,
+    "name": "메론(1통)행사",
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -120944,7 +120944,7 @@
   {
     "barcode": "9100000216669",
     "name": "샤인머스켓(4kg/1박스)행사",
-    "normalPrice": 24800,
+    "normalPrice": 19800,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121105,8 +121105,8 @@
   },
   {
     "barcode": "9100000217338",
-    "name": "대추방울토마토(1팩)행사",
-    "normalPrice": 4980,
+    "name": "대추방울토마토(1팩)",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121358,7 +121358,7 @@
   {
     "barcode": "9100000218588",
     "name": "샤인머스켓(2kg/1박스)행사",
-    "normalPrice": 9800,
+    "normalPrice": 8900,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
