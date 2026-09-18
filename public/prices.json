@@ -48249,6 +48249,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801068111286",
+    "name": "삼립)마늘바게트420g",
+    "normalPrice": 9000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801068113433",
     "name": "삼립)아이스모찌롤케익",
     "normalPrice": 3500,
@@ -72264,10 +72273,10 @@
     "barcode": "8801204205923",
     "name": "청우)쫀득초코칩커피200g",
     "normalPrice": 5000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 40,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801204206159",
