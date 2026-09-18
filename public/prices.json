@@ -105507,6 +105507,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8809298055424",
+    "name": "강화섬쌀(햅쌀)10kg",
+    "normalPrice": 44000,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8809298055431",
     "name": "강화섬쌀20kg",
     "normalPrice": 75000,
@@ -105519,10 +105528,10 @@
     "barcode": "8809298055448",
     "name": "강화섬쌀10kg",
     "normalPrice": 42000,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 39800,
+    "discountRate": 5,
+    "saleStartDate": "2026-09-08",
+    "saleEndDate": "2026-09-25"
   },
   {
     "barcode": "8809298055622",
