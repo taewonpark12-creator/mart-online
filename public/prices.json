@@ -13917,10 +13917,10 @@
     "barcode": "8801007402284",
     "name": "백설)콩기름500ml",
     "normalPrice": 3500,
-    "eventPrice": null,
-    "discountRate": null,
-    "saleStartDate": "",
-    "saleEndDate": ""
+    "eventPrice": 2980,
+    "discountRate": 15,
+    "saleStartDate": "2019-09-20",
+    "saleEndDate": "2026-12-31"
   },
   {
     "barcode": "8801007402291",
