@@ -59427,6 +59427,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8801111966139",
+    "name": "신상품",
+    "normalPrice": 0,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8801114101568",
     "name": "풀무원)국산순두부350g",
     "normalPrice": 2300,
