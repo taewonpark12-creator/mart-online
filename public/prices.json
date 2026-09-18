@@ -88157,7 +88157,7 @@
   {
     "barcode": "8803761001185",
     "name": "나무젓가락50입",
-    "normalPrice": 2150,
+    "normalPrice": 2300,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -94527,6 +94527,15 @@
     "saleEndDate": ""
   },
   {
+    "barcode": "8807820021800",
+    "name": "미니얼음집게",
+    "normalPrice": 3800,
+    "eventPrice": null,
+    "discountRate": null,
+    "saleStartDate": "",
+    "saleEndDate": ""
+  },
+  {
     "barcode": "8807820021923",
     "name": "럭스블랙사각뒤지개",
     "normalPrice": 6800,
@@ -97607,7 +97616,7 @@
   {
     "barcode": "8809044500062",
     "name": "하모니다라이7호",
-    "normalPrice": 6200,
+    "normalPrice": 8000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -97625,7 +97634,7 @@
   {
     "barcode": "8809044500093",
     "name": "하모니다라이10호",
-    "normalPrice": 10500,
+    "normalPrice": 13500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -97634,7 +97643,7 @@
   {
     "barcode": "8809044500109",
     "name": "하모니다라이11호",
-    "normalPrice": 11600,
+    "normalPrice": 15500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -115661,7 +115670,7 @@
   {
     "barcode": "8809734300460",
     "name": "예식장갑",
-    "normalPrice": 1100,
+    "normalPrice": 1200,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119287,8 +119296,8 @@
   },
   {
     "barcode": "9100000000176",
-    "name": "딱딱이복숭아4개/1팩",
-    "normalPrice": 9800,
+    "name": "딱딱이복숭아1팩",
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121331,7 +121340,7 @@
   {
     "barcode": "9100000218533",
     "name": "알배기1통",
-    "normalPrice": 3980,
+    "normalPrice": 1980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121358,7 +121367,7 @@
   {
     "barcode": "9100000218595",
     "name": "브로콜리(수입산)1개",
-    "normalPrice": 1980,
+    "normalPrice": 1480,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121394,7 +121403,7 @@
   {
     "barcode": "9100000218632",
     "name": "파인애플1통",
-    "normalPrice": 6980,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
