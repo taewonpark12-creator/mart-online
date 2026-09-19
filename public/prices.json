@@ -119125,7 +119125,7 @@
   },
   {
     "barcode": "9100000213859",
-    "name": "신고배",
+    "name": "신고배1팩",
     "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
@@ -119305,8 +119305,8 @@
   },
   {
     "barcode": "9100000214689",
-    "name": "연시",
-    "normalPrice": 4980,
+    "name": "연시1팩",
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
