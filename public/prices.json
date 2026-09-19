@@ -119863,8 +119863,8 @@
   },
   {
     "barcode": "9100000003160",
-    "name": "새송이버섯(1봉)",
-    "normalPrice": 1980,
+    "name": "새송이버섯(1봉)행사",
+    "normalPrice": 980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121025,7 +121025,7 @@
   {
     "barcode": "9100000216980",
     "name": "알타리무(1단)",
-    "normalPrice": 6980,
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121808,7 +121808,7 @@
   {
     "barcode": "9100000219103",
     "name": "쪽파(1단)행사",
-    "normalPrice": 5980,
+    "normalPrice": 6980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
