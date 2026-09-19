@@ -27,6 +27,8 @@ export default function FlyersPage() {
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [announcement, setAnnouncement] = useState<FlyerAnnouncement | null>(null);
   const [loading, setLoading] = useState(true);
+  const [flyersError, setFlyersError] = useState(false);
+  const [announcementError, setAnnouncementError] = useState(false);
   const [failedImageUrls, setFailedImageUrls] = useState<Set<string>>(new Set());
   const showOnlineOrder = announcement?.showOnlineOrder ?? true;
   const showPhoneOrder = announcement?.showPhoneOrder ?? true;
@@ -34,17 +36,48 @@ export default function FlyersPage() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      fetch("/api/flyers").then((res) => res.json()),
-      fetch("/api/flyers/announcement").then((res) => res.json()),
+    setFlyersError(false);
+    setAnnouncementError(false);
+
+    Promise.allSettled([
+      fetch("/api/flyers").then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`전단지 조회 실패 (${res.status})`);
+        }
+
+        const data = await res.json();
+        if (!Array.isArray(data)) {
+          throw new Error("전단지 응답 형식이 올바르지 않습니다.");
+        }
+
+        return data as Flyer[];
+      }),
+      fetch("/api/flyers/announcement").then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`전단지 공지 조회 실패 (${res.status})`);
+        }
+
+        const data = await res.json();
+        return (data?.announcement ?? null) as FlyerAnnouncement | null;
+      }),
     ])
-      .then(([flyerData, announcementData]) => {
-        setFlyers(Array.isArray(flyerData) ? flyerData : []);
-        setAnnouncement(announcementData?.announcement ?? null);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("전단지 로딩 오류:", error);
+      .then(([flyerResult, announcementResult]) => {
+        if (flyerResult.status === "fulfilled") {
+          setFlyers(flyerResult.value);
+        } else {
+          console.error("전단지 로딩 오류:", flyerResult.reason);
+          setFlyers([]);
+          setFlyersError(true);
+        }
+
+        if (announcementResult.status === "fulfilled") {
+          setAnnouncement(announcementResult.value);
+        } else {
+          console.error("전단지 공지 로딩 오류:", announcementResult.reason);
+          setAnnouncement(null);
+          setAnnouncementError(true);
+        }
+
         setLoading(false);
       });
   }, []);
@@ -68,13 +101,19 @@ export default function FlyersPage() {
           <div className="flex min-h-[60vh] items-center justify-center rounded-2xl bg-white shadow-sm sm:rounded-3xl">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
           </div>
+        ) : flyersError ? (
+          <div className="flex min-h-[50vh] items-center justify-center rounded-2xl bg-white px-4 text-center text-gray-600 shadow-sm sm:rounded-3xl">
+            <p className="whitespace-pre-line leading-7">
+              {"전단 정보를 불러오지 못했습니다.\n잠시 후 다시 시도해 주세요."}
+            </p>
+          </div>
         ) : flyers.length === 0 && !announcement ? (
           <div className="flex min-h-[50vh] items-center justify-center rounded-2xl bg-white text-gray-500 shadow-sm sm:rounded-3xl">
             <p>등록된 전단지가 없습니다.</p>
           </div>
         ) : (
           <div className="mx-auto w-full max-w-3xl space-y-3 sm:space-y-4">
-            {announcement && (
+            {!announcementError && announcement && (
               <section className="rounded-2xl border border-emerald-200 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5">
                 <h2 className="break-keep text-lg font-extrabold leading-7 text-emerald-900 sm:text-xl">
                   {announcement.title}

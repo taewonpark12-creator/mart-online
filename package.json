@@ -21,6 +21,7 @@
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "@types/web-push": "^3.6.4",
+    "@vercel/functions": "^3.9.8",
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

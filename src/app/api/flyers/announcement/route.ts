@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { FLYERS_PUBLIC_ANNOUNCEMENT_TAG } from "@/lib/flyer-public-cache";
 
 function jsonNoStore(body: unknown, init?: ResponseInit) {
   const response = NextResponse.json(body, init);
@@ -49,6 +50,7 @@ export async function GET() {
       "Cache-Control",
       "public, s-maxage=300, stale-while-revalidate=600"
     );
+    response.headers.set("Vercel-Cache-Tag", FLYERS_PUBLIC_ANNOUNCEMENT_TAG);
     return response;
   } catch (error) {
     console.error("[GET /api/flyers/announcement]", error);

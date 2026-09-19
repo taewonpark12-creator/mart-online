@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { invalidateFlyersPublicListCache } from "@/lib/flyer-public-cache";
 
 function isSafeImageUrl(imageUrl: string): boolean {
   try {
@@ -58,6 +59,8 @@ export async function POST(req: NextRequest) {
         order: newOrder,
       },
     });
+
+    await invalidateFlyersPublicListCache();
 
     return NextResponse.json(flyer);
   } catch (error) {

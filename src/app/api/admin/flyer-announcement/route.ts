@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { invalidateFlyersPublicAnnouncementCache } from "@/lib/flyer-public-cache";
 
 const MAX_TITLE_LENGTH = 80;
 const MAX_CONTENT_LENGTH = 1000;
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       });
     });
 
-    revalidatePath("/flyers");
+    await invalidateFlyersPublicAnnouncementCache();
 
     return jsonNoStore({ announcement: serializeAnnouncement(announcement) });
   } catch (error) {
@@ -141,7 +141,7 @@ export async function DELETE(req: NextRequest) {
         })
       : null;
 
-    revalidatePath("/flyers");
+    await invalidateFlyersPublicAnnouncementCache();
 
     return jsonNoStore({ announcement: serializeAnnouncement(announcement) });
   } catch (error) {

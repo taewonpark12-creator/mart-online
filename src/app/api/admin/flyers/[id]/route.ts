@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { invalidateFlyersPublicListCache } from "@/lib/flyer-public-cache";
 
 export async function PATCH(
   req: NextRequest,
@@ -39,6 +40,8 @@ export async function PATCH(
       data: updateData,
     });
 
+    await invalidateFlyersPublicListCache();
+
     return NextResponse.json(flyer);
   } catch (error) {
     console.error("[PATCH /api/admin/flyers/[id]]", error);
@@ -59,6 +62,8 @@ export async function DELETE(
     await prisma.flyer.delete({
       where: { id },
     });
+
+    await invalidateFlyersPublicListCache();
 
     return NextResponse.json({ success: true });
   } catch (error) {
