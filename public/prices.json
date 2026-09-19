@@ -119423,7 +119423,7 @@
   {
     "barcode": "9100000000497",
     "name": "부추1단",
-    "normalPrice": 4980,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119521,8 +119521,8 @@
   },
   {
     "barcode": "9100000001517",
-    "name": "온라",
-    "normalPrice": 3980,
+    "name": "알타리1단",
+    "normalPrice": 4980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
