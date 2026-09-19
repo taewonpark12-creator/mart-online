@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Age: 12
+Cache-Control: public
+Content-Type: application/json
+Date: Sat, 19 Sep 2026 03:18:25 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /api/flyers/announcement
+X-Vercel-Cache: STALE
+X-Vercel-Id: icn1::iad1::8svvd-1789787917262-3c59b5784657
+Transfer-Encoding: chunked
+

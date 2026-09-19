@@ -28,7 +28,7 @@ export async function GET() {
     const response = NextResponse.json(flyers);
     response.headers.set(
       "Cache-Control",
-      "public, s-maxage=300, stale-while-revalidate=600"
+      "public, s-maxage=43200, stale-while-revalidate=600"
     );
     response.headers.set("Vercel-Cache-Tag", FLYERS_PUBLIC_LIST_TAG);
     return response;
