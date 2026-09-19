@@ -119315,7 +119315,7 @@
   {
     "barcode": "9100000000145",
     "name": "메론1통",
-    "normalPrice": 4980,
+    "normalPrice": 7980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119405,7 +119405,7 @@
   {
     "barcode": "9100000000343",
     "name": "샤인머스켓1팩",
-    "normalPrice": 5500,
+    "normalPrice": 6000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119414,7 +119414,7 @@
   {
     "barcode": "9100000000350",
     "name": "거봉1팩",
-    "normalPrice": 4500,
+    "normalPrice": 5000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -119531,7 +119531,7 @@
   {
     "barcode": "9100000001524",
     "name": "아삭이고추1팩",
-    "normalPrice": 2500,
+    "normalPrice": 3000,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121331,7 +121331,7 @@
   {
     "barcode": "9100000218328",
     "name": "깻잎(1봉)",
-    "normalPrice": 2980,
+    "normalPrice": 2500,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
@@ -121376,7 +121376,7 @@
   {
     "barcode": "9100000218533",
     "name": "알배기1통",
-    "normalPrice": 1980,
+    "normalPrice": 3980,
     "eventPrice": null,
     "discountRate": null,
     "saleStartDate": "",
